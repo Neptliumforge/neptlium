@@ -1,0 +1,5 @@
+import type { Metadata } from 'next'
+import { DetailPage } from '@/components/detail-page'
+export const metadata:Metadata={title:'Research',description:'Neptlium research on digital asset infrastructure and disciplined capital organization.',alternates:{canonical:'/research'}}
+export default function Page(){return <DetailPage eyebrow="Research" title="Research for considered ownership." intro="A developing body of work on digital asset infrastructure, allocation structure, operating controls and long-term capital organization. No research publications are currently available." sections={[['Digital asset infrastructure','Market structure, network boundaries, provider dependencies and the operational realities of programmable assets.'],['Allocation discipline','Frameworks for observing concentration and modeling possible structures without presenting modeled outcomes as forecasts.'],['Operating control','How explicit authorization, role-aware access and auditability shape dependable capital infrastructure.']]}/>} 
+

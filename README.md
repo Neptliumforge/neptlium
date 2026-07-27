@@ -100,7 +100,7 @@ Neptlium is a **Turborepo monorepo** containing independently deployable applica
 neptlium/
 
 ├── apps/
-│   ├── web/              # Planned public institutional website
+│   ├── web/              # Public marketing website
 │   ├── app/              # Authenticated capital operating platform
 │   └── admin/            # Internal operations console
 │
@@ -129,7 +129,7 @@ neptlium/
 # apps/web
 
 ## Public Institutional Website
-Status: planned; this application is not present in the current checkout.
+Status: active workspace application.
 
 
 Purpose:
