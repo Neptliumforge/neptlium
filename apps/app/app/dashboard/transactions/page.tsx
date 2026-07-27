@@ -6,11 +6,14 @@ import { requireUser } from "@/lib/auth";
 
 const PAGE_SIZE = 20;
 
-const STATUS_TONE: Record<string, "success" | "warning" | "danger" | "neutral"> = {
+const STATUS_TONE: Record<
+  string,
+  "success" | "warning" | "danger" | "neutral"
+> = {
   completed: "success",
   pending: "warning",
   failed: "danger",
-  cancelled: "neutral"
+  cancelled: "neutral",
 };
 
 const selectClasses =
@@ -37,7 +40,7 @@ interface TransactionRow {
 }
 
 export default async function TransactionsPage({
-  searchParams
+  searchParams,
 }: {
   readonly searchParams: Promise<TransactionsSearchParams>;
 }) {
@@ -58,7 +61,10 @@ export default async function TransactionsPage({
 
   let query = supabase
     .from("wallet_transactions")
-    .select("id, type, asset, network, amount, status, reference, counterparty, created_at", { count: "exact" })
+    .select(
+      "id, type, asset, network, amount, status, reference, counterparty, created_at",
+      { count: "exact" },
+    )
     .eq("profile_id", user.id)
     .order("created_at", { ascending: false })
     .range(offset, offset + PAGE_SIZE - 1);
@@ -66,7 +72,10 @@ export default async function TransactionsPage({
   if (params.status) query = query.eq("status", params.status);
   if (params.asset) query = query.eq("asset", params.asset);
   if (params.network) query = query.eq("network", params.network);
-  if (params.q) query = query.or(`reference.ilike.%${params.q}%,counterparty.ilike.%${params.q}%`);
+  if (params.q)
+    query = query.or(
+      `reference.ilike.%${params.q}%,counterparty.ilike.%${params.q}%`,
+    );
 
   const { data, count } = await query;
   const transactions = (data ?? []) as readonly TransactionRow[];
@@ -80,15 +89,20 @@ export default async function TransactionsPage({
     if (params.q) search.set("q", params.q);
     if (targetPage > 1) search.set("page", String(targetPage));
     const query = search.toString();
-    return query ? `/dashboard/transactions?${query}` : "/dashboard/transactions";
+    return query
+      ? `/dashboard/transactions?${query}`
+      : "/dashboard/transactions";
   }
 
   return (
     <div className="space-y-5 sm:space-y-6">
       <div>
-        <h1 className="text-[1.35rem] font-semibold leading-tight tracking-tight text-text-primary sm:text-2xl">Transactions</h1>
+        <h1 className="text-[1.35rem] font-semibold leading-tight tracking-tight text-text-primary sm:text-2xl">
+          Capital Activity
+        </h1>
         <p className="mt-2 text-sm leading-6 text-text-secondary">
-          Review deposits, withdrawals, and transfers across your account
+          Review deposits, withdrawals, goals, journal entries, and
+          database-backed activity
         </p>
       </div>
 
@@ -96,17 +110,34 @@ export default async function TransactionsPage({
         <CardContent className="p-6">
           <form method="get" className="flex flex-wrap items-end gap-3">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="q" className="text-body-sm font-medium text-text-secondary">
+              <label
+                htmlFor="q"
+                className="text-body-sm font-medium text-text-secondary"
+              >
                 Search
               </label>
-              <Input id="q" name="q" defaultValue={params.q ?? ""} placeholder="Reference or counterparty" className="h-10 w-56" />
+              <Input
+                id="q"
+                name="q"
+                defaultValue={params.q ?? ""}
+                placeholder="Reference or counterparty"
+                className="h-10 w-56"
+              />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="status" className="text-body-sm font-medium text-text-secondary">
+              <label
+                htmlFor="status"
+                className="text-body-sm font-medium text-text-secondary"
+              >
                 Status
               </label>
-              <select id="status" name="status" defaultValue={params.status ?? ""} className={selectClasses}>
+              <select
+                id="status"
+                name="status"
+                defaultValue={params.status ?? ""}
+                className={selectClasses}
+              >
                 <option value="">All statuses</option>
                 <option value="pending">Pending</option>
                 <option value="completed">Completed</option>
@@ -116,10 +147,18 @@ export default async function TransactionsPage({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="asset" className="text-body-sm font-medium text-text-secondary">
+              <label
+                htmlFor="asset"
+                className="text-body-sm font-medium text-text-secondary"
+              >
                 Asset
               </label>
-              <select id="asset" name="asset" defaultValue={params.asset ?? ""} className={selectClasses}>
+              <select
+                id="asset"
+                name="asset"
+                defaultValue={params.asset ?? ""}
+                className={selectClasses}
+              >
                 <option value="">All assets</option>
                 {assets.map((asset) => (
                   <option key={asset} value={asset}>
@@ -130,10 +169,18 @@ export default async function TransactionsPage({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="network" className="text-body-sm font-medium text-text-secondary">
+              <label
+                htmlFor="network"
+                className="text-body-sm font-medium text-text-secondary"
+              >
                 Network
               </label>
-              <select id="network" name="network" defaultValue={params.network ?? ""} className={selectClasses}>
+              <select
+                id="network"
+                name="network"
+                defaultValue={params.network ?? ""}
+                className={selectClasses}
+              >
                 <option value="">All networks</option>
                 {networks.map((network) => (
                   <option key={network} value={network}>
@@ -165,18 +212,35 @@ export default async function TransactionsPage({
             <table className="w-full text-body-sm">
               <thead className="border-b border-border-default">
                 <tr>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Type</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Asset / Network</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Amount</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Reference</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Status</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Date</th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
+                    Type
+                  </th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
+                    Asset / Network
+                  </th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
+                    Amount
+                  </th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
+                    Reference
+                  </th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
+                    Status
+                  </th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
+                    Date
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {transactions.map((transaction) => (
-                  <tr key={transaction.id} className="border-b border-border-hairline">
-                    <td className="px-4 py-2 capitalize text-text-primary">{transaction.type}</td>
+                  <tr
+                    key={transaction.id}
+                    className="border-b border-border-hairline"
+                  >
+                    <td className="px-4 py-2 capitalize text-text-primary">
+                      {transaction.type}
+                    </td>
                     <td className="px-4 py-2 text-text-primary">
                       {transaction.asset} &middot; {transaction.network}
                     </td>
@@ -188,7 +252,11 @@ export default async function TransactionsPage({
                       {transaction.reference ?? transaction.counterparty ?? "—"}
                     </td>
                     <td className="px-4 py-2">
-                      <Badge tone={STATUS_TONE[transaction.status] ?? "neutral"}>{transaction.status}</Badge>
+                      <Badge
+                        tone={STATUS_TONE[transaction.status] ?? "neutral"}
+                      >
+                        {transaction.status}
+                      </Badge>
                     </td>
                     <td className="px-4 py-2 text-text-muted">
                       {new Date(transaction.created_at).toLocaleDateString()}
