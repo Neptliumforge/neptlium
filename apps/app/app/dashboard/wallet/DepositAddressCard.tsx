@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Check, Copy, AlertTriangle } from "lucide-react";
-import { Badge, Button } from "@netlium/ui";
-import type { CustodyAddress } from "@netlium/lib";
+import { Badge, Button } from "@neptlium/ui";
+import type { CustodyAddress } from "@neptlium/lib";
 
 export interface DepositAddressCardProps {
   readonly address: CustodyAddress;

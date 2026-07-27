@@ -1,4 +1,4 @@
-import { updateSession } from "@netlium/lib/supabase/middleware";
+import { updateSession } from "@neptlium/lib/supabase/middleware";
 import type { NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {

@@ -1,4 +1,4 @@
-import type { ProvisioningPayload } from "@netlium/lib";
+import type { ProvisioningPayload } from "@neptlium/lib";
 import { onboardingSteps } from "./wizard-steps";
 
 export interface WizardState {

@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { cn } from "@netlium/ui";
+import { cn } from "@neptlium/ui";
 import type { OnboardingStepKey } from "../wizard-steps";
 import { onboardingSteps } from "../wizard-steps";
 

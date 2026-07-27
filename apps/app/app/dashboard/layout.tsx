@@ -1,33 +1,37 @@
 import type { ReactNode } from "react";
-import { AppShell, MobileNavigation, Sidebar } from "@netlium/ui";
+import { AppShell, MobileNavigation, Sidebar } from "@neptlium/ui";
 import { dashboardNavItems } from "@/components/navigation/dashboardNav";
+import { ProfileMenu } from "@/components/navigation/ProfileMenu";
 import { filterNavByRole } from "@/components/security/filterNavByRole";
 import { resolveRole } from "@/components/security/resolveRole";
-import { SignOutButton } from "@/components/security/SignOutButton";
 import { requireProvisionedUser } from "@/lib/auth";
 
-export default async function DashboardLayout({ children }: { readonly children: ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  readonly children: ReactNode;
+}) {
   const { user, profile } = await requireProvisionedUser();
   const role = await resolveRole(user.id);
   const navItems = filterNavByRole(dashboardNavItems, role);
-
-  const displayName = profile?.fullName ?? profile?.email ?? user.email ?? "Account";
-  const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
-  const sessionFooter = (
-    <div className="space-y-2">
-      <div className="px-2">
-        <p className="truncate text-body-sm font-medium text-text-primary">{displayName}</p>
-        <p className="truncate text-[11px] text-text-muted">{roleLabel}</p>
-      </div>
-      <SignOutButton />
-    </div>
+  const displayName =
+    profile.fullName ??
+    profile.displayName ??
+    profile.email ??
+    user.email ??
+    "Account";
+  const profileMenu = (
+    <ProfileMenu
+      name={displayName}
+      email={profile.email ?? user.email ?? ""}
+      verified={profile.complianceStatus === "active"}
+    />
   );
-
   return (
     <AppShell
       sidebar={<Sidebar items={navItems} />}
-      sidebarFooter={sessionFooter}
-      mobileNav={<MobileNavigation items={navItems} footer={sessionFooter} />}
+      utility={profileMenu}
+      mobileNav={<MobileNavigation items={navItems} profile={profileMenu} />}
     >
       {children}
     </AppShell>

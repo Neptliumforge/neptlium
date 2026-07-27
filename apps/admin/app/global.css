@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@netlium/ui/styles/tokens.css";
+@import "@neptlium/ui/styles/tokens.css";
 
 @import "@neptlium/design-system/tokens.css";
 @import "@neptlium/design-system/utilities.css";

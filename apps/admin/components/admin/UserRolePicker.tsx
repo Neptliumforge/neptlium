@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { getRoleLabel, type Role } from "@netlium/lib";
+import { getRoleLabel, type Role } from "@neptlium/lib";
 
 const ALL_ROLES: Role[] = ["user", "operator", "analyst", "manager", "admin", "super_admin"];
 

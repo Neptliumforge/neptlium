@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { LoginForm } from "./LoginForm";
 import { safeInternalPath } from "../auth-utils";
 

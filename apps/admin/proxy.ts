@@ -1,4 +1,4 @@
-import { updateSession } from "@netlium/lib/supabase/middleware";
+import { updateSession } from "@neptlium/lib/supabase/middleware";
 import type { NextRequest } from "next/server";
 
 // Session refresh only — auth/role guards are enforced in (admin)/layout.tsx

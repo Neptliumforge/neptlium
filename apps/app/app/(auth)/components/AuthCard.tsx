@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@netlium/ui";
+import { cn } from "@neptlium/ui";
 
 const authCardVariants = cva(
   [

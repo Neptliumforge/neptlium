@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Users, Clock, ArrowUpRight, SlidersHorizontal } from "lucide-react";
-import { StatCard } from "@netlium/ui";
+import { StatCard } from "@neptlium/ui";
 import { requireAdminUser } from "@/lib/auth";
 import { getDashboardStats } from "@/lib/data/users";
 import { PageHeader } from "@/components/layout/PageHeader";

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { recordSecurityEvent } from "@/lib/security/events";
 import { recordTrustedDevice } from "@/lib/security/deviceCookie";
 

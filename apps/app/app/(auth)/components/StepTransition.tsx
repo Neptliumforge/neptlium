@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { MOTION_DURATION, MOTION_EASE } from "@netlium/ui";
+import { MOTION_DURATION, MOTION_EASE } from "@neptlium/ui";
 
 export interface StepTransitionProps {
   readonly stepKey: string;

@@ -1,0 +1,5 @@
+import type { Metadata } from 'next'
+import { DetailPage } from '@/components/detail-page'
+export const metadata:Metadata={title:'Platform',description:'A unified operating environment for observing, modeling and controlling digital capital.',alternates:{canonical:'/platform'}}
+export default function Page(){return <DetailPage eyebrow="Platform" title="An operating environment for modern ownership." intro="Neptlium organizes portfolio intelligence, digital assets, allocation modeling, treasury context and controlled operations without collapsing observation, intent and authorization into one action." sections={[['Observe with context','Connected, provider-verified data is designed to make allocation, concentration and capital structure legible. Unconnected sources remain visibly unavailable.'],['Model deliberately','Compare possible structures in an analytical workspace. Modeling does not move capital and is never an execution instruction.'],['Authorize explicitly','Authorization remains unavailable until custody, ledger, security and execution systems are connected and verified.']]}/>} 
+

@@ -1,5 +1,5 @@
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
-import { hasRole, type Role } from "@netlium/lib";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { hasRole, type Role } from "@neptlium/lib";
 import { resolveRole } from "@/components/security/resolveRole";
 
 export async function getCurrentUser() {

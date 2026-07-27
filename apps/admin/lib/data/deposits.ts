@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from "@netlium/lib/supabase/admin";
+import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
 
 export const PAGE_SIZE = 50;
 

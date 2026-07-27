@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
-import { getRoleLabel, type Role } from "@netlium/lib";
-import { Badge } from "@netlium/ui";
+import { getRoleLabel, type Role } from "@neptlium/lib";
+import { Badge } from "@neptlium/ui";
 import { AdminSignOutButton } from "./AdminSignOutButton";
 
 interface AdminTopbarProps {

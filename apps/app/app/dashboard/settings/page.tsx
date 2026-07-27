@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@netlium/ui";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { Card, CardContent, CardHeader, CardTitle } from "@neptlium/ui";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireProvisionedUser } from "@/lib/auth";
 import { MfaEnrollment } from "./MfaEnrollment";
 import { RevokeSessionsButton } from "./RevokeSessionsButton";

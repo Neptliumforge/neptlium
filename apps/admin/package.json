@@ -1,9 +1,9 @@
 {
-  "name": "@netlium/admin",
+  "name": "@neptlium/admin",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Neptlium Systems admin console — hosted at admin.neptlium.com.",
+  "description": "Neptlium internal operations and administration console.",
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
@@ -12,9 +12,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@netlium/types": "workspace:*",
-    "@netlium/ui": "workspace:*",
-    "@netlium/lib": "workspace:*",
+    "@neptlium/types": "workspace:*",
+    "@neptlium/ui": "workspace:*",
+    "@neptlium/lib": "workspace:*",
     "@neptlium/design-system": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

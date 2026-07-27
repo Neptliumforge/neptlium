@@ -21,8 +21,8 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@netlium/config": ["./"],
-      "@netlium/config/*": ["./*"]
+      "@neptlium/config": ["./"],
+      "@neptlium/config/*": ["./*"]
     }
   }
 }

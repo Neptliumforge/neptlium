@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-const netliumTheme: Config = {
+const neptliumTheme: Config = {
   content: [],
   darkMode: ["class"],
   theme: {
@@ -101,4 +101,4 @@ const netliumTheme: Config = {
   }
 };
 
-export default netliumTheme;
+export default neptliumTheme;

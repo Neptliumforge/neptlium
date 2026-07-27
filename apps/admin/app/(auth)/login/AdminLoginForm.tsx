@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { Lock, Mail } from "lucide-react";
-import { Button, Field, FieldError, FieldHint, Input, Label } from "@netlium/ui";
+import { Button, Field, FieldError, FieldHint, Input, Label } from "@neptlium/ui";
 import { adminLogin, initialAdminLoginState } from "./actions";
 
 export function AdminLoginForm({ next }: { readonly next: string }) {

@@ -2,14 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: [
-    "@netlium/lib",
-    "@netlium/ui",
-    "@netlium/types",
+    "@neptlium/lib",
+    "@neptlium/ui",
+    "@neptlium/types",
     "@neptlium/design-system"
   ],
   experimental: {
     serverActions: {
-      allowedOrigins: ["localhost:3002", "admin.neptlium.com", "*.app.github.dev"]
+      allowedOrigins: ["localhost:3002", "app.neptlium.com", "*.app.github.dev"]
     }
   }
 };

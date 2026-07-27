@@ -2,9 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: [
-    "@netlium/lib",
-    "@netlium/ui",
-    "@netlium/types",
+    "@neptlium/lib",
+    "@neptlium/ui",
+    "@neptlium/types",
     "@neptlium/design-system"
   ],
   experimental: {

@@ -44,28 +44,32 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
           )}
           <div className="space-y-0.5">
             {section.items.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+              const isActive =
+                pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-2.5 rounded-md px-3 py-2 text-body-sm font-medium transition-colors duration-150 ease-out",
+                    "flex min-h-11 items-center justify-center gap-2.5 rounded-md px-3 py-2 text-body-sm xl:justify-start font-medium transition-colors duration-150 ease-out",
                     isActive
                       ? "bg-surface-2 text-accent-primary"
-                      : "text-text-secondary hover:bg-surface-2 hover:text-text-primary"
+                      : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
                   )}
                 >
                   {item.icon && (
                     <span
-                      className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")}
+                      className={cn(
+                        "shrink-0",
+                        isActive ? "text-accent-primary" : "text-text-muted",
+                      )}
                       aria-hidden="true"
                     >
                       {item.icon}
                     </span>
                   )}
-                  {item.label}
+                  <span className="hidden xl:inline">{item.label}</span>
                 </Link>
               );
             })}

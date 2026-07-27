@@ -10,8 +10,8 @@
  * are not enabled until a configured provider assigns an address") rather than
  * rendering actions that cannot execute.
  *
- * When a real external provider is integrated (Fireblocks, Copper, a bank
- * SWIFT/ACH adapter, etc.), that integration should register itself here using
+ * When a real external provider is integrated (Fireblocks, Copper, an external
+ * custody adapter), that integration should register itself here using
  * the environment variables listed below.
  *
  * Never import this file from client components — server only.
@@ -47,7 +47,7 @@ export function checkCustodyProviderReady(): ProviderReadiness {
     reason:
       "Internal ledger is operational. No external custody provider is configured. " +
       "Deposits and withdrawals are recorded as pending and must be reconciled " +
-      "manually by operations staff against real bank activity."
+      "manually by operations staff against verified provider activity."
   };
 }
 

@@ -1,6 +1,6 @@
-# @netlium/types
+# @neptlium/types
 
-`@netlium/types` is the shared domain model package for Netlium Systems. It centralizes typed interfaces and reusable domain contracts across the monorepo to support institutional capital operating software.
+`@neptlium/types` is the shared domain model package for Neptlium. It centralizes typed interfaces and reusable domain contracts across the monorepo to support institutional capital operating software.
 
 ## Purpose
 
@@ -27,53 +27,31 @@ The package is organized by bounded contexts:
 This package exposes a flat public API from the package root. Consumers can import any shared model directly:
 
 ```ts
-import { Portfolio, User, Notification, ApiResponse } from "@netlium/types";
-```
-
-The package also supports subpath exports for module-level imports:
-
-```ts
-import { Session } from "@netlium/types/auth";
-import { RiskScore } from "@netlium/types/risk";
+import { Portfolio, User, Notification, ApiResponse } from '@neptlium/types';
 ```
 
 ## Dependency rules
 
-- `@netlium/types` is a pure type package and does not implement application logic.
+- `@neptlium/types` is a pure type package and does not implement application logic.
 - No Supabase client behavior is defined here; only shared database types and schema utilities.
-- This package is intended to be consumed by `@netlium/lib`, `@netlium/ui`, and application layers.
+- This package is intended to be consumed by `@neptlium/lib`, `@neptlium/ui`, and application layers.
 
 ## Usage examples
 
 ```ts
-import { Investor, Portfolio, Transaction, ApiResponse } from "@netlium/types";
+import { Investor, Portfolio, Transaction, ApiResponse } from '@neptlium/types';
 
 const response: ApiResponse<Portfolio> = {
-  status: "success",
+  status: 'success',
   data: {
-    id: "portfolio-123",
-    investorId: "investor-456",
-    name: "Global Growth",
-    currency: "USD",
-    status: "active",
+    id: 'portfolio-123',
+    investorId: 'investor-456',
+    name: 'Global Growth',
+    currency: 'USD',
+    status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
-};
-```
-
-```ts
-import { Notification } from "@netlium/types/notification";
-
-const alert: Notification = {
-  id: "notif-001",
-  recipientId: "user-789",
-  subject: "Portfolio Review Required",
-  message: "Your allocation drift exceeds threshold.",
-  channel: "email",
-  priority: "high",
-  status: "pending",
-  sentAt: new Date().toISOString(),
 };
 ```
 
@@ -82,7 +60,7 @@ const alert: Notification = {
 Use the package scripts from the package root:
 
 ```bash
-pnpm --filter @netlium/types build
-pnpm --filter @netlium/types check-types
-pnpm --filter @netlium/types lint
+pnpm --filter @neptlium/types build
+pnpm --filter @neptlium/types typecheck
+pnpm --filter @neptlium/types lint
 ```

@@ -1,4 +1,4 @@
-import { Badge } from "@netlium/ui";
+import { Badge } from "@neptlium/ui";
 import type { ComponentProps } from "react";
 
 type Tone = ComponentProps<typeof Badge>["tone"];

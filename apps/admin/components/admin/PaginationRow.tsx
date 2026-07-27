@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationRowProps {

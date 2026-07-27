@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { Badge, Button } from "@netlium/ui";
+import { Badge, Button } from "@neptlium/ui";
 import { markNotificationReadAction } from "./actions";
 
 export interface NotificationItemProps {

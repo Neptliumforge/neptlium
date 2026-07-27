@@ -3,14 +3,14 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { BriefcaseBusiness, Building2, Check, Landmark, UserRound, WalletCards } from "lucide-react";
-import { Button, Field, FieldError, Input, Label } from "@netlium/ui";
+import { Button, Field, FieldError, Input, Label } from "@neptlium/ui";
 import {
   onboardingPayloadSchema,
   securityOptions,
   type InvestorType,
   type ProvisioningPayload,
   type SecurityOption
-} from "@netlium/lib";
+} from "@neptlium/lib";
 import { OnboardingShell } from "./components/OnboardingShell";
 import { OnboardingPanel } from "./components/OnboardingPanel";
 import { getOnboardingDraft, saveOnboardingDraft, submitProvisioning } from "./actions";

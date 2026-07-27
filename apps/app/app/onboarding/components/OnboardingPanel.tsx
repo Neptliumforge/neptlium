@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "@netlium/ui";
+import { cn } from "@neptlium/ui";
 
 export interface OnboardingPanelProps {
   readonly children: ReactNode;

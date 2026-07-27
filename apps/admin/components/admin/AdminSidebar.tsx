@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@netlium/ui";
+import { cn } from "@neptlium/ui";
 import type { AdminNavItem } from "@/components/navigation/adminNav";
 
 export function AdminSidebar({ items }: { readonly items: AdminNavItem[] }) {

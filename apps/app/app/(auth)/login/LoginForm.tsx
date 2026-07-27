@@ -11,7 +11,7 @@ import {
   FieldHint,
   Input,
   Label,
-} from "@netlium/ui";
+} from "@neptlium/ui";
 import { login } from "../actions";
 import { initialAuthActionState } from "../schema";
 import { AuthShell } from "../components/AuthShell";

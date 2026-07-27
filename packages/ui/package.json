@@ -1,9 +1,9 @@
 {
-  "name": "@netlium/ui",
+  "name": "@neptlium/ui",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Netlium Systems shared UI component library built with React and Tailwind CSS.",
+  "description": "Neptlium shared UI component library built with React and Tailwind CSS.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -19,7 +19,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@netlium/types": "workspace:*",
+    "@neptlium/types": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "clsx": "^2.1.1",

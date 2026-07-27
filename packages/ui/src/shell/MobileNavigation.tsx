@@ -17,7 +17,7 @@ const DRAWER_SAFE_AREA_TOP_PADDING = "max(env(safe-area-inset-top), 0.75rem)";
 const FOCUSABLE_SELECTOR = [
   "a[href]",
   "button:not([disabled])",
-  "[tabindex]:not([tabindex='-1'])"
+  "[tabindex]:not([tabindex='-1'])",
 ].join(",");
 
 function isItemActive(pathname: string, href: string): boolean {
@@ -27,9 +27,14 @@ function isItemActive(pathname: string, href: string): boolean {
 export interface MobileNavigationProps {
   readonly items: readonly NavItem[];
   readonly footer?: ReactNode;
+  readonly profile?: ReactNode;
 }
 
-export function MobileNavigation({ items, footer }: MobileNavigationProps) {
+export function MobileNavigation({
+  items,
+  footer,
+  profile,
+}: MobileNavigationProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -55,7 +60,10 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
     document.body.style.overflow = "hidden";
 
     const drawer = drawerRef.current;
-    const getFocusableElements = () => Array.from(drawer?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? []);
+    const getFocusableElements = () =>
+      Array.from(
+        drawer?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? [],
+      );
     const focusables = getFocusableElements();
     if (focusables.length > 0) {
       focusables[0]?.focus();
@@ -104,6 +112,7 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
   return (
     <>
       <div className="flex h-full items-center gap-2 px-2 sm:px-3">
+        <NeptliumMark size={22} />
         <button
           ref={triggerRef}
           type="button"
@@ -118,12 +127,13 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
         <h1 className="min-w-0 flex-1 truncate text-body-sm font-semibold tracking-tight text-text-primary">
           {title}
         </h1>
+        {profile}
       </div>
 
       <div
         className={cn(
           "fixed inset-0 z-50 lg:hidden",
-          open ? "pointer-events-auto" : "pointer-events-none"
+          open ? "pointer-events-auto" : "pointer-events-none",
         )}
         aria-hidden={open ? undefined : "true"}
       >
@@ -134,7 +144,7 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
           onClick={() => setOpen(false)}
           className={cn(
             "absolute inset-0 bg-surface-overlay transition-opacity duration-200 motion-reduce:transition-none",
-            open ? "opacity-100" : "opacity-0"
+            open ? "opacity-100" : "opacity-0",
           )}
         />
 
@@ -147,18 +157,18 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
           tabIndex={-1}
           className={cn(
             "relative flex h-[100dvh] flex-col border-r border-border-hairline bg-sidebar shadow-lg transition-transform duration-200 motion-reduce:transition-none",
-            open ? "translate-x-0" : "-translate-x-full"
+            open ? "translate-x-0" : "-translate-x-full",
           )}
           style={{
             width: DRAWER_WIDTH,
             maxWidth: DRAWER_MAX_WIDTH,
             paddingTop: DRAWER_SAFE_AREA_TOP_PADDING,
-            paddingBottom: DRAWER_SAFE_AREA_PADDING
+            paddingBottom: DRAWER_SAFE_AREA_PADDING,
           }}
         >
           <div className="flex items-center justify-between border-b border-border-hairline px-4 pb-3">
             <div className="flex min-w-0 items-center gap-2">
-              <NeptliumMark size={26} variant="glyph" />
+              <NeptliumMark size={26} />
               <span className="truncate text-body-sm font-semibold tracking-[0.08em] text-text-primary">
                 {BRAND_WORDMARK}
               </span>
@@ -173,7 +183,10 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
             </button>
           </div>
 
-          <nav aria-label="Application navigation" className="flex-1 overflow-y-auto px-3 py-3">
+          <nav
+            aria-label="Application navigation"
+            className="flex-1 overflow-y-auto px-3 py-3"
+          >
             <div className="space-y-0.5">
               {items.map((item) => {
                 const isActive = isItemActive(pathname, item.href);
@@ -184,15 +197,18 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
                     onClick={() => setOpen(false)}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "flex min-h-11 items-center gap-3 rounded-md border px-3 py-2 text-body-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
+                      "flex min-h-12 items-center gap-3 rounded-md border px-3 py-2 text-body-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
                       isActive
                         ? "border-border-default bg-surface-2 text-text-primary"
-                        : "border-transparent text-text-secondary hover:border-border-hairline hover:bg-surface-2 hover:text-text-primary"
+                        : "border-transparent text-text-secondary hover:border-border-hairline hover:bg-surface-2 hover:text-text-primary",
                     )}
                   >
                     {item.icon && (
                       <span
-                        className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")}
+                        className={cn(
+                          "shrink-0",
+                          isActive ? "text-accent-primary" : "text-text-muted",
+                        )}
                         aria-hidden="true"
                       >
                         {item.icon}
@@ -205,7 +221,11 @@ export function MobileNavigation({ items, footer }: MobileNavigationProps) {
             </div>
           </nav>
 
-          {footer && <div className="shrink-0 border-t border-border-hairline px-3 pt-3">{footer}</div>}
+          {footer && (
+            <div className="shrink-0 border-t border-border-hairline px-3 pt-3">
+              {footer}
+            </div>
+          )}
         </div>
       </div>
     </>

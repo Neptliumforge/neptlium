@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@netlium/ui/styles/tokens.css";
+@import "@neptlium/ui/styles/tokens.css";
 
 /* Shared Neptlium design system — utility classes (.ds-panel, .ds-blueprint-grid, etc.)
    and HSL aliases for any Tailwind-v3-compatible tooling in this workspace. */
@@ -25,7 +25,11 @@
   }
 
   ::selection {
-    background-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-primary) 35%,
+      transparent
+    );
     color: var(--color-text-primary);
   }
 
@@ -60,4 +64,29 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Appearance preference reuses the existing semantic tokens. */
+html[data-theme="light"] {
+  --color-canvas: #f4f6f8;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #eef2f6;
+  --color-surface-3: #e5ebf1;
+  --color-sidebar: #111820;
+  --color-topnav: #ffffff;
+  --color-border-hairline: #dde3ea;
+  --color-border-default: #cbd4df;
+  --color-border-strong: #aebbc9;
+  --color-text-primary: #111820;
+  --color-text-secondary: #3d4c5c;
+  --color-text-muted: #68788a;
+  --color-text-disabled: #8a98a7;
+}
+
+html[data-theme="light"] aside {
+  --color-text-primary: #f7fafc;
+  --color-text-secondary: #c4d2e2;
+  --color-text-muted: #91a4ba;
+  --color-surface-2: #1a2530;
+  --color-border-hairline: #26323f;
 }

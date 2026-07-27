@@ -1,6 +1,6 @@
-import { requireProvisionedUser } from "@/lib/auth";
-import { Clock } from "lucide-react";
-import { Card, CardContent } from "@netlium/ui";
+import { requireProvisionedUser } from '@/lib/auth';
+import { Clock } from 'lucide-react';
+import { Card, CardContent } from '@neptlium/ui';
 
 export default async function TransferPage() {
   await requireProvisionedUser();
@@ -8,12 +8,8 @@ export default async function TransferPage() {
   return (
     <div className="space-y-6 py-4">
       <div>
-        <h1 className="text-[18px] font-semibold tracking-[-0.01em] text-text-primary">
-          Transfer
-        </h1>
-        <p className="mt-1 text-[13px] text-text-muted">
-          Send funds to other Neptlium accounts by alias
-        </p>
+        <h1 className="text-[18px] font-semibold tracking-[-0.01em] text-text-primary">Transfer</h1>
+        <p className="mt-1 text-[13px] text-text-muted">Transfer infrastructure is not available</p>
       </div>
 
       <Card>
@@ -31,13 +27,13 @@ export default async function TransferPage() {
             </div>
             <div className="rounded-md border border-border-default bg-surface-2 px-4 py-3 text-left w-full">
               <p className="text-[12px] font-semibold text-text-secondary mb-1.5">
-                What will be supported:
+                Required infrastructure:
               </p>
               <ul className="space-y-1 text-[12px] text-text-muted">
-                <li>• Send USD to other Neptlium users by username or alias</li>
-                <li>• Instant settlement between Neptlium accounts</li>
-                <li>• Transfer history and status tracking</li>
-                <li>• Recipient verification before sending</li>
+                <li>• Connected custody and ledger providers</li>
+                <li>• Authorization and reconciliation controls</li>
+                <li>• Provider-backed transaction history</li>
+                <li>• Verified destinations and recipients</li>
               </ul>
             </div>
           </div>

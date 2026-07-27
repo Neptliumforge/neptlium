@@ -1,5 +1,5 @@
 import { FileBarChart2 } from "lucide-react";
-import { Card, EmptyState } from "@netlium/ui";
+import { Card, EmptyState } from "@neptlium/ui";
 import { requireRole } from "@/lib/auth";
 
 export default async function ReportsPage() {

@@ -1,7 +1,3 @@
-import { requireRole } from "@/lib/auth";
+import { requireProvisionedUser } from "@/lib/auth";
 import { TreasuryView } from "./TreasuryView";
-
-export default async function TreasuryPage() {
-  await requireRole("operator");
-  return <TreasuryView />;
-}
+export default async function TreasuryPage(){await requireProvisionedUser();return <TreasuryView/>;}

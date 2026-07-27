@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { Factor } from "@supabase/supabase-js";
-import { createSupabaseBrowserClient } from "@netlium/lib";
-import { Badge, Button, Field, FieldError, Input, Label } from "@netlium/ui";
+import { createSupabaseBrowserClient } from "@neptlium/lib";
+import { Badge, Button, Field, FieldError, Input, Label } from "@neptlium/ui";
 import { recordMfaEvent } from "./actions";
 
 export function MfaEnrollment() {

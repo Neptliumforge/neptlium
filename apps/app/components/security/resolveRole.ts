@@ -1,5 +1,5 @@
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
-import { type Role } from "@netlium/lib";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { type Role } from "@neptlium/lib";
 
 const KNOWN_ROLES: readonly Role[] = ["user", "operator", "analyst", "manager", "admin", "super_admin"];
 

@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSupabaseAdminClient } from "@netlium/lib/supabase/admin";
-import { hasRole, type Role } from "@netlium/lib";
+import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
+import { hasRole, type Role } from "@neptlium/lib";
 import { requireAdminUser } from "@/lib/auth";
 
 export type ActionResult = { readonly ok: true } | { readonly ok: false; readonly error: string };

@@ -23,9 +23,7 @@ export interface Capability {
 
 export type CapabilityKey =
   | "walletProvisioning"
-  | "wireDeposits"
   | "cryptoDeposits"
-  | "achDeposits"
   | "depositAddresses"
   | "internalTransfers"
   | "withdrawals"
@@ -43,29 +41,19 @@ export type CapabilityKey =
  */
 export const CAPABILITIES: Record<CapabilityKey, Capability> = {
   walletProvisioning: {
-    status: "enabled",
+    status: "disabled",
     label: "Wallet provisioning",
-    description: "Wallet accounts can be created and activated.",
-  },
-  wireDeposits: {
-    status: "enabled",
-    label: "USD wire deposits",
-    description: "Domestic wire transfers to your Neptlium wallet are supported.",
+    description: "Custody provider not connected.",
   },
   cryptoDeposits: {
     status: "coming_soon",
     label: "Crypto deposits",
     description: "Cryptocurrency deposits are not yet available.",
   },
-  achDeposits: {
-    status: "coming_soon",
-    label: "ACH / bank transfers",
-    description: "ACH and bank transfer deposits are not yet available.",
-  },
   depositAddresses: {
-    status: "enabled",
-    label: "Deposit references",
-    description: "Wire funding references can be generated for your wallet.",
+    status: "disabled",
+    label: "Funding references",
+    description: "Custody provider not connected.",
   },
   internalTransfers: {
     status: "coming_soon",
@@ -73,9 +61,9 @@ export const CAPABILITIES: Record<CapabilityKey, Capability> = {
     description: "Alias-based transfers between Neptlium accounts are not yet available.",
   },
   withdrawals: {
-    status: "enabled",
+    status: "disabled",
     label: "Withdrawals",
-    description: "USD wire withdrawal requests can be submitted.",
+    description: "Custody provider not connected; customer submission is unavailable.",
   },
   portfolioCreation: {
     status: "pending_configuration",
@@ -83,9 +71,9 @@ export const CAPABILITIES: Record<CapabilityKey, Capability> = {
     description: "Portfolio configuration requires operator setup.",
   },
   capitalAllocation: {
-    status: "enabled",
-    label: "Capital allocation",
-    description: "Capital allocation requests can be submitted.",
+    status: "disabled",
+    label: "Capital authorization",
+    description: "Authorization infrastructure is not connected.",
   },
   documentUpload: {
     status: "enabled",

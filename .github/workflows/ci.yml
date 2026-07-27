@@ -2,28 +2,50 @@ name: CI
 
 on:
   push:
-    branches: [main, feat/**]
+    branches: [main, 'feat/**']
   pull_request:
     branches: [main]
 
-jobs:
-  typecheck:
-    name: Typecheck
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+permissions:
+  contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Typecheck all apps and workspace dependencies
-        run: npx turbo run typecheck --filter=@netlium/app...
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: [web, app, admin]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @neptlium/${{ matrix.workspace }}... build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci_publishable_key
+          NEXT_PUBLIC_SITE_URL: https://app.neptlium.com

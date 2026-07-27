@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import {
   isValidEmail,
   meetsPasswordRequirements,
@@ -25,7 +25,7 @@ async function resolveOrigin(): Promise<string> {
   const protocol = headerList.get("x-forwarded-proto") ?? "https";
   return `${protocol}://${host}`;
 }
-import { createNotification } from "@netlium/lib";
+import { createNotification } from "@neptlium/lib";
 import { recordSecurityEvent } from "@/lib/security/events";
 import { recordTrustedDevice } from "@/lib/security/deviceCookie";
 import type { AuthActionState } from "./schema";
