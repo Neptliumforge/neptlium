@@ -168,7 +168,7 @@ export function MobileNavigation({
         >
           <div className="flex items-center justify-between border-b border-border-hairline px-4 pb-3">
             <div className="flex min-w-0 items-center gap-2">
-              <NeptliumMark size={26} variant="glyph" />
+              <NeptliumMark size={26} />
               <span className="truncate text-body-sm font-semibold tracking-[0.08em] text-text-primary">
                 {BRAND_WORDMARK}
               </span>

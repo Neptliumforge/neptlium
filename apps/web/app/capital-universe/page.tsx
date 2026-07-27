@@ -1,5 +1,30 @@
-import type { Metadata } from 'next'
-import { DetailPage } from '@/components/detail-page'
-export const metadata:Metadata={title:'Capital Universe',description:'Planned provider-dependent digital asset support in Neptlium.',alternates:{canonical:'/capital-universe'}}
-export default function Page(){return <DetailPage eyebrow="Capital Universe" title="A focused digital-asset foundation." intro="Neptlium is crypto-only at this stage. The assets below describe planned, provider-dependent scope—not current production availability." sections={[['USDC on Base','Planned support. Provider connection, asset verification and backend infrastructure are required. Any displayed fiat denomination would be an estimated reporting valuation only.'],['ETH on Base','Planned support. Network observation and any future controlled operation depend on verified providers and secure infrastructure.'],['BTC on Bitcoin','Planned support. Bitcoin network integration, custody boundaries and authorization infrastructure are not represented as live.']]}/>} 
-
+import type { Metadata } from 'next';
+import { DetailPage } from '@/components/detail-page';
+export const metadata: Metadata = {
+  title: 'Capital Universe',
+  description: 'Planned provider-dependent digital asset support in Neptlium.',
+  alternates: { canonical: '/capital-universe' },
+};
+export default function Page() {
+  return (
+    <DetailPage
+      eyebrow="Capital Universe"
+      title="A focused digital-asset foundation."
+      intro="Neptlium is crypto-only at this stage. The assets below describe planned, provider-dependent scope—not current production availability."
+      sections={[
+        [
+          'USDC on Base',
+          'Planned support. Provider connection, asset verification and backend infrastructure are required. Any future displayed valuation would be an estimate for reporting only.',
+        ],
+        [
+          'ETH on Base',
+          'Planned support. Network observation and any future controlled operation depend on verified providers and secure infrastructure.',
+        ],
+        [
+          'BTC on Bitcoin',
+          'Planned support. Bitcoin network integration, custody boundaries and authorization infrastructure are not represented as live.',
+        ],
+      ]}
+    />
+  );
+}

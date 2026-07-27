@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Neptlium authenticated crypto-first institutional capital platform.",
+  "description": "Neptlium authenticated capital operating platform.",
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",

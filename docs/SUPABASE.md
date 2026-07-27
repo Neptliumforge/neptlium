@@ -1,19 +1,14 @@
 # Supabase
 
-Supabase is Neptlium's authoritative backend for authentication, PostgreSQL data, Row Level Security, Storage, and database migrations.
+Supabase provides authentication, PostgreSQL data, RLS, Storage, and migration history. `apps/app` and `apps/admin` share the backend; `apps/web` remains deployable without privileged access.
 
-Application clients are provided by `@neptlium/lib`:
+Browser clients use `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Only trusted server code may use `SUPABASE_SERVICE_ROLE_KEY`.
 
-- browser client for client components
-- request-scoped server client for server components and actions
-- middleware client for session refresh
-- server-only admin client for narrowly scoped privileged operations
-
-Use the local CLI only with an explicitly selected local or staging project. Review migrations before applying them and never place secrets in tracked files.
+Migrations are append-only. Never edit an applied migration or containment record; add a reviewed follow-up and validate locally or in staging.
 
 ```sh
 supabase db reset
 supabase db lint --level warning
 ```
 
-Production changes require a separate reviewed deployment process. Repository documentation and migrations do not authorize remote application.
+Repository work does not authorize linking to or modifying remote Supabase.

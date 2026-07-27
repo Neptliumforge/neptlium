@@ -1,19 +1,16 @@
 # Contributing
 
-Use Node.js and the pnpm version declared in the root `package.json`.
+Use the Node.js and pnpm versions declared in the root manifest. Keep changes scoped, preserve unrelated work, keep a single root lockfile, and retain consistent `@neptlium/*` names.
 
 ```sh
-pnpm install
+pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm lint
+pnpm test
 pnpm format:check
+git diff --check
 ```
 
-Keep changes scoped, typed, accessible, and backed by real data. Do not add fabricated balances, holdings, transactions, or provider states. Preserve Supabase RLS as the final authorization boundary and keep service-role credentials out of browser code.
+Use only Neptlium as the product name. Do not fabricate financial data, customers, partners, pricing, certifications, custody readiness, regulatory approval, or provider availability. Browser variables require `NEXT_PUBLIC_`; keep server credentials out of browser code. Authorization belongs on the server and in RLS. Never rewrite applied migrations.
 
-Workspace packages use the `@neptlium/*` scope. Customer-facing language should describe a crypto-first institutional capital platform and use only the canonical public domains:
-
-- `https://neptlium.com`
-- `https://app.neptlium.com`
-
-Before handoff, run typecheck, lint, and `git diff --check`. Never commit secrets or generated environment files.
+Canonical domains are `https://neptlium.com`, `https://app.neptlium.com`, and `https://admin.neptlium.com`. `https://api.neptlium.com` is planned.

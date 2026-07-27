@@ -1,29 +1,6 @@
 import type { ReactNode } from "react";
+import { NeptliumMark } from "@neptlium/ui";
 
-// The Neptlium mark inline (avoids importing from the customer app)
-function NeptliumMark({ size = 24 }: { readonly size?: number }) {
-  const height = Math.round((size * 46) / 54);
-  return (
-    <svg
-      viewBox="0 0 54 46"
-      width={size}
-      height={height}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="admin-mark-grad" x1="0" y1="0" x2="54" y2="46" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#1AA7FF" />
-          <stop offset="100%" stopColor="#0B8CFF" />
-        </linearGradient>
-      </defs>
-      <polygon points="0,0 36,0 28,17 0,17" fill="url(#admin-mark-grad)" />
-      <circle cx="32" cy="21" r="8" stroke="url(#admin-mark-grad)" strokeWidth="3" />
-      <polygon points="18,29 54,29 54,46 26,46" fill="url(#admin-mark-grad)" />
-    </svg>
-  );
-}
 
 interface AdminShellProps {
   readonly sidebar: ReactNode;

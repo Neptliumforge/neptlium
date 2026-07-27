@@ -2,7 +2,7 @@
   "name": "neptlium",
   "version": "1.0.0",
   "private": true,
-  "description": "Neptlium crypto-first institutional capital operating platform.",
+  "description": "Neptlium capital operating infrastructure monorepo.",
   "packageManager": "pnpm@11.9.0",
   "type": "module",
   "workspaces": [

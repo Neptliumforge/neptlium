@@ -27,9 +27,8 @@ The package is organized by bounded contexts:
 This package exposes a flat public API from the package root. Consumers can import any shared model directly:
 
 ```ts
-import { Portfolio, User, Notification, ApiResponse } from "@neptlium/types";
+import { Portfolio, User, Notification, ApiResponse } from '@neptlium/types';
 ```
-
 
 ## Dependency rules
 
@@ -40,22 +39,21 @@ import { Portfolio, User, Notification, ApiResponse } from "@neptlium/types";
 ## Usage examples
 
 ```ts
-import { Investor, Portfolio, Transaction, ApiResponse } from "@neptlium/types";
+import { Investor, Portfolio, Transaction, ApiResponse } from '@neptlium/types';
 
 const response: ApiResponse<Portfolio> = {
-  status: "success",
+  status: 'success',
   data: {
-    id: "portfolio-123",
-    investorId: "investor-456",
-    name: "Global Growth",
-    currency: "USD",
-    status: "active",
+    id: 'portfolio-123',
+    investorId: 'investor-456',
+    name: 'Global Growth',
+    currency: 'USD',
+    status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
 };
 ```
-
 
 ## Build
 

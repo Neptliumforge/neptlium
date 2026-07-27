@@ -26,5 +26,6 @@
     "tailwindcss": "4.3.2",
     "typescript": "6.0.3"
   },
-  "description": "Neptlium public marketing and institutional product website."
+  "description": "Neptlium public website.",
+  "type": "module"
 }

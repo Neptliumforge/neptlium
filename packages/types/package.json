@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Neptlium shared domain models for institutional digital capital operations.",
+  "description": "Neptlium shared domain contracts.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
