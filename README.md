@@ -1,8 +1,8 @@
-# Neptlium Systems
+# Neptlium 
 
 > **Institutional Capital Operating System**
 
-Neptlium Systems is an institutional-grade capital operating system engineered to provide secure, governed, and intelligent infrastructure for professional investors, capital allocators, family offices, treasury teams, investment firms, and digital asset operators.
+Neptlium is an institutional-grade capital operating system engineered to provide secure, governed, and intelligent infrastructure for professional investors, capital allocators, family offices, treasury teams, investment firms, and digital asset operators.
 
 The platform is designed as institutional infrastructure — not a retail investment application.
 
@@ -14,7 +14,7 @@ Neptlium provides a unified operating environment for managing, monitoring, allo
 
 ## Company
 
-**Neptlium Systems**
+**Neptlium**
 
 Institutional technology infrastructure company building intelligent systems for digital capital operations.
 
