@@ -1,4 +1,4 @@
-import { cn } from "@netlium/ui";
+import { cn } from "@neptlium/ui";
 
 export interface NeptliumMarkProps {
   readonly size?: number;

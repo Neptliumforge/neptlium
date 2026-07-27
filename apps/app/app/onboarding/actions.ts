@@ -1,8 +1,8 @@
 "use server";
 
-import { createSupabaseAdminClient } from "@netlium/lib/supabase/admin";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
-import { onboardingPayloadSchema, type ProvisioningPayload } from "@netlium/lib";
+import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { onboardingPayloadSchema, type ProvisioningPayload } from "@neptlium/lib";
 import { requireUser } from "@/lib/auth";
 
 export interface OnboardingDraft {

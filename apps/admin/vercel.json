@@ -1,7 +1,7 @@
 {
   "framework": "nextjs",
   "installCommand": "cd ../.. && pnpm install --no-frozen-lockfile",
-  "buildCommand": "cd ../.. && npx turbo run build --filter=@netlium/admin...",
+  "buildCommand": "cd ../.. && npx turbo run build --filter=@neptlium/admin...",
   "outputDirectory": ".next",
   "headers": [
     {

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 
 export async function markNotificationReadAction(notificationId: string): Promise<void> {

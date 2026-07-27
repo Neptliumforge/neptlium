@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export const dynamic = "force-dynamic";
 import { requireAdminUser } from "@/lib/auth";
 import { getCurrentAdminUser } from "@/lib/auth/session";
-import { createSupabaseAdminClient } from "@netlium/lib/supabase/admin";
+import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminTopbar } from "@/components/admin/AdminTopbar";

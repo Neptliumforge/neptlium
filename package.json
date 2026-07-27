@@ -1,8 +1,8 @@
 {
-  "name": "netliumsystems",
+  "name": "neptlium",
   "version": "1.0.0",
   "private": true,
-  "description": "Netlium Systems monorepo",
+  "description": "Neptlium crypto-first institutional capital operating platform.",
   "packageManager": "pnpm@11.9.0",
   "type": "module",
   "workspaces": [

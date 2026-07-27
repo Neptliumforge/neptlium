@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeftRight } from "lucide-react";
-import { Badge, Card, CardContent, EmptyState, Input } from "@netlium/ui";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { Badge, Card, CardContent, EmptyState, Input } from "@neptlium/ui";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 
 const PAGE_SIZE = 20;

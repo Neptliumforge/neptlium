@@ -1,5 +1,5 @@
-import { Badge } from "@netlium/ui";
-import type { CustodyTransaction } from "@netlium/lib";
+import { Badge } from "@neptlium/ui";
+import type { CustodyTransaction } from "@neptlium/lib";
 
 const STATUS_TONE: Record<CustodyTransaction["status"], "success" | "warning" | "danger" | "neutral"> = {
   completed: "success",

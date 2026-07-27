@@ -1,6 +1,6 @@
 import { FileText } from "lucide-react";
-import { Badge, Card, CardContent, EmptyState } from "@netlium/ui";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { Badge, Card, CardContent, EmptyState } from "@neptlium/ui";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 import { DownloadButton } from "./DownloadButton";
 

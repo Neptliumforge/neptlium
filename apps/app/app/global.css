@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@netlium/ui/styles/tokens.css";
+@import "@neptlium/ui/styles/tokens.css";
 
 /* Shared Neptlium design system — utility classes (.ds-panel, .ds-blueprint-grid, etc.)
    and HSL aliases for any Tailwind-v3-compatible tooling in this workspace. */

@@ -2,9 +2,8 @@
  * Deposit service contract.
  * Current production capability: USD wire only (InternalLedgerCustodyProvider).
  * Crypto deposits: not yet available.
- * Fiat rails (ACH, Stripe): not yet available.
  */
-export type DepositMethodType = "wire" | "crypto" | "ach" | "card";
+export type DepositMethodType = "crypto";
 export type DepositMethodStatus = "available" | "coming_soon" | "unavailable" | "restricted";
 
 export interface DepositMethod {

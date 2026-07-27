@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams, origin } = new URL(request.url);

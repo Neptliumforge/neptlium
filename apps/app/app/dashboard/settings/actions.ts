@@ -1,7 +1,7 @@
 "use server";
 
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
-import { createNotification } from "@netlium/lib";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { createNotification } from "@neptlium/lib";
 import { requireUser } from "@/lib/auth";
 import { recordSecurityEvent } from "@/lib/security/events";
 

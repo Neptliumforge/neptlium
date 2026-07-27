@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
-import { InternalLedgerCustodyProvider, createNotification } from "@netlium/lib";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { InternalLedgerCustodyProvider, createNotification } from "@neptlium/lib";
 import { requireUser } from "@/lib/auth";
 
 async function getWalletId(

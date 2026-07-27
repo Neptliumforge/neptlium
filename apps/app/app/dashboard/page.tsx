@@ -14,8 +14,8 @@ import {
   CardTitle,
   EmptyState,
   StatCard,
-} from "@netlium/ui";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+} from "@neptlium/ui";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireProvisionedUser } from "@/lib/auth";
 
 const tone: Record<string, "success" | "warning" | "danger" | "neutral"> = {

@@ -1,10 +1,10 @@
-# NETLIUM SYSTEMS
+# NEPTLIUM
 
 ## Institutional Capital Operating System
 
 ### Design System & Experience Directive (Authoritative Specification)
 
-This specification governs every authenticated experience inside Netlium Systems.
+This specification governs every authenticated experience inside Neptlium.
 
 Its purpose is not to create an attractive fintech application.
 
@@ -173,7 +173,7 @@ performance figures — never for prose.
 # SPACING
 
 Everything breathes. Nothing feels compressed. Crowded interfaces communicate
-consumer software. Netlium uses Tailwind's default 4px-based spacing scale
+consumer software. Neptlium uses Tailwind's default 4px-based spacing scale
 directly (space-1=4px through space-24=96px) — no custom override; the
 default scale already is the approved scale.
 
@@ -285,7 +285,7 @@ Institutional
 
 Never casual. Instead of "Awesome!" — "Operation completed successfully."
 Instead of "Oops!" — "An unexpected error occurred." Instead of "You're all
-set!" — "Your Netlium Account is ready." Everything should read as though it
+set!" — "Your Neptlium Account is ready." Everything should read as though it
 belongs in an institutional financial platform.
 
 ---
@@ -328,9 +328,9 @@ Never ask users to "Get Started".
 
 Instead:
 
-Create Netlium Account
+Create Neptlium Account
 
-Access Netlium Account
+Access Neptlium Account
 
 Secure Authentication
 
@@ -381,7 +381,7 @@ Investment Firm — capital deployed on behalf of clients or funds.
 
 Treasury Team — institutional cash and liquidity management.
 
-Capital Partner — allocating alongside or into Netlium-connected strategies.
+Capital Partner — allocating alongside or into Neptlium-connected strategies.
 
 The choice branches the Profile step below.
 
@@ -458,7 +458,7 @@ Example progression:
 
 Secure identity established.
 
-Netlium Wallet activated.
+Neptlium Wallet activated.
 
 Portfolio initialized.
 
@@ -483,11 +483,11 @@ The user should feel infrastructure is being prepared.
 The moment after provisioning completes, before the user enters the
 platform. States plainly, without celebration:
 
-Welcome to Netlium.
+Welcome to Neptlium.
 
 Your institutional account is now active.
 
-Your Netlium Wallet has been securely provisioned.
+Your Neptlium Wallet has been securely provisioned.
 
 Your investment portfolio has been initialized.
 
@@ -503,7 +503,7 @@ institutional operating system — the psychological handoff from "visitor" to
 "authorized operator."
 
 By the time a user reaches this screen they have already decided to use
-Netlium (they clicked Sign In / Create Account on the public site). This is
+Neptlium (they clicked Sign In / Create Account on the public site). This is
 not the place to re-sell them. Trust must be established here, before any
 credential is requested — not through feature promotion, but through the
 appearance of operational readiness itself.
@@ -516,7 +516,7 @@ one thing this screen must never be.
 
 States, in order:
 
-NETLIUM SYSTEMS
+NEPTLIUM
 
 Institutional Capital Operating System
 
@@ -524,7 +524,7 @@ Secure access to institutional-grade capital infrastructure.
 
 A single infrastructure status indicator (e.g. "Infrastructure Operational").
 
-Two actions: Create Netlium Account (primary), Sign In (secondary).
+Two actions: Create Neptlium Account (primary), Sign In (secondary).
 
 Footer: three restrained status words, not a sentence — e.g. Encrypted,
 Verified, Protected. A sentence reads as reassurance; three quiet words read
@@ -568,7 +568,7 @@ Today's Performance
 
 Available Cash
 
-Netlium Wallet
+Neptlium Wallet
 
 Investments
 
@@ -578,9 +578,9 @@ Everything else becomes secondary.
 
 ---
 
-# NETLIUM WALLET
+# NEPTLIUM WALLET
 
-Netlium Wallet is not a feature.
+Neptlium Wallet is not a feature.
 
 It is a core product.
 
@@ -696,7 +696,7 @@ Sidebar: 280px expanded, 88px collapsed. Top header: 72px. Content padding:
 
 Portfolio
 
-Netlium Wallet
+Neptlium Wallet
 
 Transactions
 
@@ -757,7 +757,7 @@ Never place validation above a field — errors appear directly below it.
 # LOADING STATES
 
 Skeletons and progress bars, incremental where possible. Never a bare
-"Loading…" with nothing else — see Netlium's provisioning sequence for the
+"Loading…" with nothing else — see Neptlium's provisioning sequence for the
 model (sequential, named steps, each stays visible once complete).
 
 ---
@@ -817,7 +817,7 @@ Today's Performance
 
 Available Cash
 
-Netlium Wallet
+Neptlium Wallet
 
 Recent Activity
 
@@ -843,4 +843,4 @@ Never:
 
 "This is another fintech product."
 
-Netlium should feel less like software and more like secure institutional financial infrastructure.
+Neptlium should feel less like software and more like secure institutional financial infrastructure.

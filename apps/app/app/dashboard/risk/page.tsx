@@ -1,5 +1,5 @@
 import { ShieldAlert } from "lucide-react";
-import { Card, EmptyState } from "@netlium/ui";
+import { Card, EmptyState } from "@neptlium/ui";
 import { requireProvisionedUser } from "@/lib/auth";
 
 export default async function RiskPage() {

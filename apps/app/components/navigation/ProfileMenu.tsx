@@ -9,16 +9,15 @@ type Theme = "light" | "dark" | "system";
 interface ProfileMenuProps {
   readonly name: string;
   readonly email: string;
-  readonly membership: string | null;
   readonly verified: boolean;
 }
 const destinations = [
   ["Profile", "profile"],
-  ["Account Settings", "account"],
-  ["Verification Status", "verification"],
-  ["Password & Security", "security"],
+  ["Account settings", "account"],
+  ["Security and access", "security"],
+  ["Identity verification", "verification"],
   ["Appearance", "appearance"],
-  ["Membership", "membership"],
+  ["Help and support", "support"],
 ] as const;
 
 function applyTheme(theme: Theme) {
@@ -32,7 +31,6 @@ function applyTheme(theme: Theme) {
 export function ProfileMenu({
   name,
   email,
-  membership,
   verified,
 }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -95,7 +93,7 @@ export function ProfileMenu({
       <button
         ref={trigger}
         type="button"
-        aria-label="Open investor profile"
+        aria-label="Open profile menu"
         aria-expanded={open}
         onClick={() => setOpen(true)}
         className="flex min-h-11 items-center gap-2 rounded-md px-1.5 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
@@ -108,7 +106,7 @@ export function ProfileMenu({
             {name}
           </span>
           <span className="block text-[11px] text-text-muted">
-            {membership ?? "Membership unavailable"}
+            {email || "Email unavailable"}
           </span>
         </span>
         <ChevronDown className="size-4 text-text-muted" aria-hidden="true" />
@@ -126,7 +124,7 @@ export function ProfileMenu({
           ref={panel}
           role="dialog"
           aria-modal="true"
-          aria-label="Investor profile"
+          aria-label="Profile menu"
           className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-xl border border-border-default bg-surface-1 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-80 sm:rounded-lg sm:p-3"
         >
           <button
@@ -138,13 +136,13 @@ export function ProfileMenu({
             <X className="size-5" />
           </button>
           <div className="border-b border-border-hairline px-2 pb-3 pr-12 sm:pr-2">
-            <p className="truncate text-sm font-medium">{name}</p>
-            <p className="truncate text-xs text-text-muted">{email}</p>
+            <p className="truncate text-sm font-medium">{name || "Account"}</p>
+            <p className="truncate text-xs text-text-muted">{email || "Email unavailable"}</p>
             {verified && (
               <p className="mt-1 text-xs text-success">Verified account</p>
             )}
             <p className="mt-1 text-xs text-text-muted">
-              {membership ?? "Membership data unavailable"}
+              {email ? "Authenticated account" : "Email unavailable"}
             </p>
           </div>
           <nav aria-label="Account settings" className="py-2">
@@ -187,7 +185,7 @@ export function ProfileMenu({
             className="flex min-h-11 w-full items-center gap-3 px-2 pt-2 text-sm text-text-secondary hover:text-text-primary disabled:opacity-60"
           >
             <LogOut className="size-4" />
-            {pending ? "Signing out…" : "Sign Out"}
+            {pending ? "Signing out…" : "Sign out"}
           </button>
         </div>
       )}

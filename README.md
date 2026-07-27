@@ -4,7 +4,7 @@
 
 Neptlium is an institutional-grade capital operating system engineered to provide secure, governed, and intelligent infrastructure for professional investors, capital allocators, family offices, treasury teams, investment firms, and digital asset operators.
 
-The platform is designed as institutional infrastructure — not a retail investment application.
+The platform is designed as crypto-first institutional infrastructure.
 
 Neptlium provides a unified operating environment for managing, monitoring, allocating, and governing digital and traditional capital through secure technology infrastructure.
 
@@ -100,33 +100,19 @@ Neptlium is a **Turborepo monorepo** containing independently deployable applica
 neptlium/
 
 ├── apps/
-│   │
-│   ├── web/
-│   │   # Public institutional website
-│   │
-│   └── app/
-│       # Authenticated capital operating platform
+│   ├── web/              # Planned public institutional website
+│   ├── app/              # Authenticated capital operating platform
+│   └── admin/            # Internal operations console
 │
 ├── packages/
-│   │
-│   ├── ui/
-│   │   # Shared Neptlium design system
-│   │
-│   ├── lib/
-│   │   # Shared services and utilities
-│   │
-│   ├── config/
-│   │   # Shared engineering configuration
-│   │
-│   └── types/
-│       # Shared domain models
+│   ├── design-system/    # Shared design tokens and utilities
+│   ├── ui/               # Shared React components and app shell
+│   ├── lib/              # Shared services and Supabase clients
+│   ├── config/           # Shared engineering configuration
+│   └── types/            # Shared domain models
 │
-├── supabase/
-│   │
-│   ├── migrations/
-│   ├── functions/
-│   ├── storage/
-│   └── policies/
+├── supabase/             # Shared migrations and backend history
+│   └── migrations/
 │
 ├── .github/
 │
@@ -137,11 +123,14 @@ neptlium/
 
 ---
 
+
 # Applications
 
 # apps/web
 
 ## Public Institutional Website
+Status: planned; this application is not present in the current checkout.
+
 
 Purpose:
 
@@ -203,7 +192,7 @@ Contains:
 - Typography system
 - Colors
 - Layout primitives
-- shadcn/ui components
+
 - Radix UI primitives
 - Buttons
 - Forms
@@ -568,7 +557,7 @@ pnpm lint
 Type checking:
 
 ```bash
-pnpm check-types
+pnpm typecheck
 ```
 
 ---
@@ -606,7 +595,7 @@ Complete:
 - Shared packages
 - Supabase integration
 - Authentication
-- CI/CD
+- CI validation workflows
 - Production deployment foundation
 
 ---
@@ -661,7 +650,7 @@ Build:
 
 # Mission
 
-Neptlium Systems is building the infrastructure layer for institutional digital capital.
+Neptlium is building the infrastructure layer for institutional digital capital.
 
 Every product decision, engineering decision, and design decision must reinforce:
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, type ReactNode } from "react";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { X } from "lucide-react";
 
 interface ConfirmDialogProps {

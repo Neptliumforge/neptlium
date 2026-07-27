@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Download } from "lucide-react";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { getSignedDownloadUrlAction } from "./actions";
 
 export interface DownloadButtonProps {

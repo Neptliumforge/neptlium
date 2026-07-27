@@ -52,7 +52,7 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "flex min-h-11 items-center gap-2.5 rounded-md px-3 py-2 text-body-sm font-medium transition-colors duration-150 ease-out",
+                    "flex min-h-11 items-center justify-center gap-2.5 rounded-md px-3 py-2 text-body-sm xl:justify-start font-medium transition-colors duration-150 ease-out",
                     isActive
                       ? "bg-surface-2 text-accent-primary"
                       : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
@@ -69,7 +69,7 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
                       {item.icon}
                     </span>
                   )}
-                  {item.label}
+                  <span className="hidden xl:inline">{item.label}</span>
                 </Link>
               );
             })}

@@ -1,4 +1,4 @@
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { AuthShell } from "../components/AuthShell";
 import { safeInternalPath } from "../auth-utils";
 

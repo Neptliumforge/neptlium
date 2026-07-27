@@ -19,10 +19,10 @@ export function AppShell({
 }: AppShellProps): ReactElement {
   return (
     <div className="min-h-screen overflow-x-hidden bg-canvas text-text-primary">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col border-r border-border-hairline bg-sidebar lg:flex">
-        <div className="flex h-[72px] shrink-0 items-center gap-2.5 border-b border-border-hairline px-5">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[80px] flex-col xl:w-[248px] border-r border-border-hairline bg-sidebar lg:flex">
+        <div className="flex h-[72px] shrink-0 items-center gap-2.5 justify-center border-b border-border-hairline px-3 xl:justify-start xl:px-5">
           <NeptliumMark size={22} />
-          <span className="text-body-sm font-semibold tracking-tight">
+          <span className="hidden text-body-sm font-semibold tracking-tight xl:inline">
             Neptlium
           </span>
         </div>
@@ -40,7 +40,7 @@ export function AppShell({
           </div>
         )}
       </aside>
-      <div className="flex min-h-screen flex-col lg:pl-[248px]">
+      <div className="flex min-h-screen flex-col lg:pl-[80px] xl:pl-[248px]">
         <header className="sticky top-0 z-30 h-16 shrink-0 border-b border-border-hairline bg-topnav lg:hidden">
           {mobileNav ?? (
             <div className="flex h-full items-center px-4">

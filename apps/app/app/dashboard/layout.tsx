@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { AppShell, MobileNavigation, Sidebar } from "@netlium/ui";
+import { AppShell, MobileNavigation, Sidebar } from "@neptlium/ui";
 import { dashboardNavItems } from "@/components/navigation/dashboardNav";
 import { ProfileMenu } from "@/components/navigation/ProfileMenu";
 import { filterNavByRole } from "@/components/security/filterNavByRole";
@@ -24,7 +24,6 @@ export default async function DashboardLayout({
     <ProfileMenu
       name={displayName}
       email={profile.email ?? user.email ?? ""}
-      membership={null}
       verified={profile.complianceStatus === "active"}
     />
   );

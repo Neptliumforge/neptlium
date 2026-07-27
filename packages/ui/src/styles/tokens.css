@@ -1,6 +1,6 @@
 /**
  * Neptlium institutional design tokens — Tailwind v4 CSS-first theme.
- * Single source of truth; consumed by every app via `@import "@netlium/ui/styles/tokens.css"`.
+ * Single source of truth; consumed by every app via `@import "@neptlium/ui/styles/tokens.css"`.
  *
  * Palette: institutional midnight navy, not true black — true black reads as
  * OLED/consumer, navy reads as Bloomberg/Aladdin/enterprise terminal. Applied

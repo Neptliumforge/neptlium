@@ -1,4 +1,4 @@
-import type { CustodyAddress } from "@netlium/lib";
+import type { CustodyAddress } from "@neptlium/lib";
 import { DepositAddressCard } from "./DepositAddressCard";
 
 export interface DepositAddressListProps {

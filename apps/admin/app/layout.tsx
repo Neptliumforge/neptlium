@@ -18,7 +18,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Neptlium Admin Console",
-  description: "Internal platform administration — Neptlium Systems"
+  description: "Internal platform administration — Neptlium"
 };
 
 export default function RootLayout({

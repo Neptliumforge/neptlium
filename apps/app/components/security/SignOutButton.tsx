@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { signOutAction } from "./actions";
 
 export function SignOutButton() {

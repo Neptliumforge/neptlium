@@ -59,13 +59,13 @@ importers:
       '@neptlium/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
-      '@netlium/lib':
+      '@neptlium/lib':
         specifier: workspace:*
         version: link:../../packages/lib
-      '@netlium/types':
+      '@neptlium/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@netlium/ui':
+      '@neptlium/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@supabase/supabase-js':
@@ -117,13 +117,13 @@ importers:
       '@neptlium/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
-      '@netlium/lib':
+      '@neptlium/lib':
         specifier: workspace:*
         version: link:../../packages/lib
-      '@netlium/types':
+      '@neptlium/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@netlium/ui':
+      '@neptlium/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@supabase/supabase-js':
@@ -249,7 +249,7 @@ importers:
 
   packages/ui:
     dependencies:
-      '@netlium/types':
+      '@neptlium/types':
         specifier: workspace:*
         version: link:../types
       '@radix-ui/react-checkbox':

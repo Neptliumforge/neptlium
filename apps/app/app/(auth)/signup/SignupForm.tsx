@@ -4,7 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff, Mail } from "lucide-react";
-import { Button, Field, FieldError, Input, Label } from "@netlium/ui";
+import { Button, Field, FieldError, Input, Label } from "@neptlium/ui";
 import { resendVerification, signup, verifyEmailOtp } from "../actions";
 import { emailPattern, passwordPattern } from "../auth-utils";
 import { initialAuthActionState } from "../schema";

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { AuthShell } from "../components/AuthShell";
 
 export default function AuthErrorPage() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { AuthShell } from "./components/AuthShell";
 
 export interface AuthErrorProps {

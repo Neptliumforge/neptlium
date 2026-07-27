@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useMemo, useState } from "react";
-import { Button, Field, FieldError, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@netlium/ui";
+import { Button, Field, FieldError, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@neptlium/ui";
 import { requestWithdrawalAction, type WithdrawalResult } from "./actions";
 import type { AssetNetworkPair } from "./GenerateAddressButton";
 

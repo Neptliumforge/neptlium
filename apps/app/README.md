@@ -90,7 +90,7 @@ NEXT_PUBLIC_SITE_URL=https://app.neptlium.com
 | `/auth/confirm` | OTP/magic-link callback |
 | `/onboarding` | Compliance profile setup |
 | `/dashboard` | Overview with KPI cards and recent activity |
-| `/dashboard/wallet` | Custody balances, deposit addresses, withdrawals |
+| `/dashboard/wallet` | Custody balances, provider addresses, withdrawals |
 | `/dashboard/portfolio` | Holdings and performance |
 | `/dashboard/allocations` | Capital allocation requests |
 | `/dashboard/transactions` | Full transaction history |

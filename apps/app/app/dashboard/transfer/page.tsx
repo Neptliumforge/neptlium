@@ -1,6 +1,6 @@
 import { requireProvisionedUser } from "@/lib/auth";
 import { Clock } from "lucide-react";
-import { Card, CardContent } from "@netlium/ui";
+import { Card, CardContent } from "@neptlium/ui";
 
 export default async function TransferPage() {
   await requireProvisionedUser();

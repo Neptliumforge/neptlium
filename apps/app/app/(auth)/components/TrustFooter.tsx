@@ -2,7 +2,7 @@ const links = [
   { label: "Privacy", href: "https://neptlium.com/privacy" },
   { label: "Terms", href: "https://neptlium.com/terms" },
   { label: "Security", href: "https://neptlium.com/security" },
-  { label: "System Status", href: "https://status.neptlium.com" },
+  { label: "System Status", href: "https://neptlium.com/status" },
 ] as const;
 
 export function TrustFooter() {

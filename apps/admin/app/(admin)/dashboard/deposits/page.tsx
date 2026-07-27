@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { PaginationRow } from "@/components/admin/PaginationRow";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { markDepositCompleted } from "./actions";
 import Link from "next/link";
 

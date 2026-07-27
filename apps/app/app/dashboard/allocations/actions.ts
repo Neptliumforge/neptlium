@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
-import { createNotification } from "@netlium/lib";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { createNotification } from "@neptlium/lib";
 import { requireRole } from "@/lib/auth";
 
 export type AllocationActionResult =

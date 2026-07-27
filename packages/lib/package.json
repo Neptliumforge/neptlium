@@ -1,12 +1,14 @@
 {
-  "name": "@netlium/lib",
+  "name": "@neptlium/lib",
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "Neptlium shared Supabase, custody, authorization, and validation utilities.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "lint": "eslint src",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf dist"
   },

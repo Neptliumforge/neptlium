@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Button, Field, FieldError, Input, Label } from "@netlium/ui";
+import { Button, Field, FieldError, Input, Label } from "@neptlium/ui";
 import { resetPassword } from "../actions";
 import { initialAuthActionState } from "../schema";
 import { AuthShell } from "../components/AuthShell";

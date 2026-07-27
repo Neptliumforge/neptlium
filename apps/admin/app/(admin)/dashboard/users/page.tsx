@@ -4,8 +4,8 @@ import { getUsers, PAGE_SIZE } from "@/lib/data/users";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { PaginationRow } from "@/components/admin/PaginationRow";
-import { Badge } from "@netlium/ui";
-import { getRoleLabel, type Role } from "@netlium/lib";
+import { Badge } from "@neptlium/ui";
+import { getRoleLabel, type Role } from "@neptlium/lib";
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "—";

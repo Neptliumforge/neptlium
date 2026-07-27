@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth/session";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { AuthShell } from "../(auth)/components/AuthShell";
 import { UpdatePasswordForm } from "./UpdatePasswordForm";
 

@@ -1,4 +1,4 @@
-import { Badge } from "@netlium/ui";
+import { Badge } from "@neptlium/ui";
 
 function timeOfDayGreeting(): string {
   const hour = new Date().getHours();

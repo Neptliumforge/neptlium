@@ -1,9 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
-import { createSupabaseAdminClient } from "@netlium/lib/supabase/admin";
-import { hasRole, type Role } from "@netlium/lib";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
+import { hasRole, type Role } from "@neptlium/lib";
 
 export interface AdminLoginState {
   readonly error: string | null;

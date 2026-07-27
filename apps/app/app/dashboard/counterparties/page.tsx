@@ -1,6 +1,6 @@
 import { requireProvisionedUser } from "@/lib/auth";
 import { Users } from "lucide-react";
-import { Card, CardContent, EmptyState } from "@netlium/ui";
+import { Card, CardContent, EmptyState } from "@neptlium/ui";
 
 export default async function CounterpartiesPage() {
   await requireProvisionedUser();

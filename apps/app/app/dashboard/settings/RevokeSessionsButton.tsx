@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { revokeOtherSessionsAction } from "@/components/security/actions";
 
 export function RevokeSessionsButton() {

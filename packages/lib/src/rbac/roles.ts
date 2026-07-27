@@ -1,5 +1,5 @@
 /**
- * Role-based access control hierarchy for Netlium Systems.
+ * Role-based access control hierarchy for Neptlium.
  * Defines institutional roles and their permission levels.
  */
 

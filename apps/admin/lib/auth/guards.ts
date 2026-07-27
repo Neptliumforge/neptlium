@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { hasRole, type Role } from "@netlium/lib";
+import { hasRole, type Role } from "@neptlium/lib";
 import { getCurrentAdminUser, getCurrentAdminRole } from "./session";
 
 export async function requireAdminUser() {

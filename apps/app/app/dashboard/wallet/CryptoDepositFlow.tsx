@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Bitcoin, CheckCircle2, Copy, Landmark } from "lucide-react";
-import { Badge, Button } from "@netlium/ui";
+import { Badge, Button } from "@neptlium/ui";
 
 export interface DepositAddress {
   id: string;
@@ -63,7 +63,7 @@ function AddressCard({ addr }: { addr: DepositAddress }) {
         </button>
       </div>
       <p className="text-[11px] text-text-muted">
-        Only send USD via domestic wire to this reference.
+        Only send USD via unsupported transfer to this reference.
       </p>
     </div>
   );
@@ -84,9 +84,9 @@ export function DepositPanel({ existingAddresses, walletId }: DepositPanelProps)
             <Badge tone="success">Available</Badge>
           </div>
           <div>
-            <p className="text-[13px] font-semibold text-text-primary">USD — Domestic Wire</p>
+            <p className="text-[13px] font-semibold text-text-primary">Unsupported funding rail</p>
             <p className="mt-1 text-[12px] text-text-muted leading-relaxed">
-              Send a domestic wire transfer to your Neptlium wallet funding reference.
+              Send a unsupported transfer to your Neptlium wallet funding reference.
             </p>
           </div>
 
@@ -129,7 +129,7 @@ export function DepositPanel({ existingAddresses, walletId }: DepositPanelProps)
 
       <div className="rounded-md border border-border-default bg-surface-2 px-4 py-3">
         <p className="text-[12px] text-text-muted leading-relaxed">
-          Deposits are credited after confirmation by the operations team. Wire transfers typically settle in 1–2 business days.
+          Deposits are credited after confirmation by the operations team. Provider settlement is unavailable.
         </p>
       </div>
     </div>

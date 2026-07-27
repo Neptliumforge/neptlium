@@ -1,4 +1,4 @@
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 import { signOutAction } from "@/components/security/actions";
 import { AuthShell } from "../components/AuthShell";
 

@@ -1,9 +1,9 @@
 {
-  "name": "@netlium/config",
+  "name": "@neptlium/config",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Netlium Systems shared engineering configuration package.",
+  "description": "Neptlium shared TypeScript, ESLint, Prettier, and Tailwind configuration.",
   "files": [
     "tsconfig.base.json",
     "tsconfig.json",
@@ -19,12 +19,12 @@
     "./tailwind.config.ts": "./tailwind.config.ts"
   },
   "scripts": {
-    "build": "echo \"@netlium/config: nothing to build\"",
-    "typecheck": "echo \"@netlium/config: nothing to typecheck\"",
+    "build": "echo \"@neptlium/config: nothing to build\"",
+    "typecheck": "echo \"@neptlium/config: nothing to typecheck\"",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "echo \"@netlium/config: nothing to clean\""
+    "clean": "echo \"@neptlium/config: nothing to clean\""
   },
   "peerDependencies": {
     "typescript": "^5.0.0 || ^6.0.0",

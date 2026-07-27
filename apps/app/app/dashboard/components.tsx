@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
   cn,
-} from "@netlium/ui";
+} from "@neptlium/ui";
 
 export function PageHeader({
   title,

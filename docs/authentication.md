@@ -513,10 +513,10 @@ Four Supabase clients serve distinct contexts inside `apps/app`:
 
 | Client | Path | Context |
 |--------|------|---------|
-| Browser | `@netlium/lib/supabase` → `src/supabase/browser.ts` | Client Components — reads/writes session cookies via `createBrowserClient` |
-| Server | `@netlium/lib/supabase/server` | Server Components, Route Handlers, Server Actions — per-request via `createServerClient` |
-| Middleware | `@netlium/lib/supabase/middleware` | `apps/app/proxy.ts` — refreshes access token on every request (Next.js 16: `proxy.ts` replaces `middleware.ts`) |
-| Admin | `@netlium/lib/supabase/admin` | Server Actions only — uses `SUPABASE_SERVICE_ROLE_KEY`, bypasses RLS |
+| Browser | `@neptlium/lib/supabase` → `src/supabase/browser.ts` | Client Components — reads/writes session cookies via `createBrowserClient` |
+| Server | `@neptlium/lib/supabase/server` | Server Components, Route Handlers, Server Actions — per-request via `createServerClient` |
+| Middleware | `@neptlium/lib/supabase/middleware` | `apps/app/proxy.ts` — refreshes access token on every request (Next.js 16: `proxy.ts` replaces `middleware.ts`) |
+| Admin | `@neptlium/lib/supabase/admin` | Server Actions only — uses `SUPABASE_SERVICE_ROLE_KEY`, bypasses RLS |
 
 The Admin client is never imported in any client bundle.
 

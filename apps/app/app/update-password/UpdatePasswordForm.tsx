@@ -9,7 +9,7 @@ import {
   FieldHint,
   Input,
   Label,
-} from "@netlium/ui";
+} from "@neptlium/ui";
 import { updatePassword } from "../(auth)/actions";
 import { initialAuthActionState } from "../(auth)/schema";
 import { AuthShell } from "../(auth)/components/AuthShell";

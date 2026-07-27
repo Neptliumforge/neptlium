@@ -1,6 +1,6 @@
 "use server";
 
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 
 export type SignedDownloadResult = { readonly ok: true; readonly url: string } | { readonly ok: false; readonly error: string };

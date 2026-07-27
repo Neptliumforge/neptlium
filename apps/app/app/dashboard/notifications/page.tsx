@@ -1,6 +1,6 @@
 import { Bell } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, EmptyState } from "@netlium/ui";
-import { createSupabaseServerClient } from "@netlium/lib/supabase/server";
+import { Card, CardContent, CardHeader, CardTitle, EmptyState } from "@neptlium/ui";
+import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 import { NotificationItem } from "./NotificationItem";
 import { MarkAllReadButton } from "./MarkAllReadButton";

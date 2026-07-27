@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { PaginationRow } from "@/components/admin/PaginationRow";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
-import { Badge, Button, StatCard } from "@netlium/ui";
+import { Badge, Button, StatCard } from "@neptlium/ui";
 import { approveWithdrawal, rejectWithdrawal } from "./actions";
 import Link from "next/link";
 import { ArrowUpRight, Clock, CheckCircle } from "lucide-react";

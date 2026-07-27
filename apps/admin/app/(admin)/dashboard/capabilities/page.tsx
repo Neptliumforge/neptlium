@@ -1,18 +1,16 @@
 import { requireAdminUser } from "@/lib/auth";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { Badge } from "@netlium/ui";
+import { Badge } from "@neptlium/ui";
 import { Zap } from "lucide-react";
 
 // Static capability registry — mirrors apps/app/lib/capabilities.ts
 // To make these runtime-toggleable, add a platform_capabilities table and read from it here.
 const CAPABILITIES = [
-  { key: "walletProvisioning", label: "Wallet Provisioning", status: "enabled", description: "Provision wallets for new users upon completing onboarding." },
-  { key: "wireDeposits", label: "Wire Deposits", status: "enabled", description: "USD wire deposit funding references (NLM-XXXXXXXX format)." },
+  { key: "walletProvisioning", label: "Wallet Provisioning", status: "disabled", description: "Custody provider is not connected for new users upon completing onboarding." },
   { key: "cryptoDeposits", label: "Crypto Deposits", status: "coming_soon", description: "On-chain crypto deposit addresses for supported networks." },
-  { key: "achDeposits", label: "ACH Deposits", status: "coming_soon", description: "ACH bank transfer deposits." },
-  { key: "depositAddresses", label: "Deposit Addresses", status: "enabled", description: "Generate and manage deposit funding references." },
+  { key: "depositAddresses", label: "Deposit Addresses", status: "disabled", description: "Custody provider is not connected." },
   { key: "internalTransfers", label: "Internal Transfers", status: "coming_soon", description: "Transfers between Neptlium accounts via alias handles." },
-  { key: "withdrawals", label: "Withdrawals", status: "enabled", description: "USD wire withdrawal requests, subject to operator review." },
+  { key: "withdrawals", label: "Withdrawals", status: "disabled", description: "Custody provider is not connected." },
   { key: "portfolioCreation", label: "Portfolio Creation", status: "pending_configuration", description: "User-initiated portfolio creation (currently operator-provisioned)." },
   { key: "capitalAllocation", label: "Capital Allocation", status: "enabled", description: "Capital allocation requests from wallet to investment portfolio." },
   { key: "documentUpload", label: "Document Upload", status: "enabled", description: "Upload and manage compliance documents." },

@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Badge } from "@netlium/ui";
-import { getRoleLabel, hasRole, type Role } from "@netlium/lib";
+import { Badge } from "@neptlium/ui";
+import { getRoleLabel, hasRole, type Role } from "@neptlium/lib";
 import { requireAdminUser } from "@/lib/auth";
 import { getUserById } from "@/lib/data/users";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import { UserRolePicker } from "@/components/admin/UserRolePicker";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { updateUserRole, suspendUser, activateUser } from "./actions";
-import { Button } from "@netlium/ui";
+import { Button } from "@neptlium/ui";
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "—";
