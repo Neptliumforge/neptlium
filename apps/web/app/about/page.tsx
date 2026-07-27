@@ -49,7 +49,7 @@ export default function AboutPage() {
             {VALUES.map((value) => (
               <div
                 key={value.title}
-                className="rounded-2xl border border-line bg-surface p-6"
+                className="border-t border-line py-6"
               >
                 <h3 className="text-base font-semibold text-ink">{value.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{value.body}</p>

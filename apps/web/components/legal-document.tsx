@@ -15,7 +15,7 @@ export function LegalDocument({ doc }: { doc: LegalDoc }) {
       <Section tone="surface">
         <div className="mx-auto max-w-3xl">
           {doc.draft && (
-            <div className="mb-8 rounded-xl border border-warning/30 bg-surface-subtle p-4 text-sm text-text">
+            <div className="mb-8 border-l-2 border-warning/50 bg-surface-subtle p-4 text-sm text-text">
               Draft for review. This document is a structured informational draft and
               requires review by qualified counsel before public production use.
             </div>

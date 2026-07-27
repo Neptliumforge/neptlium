@@ -18,7 +18,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="COMPANY"
         title="Contact Neptlium."
-        intro="For questions about the platform, capital universe or research, reach our team directly. We read every message."
+        intro="For questions about the platform, capital universe or research, use the verified support address below."
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Contact' }]}
       />
 
@@ -48,7 +48,7 @@ export default function ContactPage() {
           <div>
             <h2 className="text-lg font-semibold text-ink">Send a message</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Prefer a form? Use the fields below.
+              Submission infrastructure is not connected. The form below cannot send or store a message; use the support email for contact.
             </p>
             <div className="mt-4">
               <ContactForm />

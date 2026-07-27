@@ -54,7 +54,7 @@ apps/web/public/icon.svg
 
 The mark is used for application metadata, favicon presentation, organization structured data, and reusable brand identity components.
 
-Do not replace it with placeholder logos or unrelated visual assets.
+Do not replace it with alternate or unrelated visual assets.
 
 ## Experience architecture
 
@@ -155,7 +155,7 @@ The authenticated platform must remain a separate Vercel project rooted at `apps
 
 The website must not advertise:
 
-- fiat, ACH, wire, bank-transfer, card, or cash funding;
+- funding methods outside the documented provider-dependent digital-asset scope;
 - production custody before provider confirmation;
 - supported assets before provider confirmation;
 - investment returns or performance;

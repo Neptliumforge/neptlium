@@ -20,7 +20,7 @@ export function ContactForm() {
         e.preventDefault()
         setNotice(true)
       }}
-      className="rounded-2xl border border-line bg-surface p-6 md:p-8"
+      className="border border-line bg-surface p-6 md:p-8"
       aria-describedby="contact-form-status"
     >
       <div className="grid gap-4">
