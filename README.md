@@ -11,10 +11,11 @@ Neptlium is crypto-only. Planned provider-dependent assets are USDC on Base, ETH
 | `apps/web`   | Public website                                | `apps/web` → `https://neptlium.com`         |
 | `apps/app`   | Authenticated platform                        | `apps/app` → `https://app.neptlium.com`     |
 | `apps/admin` | Role-gated internal console                   | `apps/admin` → `https://admin.neptlium.com` |
+| `apps/api`   | Versioned backend API                         | `apps/api` → `https://api.neptlium.com`     |
 | `packages/*` | Shared UI, design, runtime, types, and config | Internal packages                           |
 | `supabase`   | Append-only migration history                 | Separately reviewed process                 |
 
-`https://api.neptlium.com` is planned; no API application exists here.
+The API Foundation provides health, authenticated wallet boundaries, deterministic state machines, append-only double-entry ledger primitives, idempotency, verified webhook ingestion, and private Supabase persistence. Provider-backed operations fail with `provider_not_configured` until separately reviewed credentials and adapters exist. See [the API guide](apps/api/README.md).
 
 ## Product boundaries
 

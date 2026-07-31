@@ -4,6 +4,7 @@
     { "path": "./apps/admin" },
     { "path": "./apps/app" },
     { "path": "./apps/web" },
+    { "path": "./apps/api" },
     { "path": "./packages/design-system" },
     { "path": "./packages/ui" },
     { "path": "./packages/lib" },

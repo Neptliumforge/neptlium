@@ -2,11 +2,11 @@
 
 ## Status
 
-API code is not implemented on this branch. Future branch: `feat/neptlium-api-foundation`. Base domain: `https://api.neptlium.com`. Credentials are not currently available. No Coinbase CDP or Alchemy integration is complete. Testnet comes before mainnet; use Base Sepolia first if supported.
+The local API Foundation is implemented in `apps/api`. Base domain: `https://api.neptlium.com`. Credentials are not currently available, so Coinbase CDP and Alchemy provider-backed operations remain disabled and fail truthfully. The runtime, Supabase authentication boundary, wallet routes, state machines, ledger primitives, idempotency, webhook verification boundary, audit records, persistence migration, and automated tests are present. The bundled repository is development/test-only; production startup requires an injected durable Supabase repository. Provider webhook routes similarly require a reviewed provider-specific verifier. Testnet comes before mainnet; this runtime refuses mainnet activation.
 
 A personal Coinbase retail API key must not be used for customer custody. Provider webhooks must not be configured before deployed endpoints verify signatures and return verified 2xx responses.
 
-## Reserved endpoints
+## Implemented endpoints
 
 ```text
 GET  /v1/health
@@ -20,15 +20,14 @@ POST /v1/wallet/withdrawals/{withdrawal_id}/cancel
 GET  /v1/wallet/transactions
 ```
 
-These are reserved contracts, not implemented behavior.
+The routes are implemented. Address provisioning remains deliberately unavailable until a reviewed provider adapter is configured. Withdrawal creation records a request but never submits a provider transaction.
 
-## Proposed structure and trust boundaries
+## Structure and trust boundaries
 
 ```text
 apps/api/src/
-  http/ auth/ wallet/ webhooks/ providers/
-  ledger/ reconciliation/ audit/ jobs/
-apps/api/tests/
+  app.ts config.ts domain.ts errors.ts providers.ts repositories.ts server.ts
+apps/api/test/
 ```
 
 Handlers validate and authorize, services enforce state transitions, database transactions enforce invariants, and workers isolate provider calls. The browser is untrusted. The Neptlium API owns authentication, authorization, validation, rate limits, orchestration, destination policy, state machines, idempotency, reconciliation, audit, and truthful responses.

@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        workspace: [web, app, admin]
+        workspace: [web, app, admin, api]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
