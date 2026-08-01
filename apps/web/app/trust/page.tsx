@@ -1,3 +1,12 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Trust Center',
+  description:
+    'Neptlium platform controls, operational transparency, privacy boundaries and risk disclosures.',
+  alternates: { canonical: '/trust' },
+};
+
 import { DetailPage } from '@/components/detail-page';
 export default function TrustPage() {
   return (

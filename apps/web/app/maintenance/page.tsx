@@ -1,3 +1,11 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Account Maintenance',
+  description: 'The secure Neptlium account environment is temporarily undergoing maintenance.',
+  robots: { index: false, follow: false },
+};
+
 import { AuthPage } from '@/components/auth-page';
 export default function Page() {
   return (
