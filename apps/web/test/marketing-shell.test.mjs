@@ -78,10 +78,57 @@ test('product environment exposes six linked systems and a real CTA', () => {
 
 test('homepage keeps semantic stage structure and one H1', () => {
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.equal((page.match(/<section/g) ?? []).length, 7);
+  assert.equal((page.match(/<section/g) ?? []).length, 10);
   assert.match(page, /<section className="modern-ownership" aria-labelledby=/);
   assert.match(page, /<section className="product-environment" aria-labelledby=/);
   assert.doesNotMatch(shell, /Coinbase|CDP/i);
+});
+
+test('Stage 7 performance is contextual and non-fabricated', () => {
+  assert.match(page, /Returns, understood in context\./);
+  assert.match(page, /A number alone cannot explain a portfolio\./);
+  assert.match(page, /assets, allocations, decisions, risks and\s+time horizons/);
+  for (const dimension of [
+    'Asset contribution',
+    'Realized performance',
+    'Unrealized performance',
+    'Allocation changes',
+    'Concentration effects',
+    'Portfolio mandate alignment',
+    'Time horizon',
+    'Capital activity',
+  ])
+    assert.match(page, new RegExp(dimension));
+  assert.match(page, /Past performance does not guarantee future results\./);
+  assert.match(page, /Explore Performance/);
+  assert.doesNotMatch(page, /candlestick|chart|[0-9]+(?:\.[0-9]+)?%|fake returns/i);
+});
+
+test('Stage 7 footer is institutional, truthful and deployment-safe', () => {
+  const footer = readFileSync(new URL('../components/site-footer.tsx', import.meta.url), 'utf8');
+  const interactions = readFileSync(
+    new URL('../components/footer-interactions.tsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(site, /Capital operating infrastructure for modern ownership/);
+  for (const group of [
+    'Platform',
+    'Explore',
+    'Individuals',
+    'Institutions',
+    'Company',
+    'Legal and privacy',
+  ])
+    assert.match(footer, new RegExp(group));
+  assert.doesNotMatch(footer, /href=["']#["']/);
+  assert.match(interactions, /aria-expanded/);
+  assert.match(interactions, /aria-controls/);
+  assert.match(interactions, /no address is stored/);
+  assert.match(footer, /Neptlium on \$\{social\.name\}/);
+  assert.match(footer, /noopener noreferrer/);
+  assert.match(footer, /Global — English/);
+  assert.match(site, /© 2026 Neptlium/);
+  assert.doesNotMatch(`${footer}${page}`, /Coinbase|CDP/i);
 });
 
 test('Portfolio Intelligence uses the canonical narrative and a real CTA', () => {
@@ -242,4 +289,40 @@ test('Stage 5 avoids fabricated outcomes and automated advice claims', () => {
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   assert.doesNotMatch(page, /href=["']#["']/);
   assert.doesNotMatch(shell, /Coinbase|CDP/i);
+});
+
+test('Treasury uses the canonical narrative and a truthful CTA', () => {
+  assert.match(page, /Treasury/);
+  assert.match(page, /Liquidity is part of the strategy\./);
+  assert.match(page, /Treasury connects portfolio ownership with capital readiness\./);
+  assert.match(
+    page,
+    /Understand what is available, committed, reserved, or positioned for future\s+allocation without losing sight of the wider portfolio\./,
+  );
+  assert.match(page, /Explore Treasury/);
+  assert.match(page, /<Link className="button" href="\/platform">[\s\S]*Explore Treasury/);
+});
+
+test('Treasury represents six operational concepts in three layers', () => {
+  for (const concept of [
+    'Liquidity',
+    'Reserve position',
+    'Capital readiness',
+    'Upcoming obligations',
+    'Available capital',
+    'Allocation capacity',
+  ]) {
+    assert.match(page, new RegExp(`['"]${concept}['"]`));
+  }
+  for (const layer of ['Executive layer', 'Operations layer', 'Planning layer']) {
+    assert.match(page, new RegExp(`layer: '${layer}'`));
+  }
+});
+
+test('Treasury avoids simulated financial evidence and unsupported destinations', () => {
+  assert.doesNotMatch(page, /\$\s*[0-9]|[+-]?[0-9]+(?:\.[0-9]+)?%/);
+  assert.doesNotMatch(page, /balance sheet|exchange|wallet|order book|candlestick|chart/i);
+  assert.doesNotMatch(page, /href=["']#["']/);
+  assert.doesNotMatch(shell, /Coinbase|CDP/i);
+  assert.equal((page.match(/<h1/g) ?? []).length, 1);
 });

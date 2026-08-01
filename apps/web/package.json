@@ -28,5 +28,8 @@
     "typescript": "6.0.3"
   },
   "description": "Neptlium public website.",
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  }
 }

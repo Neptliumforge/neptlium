@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { AlertTriangle } from 'lucide-react'
-import { SITE } from '@/lib/content/site'
+import { useState } from 'react';
+import { AlertTriangle } from 'lucide-react';
+import { SITE } from '@/lib/content/site';
 
 /**
  * Visual-only contact form.
@@ -11,14 +11,14 @@ import { SITE } from '@/lib/content/site'
  * clear notice and points the user to the support email.
  */
 export function ContactForm() {
-  const [notice, setNotice] = useState(false)
+  const [notice, setNotice] = useState(false);
 
   return (
     <form
       noValidate
       onSubmit={(e) => {
-        e.preventDefault()
-        setNotice(true)
+        e.preventDefault();
+        setNotice(true);
       }}
       className="border border-line bg-surface p-6 md:p-8"
       aria-describedby="contact-form-status"
@@ -73,13 +73,10 @@ export function ContactForm() {
       >
         {notice && (
           <div className="flex items-start gap-2 rounded-lg border border-warning/30 bg-surface-subtle p-3 text-sm text-text">
-            <AlertTriangle
-              className="mt-0.5 h-4 w-4 shrink-0 text-warning"
-              aria-hidden="true"
-            />
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" aria-hidden="true" />
             <span>
-              This form is not yet connected to a backend, so your message was not
-              sent. Please email us directly at{' '}
+              This form is not yet connected to a backend, so your message was not sent. Please
+              email us directly at{' '}
               <a
                 href={`mailto:${SITE.supportEmail}`}
                 className="font-medium text-accent underline underline-offset-2 hover:text-accent-hover"
@@ -92,5 +89,5 @@ export function ContactForm() {
         )}
       </div>
     </form>
-  )
+  );
 }

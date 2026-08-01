@@ -283,6 +283,50 @@ const capitalClassifications = [
   },
 ] as const;
 
+const treasuryLayers = [
+  {
+    number: '01',
+    layer: 'Executive layer',
+    concepts: [
+      ['Capital readiness', 'Know whether the portfolio is prepared for its next decision.'],
+      ['Liquidity', 'Keep visibility on capital that can remain available when needed.'],
+    ],
+  },
+  {
+    number: '02',
+    layer: 'Operations layer',
+    concepts: [
+      ['Reserve position', 'Separate protected capital from funds intended for allocation.'],
+      [
+        'Upcoming obligations',
+        'Keep commitments and obligations visible before they become urgent.',
+      ],
+    ],
+  },
+  {
+    number: '03',
+    layer: 'Planning layer',
+    concepts: [
+      ['Available capital', 'Understand what remains available across the operating structure.'],
+      [
+        'Allocation capacity',
+        'Connect readiness with the capital that can support future allocation.',
+      ],
+    ],
+  },
+] as const;
+
+const performanceDimensions = [
+  ['Asset contribution', 'Which assets shaped the outcome.'],
+  ['Realized performance', 'What has become an observed capital result.'],
+  ['Unrealized performance', 'What remains connected to current ownership.'],
+  ['Allocation changes', 'How decisions altered portfolio structure.'],
+  ['Concentration effects', 'Where exposure changed the experience of return.'],
+  ['Portfolio mandate alignment', 'Whether outcomes remain aligned with intent.'],
+  ['Time horizon', 'The period through which performance is understood.'],
+  ['Capital activity', 'The movements that changed the record.'],
+] as const;
+
 export default function HomePage() {
   return (
     <>
@@ -751,6 +795,162 @@ export default function HomePage() {
           <span />
           <i />
           <span />
+        </div>
+      </section>
+
+      <section className="treasury-section" aria-labelledby="treasury-heading">
+        <div className="stage-two-shell">
+          <Reveal>
+            <header className="treasury-lead">
+              <div>
+                <p className="eyebrow">Treasury</p>
+                <h2 id="treasury-heading">Liquidity is part of the strategy.</h2>
+              </div>
+              <div>
+                <p>Treasury connects portfolio ownership with capital readiness.</p>
+                <p className="treasury-secondary-copy">
+                  Understand what is available, committed, reserved, or positioned for future
+                  allocation without losing sight of the wider portfolio.
+                </p>
+                <Link className="button" href="/platform">
+                  Explore Treasury <ArrowRight aria-hidden="true" />
+                </Link>
+              </div>
+            </header>
+          </Reveal>
+
+          <Reveal className="treasury-operating-surface">
+            <div className="treasury-surface-header">
+              <span>Treasury / Operational readiness architecture</span>
+              <strong>Visibility before action</strong>
+            </div>
+            <div className="treasury-architecture">
+              <div className="treasury-boundary" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="treasury-core">
+                <span>Capital readiness</span>
+                <strong>Available for the next decision</strong>
+                <small>Ownership · commitments · reserves</small>
+              </div>
+              <ol className="treasury-layers">
+                {treasuryLayers.map((layer) => (
+                  <li key={layer.layer}>
+                    <header>
+                      <span>{layer.number}</span>
+                      <h3>{layer.layer}</h3>
+                    </header>
+                    <ul>
+                      {layer.concepts.map(([name, description]) => (
+                        <li key={name}>
+                          <div>
+                            <span aria-hidden="true" /> <strong>{name}</strong>
+                          </div>
+                          <p>{description}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className="treasury-surface-footer">
+              <span>Reserve boundaries</span>
+              <i aria-hidden="true" />
+              <span>Allocation capacity</span>
+              <i aria-hidden="true" />
+              <span>Operational visibility</span>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="performance-section" aria-labelledby="performance-heading">
+        <div className="stage-two-shell">
+          <Reveal>
+            <header className="performance-lead">
+              <div>
+                <p className="eyebrow">Performance</p>
+                <h2 id="performance-heading">Returns, understood in context.</h2>
+              </div>
+              <div>
+                <p>A number alone cannot explain a portfolio.</p>
+                <p className="performance-secondary-copy">
+                  Neptlium connects performance to the assets, allocations, decisions, risks and
+                  time horizons that produced it.
+                </p>
+                <Link className="button" href="/platform">
+                  Explore Performance <ArrowRight aria-hidden="true" />
+                </Link>
+              </div>
+            </header>
+          </Reveal>
+          <Reveal className="performance-system">
+            <div className="performance-system-header">
+              <span>Performance / Attribution architecture</span>
+              <strong>Mandate review</strong>
+            </div>
+            <div className="performance-map">
+              <div className="performance-line" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="performance-mandate">
+                <span>One portfolio mandate</span>
+                <strong>Performance outcome</strong>
+                <small>Context before conclusion</small>
+              </div>
+              <ol>
+                {performanceDimensions.map(([name, description], index) => (
+                  <li key={name}>
+                    <span>0{index + 1}</span>
+                    <h3>{name}</h3>
+                    <p>{description}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className="performance-system-footer">
+              <span>Assets</span>
+              <i aria-hidden="true" />
+              <span>Allocation decisions</span>
+              <i aria-hidden="true" />
+              <span>Portfolio structure</span>
+              <i aria-hidden="true" />
+              <span>Mandate review</span>
+            </div>
+          </Reveal>
+          <p className="performance-disclosure">
+            Past performance does not guarantee future results.
+          </p>
+        </div>
+      </section>
+
+      <section className="closing-section" aria-labelledby="closing-heading">
+        <div className="stage-two-shell">
+          <Reveal>
+            <div className="closing-panel">
+              <p className="eyebrow">Neptlium</p>
+              <h2 id="closing-heading">Put your capital in operating order.</h2>
+              <p>
+                Create one connected environment for portfolio intelligence, market access,
+                allocation decisions, treasury visibility and long-term ownership.
+              </p>
+              <div className="closing-actions">
+                <Link className="button" href={SITE.signInUrl}>
+                  Access Neptlium <ArrowRight aria-hidden="true" />
+                </Link>
+                <Link className="button button-secondary" href="/platform">
+                  Explore the platform <ArrowRight aria-hidden="true" />
+                </Link>
+              </div>
+              <span>More structure before action. More clarity after it.</span>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>

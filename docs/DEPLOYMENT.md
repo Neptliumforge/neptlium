@@ -27,6 +27,19 @@ Separate Development, Preview, and Production values. Never copy production secr
 
 ## First deployment checks
 
+### Marketing web Vercel settings
+
+The `neptlium-web` project must use the repository root lockfile and the following settings:
+
+- Root Directory: `apps/web` (include files outside the root directory when prompted).
+- Framework preset: Next.js; do not set an output directory.
+- Install Command: `pnpm install --frozen-lockfile`.
+- Build Command: `pnpm --filter @neptlium/web build`.
+- Node.js: `20.x` or newer, matching `apps/web/package.json`.
+- No environment variable is required to build the marketing site. `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_SIGN_IN_URL` are optional public overrides only.
+
+The previous deployment failure cannot be tied to a hosted log because no Vercel log, project metadata, or deployment ID is present in this checkout. The actionable repository-side risk was an implicit Vercel command/root-workspace resolution. These settings make the workspace install and filtered build explicit. The build has no remote font download, runtime social fetch, newsletter dependency, or secret requirement.
+
 1. Confirm project name, Root Directory, framework detection, Node/pnpm version, install from the frozen root lockfile, and no manual output directory override.
 2. Confirm CI typecheck, lint, configured tests, and all three Linux builds pass.
 3. Verify security headers, page rendering, assets, robots/sitemap behavior, canonical URLs, and no unexpected redirects.

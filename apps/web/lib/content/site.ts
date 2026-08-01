@@ -10,6 +10,12 @@ export const SITE = {
   signInUrl: process.env.NEXT_PUBLIC_SIGN_IN_URL ?? 'https://app.neptlium.com/auth/sign-in',
   copyright: '© 2026 Neptlium. All rights reserved.',
 } as const;
+export const SOCIALS = [
+  { name: 'X', href: undefined },
+  { name: 'Instagram', href: undefined },
+  { name: 'MeWe', href: undefined },
+  { name: 'GitHub', href: 'https://github.com/Neptliumlabs' },
+] as const;
 export const DISCLOSURES = {
   general:
     'Information presented by Neptlium is for informational purposes and does not constitute investment advice.',
