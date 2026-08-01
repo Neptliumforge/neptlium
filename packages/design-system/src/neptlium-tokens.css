@@ -1,0 +1,36 @@
+/* Canonical Neptlium product tokens. Imported by the public site and application. */
+:root {
+  --nt-bg-canvas: #050806;
+  --nt-bg-authority: #07100d;
+  --nt-bg-elevated: #0d1713;
+  --nt-bg-subtle: #111d18;
+  --nt-bg-interactive: #16241f;
+  --nt-bg-inset: #030604;
+  --nt-surface-primary: var(--nt-bg-elevated);
+  --nt-surface-secondary: var(--nt-bg-subtle);
+  --nt-surface-tertiary: #17251f;
+  --nt-surface-hover: #1a2a24;
+  --nt-surface-selected: #182227;
+  --nt-text-primary: #f1f2eb;
+  --nt-text-secondary: #bbc3bc;
+  --nt-text-muted: #87928b;
+  --nt-text-inverse: #111513;
+  --nt-text-accent: #9ca8ff;
+  --nt-line-primary: #24332c;
+  --nt-line-secondary: #18231e;
+  --nt-line-active: #6574df;
+  --nt-line-focus: #8c98ff;
+  --nt-signal-indigo: #6574df;
+  --nt-signal-indigo-soft: #252c55;
+  --nt-signal-green: #6d9a7a;
+  --nt-signal-amber: #c69458;
+  --nt-signal-red: #c57878;
+  --nt-focus-ring: 0 0 0 3px rgb(140 152 255 / 32%);
+  --nt-overlay: rgb(1 4 2 / 76%);
+  --nt-shadow-soft: 0 1px 2px rgb(0 0 0 / 26%);
+  --nt-shadow-raised: 0 16px 40px -22px rgb(0 0 0 / 72%);
+  --nt-font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI Variable', 'Segoe UI',
+    'Helvetica Neue', Arial, sans-serif;
+  --nt-font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
+}

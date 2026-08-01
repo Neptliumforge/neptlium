@@ -1,6 +1,4 @@
 {
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm --filter @neptlium/web build",
   "headers": [
     {
       "source": "/(.*)",

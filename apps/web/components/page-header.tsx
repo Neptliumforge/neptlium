@@ -1,4 +1,4 @@
-import { Breadcrumb, type Crumb } from '@/components/breadcrumb';
+import { Breadcrumb, type Crumb } from '@/components/breadcrumb'
 
 export function PageHeader({
   eyebrow,
@@ -6,10 +6,10 @@ export function PageHeader({
   intro,
   crumbs,
 }: {
-  eyebrow: string;
-  title: string;
-  intro?: string;
-  crumbs?: Crumb[];
+  eyebrow: string
+  title: string
+  intro?: string
+  crumbs?: Crumb[]
 }) {
   return (
     <section className="border-b border-line bg-background">
@@ -26,5 +26,5 @@ export function PageHeader({
         )}
       </div>
     </section>
-  );
+  )
 }

@@ -31,31 +31,19 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = {
   colorScheme: 'dark',
-  themeColor: '#05070a',
+  themeColor: '#050806',
   width: 'device-width',
   initialScale: 1,
 };
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': SITE.url + '/#organization',
-      name: SITE.name,
-      url: SITE.url,
-      logo: SITE.url + '/icon.svg',
-      description: SITE.description,
-      email: SITE.supportEmail,
-    },
-    {
-      '@type': 'WebSite',
-      '@id': SITE.url + '/#website',
-      url: SITE.url,
-      name: SITE.name,
-      description: SITE.description,
-      publisher: { '@id': SITE.url + '/#organization' },
-    },
-  ],
+  '@type': 'Organization',
+  name: SITE.name,
+  url: SITE.url,
+  logo: SITE.url + '/icon.svg',
+  description: SITE.description,
+  email: SITE.supportEmail,
+  sameAs: [],
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
