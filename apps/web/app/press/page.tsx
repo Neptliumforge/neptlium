@@ -1,3 +1,12 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Press',
+  description:
+    'Official Neptlium company announcements, verified statements and media enquiry information.',
+  alternates: { canonical: '/press' },
+};
+
 import { DetailPage } from '@/components/detail-page';
 export default function PressPage() {
   return (
