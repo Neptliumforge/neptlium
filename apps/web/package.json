@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint app components lib --ext .ts,.tsx",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.ts"
   },
   "dependencies": {
     "clsx": "2.1.1",
@@ -28,8 +28,5 @@
     "typescript": "6.0.3"
   },
   "description": "Neptlium public website.",
-  "type": "module",
-  "engines": {
-    "node": ">=20.19.0"
-  }
+  "type": "module"
 }

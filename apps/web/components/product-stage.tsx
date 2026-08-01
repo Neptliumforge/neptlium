@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Activity, CircleSlash2, Layers3, LockKeyhole, WalletCards } from 'lucide-react';
+import { Activity, CircleSlash2, Landmark, Layers3, LockKeyhole } from 'lucide-react';
 import { Reveal } from './reveal';
 const views = [
   [
@@ -18,11 +18,11 @@ const views = [
     Layers3,
   ],
   [
-    'Neptlium Wallet',
-    'Provider not connected',
-    'Provider not connected',
-    'Asset infrastructure remains unavailable until a provider is connected and verified.',
-    WalletCards,
+    'Capital Account',
+    'Provider not configured',
+    'Capital Account unavailable',
+    'Account provisioning and provider configuration are required before this capability can be accessed.',
+    Landmark,
   ],
   [
     'Treasury',
