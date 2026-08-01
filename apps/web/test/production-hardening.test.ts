@@ -48,9 +48,24 @@ test('company navigation distinguishes the primary company route from about', ()
   const header = read('components/site-header.tsx');
   const footer = read('components/site-footer.tsx');
 
-  assert.equal(header.includes("['Company', '/company']"), true);
-  assert.equal(header.includes("['Company', '/about']"), false);
+  assert.equal(header.includes('href="/company"'), true);
+  assert.equal(header.includes('href="/about"'), false);
 
   assert.equal(footer.includes("['Company', '/company']"), true);
   assert.equal(footer.includes("['About', '/about']"), true);
+});
+
+test('desktop navigation uses governed, accessible disclosure menus', () => {
+  const header = read('components/site-header.tsx');
+
+  assert.equal(header.includes("label: 'Platform'"), true);
+  assert.equal(header.includes("label: 'Explore'"), true);
+  assert.equal(header.includes('className="mega-menu"'), true);
+  assert.equal(header.includes('aria-expanded={open}'), true);
+  assert.equal(header.includes('aria-controls={id}'), true);
+  assert.equal(header.includes('aria-haspopup="true"'), true);
+  assert.equal(header.includes("event.key === 'Escape'"), true);
+  assert.equal(header.includes("event.key !== 'ArrowDown'"), true);
+  assert.equal(header.includes('event.currentTarget.contains(event.relatedTarget)'), true);
+  assert.equal(header.includes("document.addEventListener('pointerdown', dismiss)"), true);
 });
