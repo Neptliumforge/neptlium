@@ -1,11 +1,11 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 export function DisclosureNote({
   children,
   className,
 }: {
-  children: React.ReactNode
-  className?: string
+  children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <p
@@ -16,5 +16,5 @@ export function DisclosureNote({
     >
       {children}
     </p>
-  )
+  );
 }

@@ -7,21 +7,21 @@
  */
 
 export type LegalSection = {
-  heading: string
-  paragraphs: string[]
-}
+  heading: string;
+  paragraphs: string[];
+};
 
 export type LegalDoc = {
-  slug: string
-  title: string
-  intro: string
-  sections: LegalSection[]
+  slug: string;
+  title: string;
+  intro: string;
+  sections: LegalSection[];
   /** When true, render the "Draft for review" banner. */
-  draft?: boolean
-}
+  draft?: boolean;
+};
 
 const REVIEW_NOTE =
-  'This document is a structured informational draft for a new project and is not a substitute for legal advice. It requires review by qualified counsel before public production use.'
+  'This document is a structured informational draft for a new project and is not a substitute for legal advice. It requires review by qualified counsel before public production use.';
 
 export const LEGAL_DOCS: Record<string, LegalDoc> = {
   privacy: {
@@ -158,8 +158,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
       },
     ],
   },
-}
+};
 
 export function getLegalDoc(slug: string): LegalDoc | undefined {
-  return LEGAL_DOCS[slug]
+  return LEGAL_DOCS[slug];
 }
