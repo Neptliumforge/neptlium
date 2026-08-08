@@ -17,7 +17,7 @@ export default function AuthErrorPage() {
           </p>
         </div>
         <Button
-          href="/login"
+          href="/auth/sign-in"
           variant="cta"
           className="h-11 w-full rounded-md text-[14px] font-semibold"
         >

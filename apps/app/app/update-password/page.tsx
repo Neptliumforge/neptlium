@@ -31,7 +31,7 @@ export default async function UpdatePasswordPage() {
             Request a new link
           </Button>
           <Link
-            href="/login"
+            href="/auth/sign-in"
             className="text-center text-[14px] font-medium text-accent-primary"
           >
             Return to Sign In

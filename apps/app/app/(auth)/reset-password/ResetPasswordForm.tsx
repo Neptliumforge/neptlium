@@ -35,7 +35,7 @@ export function ResetPasswordForm() {
             </p>
           </div>
           <Link
-            href="/login"
+            href="/auth/sign-in"
             className="text-[13px] font-medium text-accent-primary hover:brightness-110"
           >
             Back to Sign In
@@ -49,7 +49,7 @@ export function ResetPasswordForm() {
     <AuthShell>
       <div className="mb-6 h-7">
         <Link
-          href="/login"
+          href="/auth/sign-in"
           className="inline-flex items-center gap-1.5 text-[12px] font-medium text-text-muted hover:text-text-secondary"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />

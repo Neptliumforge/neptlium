@@ -272,3 +272,32 @@ test('webhooks verify, deduplicate and reject replay', async () => {
     409,
   );
 });
+
+test('serverless boundary enforces exact CORS and bearer authentication', async () => {
+  const { serverlessHandler } = await import('../dist/serverless.js');
+  const invoke = async ({ method = 'GET', url = '/health', headers = {} } = {}) => {
+    const result = { statusCode: 0, headers: {}, body: '' };
+    const req = { method, url, headers };
+    const res = {
+      setHeader(name, value) {
+        result.headers[name.toLowerCase()] = value;
+      },
+      writeHead(status, responseHeaders) {
+        result.statusCode = status;
+        Object.assign(result.headers, responseHeaders);
+      },
+      end(body = '') {
+        result.body = body;
+      },
+    };
+    await serverlessHandler(req, res);
+    return result;
+  };
+  const health = await invoke();
+  assert.equal(health.statusCode, 200);
+  const rejectedOrigin = await invoke({ headers: { origin: 'https://attacker.example' } });
+  assert.equal(rejectedOrigin.statusCode, 403);
+  const missingToken = await invoke({ method: 'POST', url: '/v1/account/provision' });
+  assert.equal(missingToken.statusCode, 401);
+  assert.equal(JSON.parse(missingToken.body).error.code, 'authentication_required');
+});

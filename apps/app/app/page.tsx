@@ -11,5 +11,5 @@ export default async function RootPage() {
     redirect("/dashboard");
   }
 
-  redirect("/login");
+  redirect("/auth/sign-in");
 }
