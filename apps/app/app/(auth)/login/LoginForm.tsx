@@ -126,7 +126,7 @@ export function LoginForm({
         <p className="text-center text-[13px] text-text-muted">
           Don&apos;t have an account?{" "}
           <Link
-            href="/signup"
+            href="/auth/sign-up"
             className="font-medium text-accent-primary hover:brightness-110"
           >
             Create Account

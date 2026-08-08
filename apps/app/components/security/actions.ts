@@ -13,7 +13,7 @@ export async function signOutAction(): Promise<void> {
   await recordSecurityEvent(supabase, user.id, "logout");
   await supabase.auth.signOut({ scope: "local" });
 
-  redirect("/login");
+  redirect("/auth/sign-in");
 }
 
 export type RevokeOtherSessionsResult = { readonly ok: true } | { readonly ok: false; readonly error: string };

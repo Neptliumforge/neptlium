@@ -1,0 +1,12 @@
+import { redirect } from 'next/navigation';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
+import { SignupForm } from '@/app/(auth)/signup/SignupForm';
+
+export default async function SignUpPage() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) redirect('/dashboard');
+  return <SignupForm />;
+}

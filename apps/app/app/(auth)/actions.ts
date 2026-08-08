@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import {
   isValidEmail,
   meetsPasswordRequirements,
   readRequiredField,
   safeInternalPath,
-} from "./auth-utils";
+} from './auth-utils';
 
 /**
  * Resolves the app's public origin for building absolute redirect URLs (e.g.
@@ -18,33 +18,34 @@ import {
  */
 async function resolveOrigin(): Promise<string> {
   const configured = process.env.NEXT_PUBLIC_SITE_URL;
-  if (configured) return configured.replace(/\/$/, "");
+  if (configured) return configured.replace(/\/$/, '');
 
   const headerList = await headers();
-  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
-  const protocol = headerList.get("x-forwarded-proto") ?? "https";
+  const host = headerList.get('x-forwarded-host') ?? headerList.get('host');
+  const protocol = headerList.get('x-forwarded-proto') ?? 'https';
   return `${protocol}://${host}`;
 }
-import { createNotification } from "@neptlium/lib";
-import { recordSecurityEvent } from "@/lib/security/events";
-import { recordTrustedDevice } from "@/lib/security/deviceCookie";
-import type { AuthActionState } from "./schema";
+import { createNotification } from '@neptlium/lib';
+import { recordSecurityEvent } from '@/lib/security/events';
+import { recordTrustedDevice } from '@/lib/security/deviceCookie';
+import type { AuthActionState } from './schema';
+import { ensureAccountProvisioned } from '@/lib/api/client';
 
 export async function login(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const email = readRequiredField(formData, "email");
-  const password = readRequiredField(formData, "password");
-  const next = safeInternalPath(readRequiredField(formData, "next"));
+  const email = readRequiredField(formData, 'email');
+  const password = readRequiredField(formData, 'password');
+  const next = safeInternalPath(readRequiredField(formData, 'next'));
 
   if (!isValidEmail(email)) {
     return {
-      error: "Enter a valid email address.",
+      error: 'Enter a valid email address.',
       success: false,
     };
   }
-  if (!password) return { error: "Password is required.", success: false };
+  if (!password) return { error: 'Password is required.', success: false };
 
   const supabase = await createSupabaseServerClient();
 
@@ -55,64 +56,72 @@ export async function login(
 
   if (error || !data.user) {
     return {
-      error: "The email or password is incorrect.",
+      error: 'The email or password is incorrect.',
       success: false,
     };
   }
 
-  await recordSecurityEvent(supabase, data.user.id, "login");
+  await recordSecurityEvent(supabase, data.user.id, 'login');
   await recordTrustedDevice(supabase, data.user.id);
 
-  if (next !== "/dashboard") redirect(next);
+  try {
+    await ensureAccountProvisioned();
+  } catch {
+    return {
+      error: 'Your session is valid, but account provisioning is unavailable. Please retry.',
+      success: false,
+    };
+  }
+
+  if (next !== '/dashboard') redirect(next);
 
   const { data: profile } = await supabase
-    .from("profiles")
-    .select("provisioned_at")
-    .eq("id", data.user.id)
+    .from('profiles')
+    .select('provisioned_at')
+    .eq('id', data.user.id)
     .maybeSingle();
-  redirect(profile?.provisioned_at ? "/dashboard" : "/onboarding");
+  redirect(profile?.provisioned_at ? '/dashboard' : '/onboarding');
 }
 
 export async function signup(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const firstName = readRequiredField(formData, "firstName");
-  const lastName = readRequiredField(formData, "lastName");
-  const email = readRequiredField(formData, "email");
-  const password = readRequiredField(formData, "password");
-  const confirmPassword = readRequiredField(formData, "confirmPassword");
-  const acceptedTerms = formData.get("acceptedTerms") === "on";
+  const firstName = readRequiredField(formData, 'firstName');
+  const lastName = readRequiredField(formData, 'lastName');
+  const email = readRequiredField(formData, 'email');
+  const password = readRequiredField(formData, 'password');
+  const confirmPassword = readRequiredField(formData, 'confirmPassword');
+  const acceptedTerms = formData.get('acceptedTerms') === 'on';
 
-  if (!firstName) return { error: "First name is required.", success: false };
-  if (!lastName) return { error: "Last name is required.", success: false };
+  if (!firstName) return { error: 'First name is required.', success: false };
+  if (!lastName) return { error: 'Last name is required.', success: false };
 
   if (!isValidEmail(email)) {
     return {
-      error: "Enter a valid email address.",
+      error: 'Enter a valid email address.',
       success: false,
     };
   }
-  if (!password || !confirmPassword)
-    return { error: "Password is required.", success: false };
+  if (!password || !confirmPassword) return { error: 'Password is required.', success: false };
 
   if (password !== confirmPassword) {
     return {
-      error: "Passwords do not match.",
+      error: 'Passwords do not match.',
       success: false,
     };
   }
 
   if (!meetsPasswordRequirements(password)) {
     return {
-      error: "Password must meet all security requirements.",
+      error: 'Password must meet all security requirements.',
       success: false,
     };
   }
 
   if (!acceptedTerms) {
     return {
-      error: "You must accept the Terms of Service and Privacy Policy.",
+      error: 'You must accept the Terms of Service and Privacy Policy.',
       success: false,
     };
   }
@@ -120,7 +129,7 @@ export async function signup(
   const supabase = await createSupabaseServerClient();
   const origin = await resolveOrigin();
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -138,9 +147,21 @@ export async function signup(
   // enumeration oracle. Both paths return the same "check your email" state.
   if (error && !/already registered/i.test(error.message)) {
     return {
-      error: "We couldn’t complete the request. Please try again.",
+      error: 'We couldn’t complete the request. Please try again.',
       success: false,
     };
+  }
+
+  if (data.session) {
+    try {
+      await ensureAccountProvisioned();
+    } catch {
+      return {
+        error: 'Your account was created, but provisioning is unavailable. Sign in to retry.',
+        success: false,
+      };
+    }
+    redirect('/dashboard');
   }
 
   return {
@@ -153,75 +174,73 @@ export async function verifyEmailOtp(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const email = readRequiredField(formData, "email");
-  const token = (formData.get("token") as string | null)?.trim() ?? "";
+  const email = readRequiredField(formData, 'email');
+  const token = (formData.get('token') as string | null)?.trim() ?? '';
 
-  if (!isValidEmail(email))
-    return { error: "Enter a valid email address.", success: false };
+  if (!isValidEmail(email)) return { error: 'Enter a valid email address.', success: false };
   if (!/^\d{6}$/.test(token))
-    return { error: "Enter the 6-digit code from your email.", success: false };
+    return { error: 'Enter the 6-digit code from your email.', success: false };
 
   const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase.auth.verifyOtp({
     email,
     token,
-    type: "email",
+    type: 'email',
   });
 
   if (error || !data.user) {
-    const msg = error?.message ?? "";
+    const msg = error?.message ?? '';
     if (/expired/i.test(msg))
-      return { error: "Code expired. Request a new one below.", success: false };
+      return { error: 'Code expired. Request a new one below.', success: false };
     if (/invalid/i.test(msg) || /not found/i.test(msg))
-      return { error: "Incorrect code. Check your email and try again.", success: false };
+      return { error: 'Incorrect code. Check your email and try again.', success: false };
     if (/rate.?limit/i.test(msg))
-      return { error: "Too many attempts. Please wait before trying again.", success: false };
-    return { error: "Verification failed. Please try again.", success: false };
+      return { error: 'Too many attempts. Please wait before trying again.', success: false };
+    return { error: 'Verification failed. Please try again.', success: false };
   }
 
-  await recordSecurityEvent(supabase, data.user.id, "signup");
+  await recordSecurityEvent(supabase, data.user.id, 'signup');
   await recordTrustedDevice(supabase, data.user.id);
 
-  redirect("/onboarding");
+  redirect('/onboarding');
 }
 
 export async function resendVerification(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const email = readRequiredField(formData, "email");
-  if (!isValidEmail(email))
-    return { error: "Enter a valid email address.", success: false };
+  const email = readRequiredField(formData, 'email');
+  if (!isValidEmail(email)) return { error: 'Enter a valid email address.', success: false };
 
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.auth.resend({
-    type: "signup",
+    type: 'signup',
     email,
   });
 
   if (error) {
     return {
       error: /rate.?limit/i.test(error.message)
-        ? "Too many attempts. Please wait before trying again."
-        : "We couldn’t complete the request. Please try again.",
+        ? 'Too many attempts. Please wait before trying again.'
+        : 'We couldn’t complete the request. Please try again.',
       success: false,
     };
   }
 
-  return { error: null, success: true, message: "A new code has been sent." };
+  return { error: null, success: true, message: 'A new code has been sent.' };
 }
 
 export async function resetPassword(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const email = readRequiredField(formData, "email");
+  const email = readRequiredField(formData, 'email');
 
   if (!isValidEmail(email)) {
     return {
-      error: "Enter a valid email address.",
+      error: 'Enter a valid email address.',
       success: false,
     };
   }
@@ -235,7 +254,7 @@ export async function resetPassword(
 
   if (error && /rate limit/i.test(error.message)) {
     return {
-      error: "Too many attempts. Please wait before trying again.",
+      error: 'Too many attempts. Please wait before trying again.',
       success: false,
     };
   }
@@ -250,26 +269,26 @@ export async function updatePassword(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const password = readRequiredField(formData, "password");
-  const confirmPassword = readRequiredField(formData, "confirmPassword");
+  const password = readRequiredField(formData, 'password');
+  const confirmPassword = readRequiredField(formData, 'confirmPassword');
 
   if (!password || !confirmPassword) {
     return {
-      error: "Password is required.",
+      error: 'Password is required.',
       success: false,
     };
   }
 
   if (password !== confirmPassword) {
     return {
-      error: "Passwords do not match.",
+      error: 'Passwords do not match.',
       success: false,
     };
   }
 
   if (!meetsPasswordRequirements(password)) {
     return {
-      error: "Password must meet all security requirements.",
+      error: 'Password must meet all security requirements.',
       success: false,
     };
   }
@@ -279,19 +298,19 @@ export async function updatePassword(
 
   if (error || !data.user) {
     return {
-      error: "Your session has expired. Please sign in again.",
+      error: 'Your session has expired. Please sign in again.',
       success: false,
     };
   }
 
-  await recordSecurityEvent(supabase, data.user.id, "password_updated");
+  await recordSecurityEvent(supabase, data.user.id, 'password_updated');
   await createNotification(
     supabase,
     data.user.id,
-    "security",
-    "Password changed",
-    "Your account password was updated.",
+    'security',
+    'Password changed',
+    'Your account password was updated.',
   );
 
-  redirect("/password-updated");
+  redirect('/password-updated');
 }
