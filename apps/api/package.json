@@ -8,12 +8,13 @@
   },
   "scripts": {
     "dev": "node --watch dist/server.js",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "rm -rf dist && rm -f tsconfig.build.tsbuildinfo && tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
     "lint": "eslint src test --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "pnpm build && node --test test/*.mjs",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "vercel-build": "node build-vercel.mjs"
   },
   "dependencies": {},
   "devDependencies": {}
