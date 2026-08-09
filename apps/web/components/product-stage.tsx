@@ -5,7 +5,7 @@ import { Reveal } from './reveal';
 const views = [
   [
     'Overview',
-    'Backend required',
+    'Connected data required',
     'Capital overview unavailable',
     'Connect verified data infrastructure to establish an operating view.',
     Activity,
@@ -26,9 +26,9 @@ const views = [
   ],
   [
     'Treasury',
-    'Backend required',
+    'Connected data required',
     'Treasury position unavailable',
-    'Liquidity, reserves and readiness require authoritative backend data.',
+    'Liquidity, reserves and readiness require authoritative connected data.',
     CircleSlash2,
   ],
   [
@@ -101,7 +101,7 @@ export function ProductStage() {
               </div>
               <div>
                 <dt>Operations</dt>
-                <dd>Backend required</dd>
+                <dd>Connected data required</dd>
               </div>
             </dl>
           </aside>

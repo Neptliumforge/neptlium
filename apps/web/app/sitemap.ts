@@ -5,6 +5,8 @@ const routes = [
   '/platform',
   '/portfolio-intelligence',
   '/capital-account',
+  '/capital-activity',
+  '/neptlium-link',
   '/allocation',
   '/treasury',
   '/performance',

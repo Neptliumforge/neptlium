@@ -11,57 +11,96 @@ const navigation = [
   {
     label: 'Platform',
     overview: { label: 'Platform overview', href: '/platform' },
-    description: 'One governed environment for observing, organizing and operating capital.',
+    description: 'One governed environment for organizing and operating digital capital.',
     groups: [
       {
-        label: 'Intelligence',
+        label: 'Operating environment',
         links: [
           [
-            'Portfolio intelligence',
+            'Portfolio Intelligence',
             '/portfolio-intelligence',
-            'See ownership, liquidity and exposure in context.',
+            'Understand holdings, exposure and capital position.',
           ],
-          ['Performance', '/performance', 'Understand contribution, decisions and time horizon.'],
-          [
-            'Capital universe',
-            '/capital-universe',
-            'Review supported and planned capital environments.',
-          ],
-        ],
-      },
-      {
-        label: 'Operations',
-        links: [
           [
             'Capital Account',
             '/capital-account',
-            'The controlled foundation for capital movement.',
+            'Infrastructure for digital capital and connected custody activity.',
           ],
-          ['Allocation', '/allocation', 'Observe and model before any authorization.'],
-          ['Treasury', '/treasury', 'Organize liquidity, reserves and obligations.'],
+          ['Treasury', '/treasury', 'Liquidity, reserves, readiness and treasury position.'],
+        ],
+      },
+      {
+        label: 'Control and connectivity',
+        links: [
+          ['Allocation', '/allocation', 'Observe, model and govern allocation decisions.'],
+          [
+            'Capital Activity',
+            '/capital-activity',
+            'Operational records where connected data is available.',
+          ],
+          ['Neptlium Link', '/neptlium-link', 'Connectivity infrastructure for digital capital.'],
         ],
       },
     ],
   },
   {
-    label: 'Explore',
+    label: 'Solutions',
+    overview: { label: 'Capital visibility', href: '/portfolio-intelligence' },
+    description: 'Operating architecture organized around institutional capital needs.',
+    groups: [
+      {
+        label: 'Capital operations',
+        links: [
+          [
+            'Capital Visibility',
+            '/portfolio-intelligence',
+            'Create a unified view of connected digital capital.',
+          ],
+          ['Treasury Operations', '/treasury', 'Understand liquidity, reserves and readiness.'],
+          ['Allocation Governance', '/allocation', 'Model decisions through controlled workflows.'],
+        ],
+      },
+      {
+        label: 'Infrastructure',
+        links: [
+          [
+            'Digital Asset Operations',
+            '/capital-account',
+            'Coordinate supported activity in a governed environment.',
+          ],
+          [
+            'Institutional Connectivity',
+            '/neptlium-link',
+            'Connect provider infrastructure through Neptlium Link.',
+          ],
+          ['Security Architecture', '/security', 'Review controls and infrastructure boundaries.'],
+        ],
+      },
+    ],
+  },
+  {
+    label: 'Resources',
     overview: { label: 'Research and perspectives', href: '/research' },
-    description: 'Clear thinking on ownership, infrastructure and long-term capital operations.',
+    description: 'Documentation, security principles and operating perspectives.',
     groups: [
       {
         label: 'Knowledge',
         links: [
-          ['Research', '/research', 'Institutional perspectives from Neptlium.'],
-          ['Learn', '/learn', 'Foundations for modern capital ownership.'],
-          ['Security', '/security', 'Understand controls and infrastructure boundaries.'],
+          ['Documentation', '/learn', 'Platform and integration foundations.'],
+          ['Security', '/security', 'Security architecture and operating controls.'],
+          [
+            'Capital Framework',
+            '/research',
+            'How Neptlium approaches digital-capital organization.',
+          ],
         ],
       },
       {
         label: 'Neptlium',
         links: [
-          ['Company', '/company', 'Our purpose, principles and direction.'],
+          ['Insights', '/research', 'Research and operating perspectives.'],
           ['Trust', '/trust', 'Product boundaries stated without ambiguity.'],
-          ['Contact', '/contact', 'Speak with the Neptlium team.'],
+          ['Contact', '/contact', 'Institutional and platform inquiries.'],
         ],
       },
     ],

@@ -59,7 +59,8 @@ test('desktop navigation uses governed, accessible disclosure menus', () => {
   const header = read('components/site-header.tsx');
 
   assert.equal(header.includes("label: 'Platform'"), true);
-  assert.equal(header.includes("label: 'Explore'"), true);
+  assert.equal(header.includes("label: 'Solutions'"), true);
+  assert.equal(header.includes("label: 'Resources'"), true);
   assert.equal(header.includes('className="mega-menu"'), true);
   assert.equal(header.includes('aria-expanded={open}'), true);
   assert.equal(header.includes('aria-controls={id}'), true);

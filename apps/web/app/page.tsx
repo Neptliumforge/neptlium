@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 const capabilities = [
   ['Portfolio Intelligence', 'Connected sources required', ScanSearch],
   ['Capital Account', 'Provider not configured', KeyRound],
-  ['Treasury', 'Backend required', Layers3],
+  ['Treasury', 'Connected data required', Layers3],
   ['Allocation', 'Observed allocation unavailable', SlidersHorizontal],
   ['Activity', 'No recorded activity', History],
 ] as const;
@@ -75,7 +75,7 @@ export default function HomePage() {
         <Reveal>
           <div className="section-lead">
             <p className="eyebrow">Operating environment</p>
-            <h2>One coherent view of modern ownership.</h2>
+            <h2>One environment for digital capital.</h2>
             <p>
               Understand capital through connected context, model changes without moving assets, and
               keep operations inside explicit infrastructure boundaries.
@@ -209,7 +209,7 @@ export default function HomePage() {
             </div>
             <div className="readiness-panel">
               {[
-                ['Liquidity', 'Backend required'],
+                ['Liquidity', 'Data unavailable'],
                 ['Reserve position', 'Unavailable'],
                 ['Capital readiness', 'Provider not configured'],
                 ['Exposure', 'Data unavailable'],

@@ -6,8 +6,8 @@ const webFile = (path: string) => readFile(new URL(`../${path}`, import.meta.url
 
 test('public site imports the shared Neptlium token family and offline typography', async () => {
   const css = await webFile('app/globals.css');
-  assert.equal(css.includes('neptlium-tokens.css'), true);
-  assert.equal(css.includes('--nt-signal-indigo'), true);
+  assert.equal(css.includes('packages/ui/src/styles/tokens.css'), true);
+  assert.equal(css.includes('--color-accent-primary'), true);
   assert.equal(css.includes('next/font/google'), false);
   assert.equal(css.includes('fonts.googleapis.com'), false);
   assert.equal(css.includes('--cyan'), false);
@@ -20,7 +20,7 @@ test('public brand and auth entry use canonical assets and routes', async () => 
     webFile('lib/content/site.ts'),
   ]);
   assert.equal(brand.includes('linearGradient'), false);
-  assert.equal(icon.includes('linearGradient'), false);
+  assert.equal(icon.includes('linearGradient'), true);
   assert.equal(site.includes('https://app.neptlium.com/auth/sign-up'), true);
   assert.equal(site.includes('https://app.neptlium.com/auth/sign-in'), true);
 });

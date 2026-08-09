@@ -1,17 +1,18 @@
 @import 'tailwindcss';
-@import '../../../packages/design-system/src/neptlium-tokens.css';
+@import '../../../packages/ui/src/styles/tokens.css';
 
 :root {
   color-scheme: dark;
-  --bg: var(--nt-bg-canvas);
-  --surface: var(--nt-surface-primary);
-  --raised: var(--nt-surface-secondary);
-  --line: var(--nt-line-primary);
-  --text: var(--nt-text-primary);
-  --muted: var(--nt-text-muted);
-  --accent: var(--nt-signal-indigo);
-  --font: var(--nt-font-sans);
-  --mono: var(--nt-font-mono);
+  --bg: var(--color-canvas);
+  --surface: var(--color-surface-1);
+  --raised: var(--color-surface-2);
+  --line: var(--color-border-default);
+  --text: var(--color-text-primary);
+  --muted: var(--color-text-muted);
+  --accent: var(--color-accent-primary);
+  --font:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
 }
 
 @theme inline {
@@ -25,11 +26,8 @@
   --color-line: var(--line);
   --color-line-dark: var(--line);
   --color-accent: var(--accent);
-  --color-accent-hover: var(--nt-line-focus);
-  --color-accent-soft: var(--nt-signal-indigo-soft);
-  --color-warning: var(--nt-signal-amber);
-  --font-sans: var(--font);
-  --font-mono: var(--mono);
+  --color-accent-hover: var(--color-accent-primary-hover);
+  --color-accent-soft: var(--color-surface-3);
 }
 
 * {
@@ -59,11 +57,11 @@ button {
 }
 :focus-visible {
   outline: none;
-  box-shadow: var(--nt-focus-ring);
+  box-shadow: var(--shadow-focus-ring);
 }
 ::selection {
-  background: color-mix(in oklab, var(--nt-signal-indigo) 38%, transparent);
-  color: var(--nt-text-primary);
+  background: color-mix(in oklab, var(--color-accent-primary) 38%, transparent);
+  color: var(--color-text-primary);
 }
 .container-page,
 .nav-shell {
@@ -71,7 +69,7 @@ button {
   margin-inline: auto;
 }
 .eyebrow {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.75rem;
   font-weight: 600;
@@ -87,8 +85,8 @@ button {
   padding: 0 1.25rem;
   border: 1px solid transparent;
   border-radius: 0.375rem;
-  background: var(--nt-signal-indigo);
-  color: var(--nt-text-primary);
+  background: var(--color-accent-primary);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
   font-weight: 600;
   transition:
@@ -97,7 +95,7 @@ button {
     color 180ms ease;
 }
 .button:hover {
-  background: var(--nt-line-focus);
+  background: var(--color-accent-primary-hover);
 }
 .button.small {
   min-height: 2.5rem;
@@ -111,12 +109,12 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
 }
 .text-link:hover {
-  color: var(--nt-text-primary);
+  color: var(--color-text-primary);
 }
 .brand {
   display: inline-flex;
@@ -137,15 +135,15 @@ button {
   z-index: 50;
   height: 4rem;
   border-bottom: 1px solid transparent;
-  background: color-mix(in oklab, var(--nt-bg-canvas) 78%, transparent);
+  background: color-mix(in oklab, var(--color-canvas) 78%, transparent);
   backdrop-filter: blur(10px);
   transition:
     border-color 180ms ease,
     background-color 180ms ease;
 }
 .site-header.scrolled {
-  border-color: var(--nt-line-secondary);
-  background: color-mix(in oklab, var(--nt-bg-canvas) 95%, transparent);
+  border-color: var(--color-border-hairline);
+  background: color-mix(in oklab, var(--color-canvas) 95%, transparent);
 }
 .nav-shell {
   display: flex;
@@ -165,7 +163,7 @@ button {
   border: 0;
   background: transparent;
   padding: 0.625rem 0.6875rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
@@ -187,11 +185,11 @@ button {
 .nav-menu > button:hover,
 .nav-menu > button.active,
 .nav-actions > a:first-child:hover {
-  color: var(--nt-text-primary);
+  color: var(--color-text-primary);
 }
 .desktop-nav > a.active,
 .nav-menu > button.active {
-  box-shadow: inset 0 -1px 0 var(--nt-signal-indigo);
+  box-shadow: inset 0 -1px 0 var(--color-accent-primary);
 }
 .nav-menu {
   position: relative;
@@ -206,9 +204,9 @@ button {
   display: grid;
   grid-template-columns: 15rem minmax(32rem, 1fr);
   width: min(calc(100vw - 2rem), 64rem);
-  border: 1px solid var(--nt-line-primary);
+  border: 1px solid var(--color-border-default);
   border-radius: 0 0 0.625rem 0.625rem;
-  background: color-mix(in oklab, var(--nt-bg-authority) 98%, transparent);
+  background: color-mix(in oklab, var(--color-canvas) 98%, transparent);
   box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 35%);
   overflow: hidden;
   transform: translateX(-50%);
@@ -216,13 +214,13 @@ button {
 }
 .mega-menu-intro {
   padding: 1.5rem;
-  border-right: 1px solid var(--nt-line-secondary);
-  background: var(--nt-surface-primary);
+  border-right: 1px solid var(--color-border-hairline);
+  background: var(--color-surface-1);
 }
 .mega-menu-kicker,
 .mega-menu-group > span,
 .drawer-group > span {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
   font-weight: 600;
@@ -231,7 +229,7 @@ button {
 }
 .mega-menu-intro p {
   margin: 0.75rem 0 1.25rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   line-height: 1.55;
 }
@@ -249,11 +247,11 @@ button {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
-  background: var(--nt-line-secondary);
+  background: var(--color-border-hairline);
 }
 .mega-menu-group {
   padding: 1.5rem;
-  background: var(--nt-bg-authority);
+  background: var(--color-canvas);
 }
 .mega-menu-group > span {
   display: block;
@@ -267,18 +265,18 @@ button {
 }
 .mega-menu-group a:hover,
 .mega-menu-group a:focus-visible {
-  background: var(--nt-surface-secondary);
+  background: var(--color-surface-2);
 }
 .mega-menu-group strong {
   display: block;
-  color: var(--nt-text-primary);
+  color: var(--color-text-primary);
   font-size: 0.8125rem;
   font-weight: 600;
 }
 .mega-menu-group small {
   display: block;
   margin-top: 0.2rem;
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-size: 0.75rem;
   line-height: 1.4;
 }
@@ -309,7 +307,7 @@ button {
   position: absolute;
   inset: 0;
   border: 0;
-  background: var(--nt-overlay);
+  background: var(--color-surface-overlay);
 }
 .drawer {
   position: absolute;
@@ -319,8 +317,8 @@ button {
   flex-direction: column;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
-  border-right: 1px solid var(--nt-line-primary);
-  background: var(--nt-bg-authority);
+  border-right: 1px solid var(--color-border-default);
+  background: var(--color-canvas);
   animation: drawer 180ms ease-out;
 }
 .drawer-head {
@@ -329,7 +327,7 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
 }
 .drawer-head button {
   width: 2.75rem;
@@ -345,7 +343,7 @@ button {
 .drawer-group {
   display: grid;
   padding: 1rem 0;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
 }
 .drawer-links {
   display: contents;
@@ -358,11 +356,11 @@ button {
   min-height: 3rem;
   align-items: center;
   border-bottom: 0;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.9375rem;
 }
 .drawer nav a[aria-current='page'] {
-  color: var(--nt-text-primary);
+  color: var(--color-text-primary);
 }
 @keyframes menu-in {
   from {
@@ -389,7 +387,7 @@ button {
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
   isolation: isolate;
 }
 .hero-inner {
@@ -409,7 +407,7 @@ button {
 }
 .hero-copy {
   max-width: 40rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   line-height: 1.55;
 }
@@ -426,12 +424,12 @@ button {
   z-index: -1;
   background-image:
     linear-gradient(
-      color-mix(in oklab, var(--nt-line-primary) 28%, transparent) 1px,
+      color-mix(in oklab, var(--color-border-default) 28%, transparent) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      color-mix(in oklab, var(--nt-line-primary) 28%, transparent) 1px,
+      color-mix(in oklab, var(--color-border-default) 28%, transparent) 1px,
       transparent 1px
     );
   background-size: 4rem 4rem;
@@ -446,7 +444,7 @@ button {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in oklab, var(--nt-signal-indigo) 14%, transparent),
+    color-mix(in oklab, var(--color-accent-primary) 14%, transparent),
     transparent 68%
   );
 }
@@ -455,7 +453,7 @@ button {
   right: -7vw;
   top: 8vh;
   aspect-ratio: 1;
-  border: 1px solid color-mix(in oklab, var(--nt-signal-indigo) 24%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-accent-primary) 24%, transparent);
   border-radius: 50%;
 }
 .orbit.one {
@@ -472,7 +470,7 @@ button {
   background: linear-gradient(
     115deg,
     transparent 0 46%,
-    color-mix(in oklab, var(--nt-signal-indigo) 14%, transparent) 46.1% 46.25%,
+    color-mix(in oklab, var(--color-accent-primary) 14%, transparent) 46.1% 46.25%,
     transparent 46.35%
   );
 }
@@ -484,13 +482,13 @@ button {
   width: 5.5rem;
   aspect-ratio: 1;
   place-items: center;
-  border: 1px solid color-mix(in oklab, var(--nt-signal-indigo) 42%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-accent-primary) 42%, transparent);
   border-radius: 50%;
 }
 .hero-core span {
   width: 1.5rem;
   aspect-ratio: 1;
-  border: 1px solid var(--nt-signal-indigo);
+  border: 1px solid var(--color-accent-primary);
   border-radius: 50%;
 }
 .flow-line {
@@ -500,7 +498,7 @@ button {
   background: linear-gradient(
     90deg,
     transparent,
-    color-mix(in oklab, var(--nt-signal-indigo) 46%, transparent),
+    color-mix(in oklab, var(--color-accent-primary) 46%, transparent),
     transparent
   );
 }
@@ -520,7 +518,7 @@ button {
   position: absolute;
   right: max(1rem, calc((100vw - 80rem) / 2));
   bottom: 1.375rem;
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
   letter-spacing: 0.07em;
@@ -546,7 +544,7 @@ button {
 .section-lead > p:last-child,
 .product-stage .section-lead > p:last-child {
   max-width: 43rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 1rem;
   line-height: 1.65;
 }
@@ -555,9 +553,9 @@ button {
 .stage-shell {
   margin-top: 3.5rem;
   overflow: hidden;
-  border: 1px solid var(--nt-line-primary);
-  background: var(--nt-surface-primary);
-  box-shadow: var(--nt-shadow-raised);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-1);
+  box-shadow: var(--shadow-md);
 }
 .interface-top,
 .stage-rail {
@@ -566,12 +564,12 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 0 1.25rem;
-  border-bottom: 1px solid var(--nt-line-secondary);
-  color: var(--nt-text-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
+  color: var(--color-text-secondary);
   font-size: 0.75rem;
 }
 .status {
-  color: var(--nt-text-accent) !important;
+  color: var(--color-accent-primary) !important;
   font-family: var(--mono);
   font-size: 0.6875rem !important;
   font-weight: 600;
@@ -589,19 +587,19 @@ button {
   display: grid;
   min-height: 22rem;
   place-content: center;
-  border-right: 1px solid var(--nt-line-secondary);
+  border-right: 1px solid var(--color-border-hairline);
 }
 .operating-map {
   position: relative;
   overflow: hidden;
   background-image:
     linear-gradient(
-      color-mix(in oklab, var(--nt-line-primary) 25%, transparent) 1px,
+      color-mix(in oklab, var(--color-border-default) 25%, transparent) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      color-mix(in oklab, var(--nt-line-primary) 25%, transparent) 1px,
+      color-mix(in oklab, var(--color-border-default) 25%, transparent) 1px,
       transparent 1px
     );
   background-size: 2.75rem 2.75rem;
@@ -609,7 +607,7 @@ button {
 .operating-map > span {
   width: 1.625rem;
   aspect-ratio: 1;
-  border: 1px solid var(--nt-signal-indigo);
+  border: 1px solid var(--color-accent-primary);
   border-radius: 50%;
 }
 .capability-list {
@@ -621,7 +619,7 @@ button {
   align-content: center;
   min-height: 5.75rem;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
 }
 .capability-list > div:last-child {
   border: 0;
@@ -629,13 +627,13 @@ button {
 .capability-list span,
 .capability-list small,
 .asset-row small {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
 }
 .capability-list svg {
   width: 1.0625rem;
-  color: var(--nt-text-accent);
+  color: var(--color-accent-primary);
 }
 .capability-list p {
   margin: 0 0 0.25rem;
@@ -646,7 +644,7 @@ button {
 .treasury-section,
 .security-block,
 .research-section {
-  border-top: 1px solid var(--nt-line-secondary);
+  border-top: 1px solid var(--color-border-hairline);
 }
 .visibility-layout,
 .treasury-layout,
@@ -661,7 +659,7 @@ button {
 .readiness-panel {
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--nt-line-primary);
+  border-top: 1px solid var(--color-border-default);
 }
 .visibility-layout li,
 .readiness-panel > div {
@@ -669,12 +667,12 @@ button {
   grid-template-columns: 2.625rem 1fr;
   gap: 0.5rem;
   padding: 1.25rem 0;
-  border-bottom: 1px solid var(--nt-line-secondary);
-  color: var(--nt-text-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
+  color: var(--color-text-secondary);
 }
 .visibility-layout li span,
 .readiness-panel strong {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
   font-weight: 600;
@@ -690,7 +688,7 @@ button {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin-top: 3.5rem;
-  border-top: 1px solid var(--nt-line-primary);
+  border-top: 1px solid var(--color-border-default);
 }
 .step-grid article,
 .asset-row > div > article,
@@ -699,18 +697,18 @@ button {
   min-height: 18rem;
   flex-direction: column;
   padding: 1.5rem;
-  border-right: 1px solid var(--nt-line-secondary);
+  border-right: 1px solid var(--color-border-hairline);
 }
 .step-grid article > span,
 .asset-row article > span {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
 }
 .step-grid svg {
   width: 1.5rem;
   margin: auto 0 1.5rem;
-  color: var(--nt-text-accent);
+  color: var(--color-accent-primary);
 }
 .step-grid h3 {
   margin: 0 0 0.625rem;
@@ -720,12 +718,12 @@ button {
 .step-grid p,
 .asset-row p {
   margin: 0;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.55;
 }
 .step-grid strong {
   margin-top: auto;
-  color: var(--nt-text-accent);
+  color: var(--color-accent-primary);
   font-size: 0.75rem;
 }
 .asset-row h3 {
@@ -740,8 +738,8 @@ button {
 }
 .asset-row li {
   padding: 0.5rem 0;
-  border-top: 1px solid var(--nt-line-secondary);
-  color: var(--nt-text-muted);
+  border-top: 1px solid var(--color-border-hairline);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
   letter-spacing: 0.05em;
@@ -752,8 +750,8 @@ button {
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   margin-top: 3.5rem;
-  border: 1px solid var(--nt-line-primary);
-  background: var(--nt-line-primary);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-border-default);
 }
 .control-grid > div > div {
   display: flex;
@@ -761,21 +759,21 @@ button {
   align-items: flex-end;
   gap: 0.75rem;
   padding: 1.25rem;
-  background: var(--nt-bg-canvas);
+  background: var(--color-canvas);
 }
 .control-grid svg {
   width: 1.125rem;
-  color: var(--nt-text-accent);
+  color: var(--color-accent-primary);
 }
 .qualifier {
   margin-top: 1.25rem;
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-size: 0.75rem;
 }
 .product-stage {
   padding: clamp(5rem, 9vw, 8rem) max(1rem, calc((100vw - 80rem) / 2));
-  border-block: 1px solid var(--nt-line-secondary);
-  background: var(--nt-bg-authority);
+  border-block: 1px solid var(--color-border-hairline);
+  background: var(--color-canvas);
 }
 .stage-layout {
   display: grid;
@@ -786,7 +784,7 @@ button {
   display: flex;
   flex-direction: column;
   padding: 0.75rem;
-  border-right: 1px solid var(--nt-line-secondary);
+  border-right: 1px solid var(--color-border-hairline);
 }
 .stage-layout nav button {
   display: flex;
@@ -795,18 +793,18 @@ button {
   gap: 0.75rem;
   padding: 0 0.75rem;
   border: 0;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
   background: transparent;
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-size: 0.8125rem;
   text-align: left;
 }
 .stage-layout nav button.active {
-  background: var(--nt-surface-selected);
-  color: var(--nt-text-primary);
+  background: var(--color-surface-3);
+  color: var(--color-text-primary);
 }
 .stage-layout nav button span {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.625rem;
 }
@@ -821,13 +819,13 @@ button {
   position: absolute;
   width: 18rem;
   aspect-ratio: 1;
-  border: 1px solid color-mix(in oklab, var(--nt-signal-indigo) 25%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-accent-primary) 25%, transparent);
   border-radius: 50%;
 }
 .stage-diagram span {
   position: absolute;
   inset: 33%;
-  border: 1px solid color-mix(in oklab, var(--nt-signal-indigo) 48%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-accent-primary) 48%, transparent);
   transform: rotate(45deg);
 }
 .stage-diagram i {
@@ -836,7 +834,7 @@ button {
   left: 50%;
   width: 150%;
   height: 1px;
-  background: color-mix(in oklab, var(--nt-signal-indigo) 24%, transparent);
+  background: color-mix(in oklab, var(--color-accent-primary) 24%, transparent);
   transform: translate(-50%, -50%);
 }
 .stage-diagram i:nth-child(2) {
@@ -853,34 +851,34 @@ button {
 }
 .stage-state > svg {
   width: 1.5rem;
-  color: var(--nt-text-accent);
+  color: var(--color-accent-primary);
 }
 .stage-state h3 {
   margin: 0.75rem 0 0.5rem;
   font-size: 1.25rem;
 }
 .stage-state > p:last-child {
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.55;
 }
 .stage-layout aside {
   padding: 1.5rem;
-  border-left: 1px solid var(--nt-line-secondary);
+  border-left: 1px solid var(--color-border-hairline);
 }
 .stage-layout dl {
   margin-top: 1.5rem;
 }
 .stage-layout dl div {
   padding: 1rem 0;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
 }
 .stage-layout dt {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-size: 0.75rem;
 }
 .stage-layout dd {
   margin: 0.375rem 0 0;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.8125rem;
 }
 .research-index > span,
@@ -888,12 +886,12 @@ button {
   display: flex;
   justify-content: space-between;
   padding: 1.125rem 0;
-  border-bottom: 1px solid var(--nt-line-secondary);
-  color: var(--nt-text-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
 }
 .research-index > a {
-  color: var(--nt-text-accent);
+  color: var(--color-accent-primary);
 }
 .final-cta,
 .detail-cta {
@@ -901,7 +899,7 @@ button {
   min-height: 50vh;
   place-items: center;
   padding: 6rem 1rem;
-  border-top: 1px solid var(--nt-line-secondary);
+  border-top: 1px solid var(--color-border-hairline);
   text-align: center;
 }
 .final-cta > *,
@@ -910,15 +908,15 @@ button {
 }
 .final-cta p,
 .detail-cta p {
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
 }
 .final-actions {
   justify-content: center;
 }
 .site-footer {
   padding: 5rem max(1rem, calc((100vw - 80rem) / 2)) 1.75rem;
-  border-top: 1px solid var(--nt-line-secondary);
-  background: var(--nt-bg-authority);
+  border-top: 1px solid var(--color-border-hairline);
+  background: var(--color-canvas);
 }
 .footer-grid {
   display: grid;
@@ -928,13 +926,13 @@ button {
 .footer-grid > div p {
   max-width: 17.5rem;
   margin: 1.25rem 0 0.625rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.8125rem;
   line-height: 1.6;
 }
 .footer-grid > div > a,
 .footer-grid nav a {
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.8125rem;
 }
 .footer-grid nav {
@@ -944,13 +942,13 @@ button {
 }
 .footer-grid h2 {
   margin: 0.375rem 0 0.5rem;
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-size: 0.6875rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .footer-grid nav a:hover {
-  color: var(--nt-text-primary);
+  color: var(--color-text-primary);
 }
 .footer-base {
   display: flex;
@@ -958,8 +956,8 @@ button {
   gap: 1rem;
   margin-top: 4rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--nt-line-secondary);
-  color: var(--nt-text-muted);
+  border-top: 1px solid var(--color-border-hairline);
+  color: var(--color-text-muted);
   font-size: 0.6875rem;
 }
 .page-hero {
@@ -967,10 +965,10 @@ button {
   min-height: 58vh;
   align-items: flex-end;
   padding: 7.5rem max(1rem, calc((100vw - 80rem) / 2)) 5rem;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
   background: radial-gradient(
     circle at 80% 20%,
-    color-mix(in oklab, var(--nt-signal-indigo) 10%, transparent),
+    color-mix(in oklab, var(--color-accent-primary) 10%, transparent),
     transparent 35%
   );
 }
@@ -986,7 +984,7 @@ button {
 }
 .page-hero > div > p:last-child {
   max-width: 44rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   font-size: 1.0625rem;
   line-height: 1.6;
 }
@@ -999,10 +997,10 @@ button {
   display: grid;
   grid-template-columns: 4rem 1fr;
   padding: 2.5rem 0;
-  border-bottom: 1px solid var(--nt-line-secondary);
+  border-bottom: 1px solid var(--color-border-hairline);
 }
 .detail-sections article > span {
-  color: var(--nt-text-muted);
+  color: var(--color-text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
 }
@@ -1014,7 +1012,7 @@ button {
 .detail-sections p {
   max-width: 42rem;
   margin: 0;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.65;
 }
 .error-page {
@@ -1031,7 +1029,7 @@ button {
 }
 .error-page > p:not(.eyebrow) {
   margin-bottom: 1.875rem;
-  color: var(--nt-text-secondary);
+  color: var(--color-text-secondary);
 }
 .reveal {
   opacity: 0;
@@ -1076,7 +1074,7 @@ button {
   .visual-panel,
   .operating-map {
     border-right: 0;
-    border-bottom: 1px solid var(--nt-line-secondary);
+    border-bottom: 1px solid var(--color-border-hairline);
   }
   .step-grid,
   .asset-row {
@@ -1086,7 +1084,7 @@ button {
   .asset-row > div > article {
     min-height: 15rem;
     border-right: 0;
-    border-bottom: 1px solid var(--nt-line-secondary);
+    border-bottom: 1px solid var(--color-border-hairline);
   }
   .control-grid {
     grid-template-columns: 1fr 1fr;
@@ -1096,10 +1094,10 @@ button {
     grid-template-columns: repeat(5, minmax(9.5rem, 1fr));
     overflow-x: auto;
     border-right: 0;
-    border-bottom: 1px solid var(--nt-line-secondary);
+    border-bottom: 1px solid var(--color-border-hairline);
   }
   .stage-layout aside {
-    border-top: 1px solid var(--nt-line-secondary);
+    border-top: 1px solid var(--color-border-hairline);
     border-left: 0;
   }
   .footer-grid {
