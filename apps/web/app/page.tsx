@@ -62,7 +62,7 @@ export default function HomePage() {
           <p className="hero-copy">{SITE.description}</p>
           <div className="hero-actions">
             <a className="button" href={SITE.accessUrl}>
-              Access Neptlium <ArrowRight aria-hidden="true" />
+              Get started <ArrowRight aria-hidden="true" />
             </a>
             <Link className="text-link" href="/platform">
               Explore the platform <ArrowRight aria-hidden="true" />
@@ -280,7 +280,7 @@ export default function HomePage() {
           <p>Build understanding before action, and keep control explicit.</p>
           <div className="final-actions">
             <a className="button" href={SITE.accessUrl}>
-              Access Neptlium <ArrowRight aria-hidden="true" />
+              Get started <ArrowRight aria-hidden="true" />
             </a>
             <Link className="text-link" href="/contact">
               Contact <ArrowRight aria-hidden="true" />

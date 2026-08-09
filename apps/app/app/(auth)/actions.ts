@@ -87,41 +87,34 @@ export async function signup(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const firstName = readRequiredField(formData, 'firstName');
-  const lastName = readRequiredField(formData, 'lastName');
-  const email = readRequiredField(formData, 'email');
-  const password = readRequiredField(formData, 'password');
-  const confirmPassword = readRequiredField(formData, 'confirmPassword');
-  const acceptedTerms = formData.get('acceptedTerms') === 'on';
-
-  if (!firstName) return { error: 'First name is required.', success: false };
-  if (!lastName) return { error: 'Last name is required.', success: false };
+  const email = readRequiredField(formData, "email");
+  const password = readRequiredField(formData, "password");
+  const acceptedTerms = formData.get("acceptedTerms") === "on";
 
   if (!isValidEmail(email)) {
     return {
-      error: 'Enter a valid email address.',
+      error: "Enter a valid email address.",
       success: false,
     };
   }
-  if (!password || !confirmPassword) return { error: 'Password is required.', success: false };
 
-  if (password !== confirmPassword) {
+  if (!password) {
     return {
-      error: 'Passwords do not match.',
+      error: "Password is required.",
       success: false,
     };
   }
 
   if (!meetsPasswordRequirements(password)) {
     return {
-      error: 'Password must meet all security requirements.',
+      error: "Password must meet all security requirements.",
       success: false,
     };
   }
 
   if (!acceptedTerms) {
     return {
-      error: 'You must accept the Terms of Service and Privacy Policy.',
+      error: "You must accept the Terms of Service and Privacy Policy.",
       success: false,
     };
   }
@@ -134,76 +127,37 @@ export async function signup(
     password,
     options: {
       emailRedirectTo: `${origin}/auth/confirm`,
-      data: {
-        first_name: firstName,
-        last_name: lastName,
-        full_name: `${firstName} ${lastName}`,
-      },
     },
   });
 
-  // An account already existing for this email must not be distinguishable
-  // from a fresh signup — otherwise the response becomes an account-
-  // enumeration oracle. Both paths return the same "check your email" state.
+  // Avoid exposing whether an account already exists for this email.
   if (error && !/already registered/i.test(error.message)) {
     return {
-      error: 'We couldn’t complete the request. Please try again.',
+      error: "We couldn’t complete the request. Please try again.",
       success: false,
     };
   }
 
+  // Some Supabase configurations can return an immediate session.
+  // Preserve fail-closed account provisioning before authenticated entry.
   if (data.session) {
     try {
       await ensureAccountProvisioned();
     } catch {
       return {
-        error: 'Your account was created, but provisioning is unavailable. Sign in to retry.',
+        error:
+          "Your account was created, but account provisioning is unavailable. Sign in to retry.",
         success: false,
       };
     }
-    redirect('/dashboard');
+
+    redirect("/dashboard");
   }
 
   return {
     error: null,
     success: true,
   };
-}
-
-export async function verifyEmailOtp(
-  _prevState: AuthActionState,
-  formData: FormData,
-): Promise<AuthActionState> {
-  const email = readRequiredField(formData, 'email');
-  const token = (formData.get('token') as string | null)?.trim() ?? '';
-
-  if (!isValidEmail(email)) return { error: 'Enter a valid email address.', success: false };
-  if (!/^\d{6}$/.test(token))
-    return { error: 'Enter the 6-digit code from your email.', success: false };
-
-  const supabase = await createSupabaseServerClient();
-
-  const { data, error } = await supabase.auth.verifyOtp({
-    email,
-    token,
-    type: 'email',
-  });
-
-  if (error || !data.user) {
-    const msg = error?.message ?? '';
-    if (/expired/i.test(msg))
-      return { error: 'Code expired. Request a new one below.', success: false };
-    if (/invalid/i.test(msg) || /not found/i.test(msg))
-      return { error: 'Incorrect code. Check your email and try again.', success: false };
-    if (/rate.?limit/i.test(msg))
-      return { error: 'Too many attempts. Please wait before trying again.', success: false };
-    return { error: 'Verification failed. Please try again.', success: false };
-  }
-
-  await recordSecurityEvent(supabase, data.user.id, 'signup');
-  await recordTrustedDevice(supabase, data.user.id);
-
-  redirect('/onboarding');
 }
 
 export async function resendVerification(

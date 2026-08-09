@@ -4,7 +4,7 @@ export default function Page() {
     <AuthPage
       eyebrow="Sign in"
       title="Return to your account."
-      intro="Access Neptlium through the secure account environment. Authentication and account controls are handled separately from this public site."
+      intro="Sign in through the secure Neptlium application. Authentication and account controls are handled separately from this public site."
       action="Continue securely"
       links={[
         ['Create an account', '/auth/create-account'],

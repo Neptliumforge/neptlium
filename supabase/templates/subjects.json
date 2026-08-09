@@ -1,0 +1,9 @@
+{
+  "confirm_signup": "Confirm your Neptlium account",
+  "reset_password": "Reset your Neptlium password",
+  "change_email": "Confirm your new Neptlium email",
+  "invite_user": "You’re invited to Neptlium",
+  "magic_link": "Your secure Neptlium sign-in link",
+  "password_changed": "Your Neptlium password was changed",
+  "email_changed": "Your Neptlium email was changed"
+}

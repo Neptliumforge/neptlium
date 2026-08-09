@@ -51,7 +51,7 @@ export function LoginForm({
             Sign in to Neptlium
           </h1>
           <p className="text-[13px] text-text-muted">
-            Institutional Capital Operating System
+            Continue to your capital environment.
           </p>
         </div>
 
@@ -119,12 +119,12 @@ export function LoginForm({
             className={ctaClass}
             loading={isPending}
           >
-            {isPending ? "Signing in…" : "Sign In"}
+            {isPending ? "Signing in…" : "Sign in"}
           </Button>
         </form>
 
         <p className="text-center text-[13px] text-text-muted">
-          Don&apos;t have an account?{" "}
+          New to Neptlium?{" "}
           <Link
             href="/auth/sign-up"
             className="font-medium text-accent-primary hover:brightness-110"

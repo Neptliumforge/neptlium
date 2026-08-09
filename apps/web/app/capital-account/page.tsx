@@ -26,7 +26,7 @@ export default function Page() {
           'Keep a complete operating view of account events without reducing ownership to a trading balance.',
         ],
       ].map(([title, body]) => ({ title, body }))}
-      cta="Access Neptlium"
+      cta="Get started"
       ctaHref="https://app.neptlium.com/auth/sign-in"
     />
   );
