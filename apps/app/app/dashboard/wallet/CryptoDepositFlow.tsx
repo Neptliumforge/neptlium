@@ -24,7 +24,7 @@ export function DepositPanel(_props: DepositPanelProps) {
         <EmptyState
           icon={<Wallet className="size-5" aria-hidden="true" />}
           title="Deposit unavailable"
-          description="Crypto deposits and funding references require a connected custody provider. No destination is available."
+          description="Deposits and funding references will become available when your Capital Account is ready."
         />
       </CardContent>
     </Card>

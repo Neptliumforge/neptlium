@@ -34,6 +34,21 @@ test('public product language keeps Capital Account and truthful availability', 
   assert.equal(source.includes('Neptlium Wallet'), false);
   assert.equal(source.includes('coming soon'), false);
   assert.equal(source.includes('Capital Account'), true);
-  assert.equal(source.includes('Provider not configured'), true);
+  assert.equal(source.includes('Provider not configured'), false);
+  assert.equal(source.includes('Backend required'), false);
+  assert.equal(source.includes('Database-backed'), false);
   assert.equal(source.includes('href="#"'), false);
+});
+
+test('recognized capital uses the governed shared identity system', async () => {
+  const [home, universe, registry] = await Promise.all([
+    webFile('app/page.tsx'),
+    webFile('app/capital-universe/page.tsx'),
+    readFile(new URL('../../../packages/ui/src/components/Identity.tsx', import.meta.url), 'utf8'),
+  ]);
+  assert.equal(home.includes('AssetIdentity'), true);
+  assert.equal(universe.includes('AssetIdentity'), true);
+  for (const identity of ['bitcoin', 'ethereum', 'usdc', 'base']) {
+    assert.equal(registry.includes(`${identity}:`), true);
+  }
 });

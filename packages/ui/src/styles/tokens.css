@@ -9,36 +9,65 @@
  * separate "auth-only" sub-palette anymore.
  */
 @theme {
+  /* NDS 1.0 foundations. The --n-* namespace is the governed source layer;
+     Tailwind-facing semantic aliases below preserve existing consumers. */
+  --n-black: #030609;
+  --n-bg: #05090d;
+  --n-bg-elevated: #080d13;
+  --n-surface-1: #0b1118;
+  --n-surface-2: #0e1620;
+  --n-surface-3: #121c28;
+  --n-border-subtle: rgba(148, 163, 184, 0.1);
+  --n-border-default: rgba(148, 163, 184, 0.16);
+  --n-border-strong: rgba(148, 163, 184, 0.25);
+  --n-text-primary: #f5f7fa;
+  --n-text-secondary: #a7b1c2;
+  --n-text-tertiary: #707d90;
+  --n-text-disabled: #4c5868;
+  --n-blue-50: #edf6ff;
+  --n-blue-100: #d8ebff;
+  --n-blue-200: #aed7ff;
+  --n-blue-300: #7cbeff;
+  --n-blue-400: #439eff;
+  --n-blue-500: #147dff;
+  --n-blue-600: #0867e8;
+  --n-blue-700: #0752bc;
+  --n-blue-800: #0a4697;
+  --n-blue-900: #0d3b78;
+  --n-positive: #31c48d;
+  --n-warning: #e6a23c;
+  --n-negative: #ef5b5b;
+  --n-info: #439eff;
   /* ---- Surfaces (background hierarchy) ---- */
-  --color-canvas: #04070B; /* Institutional Black — primary app canvas */
-  --color-surface-1: #080E16; /* Primary Card — cards, widgets, forms, tables */
-  --color-surface-2: #0B1420; /* Secondary Card — hover cards, dropdowns, menus */
-  --color-surface-3: #0F1E30; /* Elevated — modals, popovers, command palette, notifications */
+  --color-canvas: var(--n-bg);
+  --color-surface-1: var(--n-surface-1);
+  --color-surface-2: var(--n-surface-2);
+  --color-surface-3: var(--n-surface-3);
   --color-surface-floating: var(--color-surface-3);
   --color-surface-overlay: rgba(2, 3, 4, 0.78);
 
   /* Named component surfaces (semantic aliases onto the hierarchy above) */
   --color-sidebar: #030508;
-  --color-topnav: #04070B;
+  --color-topnav: #04070b;
   --color-card: var(--color-surface-1);
   --color-panel: var(--color-surface-1);
   --color-dialog: var(--color-surface-3);
 
   /* ---- Borders ---- */
-  --color-border-hairline: #131C27; /* Divider — section separation, table dividers, nav */
-  --color-border-default: #1D2938; /* Soft Border — standard cards, tables, inputs */
-  --color-border-strong: #30445E; /* Strong Border — selected cards, focused controls */
-  --color-border-hover: #30445E;
+  --color-border-hairline: var(--n-border-subtle);
+  --color-border-default: var(--n-border-default);
+  --color-border-strong: var(--n-border-strong);
+  --color-border-hover: #30445e;
   /* Blue interactive borders (accent-primary) */
-  --color-border-interactive: #168CFF;
-  --color-border-focus: #2E9BFF;
-  --color-border-selected: #0B8CFF;
+  --color-border-interactive: #168cff;
+  --color-border-focus: #2e9bff;
+  --color-border-selected: #0b8cff;
 
   /* ---- Text hierarchy ---- */
-  --color-text-primary: #f7fafc;
-  --color-text-secondary: #c4d2e2;
-  --color-text-muted: #91a4ba; /* "Tertiary" — metadata, dates, hints */
-  --color-text-disabled: #617286;
+  --color-text-primary: var(--n-text-primary);
+  --color-text-secondary: var(--n-text-secondary);
+  --color-text-muted: var(--n-text-tertiary);
+  --color-text-disabled: var(--n-text-disabled);
 
   /* Historically a separate "warm white" existed for auth-only surfaces;
      the palette is unified now, so this is just an alias. Kept so existing
@@ -49,19 +78,19 @@
      The one accent used for primary buttons, active navigation, selected
      tabs, radio/checkbox/toggle, focus rings, progress, confirmations.
      Applied product-wide — not restricted to any one surface. */
-  --color-accent-primary: #0B8CFF;
-  --color-accent-primary-hover: #168CFF;
-  --color-accent-primary-pressed: #1769F4;
+  --color-accent-primary: var(--n-blue-500);
+  --color-accent-primary-hover: var(--n-blue-400);
+  --color-accent-primary-pressed: var(--n-blue-600);
   --color-accent-primary-foreground: #ffffff;
 
   /* CTA gradient — used exclusively for high-priority actions */
-  --gradient-cta-primary: linear-gradient(90deg, #0B8CFF 0%, #1769F4 62%, #5437FF 100%);
+  --gradient-cta-primary: linear-gradient(90deg, #0b8cff 0%, #1769f4 62%, #5437ff 100%);
 
   /* Compatibility aliases — retained so legacy `accent-emerald` class
      references in uninspected consumers continue to resolve without breakage.
      Do NOT use these aliases in new or modified code; use accent-primary. */
-  --color-accent-emerald: #0B8CFF; /* compat alias → Neptlium Blue */
-  --color-accent-emerald-strong: #1769F4; /* compat alias → pressed state */
+  --color-accent-emerald: #0b8cff; /* compat alias → Neptlium Blue */
+  --color-accent-emerald-strong: #1769f4; /* compat alias → pressed state */
   --color-accent-emerald-foreground: #ffffff;
 
   /* ---- Secondary accent: Executive Gold ----
@@ -80,7 +109,7 @@
   --color-warning-foreground: #2a1d06;
   --color-danger: #d9534f; /* genuine errors / destructive / negative financial states only */
   --color-danger-foreground: #ffffff;
-  --color-info: #0B8CFF; /* Neptlium Blue — info banners, links, docs, neutral notices */
+  --color-info: #0b8cff; /* Neptlium Blue — info banners, links, docs, neutral notices */
   --color-info-foreground: #ffffff;
 
   /* "--color-primary" — kept for text-selection highlight in global.css. */
@@ -107,7 +136,7 @@
      option) on <html> in the consuming app; these theme keys just reference them with
      a static fallback for contexts where next/font hasn't loaded (e.g. Storybook). */
   --font-sans: var(--font-inter-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, 'SFMono-Regular', monospace;
 
   /* Display: gateway, major onboarding titles, portfolio total value only —
      never a section heading. */
@@ -190,11 +219,13 @@
   --shadow-lg: var(--shadow-elevation-5);
   /* Focus ring — Neptlium Blue (restrained, no neon/glow) */
   --shadow-focus-ring: 0 0 0 3px rgba(11, 140, 255, 0.28);
-  --shadow-glow: 0 0 0 1px rgba(11, 140, 255, 0.14), 0 20px 60px rgba(11, 140, 255, 0.10);
+  --shadow-glow: 0 0 0 1px rgba(11, 140, 255, 0.14), 0 20px 60px rgba(11, 140, 255, 0.1);
   /* Compatibility aliases — reference same blue focus treatment */
   --shadow-focus-ring-emerald: var(--shadow-focus-ring);
   --shadow-glow-emerald: var(--shadow-glow);
-  --shadow-card-floating: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 1px 2px rgba(0, 0, 0, 0.32), 0 8px 24px rgba(0, 0, 0, 0.28);
+  --shadow-card-floating:
+    0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 1px 2px rgba(0, 0, 0, 0.32),
+    0 8px 24px rgba(0, 0, 0, 0.28);
   --color-border-whisper: rgba(255, 255, 255, 0.06);
 }
 

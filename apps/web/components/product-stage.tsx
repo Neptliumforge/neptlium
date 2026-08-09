@@ -1,63 +1,57 @@
 'use client';
 import { useState } from 'react';
-import { Activity, CircleSlash2, Landmark, Layers3, LockKeyhole } from 'lucide-react';
+import { Activity, Landmark, Layers3, LockKeyhole, ScanSearch } from 'lucide-react';
 import { Reveal } from './reveal';
 const views = [
   [
     'Overview',
-    'Connected data required',
-    'Capital overview unavailable',
-    'Connect verified data infrastructure to establish an operating view.',
+    'Capital position',
+    'A concise command surface for accounts, allocation and activity.',
     Activity,
   ],
   [
     'Portfolio',
-    'Observed allocation unavailable',
-    'Portfolio data unavailable',
-    'Portfolio intelligence depends on connected, verified sources.',
+    'Portfolio Intelligence',
+    'Composition and asset structure begin with authoritative portfolio data.',
     Layers3,
   ],
   [
     'Capital Account',
-    'Provider not configured',
-    'Capital Account unavailable',
-    'Account provisioning and provider configuration are required before this capability can be accessed.',
+    'Governed account',
+    'Funding and capital movement remain inside explicit account controls.',
     Landmark,
   ],
   [
     'Treasury',
-    'Connected data required',
-    'Treasury position unavailable',
-    'Liquidity, reserves and readiness require authoritative connected data.',
-    CircleSlash2,
+    'Capital readiness',
+    'Liquidity and reserve belong in the context of the whole portfolio.',
+    ScanSearch,
   ],
   [
     'Allocation',
-    'Authorization unavailable',
-    'Authorization unavailable',
-    'Modeling does not move capital. Execution infrastructure is not represented as active.',
+    'Deliberate decisions',
+    'Observe, model, review and authorize without collapsing intent into execution.',
     LockKeyhole,
   ],
 ] as const;
 export function ProductStage() {
   const [active, setActive] = useState(0);
-  const [name, state, title, copy, Icon] = views[active];
+  const [name, title, copy, Icon] = views[active];
   return (
     <section className="product-stage">
       <Reveal>
         <div className="section-lead">
           <p className="eyebrow">Product experience</p>
-          <h2>Truthful state is an interface decision.</h2>
+          <h2>One architecture from position to decision.</h2>
           <p>
-            Move through the exact operating areas used by the authenticated application. Every view
-            remains explicit about missing infrastructure.
+            Real Neptlium product areas, shown without illustrative balances or fabricated activity.
           </p>
         </div>
       </Reveal>
       <Reveal className="stage-shell">
         <div className="stage-rail">
           <span>Neptlium / {name}</span>
-          <span className="status">Illustrative interface</span>
+          <span className="status">Interface architecture</span>
         </div>
         <div className="stage-layout">
           <nav aria-label="Product experience views">
@@ -83,25 +77,25 @@ export function ProductStage() {
             </div>
             <div className="stage-state">
               <Icon aria-hidden="true" />
-              <p className="status">{state}</p>
+              <p className="status">Product system</p>
               <h3>{title}</h3>
               <p>{copy}</p>
             </div>
           </div>
           <aside>
-            <p className="eyebrow">Infrastructure state</p>
+            <p className="eyebrow">Operating principle</p>
             <dl>
               <div>
-                <dt>Data source</dt>
-                <dd>Not connected</dd>
+                <dt>Observe</dt>
+                <dd>See clearly</dd>
               </div>
               <div>
-                <dt>Authorization</dt>
-                <dd>Unavailable</dd>
+                <dt>Model</dt>
+                <dd>Act deliberately</dd>
               </div>
               <div>
-                <dt>Operations</dt>
-                <dd>Connected data required</dd>
+                <dt>Authorize</dt>
+                <dd>Keep control explicit</dd>
               </div>
             </dl>
           </aside>

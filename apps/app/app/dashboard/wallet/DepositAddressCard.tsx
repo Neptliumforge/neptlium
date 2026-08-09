@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Check, Copy, AlertTriangle } from "lucide-react";
-import { Badge, Button } from "@neptlium/ui";
-import type { CustodyAddress } from "@neptlium/lib";
+import { useState } from 'react';
+import { Check, Copy, AlertTriangle } from 'lucide-react';
+import { AssetIdentity, Badge, Button } from '@neptlium/ui';
+import type { CustodyAddress } from '@neptlium/lib';
 
 export interface DepositAddressCardProps {
   readonly address: CustodyAddress;
@@ -12,7 +12,7 @@ export interface DepositAddressCardProps {
 function truncate(str: string, maxLen = 20): string {
   if (str.length <= maxLen) return str;
   const half = Math.floor((maxLen - 3) / 2);
-  return str.slice(0, half) + "…" + str.slice(str.length - half);
+  return str.slice(0, half) + '…' + str.slice(str.length - half);
 }
 
 export function DepositAddressCard({ address }: DepositAddressCardProps) {
@@ -31,14 +31,16 @@ export function DepositAddressCard({ address }: DepositAddressCardProps) {
     <div className="rounded-lg border border-border-default bg-surface-1 p-4">
       {/* Header row */}
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm font-semibold text-text-primary">
-            {address.asset}
-          </span>
-          <span className="text-body-sm text-text-muted">&middot;</span>
-          <span className="text-body-sm text-text-secondary">{address.network}</span>
-        </div>
-        <Badge tone={address.status === "active" ? "success" : address.status === "suspended" ? "danger" : "neutral"}>
+        <AssetIdentity asset={address.asset} network={address.network} detailed />
+        <Badge
+          tone={
+            address.status === 'active'
+              ? 'success'
+              : address.status === 'suspended'
+                ? 'danger'
+                : 'neutral'
+          }
+        >
           {address.status}
         </Badge>
       </div>
@@ -68,7 +70,7 @@ export function DepositAddressCard({ address }: DepositAddressCardProps) {
           size="sm"
           onClick={handleCopy}
           className="shrink-0"
-          aria-label={copied ? "Copied" : "Copy address"}
+          aria-label={copied ? 'Copied' : 'Copy address'}
         >
           {copied ? (
             <>
@@ -85,7 +87,7 @@ export function DepositAddressCard({ address }: DepositAddressCardProps) {
       </div>
 
       {/* Safety notice for active funding references */}
-      {address.status === "active" && (
+      {address.status === 'active' && (
         <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-relaxed text-text-muted">
           <AlertTriangle className="mt-0.5 size-3 shrink-0 text-warning" aria-hidden="true" />
           Only send {address.asset} via {address.network}. Other assets will not be credited.
@@ -94,7 +96,7 @@ export function DepositAddressCard({ address }: DepositAddressCardProps) {
 
       {/* Created date */}
       <p className="mt-2 text-[11px] text-text-muted">
-        Created {new Date(address.createdAt).toLocaleDateString(undefined, { dateStyle: "medium" })}
+        Created {new Date(address.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
       </p>
     </div>
   );

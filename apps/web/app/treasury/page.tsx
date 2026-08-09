@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <FoundationPage
       eyebrow="Treasury"
-      title="Liquidity is part of the strategy."
+      title="Liquidity is more than a balance."
       intro="Treasury connects portfolio ownership with capital readiness. Organize available capital, reserves, obligations and allocation capacity without losing sight of the wider portfolio."
       anchors={['Treasury context', 'Capital readiness', 'Planning']}
       cards={[

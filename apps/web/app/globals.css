@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '../../../packages/ui/src/styles/tokens.css';
+@source '../../../packages/ui/src';
 
 :root {
   color-scheme: dark;
@@ -459,6 +460,31 @@ button {
   gap: 1rem;
   margin-top: 2rem;
 }
+.hero-systems {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 46rem;
+  margin-top: 3.5rem;
+  border-block: 1px solid var(--color-border-hairline);
+}
+.hero-systems span {
+  display: flex;
+  min-height: 3.75rem;
+  align-items: center;
+  gap: 0.65rem;
+  border-right: 1px solid var(--color-border-hairline);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+.hero-systems span:last-child {
+  border-right: 0;
+}
+.hero-systems i {
+  color: var(--color-accent-primary);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  font-style: normal;
+}
 .hero-field {
   position: absolute;
   inset: 0;
@@ -720,6 +746,57 @@ button {
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
+.capital-convergence {
+  display: grid;
+  min-height: 22rem;
+  grid-template-columns: 1fr 7.5rem 1fr;
+  align-items: center;
+  border-block: 1px solid var(--color-border-default);
+  background-image:
+    linear-gradient(
+      color-mix(in oklab, var(--color-border-default) 18%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-border-default) 18%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 2.5rem 2.5rem;
+}
+.capital-convergence > div {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.25rem;
+}
+.capital-convergence > div span {
+  padding: 0.65rem 0.75rem;
+  border-left: 1px solid var(--color-border-strong);
+  background: var(--color-canvas);
+  color: var(--color-text-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.capital-convergence strong {
+  display: grid;
+  min-height: 7.5rem;
+  place-items: center;
+  border: 1px solid color-mix(in oklab, var(--color-accent-primary) 42%, transparent);
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+}
+.capital-convergence > p {
+  max-width: 9rem;
+  margin: auto;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
 .readiness-panel > div {
   grid-template-columns: 1fr auto;
   font-size: 0.875rem;
@@ -771,6 +848,12 @@ button {
   margin: auto 0 0.25rem;
   font-size: 2rem;
   letter-spacing: -0.04em;
+}
+.asset-row .asset-pair {
+  margin-top: auto;
+}
+.asset-row .asset-pair > span:last-child > span:first-child {
+  font-size: 1rem;
 }
 .asset-row ul {
   margin: 1.5rem 0 0;
@@ -961,7 +1044,7 @@ button {
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
+  grid-template-columns: 2fr repeat(5, 1fr);
   gap: 3rem;
 }
 .footer-grid > div p {
@@ -1144,6 +1227,21 @@ button {
   .footer-grid {
     grid-template-columns: 1.5fr 1fr 1fr;
   }
+  .capital-convergence {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0;
+  }
+  .capital-convergence strong {
+    width: 7.5rem;
+    min-height: 4rem;
+    margin: auto;
+  }
+  .capital-convergence > p {
+    max-width: none;
+    margin: 0 auto 0.5rem;
+    text-align: center;
+  }
 }
 @media (max-width: 600px) {
   .hero h1 {
@@ -1157,6 +1255,19 @@ button {
   .hero-copy {
     font-size: 1rem;
     line-height: 1.6;
+  }
+  .hero-systems {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 2.5rem;
+  }
+  .hero-systems span {
+    min-height: 3.25rem;
+  }
+  .hero-systems span:nth-child(2) {
+    border-right: 0;
+  }
+  .hero-systems span:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--color-border-hairline);
   }
   .hero-actions,
   .final-actions {
@@ -1176,6 +1287,10 @@ button {
   }
   .control-grid {
     grid-template-columns: 1fr;
+  }
+  .step-grid article,
+  .asset-row > div > article {
+    min-height: 12rem;
   }
   .footer-grid {
     grid-template-columns: 1fr 1fr;

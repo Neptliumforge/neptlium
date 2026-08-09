@@ -9,13 +9,13 @@ export default function Page() {
   return (
     <FoundationPage
       eyebrow="Portfolio Intelligence"
-      title="See capital as a system—not a collection of positions."
-      intro="A governed portfolio view for holdings, performance, liquidity, concentration, exposure, capital activity and portfolio role. The experience is designed to make context visible before decisions are made."
+      title="Understand the whole position."
+      intro="Capital becomes more useful when ownership, liquidity, concentration and allocation can be understood together. Portfolio Intelligence brings that context into one governed view."
       anchors={['Portfolio view', 'Analytical dimensions', 'Operating context']}
       cards={[
         [
           'Total portfolio value',
-          'A complete view of connected capital, with unavailable sources kept visibly separate.',
+          'A coherent view of capital composition grounded in authoritative portfolio information.',
         ],
         [
           'Performance and contribution',

@@ -6,8 +6,28 @@ const groups = [
     'Platform',
     [
       ['Platform', '/platform'],
-      ['Capital Universe', '/capital-universe'],
+      ['Portfolio Intelligence', '/portfolio-intelligence'],
+      ['Capital Account', '/capital-account'],
+      ['Treasury', '/treasury'],
+      ['Allocation', '/allocation'],
+    ],
+  ],
+  [
+    'Solutions',
+    [
+      ['Individual capital', '/platform'],
+      ['Family capital', '/platform'],
+      ['Treasury teams', '/treasury'],
+      ['Investment organizations', '/platform'],
+    ],
+  ],
+  [
+    'Resources',
+    [
+      ['Research', '/research'],
+      ['Learn', '/learn'],
       ['Security', '/security'],
+      ['Capital Universe', '/capital-universe'],
     ],
   ],
   [
@@ -15,7 +35,6 @@ const groups = [
     [
       ['Company', '/company'],
       ['About', '/about'],
-      ['Research', '/research'],
       ['Contact', '/contact'],
     ],
   ],

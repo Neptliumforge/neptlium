@@ -1,16 +1,16 @@
-import type { Metadata } from 'next'
-import { Mail } from 'lucide-react'
-import { PageHeader } from '@/components/page-header'
-import { Section } from '@/components/section'
-import { ContactForm } from '@/components/contact-form'
-import { DisclosureNote } from '@/components/ui/disclosure-note'
-import { SITE } from '@/lib/content/site'
+import type { Metadata } from 'next';
+import { Mail } from 'lucide-react';
+import { PageHeader } from '@/components/page-header';
+import { Section } from '@/components/section';
+import { ContactForm } from '@/components/contact-form';
+import { DisclosureNote } from '@/components/ui/disclosure-note';
+import { SITE } from '@/lib/content/site';
 
 export const metadata: Metadata = {
   title: 'Contact',
   description: `Contact the Neptlium team at ${SITE.supportEmail}.`,
   alternates: { canonical: '/contact' },
-}
+};
 
 export default function ContactPage() {
   return (
@@ -39,8 +39,8 @@ export default function ContactPage() {
 
             <div className="mt-8">
               <DisclosureNote>
-                Information presented by Neptlium is for informational purposes and
-                does not constitute investment advice.
+                Information presented by Neptlium is for informational purposes and does not
+                constitute investment advice.
               </DisclosureNote>
             </div>
           </div>
@@ -48,7 +48,8 @@ export default function ContactPage() {
           <div>
             <h2 className="text-lg font-semibold text-ink">Send a message</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Submission infrastructure is not connected. The form below cannot send or store a message; use the support email for contact.
+              Online message submission is not currently offered. Use the support email to contact
+              Neptlium directly.
             </p>
             <div className="mt-4">
               <ContactForm />
@@ -57,5 +58,5 @@ export default function ContactPage() {
         </div>
       </Section>
     </>
-  )
+  );
 }

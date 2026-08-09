@@ -1,155 +1,141 @@
-import Link from "next/link";
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import {
-  Activity,
-  ArrowRight,
-  Briefcase,
-  Gauge,
-  SlidersHorizontal,
-} from "lucide-react";
-import {
+  AssetAmount,
+  AssetIdentity,
   Badge,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  EmptyState,
-  StatCard,
-} from "@neptlium/ui";
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
-import { requireProvisionedUser } from "@/lib/auth";
+  Group,
+  IdentityMark,
+  Money,
+  Row,
+  Section,
+  Stack,
+  Surface,
+  identityRegistry,
+} from '@neptlium/ui';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
+import { requireProvisionedUser } from '@/lib/auth';
 
-const tone: Record<string, "success" | "warning" | "danger" | "neutral"> = {
-  completed: "success",
-  pending: "warning",
-  pending_review: "warning",
-  failed: "danger",
-  cancelled: "neutral",
+const tone: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
+  completed: 'success',
+  pending: 'warning',
+  pending_review: 'warning',
+  failed: 'danger',
+  cancelled: 'neutral',
 };
+
 export default async function DashboardPage() {
   const { profile } = await requireProvisionedUser();
   const supabase = await createSupabaseServerClient();
   const { data: activity, error } = await supabase
-    .from("wallet_transactions")
-    .select("id,type,asset,network,amount,status,created_at")
-    .eq("profile_id", profile.id)
-    .order("created_at", { ascending: false })
+    .from('wallet_transactions')
+    .select('id,type,asset,network,amount,status,created_at')
+    .eq('profile_id', profile.id)
+    .order('created_at', { ascending: false })
     .limit(5);
   return (
-    <div className="space-y-5">
+    <Stack>
       <header>
-        <h1 className="text-xl font-semibold tracking-tight">Overview</h1>
-        <p className="mt-1 text-sm text-text-muted">
-          A concise view of your current capital operations.
-        </p>
+        <h1>Overview</h1>
+        <p className="mt-1 text-sm text-text-muted">Your capital position and next decisions.</p>
       </header>
-      <section
-        aria-label="Capital summary"
-        className="grid grid-cols-2 gap-3 xl:grid-cols-4"
-      >
-        {(
-          [
-            ["Total Capital", "Valuation data unavailable"],
-            ["Available Capital", "Liquidity data unavailable"],
-            ["Allocated Capital", "Allocation data unavailable"],
-            ["Reserve Capital", "Reserve data unavailable"],
-          ] as const
-        ).map(([label, detail]) => (
-          <StatCard key={label} label={label} value="—" delta={detail} />
-        ))}
+      <section className="space-y-5 border-b border-border-hairline pb-6">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">
+            Total capital
+          </p>
+          <Money
+            state="unavailable"
+            className="mt-2 block text-[2.5rem] font-medium leading-none text-text-primary"
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          {['Available', 'Allocated', 'Reserve'].map((label) => (
+            <div key={label}>
+              <p className="text-xs text-text-muted">{label}</p>
+              <Money state="unavailable" className="mt-1 block text-base text-text-primary" />
+            </div>
+          ))}
+        </div>
       </section>
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Current Allocation</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <EmptyState
-              icon={<SlidersHorizontal className="size-5" />}
-              title="Allocation unavailable"
-              description="No reporting-value allocation data is configured for this account."
-            />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Capital Health Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <EmptyState
-              icon={<Gauge className="size-5" />}
-              title="Health context unavailable"
-              description="Liquidity, concentration, reserve, and allocation data are required before capital health can be summarized."
-            />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Next Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Link
-              href="/dashboard/portfolio"
-              className="flex min-h-11 items-center gap-3 rounded-md border border-border-default px-3 text-sm"
-            >
-              <Briefcase className="size-4" />
-              Review portfolio data
-              <ArrowRight className="ml-auto size-4" />
+      <Section title="Accounts">
+        <Surface className="px-4 sm:px-5">
+          <Link
+            href="/dashboard/wallet"
+            className="flex min-h-20 items-center gap-4 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">Capital Account</p>
+              <span className="mt-2 flex items-center gap-3 text-xs text-text-muted">
+                {(['usdc', 'ethereum', 'bitcoin'] as const).map((id) => (
+                  <span key={id} className="inline-flex items-center gap-1.5">
+                    <IdentityMark identity={identityRegistry[id]} size="xs" decorative />
+                    {identityRegistry[id].symbol}
+                  </span>
+                ))}
+              </span>
+            </div>
+            <Money state="unavailable" className="text-base text-text-primary" />
+            <ArrowRight className="size-4 text-text-muted" />
+          </Link>
+        </Surface>
+      </Section>
+      <Section title="Allocation">
+        <Surface className="px-4 sm:px-5">
+          <Row>
+            <div>
+              <p className="text-sm font-medium">Current policy</p>
+              <p className="text-xs text-text-muted">Not configured</p>
+            </div>
+            <Link href="/dashboard/allocations" className="text-sm font-medium text-accent-primary">
+              Create model
             </Link>
-            <Link
-              href="/dashboard/allocations"
-              className="flex min-h-11 items-center gap-3 rounded-md border border-border-default px-3 text-sm"
-            >
-              <SlidersHorizontal className="size-4" />
-              Model an allocation scenario
-              <ArrowRight className="ml-auto size-4" />
-            </Link>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {error ? (
-              <EmptyState
-                icon={<Activity className="size-5" />}
-                title="Activity failed to load"
-                description="Recent capital activity is unavailable. Refresh the page or try again later."
-              />
-            ) : !activity?.length ? (
-              <EmptyState
-                icon={<Activity className="size-5" />}
-                title="No recent activity"
-                description="Database-backed activity will appear here when available."
-              />
-            ) : (
-              <div className="divide-y divide-border-hairline">
-                {activity.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex min-h-12 items-center justify-between gap-3 py-2"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-sm capitalize">{item.type}</p>
-                      <p className="truncate text-xs text-text-muted">
-                        {item.asset} · {item.network}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <span className="font-mono text-sm">
-                        {Number(item.amount).toLocaleString()} {item.asset}
-                      </span>
-                      <Badge tone={tone[item.status] ?? "neutral"}>
-                        {item.status.replaceAll("_", " ")}
+          </Row>
+        </Surface>
+      </Section>
+      <Section
+        title="Activity"
+        action={
+          <Link href="/dashboard/transactions" className="text-sm text-accent-primary">
+            See all
+          </Link>
+        }
+      >
+        <Surface className="px-4 sm:px-5">
+          {error ? (
+            <p className="py-7 text-sm text-text-muted">
+              Capital activity could not be loaded. Try again later.
+            </p>
+          ) : !activity?.length ? (
+            <p className="py-7 text-sm text-text-muted">
+              No activity yet. Your capital activity will appear here.
+            </p>
+          ) : (
+            <Group>
+              {activity.map((item) => (
+                <Row key={item.id}>
+                  <div className="flex min-w-0 items-center gap-3">
+                    <AssetIdentity asset={item.asset} network={item.network} size="sm" />
+                    <p className="text-sm capitalize">{item.type}</p>
+                  </div>
+                  <div className="text-right">
+                    <AssetAmount
+                      value={Number(item.amount)}
+                      asset={item.asset as 'USDC' | 'ETH' | 'BTC'}
+                      className="text-sm"
+                    />
+                    <div className="mt-1">
+                      <Badge tone={tone[item.status] ?? 'neutral'}>
+                        {item.status.replaceAll('_', ' ')}
                       </Badge>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+                </Row>
+              ))}
+            </Group>
+          )}
+        </Surface>
+      </Section>
+    </Stack>
   );
 }

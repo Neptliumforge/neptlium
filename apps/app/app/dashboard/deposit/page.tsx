@@ -13,7 +13,7 @@ export default async function Page() {
           <EmptyState
             icon={<Wallet className="size-5" />}
             title="Deposit unavailable"
-            description="Crypto deposits require a connected custody provider. No address or QR code is available."
+            description="Deposits will become available when your Capital Account is ready."
           />
         </CardContent>
       </Card>

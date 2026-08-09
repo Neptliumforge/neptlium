@@ -7,7 +7,7 @@ export default function NeptliumLinkPage() {
       intro="Neptlium Link is the connectivity layer for coordinating provider infrastructure without claiming to replace custody, blockchain, exchange or identity providers."
       sections={[
         [
-          'Wallet and custody connectivity',
+          'Capital Account connectivity',
           'Connect supported account and custody infrastructure through governed boundaries.',
         ],
         [

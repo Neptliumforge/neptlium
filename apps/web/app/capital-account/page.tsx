@@ -9,8 +9,8 @@ export default function Page() {
   return (
     <FoundationPage
       eyebrow="Capital Account"
-      title="One account for the movement of capital."
-      intro="Capital Account is the operational foundation through which eligible users can fund, hold, transfer and deploy supported capital across the Neptlium environment. Capabilities vary by jurisdiction, eligibility, provider coverage and account type."
+      title="Capital needs an operating layer."
+      intro="The Neptlium Capital Account is the account infrastructure through which supported digital capital can be organized and operated within explicit controls. Asset and network availability depends on production integrations and account eligibility."
       anchors={['Account foundation', 'Governed operations', 'Availability']}
       cards={[
         [

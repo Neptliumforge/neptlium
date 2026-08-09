@@ -9,8 +9,8 @@ export default function Page() {
   return (
     <FoundationPage
       eyebrow="Allocation"
-      title="Move from observation to deliberate allocation."
-      intro="Allocation brings portfolio purpose, possible structures and explicit control into one decision pathway. Modeling is analytical; authorization remains a separate governed step."
+      title="Capital structure before capital movement."
+      intro="Neptlium separates understanding a portfolio from changing it. Model allocation scenarios, evaluate structure and preserve explicit authorization between intent and execution."
       anchors={['Decision pathway', 'Portfolio roles', 'Authorization']}
       cards={[
         [

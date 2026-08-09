@@ -1,8 +1,20 @@
-"use client";
+'use client';
 
-import { useActionState, useEffect, useId, useState } from "react";
-import { Button, Field, FieldError, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@neptlium/ui";
-import { submitAllocationRequestAction, type AllocationActionResult } from "./actions";
+import { useActionState, useEffect, useId, useState } from 'react';
+import {
+  AssetIdentity,
+  Button,
+  Field,
+  FieldError,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@neptlium/ui';
+import { submitAllocationRequestAction, type AllocationActionResult } from './actions';
 
 export interface WalletOption {
   readonly id: string;
@@ -31,12 +43,15 @@ const initialState: AllocationActionResult | null = null;
 
 export function AllocationRequestForm({ wallets, portfolios, pairs }: AllocationRequestFormProps) {
   const formId = useId();
-  const [state, formAction, isPending] = useActionState(submitAllocationRequestAction, initialState);
-  const [selectedWallet, setSelectedWallet] = useState(wallets[0]?.id ?? "");
-  const [selectedPair, setSelectedPair] = useState(
-    pairs[0] ? `${pairs[0].assetCode}::${pairs[0].networkCode}` : ""
+  const [state, formAction, isPending] = useActionState(
+    submitAllocationRequestAction,
+    initialState,
   );
-  const [selectedPortfolio, setSelectedPortfolio] = useState(portfolios[0]?.id ?? "");
+  const [selectedWallet, setSelectedWallet] = useState(wallets[0]?.id ?? '');
+  const [selectedPair, setSelectedPair] = useState(
+    pairs[0] ? `${pairs[0].assetCode}::${pairs[0].networkCode}` : '',
+  );
+  const [selectedPortfolio, setSelectedPortfolio] = useState(portfolios[0]?.id ?? '');
   // Generate a stable idempotency key per form mount; reset on success
   const [idempotencyKey, setIdempotencyKey] = useState(() => crypto.randomUUID());
 
@@ -49,20 +64,18 @@ export function AllocationRequestForm({ wallets, portfolios, pairs }: Allocation
   if (wallets.length === 0) {
     return (
       <p className="text-body-sm text-text-secondary">
-        No wallet available. Complete account provisioning to submit an allocation request.
+        Your Capital Account is not ready for allocation requests.
       </p>
     );
   }
 
   if (pairs.length === 0) {
     return (
-      <p className="text-body-sm text-text-secondary">
-        No supported assets are configured yet.
-      </p>
+      <p className="text-body-sm text-text-secondary">No supported assets are configured yet.</p>
     );
   }
 
-  const [selectedAsset, selectedNetwork] = selectedPair.split("::");
+  const [selectedAsset, selectedNetwork] = selectedPair.split('::');
 
   return (
     <form action={formAction} className="space-y-5">
@@ -75,10 +88,10 @@ export function AllocationRequestForm({ wallets, portfolios, pairs }: Allocation
       {/* Wallet */}
       {wallets.length > 1 && (
         <Field>
-          <Label htmlFor={`${formId}-wallet`}>Wallet</Label>
+          <Label htmlFor={`${formId}-wallet`}>Capital Account</Label>
           <Select value={selectedWallet} onValueChange={setSelectedWallet}>
             <SelectTrigger id={`${formId}-wallet`}>
-              <SelectValue placeholder="Select wallet" />
+              <SelectValue placeholder="Select Capital Account" />
             </SelectTrigger>
             <SelectContent>
               {wallets.map((wallet) => (
@@ -125,7 +138,12 @@ export function AllocationRequestForm({ wallets, portfolios, pairs }: Allocation
                 key={`${pair.assetCode}::${pair.networkCode}`}
                 value={`${pair.assetCode}::${pair.networkCode}`}
               >
-                {pair.assetLabel} &middot; {pair.networkLabel}
+                <AssetIdentity
+                  asset={pair.assetCode}
+                  network={pair.networkCode}
+                  size="sm"
+                  detailed
+                />
               </SelectItem>
             ))}
           </SelectContent>
@@ -149,14 +167,9 @@ export function AllocationRequestForm({ wallets, portfolios, pairs }: Allocation
       {/* Notes */}
       <Field>
         <Label htmlFor={`${formId}-notes`}>
-          Notes{" "}
-          <span className="font-normal text-text-muted">(optional)</span>
+          Notes <span className="font-normal text-text-muted">(optional)</span>
         </Label>
-        <Input
-          id={`${formId}-notes`}
-          name="notes"
-          placeholder="Purpose or mandate reference"
-        />
+        <Input id={`${formId}-notes`} name="notes" placeholder="Purpose or mandate reference" />
         {state && !state.ok && <FieldError>{state.error}</FieldError>}
       </Field>
 

@@ -19,7 +19,7 @@ The API Foundation provides health, authenticated wallet boundaries, determinist
 
 ## Product boundaries
 
-Authenticated navigation is exactly Overview, Portfolio, Neptlium Wallet, Treasury, and Allocation. Allocation modes are Observe, Model, and Authorize.
+Authenticated navigation is exactly Overview, Portfolio, Capital Account, Treasury, and Allocation. Allocation modes are Observe, Model, and Authorize.
 
 Modeling does not move capital.
 

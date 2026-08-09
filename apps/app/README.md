@@ -2,7 +2,7 @@
 
 Authenticated Neptlium platform deployed separately at `https://app.neptlium.com` with Vercel root `apps/app`. Supabase Auth, server guards, and RLS protect access; UI checks are not authorization.
 
-Primary navigation is exactly Overview, Portfolio, Neptlium Wallet, Treasury, and Allocation. Allocation modes are Observe, Model, and Authorize. Modeling does not move capital. Authorize remains unavailable until real ledger, custody, security, and execution infrastructure exists.
+Primary navigation is exactly Overview, Portfolio, Capital Account, Treasury, and Allocation. Allocation modes are Observe, Model, and Authorize. Modeling does not move capital. Authorize remains unavailable until real ledger, custody, security, and execution infrastructure exists.
 
 ```sh
 pnpm --filter @neptlium/app dev

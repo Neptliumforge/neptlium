@@ -1,23 +1,20 @@
-import Link from "next/link";
-import { ArrowLeftRight } from "lucide-react";
-import { Badge, Card, CardContent, EmptyState, Input } from "@neptlium/ui";
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
-import { requireUser } from "@/lib/auth";
+import Link from 'next/link';
+import { ArrowLeftRight } from 'lucide-react';
+import { AssetIdentity, Badge, Card, CardContent, EmptyState, Input } from '@neptlium/ui';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
+import { requireUser } from '@/lib/auth';
 
 const PAGE_SIZE = 20;
 
-const STATUS_TONE: Record<
-  string,
-  "success" | "warning" | "danger" | "neutral"
-> = {
-  completed: "success",
-  pending: "warning",
-  failed: "danger",
-  cancelled: "neutral",
+const STATUS_TONE: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
+  completed: 'success',
+  pending: 'warning',
+  failed: 'danger',
+  cancelled: 'neutral',
 };
 
 const selectClasses =
-  "h-10 rounded-md border border-border-default bg-surface-2 px-3 text-body text-text-primary transition-colors duration-150 ease-out focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]";
+  'h-10 rounded-md border border-border-default bg-surface-2 px-3 text-body text-text-primary transition-colors duration-150 ease-out focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]';
 
 interface TransactionsSearchParams {
   readonly status?: string;
@@ -52,30 +49,26 @@ export default async function TransactionsPage({
   const offset = (page - 1) * PAGE_SIZE;
 
   const { data: distinctRows } = await supabase
-    .from("wallet_transactions")
-    .select("asset, network")
-    .eq("profile_id", user.id);
+    .from('wallet_transactions')
+    .select('asset, network')
+    .eq('profile_id', user.id);
 
   const assets = [...new Set((distinctRows ?? []).map((row) => row.asset))];
   const networks = [...new Set((distinctRows ?? []).map((row) => row.network))];
 
   let query = supabase
-    .from("wallet_transactions")
-    .select(
-      "id, type, asset, network, amount, status, reference, counterparty, created_at",
-      { count: "exact" },
-    )
-    .eq("profile_id", user.id)
-    .order("created_at", { ascending: false })
+    .from('wallet_transactions')
+    .select('id, type, asset, network, amount, status, reference, counterparty, created_at', {
+      count: 'exact',
+    })
+    .eq('profile_id', user.id)
+    .order('created_at', { ascending: false })
     .range(offset, offset + PAGE_SIZE - 1);
 
-  if (params.status) query = query.eq("status", params.status);
-  if (params.asset) query = query.eq("asset", params.asset);
-  if (params.network) query = query.eq("network", params.network);
-  if (params.q)
-    query = query.or(
-      `reference.ilike.%${params.q}%,counterparty.ilike.%${params.q}%`,
-    );
+  if (params.status) query = query.eq('status', params.status);
+  if (params.asset) query = query.eq('asset', params.asset);
+  if (params.network) query = query.eq('network', params.network);
+  if (params.q) query = query.or(`reference.ilike.%${params.q}%,counterparty.ilike.%${params.q}%`);
 
   const { data, count } = await query;
   const transactions = (data ?? []) as readonly TransactionRow[];
@@ -83,15 +76,13 @@ export default async function TransactionsPage({
 
   function pageHref(targetPage: number): string {
     const search = new URLSearchParams();
-    if (params.status) search.set("status", params.status);
-    if (params.asset) search.set("asset", params.asset);
-    if (params.network) search.set("network", params.network);
-    if (params.q) search.set("q", params.q);
-    if (targetPage > 1) search.set("page", String(targetPage));
+    if (params.status) search.set('status', params.status);
+    if (params.asset) search.set('asset', params.asset);
+    if (params.network) search.set('network', params.network);
+    if (params.q) search.set('q', params.q);
+    if (targetPage > 1) search.set('page', String(targetPage));
     const query = search.toString();
-    return query
-      ? `/dashboard/transactions?${query}`
-      : "/dashboard/transactions";
+    return query ? `/dashboard/transactions?${query}` : '/dashboard/transactions';
   }
 
   return (
@@ -101,8 +92,7 @@ export default async function TransactionsPage({
           Capital Activity
         </h1>
         <p className="mt-2 text-sm leading-6 text-text-secondary">
-          Review deposits, withdrawals, goals, journal entries, and
-          database-backed activity
+          Review deposits, withdrawals, goals, journal entries, and database-backed activity
         </p>
       </div>
 
@@ -110,32 +100,26 @@ export default async function TransactionsPage({
         <CardContent className="p-6">
           <form method="get" className="flex flex-wrap items-end gap-3">
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="q"
-                className="text-body-sm font-medium text-text-secondary"
-              >
+              <label htmlFor="q" className="text-body-sm font-medium text-text-secondary">
                 Search
               </label>
               <Input
                 id="q"
                 name="q"
-                defaultValue={params.q ?? ""}
+                defaultValue={params.q ?? ''}
                 placeholder="Reference or counterparty"
                 className="h-10 w-56"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="status"
-                className="text-body-sm font-medium text-text-secondary"
-              >
+              <label htmlFor="status" className="text-body-sm font-medium text-text-secondary">
                 Status
               </label>
               <select
                 id="status"
                 name="status"
-                defaultValue={params.status ?? ""}
+                defaultValue={params.status ?? ''}
                 className={selectClasses}
               >
                 <option value="">All statuses</option>
@@ -147,16 +131,13 @@ export default async function TransactionsPage({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="asset"
-                className="text-body-sm font-medium text-text-secondary"
-              >
+              <label htmlFor="asset" className="text-body-sm font-medium text-text-secondary">
                 Asset
               </label>
               <select
                 id="asset"
                 name="asset"
-                defaultValue={params.asset ?? ""}
+                defaultValue={params.asset ?? ''}
                 className={selectClasses}
               >
                 <option value="">All assets</option>
@@ -169,16 +150,13 @@ export default async function TransactionsPage({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label
-                htmlFor="network"
-                className="text-body-sm font-medium text-text-secondary"
-              >
+              <label htmlFor="network" className="text-body-sm font-medium text-text-secondary">
                 Network
               </label>
               <select
                 id="network"
                 name="network"
-                defaultValue={params.network ?? ""}
+                defaultValue={params.network ?? ''}
                 className={selectClasses}
               >
                 <option value="">All networks</option>
@@ -212,49 +190,36 @@ export default async function TransactionsPage({
             <table className="w-full text-body-sm">
               <thead className="border-b border-border-default">
                 <tr>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
-                    Type
-                  </th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Type</th>
                   <th className="px-4 py-2 text-left font-medium text-text-secondary">
                     Asset / Network
                   </th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
-                    Amount
-                  </th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
-                    Reference
-                  </th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
-                    Status
-                  </th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
-                    Date
-                  </th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Amount</th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Reference</th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Status</th>
+                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {transactions.map((transaction) => (
-                  <tr
-                    key={transaction.id}
-                    className="border-b border-border-hairline"
-                  >
-                    <td className="px-4 py-2 capitalize text-text-primary">
-                      {transaction.type}
+                  <tr key={transaction.id} className="border-b border-border-hairline">
+                    <td className="px-4 py-2 capitalize text-text-primary">{transaction.type}</td>
+                    <td className="px-4 py-2 text-text-primary">
+                      <AssetIdentity
+                        asset={transaction.asset}
+                        network={transaction.network}
+                        size="sm"
+                      />
                     </td>
                     <td className="px-4 py-2 text-text-primary">
-                      {transaction.asset} &middot; {transaction.network}
-                    </td>
-                    <td className="px-4 py-2 text-text-primary">
-                      {transaction.type === "withdrawal" ? "-" : ""}
+                      {transaction.type === 'withdrawal' ? '-' : ''}
                       {Number(transaction.amount).toFixed(2)}
                     </td>
                     <td className="px-4 py-2 font-mono text-text-secondary">
-                      {transaction.reference ?? transaction.counterparty ?? "—"}
+                      {transaction.reference ?? transaction.counterparty ?? '—'}
                     </td>
                     <td className="px-4 py-2">
-                      <Badge
-                        tone={STATUS_TONE[transaction.status] ?? "neutral"}
-                      >
+                      <Badge tone={STATUS_TONE[transaction.status] ?? 'neutral'}>
                         {transaction.status}
                       </Badge>
                     </td>

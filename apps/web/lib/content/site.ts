@@ -2,9 +2,9 @@ export const SITE = {
   name: 'Neptlium',
   url: 'https://neptlium.com',
   domain: 'neptlium.com',
-  positioning: 'Capital operating infrastructure for modern ownership.',
+  positioning: 'Capital operating infrastructure for digital ownership.',
   description:
-    'Neptlium brings portfolio intelligence, digital assets, allocation modeling, controlled capital operations and long-term capital organization into one unified operating environment.',
+    'Neptlium brings portfolio intelligence, capital accounts, treasury and allocation into one governed environment for digital capital.',
   supportEmail: 'support@neptlium.com',
   accessUrl: 'https://app.neptlium.com/auth/sign-up',
   signInUrl: 'https://app.neptlium.com/auth/sign-in',

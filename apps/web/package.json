@@ -16,7 +16,8 @@
     "next": "16.2.10",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "tailwind-merge": "3.3.1"
+    "tailwind-merge": "3.3.1",
+    "@neptlium/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.2",

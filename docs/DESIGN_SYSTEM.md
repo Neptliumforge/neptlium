@@ -458,7 +458,7 @@ Example progression:
 
 Secure identity established.
 
-Neptlium Wallet activated.
+Capital Account activated.
 
 Portfolio initialized.
 
@@ -487,7 +487,7 @@ Welcome to Neptlium.
 
 Your institutional account is now active.
 
-Your Neptlium Wallet has been securely provisioned.
+Your Capital Account has been securely provisioned.
 
 Your investment portfolio has been initialized.
 
@@ -568,7 +568,7 @@ Today's Performance
 
 Available Cash
 
-Neptlium Wallet
+Capital Account
 
 Investments
 
@@ -580,7 +580,7 @@ Everything else becomes secondary.
 
 # NEPTLIUM WALLET
 
-Neptlium Wallet is not a feature.
+Capital Account is not a feature.
 
 It is a core product.
 
@@ -696,7 +696,7 @@ Sidebar: 280px expanded, 88px collapsed. Top header: 72px. Content padding:
 
 Portfolio
 
-Neptlium Wallet
+Capital Account
 
 Transactions
 
@@ -817,7 +817,7 @@ Today's Performance
 
 Available Cash
 
-Neptlium Wallet
+Capital Account
 
 Recent Activity
 
