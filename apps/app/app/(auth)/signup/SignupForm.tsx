@@ -15,7 +15,6 @@ import { emailPattern, passwordPattern } from "../auth-utils";
 import { initialAuthActionState } from "../schema";
 import { AuthShell } from "../components/AuthShell";
 import { AuthNotice } from "../components/AuthNotice";
-import { PasswordRequirements } from "../components/PasswordRequirements";
 
 const inputClass =
   "h-11 rounded-md border-[color:var(--color-border-default)] bg-[color:var(--color-surface-1)] transition-[border-color,box-shadow] focus:border-[color:var(--color-border-focus)] focus:shadow-[var(--shadow-focus-ring)]";
@@ -230,9 +229,7 @@ export function SignupForm() {
               </button>
             </div>
 
-            <div id="signup-password-requirements">
-              <PasswordRequirements password={password} />
-            </div>
+
           </Field>
 
           <label className="flex cursor-pointer items-start gap-2.5 text-[12px] text-text-muted">
