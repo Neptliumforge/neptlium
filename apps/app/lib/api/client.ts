@@ -94,3 +94,12 @@ export type ProvisioningStatus = { status: 'provisioned'; profile_id: string };
 export function ensureAccountProvisioned(): Promise<ProvisioningStatus> {
   return apiRequest<ProvisioningStatus>('/v1/account/provision', { method: 'POST' });
 }
+
+export type OnboardingCompletionStatus = { status: 'completed'; profile_id: string };
+
+export function completeAccountOnboarding(input: unknown): Promise<OnboardingCompletionStatus> {
+  return apiRequest<OnboardingCompletionStatus>('/v1/account/onboarding', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}

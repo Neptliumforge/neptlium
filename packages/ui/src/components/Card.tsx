@@ -23,7 +23,12 @@ export function Card({ className, elevation, ...props }: CardProps) {
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex flex-col gap-1 px-5 pb-3 pt-5', className)} {...props} />;
+  return (
+    <div
+      className={cn('flex flex-col gap-1 px-4 pb-3 pt-4 sm:px-5 sm:pt-5', className)}
+      {...props}
+    />
+  );
 }
 
 export function CardTitle({
@@ -43,9 +48,14 @@ export function CardDescription({ className, ...props }: HTMLAttributes<HTMLPara
 }
 
 export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('px-5 pb-5 pt-0', className)} {...props} />;
+  return <div className={cn('min-w-0 px-4 pb-4 pt-0 sm:px-5 sm:pb-5', className)} {...props} />;
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex items-center gap-3 px-5 pb-5 pt-3', className)} {...props} />;
+  return (
+    <div
+      className={cn('flex items-center gap-3 px-4 pb-4 pt-3 sm:px-5 sm:pb-5', className)}
+      {...props}
+    />
+  );
 }

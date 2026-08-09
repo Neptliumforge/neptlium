@@ -26,13 +26,16 @@ export function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={cn('rounded-md border border-border-default bg-surface-1 px-4 py-4', className)}
+      className={cn(
+        'min-w-0 rounded-md border border-border-default bg-surface-1 px-4 py-3.5',
+        className,
+      )}
     >
       <div className="flex items-center justify-between gap-3">
         <p className="text-label font-medium text-text-secondary">{label}</p>
         {icon && <span className="text-text-disabled">{icon}</span>}
       </div>
-      <p className="mt-3 font-mono text-[1.375rem] font-semibold leading-none tracking-tight text-text-primary">
+      <p className="mt-2.5 break-words font-mono text-xl font-medium leading-tight tracking-tight text-text-primary">
         {value}
       </p>
       {delta && (

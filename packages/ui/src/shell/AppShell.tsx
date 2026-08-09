@@ -1,5 +1,5 @@
-import type { ReactElement, ReactNode } from "react";
-import { NeptliumMark } from "./NeptliumMark";
+import type { ReactElement, ReactNode } from 'react';
+import { NeptliumMark } from './NeptliumMark';
 
 export interface AppShellProps {
   readonly children: ReactNode;
@@ -27,17 +27,12 @@ export function AppShell({
           </span>
         </div>
         {sidebar && (
-          <nav
-            aria-label="Primary navigation"
-            className="flex-1 overflow-y-auto px-3 py-4"
-          >
+          <nav aria-label="Primary navigation" className="flex-1 overflow-y-auto px-3 py-4">
             {sidebar}
           </nav>
         )}
         {sidebarFooter && (
-          <div className="shrink-0 border-t border-border-hairline p-3">
-            {sidebarFooter}
-          </div>
+          <div className="shrink-0 border-t border-border-hairline p-3">{sidebarFooter}</div>
         )}
       </aside>
       <div className="flex min-h-screen flex-col lg:pl-[80px] xl:pl-[248px]">
@@ -51,8 +46,8 @@ export function AppShell({
         <header className="hidden h-[72px] shrink-0 items-center justify-end border-b border-border-hairline bg-topnav px-8 lg:flex">
           {utility}
         </header>
-        <main className="min-w-0 flex-1 px-4 py-6 md:px-6 lg:px-8 lg:py-8">
-          <div className="w-full max-w-[1600px]">{children}</div>
+        <main className="min-w-0 flex-1 px-3 py-5 sm:px-4 sm:py-6 md:px-6 lg:px-8 lg:py-7">
+          <div className="mx-auto w-full max-w-[1360px]">{children}</div>
         </main>
       </div>
     </div>

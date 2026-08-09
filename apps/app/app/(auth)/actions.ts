@@ -87,34 +87,34 @@ export async function signup(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const email = readRequiredField(formData, "email");
-  const password = readRequiredField(formData, "password");
-  const acceptedTerms = formData.get("acceptedTerms") === "on";
+  const email = readRequiredField(formData, 'email');
+  const password = readRequiredField(formData, 'password');
+  const acceptedTerms = formData.get('acceptedTerms') === 'on';
 
   if (!isValidEmail(email)) {
     return {
-      error: "Enter a valid email address.",
+      error: 'Enter a valid email address.',
       success: false,
     };
   }
 
   if (!password) {
     return {
-      error: "Password is required.",
+      error: 'Password is required.',
       success: false,
     };
   }
 
   if (!meetsPasswordRequirements(password)) {
     return {
-      error: "Password must meet all security requirements.",
+      error: 'Password must meet all security requirements.',
       success: false,
     };
   }
 
   if (!acceptedTerms) {
     return {
-      error: "You must accept the Terms of Service and Privacy Policy.",
+      error: 'You must accept the Terms of Service and Privacy Policy.',
       success: false,
     };
   }
@@ -133,7 +133,7 @@ export async function signup(
   // Avoid exposing whether an account already exists for this email.
   if (error && !/already registered/i.test(error.message)) {
     return {
-      error: "We couldn’t complete the request. Please try again.",
+      error: 'We couldn’t complete the request. Please try again.',
       success: false,
     };
   }
@@ -146,12 +146,12 @@ export async function signup(
     } catch {
       return {
         error:
-          "Your account was created, but account provisioning is unavailable. Sign in to retry.",
+          'Your account was created, but account provisioning is unavailable. Sign in to retry.',
         success: false,
       };
     }
 
-    redirect("/dashboard");
+    redirect('/dashboard');
   }
 
   return {
@@ -203,7 +203,7 @@ export async function resetPassword(
   const origin = await resolveOrigin();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/confirm`,
+    redirectTo: `${origin}/auth/confirm?next=${encodeURIComponent('/update-password')}`,
   });
 
   if (error && /rate limit/i.test(error.message)) {

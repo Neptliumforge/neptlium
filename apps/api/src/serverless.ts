@@ -4,6 +4,18 @@ import { loadConfig } from './config.js';
 
 type SafeUser = { id?: string };
 
+async function readJsonBody(req: IncomingMessage): Promise<unknown> {
+  const chunks: Buffer[] = [];
+  let size = 0;
+  for await (const chunk of req) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    size += buffer.length;
+    if (size > 32_768) throw new Error('body_too_large');
+    chunks.push(buffer);
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8')) as unknown;
+}
+
 function send(
   res: ServerResponse,
   status: number,
@@ -56,7 +68,9 @@ export async function serverlessHandler(req: IncomingMessage, res: ServerRespons
       requestId,
       allowedOrigin,
     );
-  if (req.method !== 'POST' || path !== '/v1/account/provision')
+  const isProvisioning = req.method === 'POST' && path === '/v1/account/provision';
+  const isOnboarding = req.method === 'POST' && path === '/v1/account/onboarding';
+  if (!isProvisioning && !isOnboarding)
     return send(
       res,
       404,
@@ -117,14 +131,19 @@ export async function serverlessHandler(req: IncomingMessage, res: ServerRespons
         requestId,
         allowedOrigin,
       );
-    const rpcResponse = await fetch(`${config.SUPABASE_URL}/rest/v1/rpc/provision_account`, {
+    const onboarding = isOnboarding ? await readJsonBody(req) : undefined;
+    const rpc = isOnboarding ? 'complete_account_onboarding' : 'provision_account';
+    const rpcResponse = await fetch(`${config.SUPABASE_URL}/rest/v1/rpc/${rpc}`, {
       method: 'POST',
       headers: {
         authorization: `Bearer ${config.SUPABASE_SERVICE_ROLE_KEY}`,
         apikey: config.SUPABASE_SERVICE_ROLE_KEY,
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ target_user_id: user.id }),
+      body: JSON.stringify({
+        target_user_id: user.id,
+        ...(isOnboarding ? { onboarding_payload: onboarding } : {}),
+      }),
       signal: AbortSignal.timeout(8_000),
     });
     if (!rpcResponse.ok) throw new Error('rpc_failed');
@@ -135,7 +154,7 @@ export async function serverlessHandler(req: IncomingMessage, res: ServerRespons
     return send(
       res,
       200,
-      { status: 'provisioned', profile_id: profileId },
+      { status: isOnboarding ? 'completed' : 'provisioned', profile_id: profileId },
       requestId,
       allowedOrigin,
     );

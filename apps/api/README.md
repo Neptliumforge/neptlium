@@ -5,6 +5,7 @@ The API is a dependency-light Node.js/TypeScript HTTP service intended for `api.
 ## Routes
 
 - `GET /v1/health`, `/v1/status`, `/v1/version`
+- `POST /v1/account/provision`, `/v1/account/onboarding`
 - `POST /v1/wallet/deposit-addresses`
 - `GET /v1/wallet/deposits`, `/v1/wallet/transactions`
 - `POST /v1/wallet/withdrawals`
@@ -12,7 +13,7 @@ The API is a dependency-light Node.js/TypeScript HTTP service intended for `api.
 - `POST /v1/wallet/withdrawals/:withdrawal_id/cancel`
 - `POST /v1/webhooks/alchemy`, `/v1/webhooks/coinbase`
 
-Wallet routes require a server-validated Supabase bearer token. Mutations require `Idempotency-Key`. Webhooks require a unique event ID and successful verification by the injected provider-specific verifier. Provider-backed success remains unavailable until reviewed adapters and credentials are installed.
+Account and wallet routes require a server-validated Supabase bearer token. Account provisioning is the privileged boundary for idempotent profile creation and atomic onboarding completion; the service-role credential remains inside this API. Wallet mutations require `Idempotency-Key`. Webhooks require a unique event ID and successful verification by the injected provider-specific verifier. Provider-backed success remains unavailable until reviewed adapters and credentials are installed.
 
 The bundled memory repository is restricted to local development and tests. Production startup requires an injected durable repository implementing the reviewed Supabase transaction boundary; its idempotent withdrawal and webhook-inbox methods must be atomic, and its readiness probe controls `/v1/status`. The migration defines that persistence model. Likewise, webhook routes fail closed until a provider-specific verifier reviewed against the provider's official contract is injected. The included timestamped HMAC verifier is test-only and is not wired into production.
 

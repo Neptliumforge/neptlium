@@ -20,7 +20,7 @@ export interface DepositPanelProps {
 export function DepositPanel(_props: DepositPanelProps) {
   return (
     <Card>
-      <CardContent className="py-10">
+      <CardContent>
         <EmptyState
           icon={<Wallet className="size-5" aria-hidden="true" />}
           title="Deposit unavailable"

@@ -14,7 +14,7 @@ export function TreasuryView() {
         <StatCard label="Capital readiness" value="Unavailable" />
       </div>
       <Card>
-        <CardContent className="py-10">
+        <CardContent>
           <EmptyState
             icon={<Landmark className="size-5" />}
             title="Treasury position unavailable"

@@ -1,57 +1,39 @@
-"use client";
+'use client';
 
-import type { ReactNode } from "react";
-import { MotionConfig } from "framer-motion";
-import { OnboardingHeader } from "./OnboardingHeader";
-import { OnboardingProgress } from "./OnboardingProgress";
-import { OnboardingMobileProgress } from "./OnboardingMobileProgress";
-import type { OnboardingStepKey } from "../wizard-steps";
+import type { ReactNode } from 'react';
+import { MotionConfig } from 'framer-motion';
+import { OnboardingHeader } from './OnboardingHeader';
 
 export interface OnboardingShellProps {
   readonly children: ReactNode;
-  readonly currentStepKey: OnboardingStepKey;
-  readonly completedStepKeys: readonly string[];
+  readonly step: number;
+  readonly totalSteps: number;
 }
 
-/**
- * Dedicated onboarding shell — replaces AuthShell for the onboarding wizard.
- *
- * Desktop (≥ md): full header above; below: centered max-1120px container
- * with 240–280px left rail (progress) and a right main panel (680–760px).
- * Normal document scroll, no fixed height, no overflow clipping.
- *
- * Mobile: header (mark + wordmark only) + mobile progress bar;
- * single-column full-width panel with 16px horizontal padding.
- */
-export function OnboardingShell({ children, currentStepKey, completedStepKeys }: OnboardingShellProps) {
+export function OnboardingShell({ children, step, totalSteps }: OnboardingShellProps) {
   return (
     <MotionConfig reducedMotion="user">
-      <div className="flex min-h-screen min-h-dvh flex-col bg-canvas">
+      <div className="flex min-h-dvh flex-col bg-canvas text-text-primary">
         <OnboardingHeader />
-
-        {/* Mobile progress bar — hidden on desktop */}
-        <OnboardingMobileProgress currentStepKey={currentStepKey} />
-
-        {/* Workspace */}
-        <div className="flex flex-1 justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-5 sm:px-6 md:px-8 md:pt-6">
-          <div className="flex w-full max-w-[1120px] gap-8 md:gap-10">
-            {/* Left rail — desktop only */}
-            <aside
-              className="hidden md:flex md:w-[260px] lg:w-[280px] shrink-0 flex-col pt-1"
-              aria-label="Account opening steps"
+        <main className="flex flex-1 justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+2rem)] pt-7 sm:px-6 sm:pt-10">
+          <div className="w-full max-w-[30rem]">
+            <div
+              className="mb-7 flex items-center gap-3"
+              aria-label={`Step ${step} of ${totalSteps}`}
             >
-              <OnboardingProgress
-                currentStepKey={currentStepKey}
-                completedStepKeys={completedStepKeys}
-              />
-            </aside>
-
-            {/* Main panel */}
-            <main className="min-w-0 flex-1">
-              {children}
-            </main>
+              <span className="shrink-0 text-xs font-medium text-text-muted">
+                {step} of {totalSteps}
+              </span>
+              <div className="h-px flex-1 bg-border-default" aria-hidden="true">
+                <div
+                  className="h-px bg-accent-primary transition-[width] duration-200 motion-reduce:transition-none"
+                  style={{ width: `${(step / totalSteps) * 100}%` }}
+                />
+              </div>
+            </div>
+            {children}
           </div>
-        </div>
+        </main>
       </div>
     </MotionConfig>
   );

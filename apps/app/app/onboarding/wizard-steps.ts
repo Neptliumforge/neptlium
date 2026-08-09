@@ -1,12 +1,8 @@
 export const onboardingSteps = [
-  { key: "provision-account", label: "Provision Account" },
-  { key: "profile", label: "Profile" },
-  { key: "purpose", label: "Purpose" },
-  { key: "identity", label: "Identity" },
-  { key: "security", label: "Security" },
-  { key: "review", label: "Review" },
-  { key: "provisioning", label: "Workspace Provisioning" },
-  { key: "ready", label: "Account Ready" }
+  { key: 'details', label: 'Your details' },
+  { key: 'account-type', label: 'Account type' },
+  { key: 'organization', label: 'Organization' },
+  { key: 'review', label: 'Review' },
 ] as const;
 
-export type OnboardingStepKey = (typeof onboardingSteps)[number]["key"];
+export type OnboardingStepKey = (typeof onboardingSteps)[number]['key'];
