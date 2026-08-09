@@ -17,7 +17,7 @@ import { ProductStage } from '@/components/product-stage';
 import { Reveal } from '@/components/reveal';
 import { SITE } from '@/lib/content/site';
 export const metadata: Metadata = {
-  title: 'Capital, organized around you',
+  title: 'One portfolio across markets',
   description: SITE.description,
   alternates: { canonical: '/' },
 };
@@ -58,8 +58,15 @@ export default function HomePage() {
         </div>
         <div className="hero-inner">
           <p className="eyebrow">Capital operating infrastructure</p>
-          <h1>Capital, organized around you.</h1>
-          <p className="hero-copy">{SITE.description}</p>
+          <h1>
+            Own across markets.
+            <br />
+            Operate as one portfolio.
+          </h1>
+          <p className="hero-copy">
+            Neptlium brings portfolio intelligence, capital accounts, allocation systems and
+            treasury operations into one governed environment.
+          </p>
           <div className="hero-actions">
             <a className="button" href={SITE.accessUrl}>
               Get started <ArrowRight aria-hidden="true" />

@@ -7,115 +7,113 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Brand } from './brand';
 import { SITE } from '@/lib/content/site';
 
-const navigation = [
+type NavLink = { label: string; href?: string; description?: string };
+type NavSection = {
+  label: string;
+  overview?: NavLink;
+  description: string;
+  links: readonly NavLink[];
+  featured?: boolean;
+};
+
+const navigation: readonly NavSection[] = [
   {
     label: 'Platform',
-    overview: { label: 'Platform overview', href: '/platform' },
-    description: 'One governed environment for organizing and operating digital capital.',
-    groups: [
+    featured: true,
+    overview: {
+      label: 'Platform Overview',
+      href: '/platform',
+      description: 'One operating environment for modern digital capital.',
+    },
+    description:
+      'A governed operating environment for understanding, organizing and directing capital.',
+    links: [
       {
-        label: 'Operating environment',
-        links: [
-          [
-            'Portfolio Intelligence',
-            '/portfolio-intelligence',
-            'Understand holdings, exposure and capital position.',
-          ],
-          [
-            'Capital Account',
-            '/capital-account',
-            'Infrastructure for digital capital and connected custody activity.',
-          ],
-          ['Treasury', '/treasury', 'Liquidity, reserves, readiness and treasury position.'],
-        ],
+        label: 'Portfolio Intelligence',
+        href: '/portfolio-intelligence',
+        description:
+          'Understand holdings, capital composition and portfolio structure through one governed view.',
       },
       {
-        label: 'Control and connectivity',
-        links: [
-          ['Allocation', '/allocation', 'Observe, model and govern allocation decisions.'],
-          [
-            'Capital Activity',
-            '/capital-activity',
-            'Operational records where connected data is available.',
-          ],
-          ['Neptlium Link', '/neptlium-link', 'Connectivity infrastructure for digital capital.'],
-        ],
+        label: 'Capital Account',
+        href: '/capital-account',
+        description:
+          'Account infrastructure for organizing and operating digital capital with explicit control.',
+      },
+      {
+        label: 'Treasury',
+        href: '/treasury',
+        description: 'Visibility into liquidity, reserves and treasury positioning.',
+      },
+      {
+        label: 'Allocation',
+        href: '/allocation',
+        description: 'Observe, model and review capital positioning against objectives and policy.',
       },
     ],
   },
   {
     label: 'Solutions',
-    overview: { label: 'Capital visibility', href: '/portfolio-intelligence' },
-    description: 'Operating architecture organized around institutional capital needs.',
-    groups: [
-      {
-        label: 'Capital operations',
-        links: [
-          [
-            'Capital Visibility',
-            '/portfolio-intelligence',
-            'Create a unified view of connected digital capital.',
-          ],
-          ['Treasury Operations', '/treasury', 'Understand liquidity, reserves and readiness.'],
-          ['Allocation Governance', '/allocation', 'Model decisions through controlled workflows.'],
-        ],
-      },
-      {
-        label: 'Infrastructure',
-        links: [
-          [
-            'Digital Asset Operations',
-            '/capital-account',
-            'Coordinate supported activity in a governed environment.',
-          ],
-          [
-            'Institutional Connectivity',
-            '/neptlium-link',
-            'Connect provider infrastructure through Neptlium Link.',
-          ],
-          ['Security Architecture', '/security', 'Review controls and infrastructure boundaries.'],
-        ],
-      },
+    description: 'Capital infrastructure organized around clear operating needs.',
+    links: [
+      { label: 'Capital Organization', href: '/platform' },
+      { label: 'Portfolio Oversight', href: '/portfolio-intelligence' },
+      { label: 'Treasury Management', href: '/treasury' },
+      { label: 'Allocation Planning', href: '/allocation' },
+      { label: 'Digital Asset Operations', href: '/capital-account' },
     ],
   },
   {
     label: 'Resources',
-    overview: { label: 'Research and perspectives', href: '/research' },
-    description: 'Documentation, security principles and operating perspectives.',
-    groups: [
-      {
-        label: 'Knowledge',
-        links: [
-          ['Documentation', '/learn', 'Platform and integration foundations.'],
-          ['Security', '/security', 'Security architecture and operating controls.'],
-          [
-            'Capital Framework',
-            '/research',
-            'How Neptlium approaches digital-capital organization.',
-          ],
-        ],
-      },
-      {
-        label: 'Neptlium',
-        links: [
-          ['Insights', '/research', 'Research and operating perspectives.'],
-          ['Trust', '/trust', 'Product boundaries stated without ambiguity.'],
-          ['Contact', '/contact', 'Institutional and platform inquiries.'],
-        ],
-      },
+    description: 'Research, learning and operating foundations from Neptlium.',
+    links: [
+      { label: 'Research & Perspectives', href: '/research' },
+      { label: 'Learn', href: '/learn' },
+      { label: 'Platform Documentation', href: '/learn' },
+      { label: 'Security', href: '/security' },
+    ],
+  },
+  {
+    label: 'Company',
+    description: 'The purpose, principles and people behind Neptlium.',
+    links: [
+      { label: 'About Neptlium', href: '/about' },
+      { label: 'Principles', href: '/company#principles' },
+      { label: 'Security', href: '/security' },
+      { label: 'Contact', href: '/contact' },
     ],
   },
 ] as const;
 
-const isCurrent = (path: string, href: string) => path === href;
+const routeIsCurrent = (path: string, href?: string) => href?.split('#')[0] === path;
+
+function NavItem({ link, path }: { link: NavLink; path: string }) {
+  const content = (
+    <>
+      <strong>{link.label}</strong>
+      {link.description && <small>{link.description}</small>}
+    </>
+  );
+
+  return link.href ? (
+    <Link aria-current={routeIsCurrent(path, link.href) ? 'page' : undefined} href={link.href}>
+      {content}
+    </Link>
+  ) : (
+    <span className="nav-unavailable" aria-disabled="true">
+      {content}
+    </span>
+  );
+}
 
 function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: string }) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
   const active =
-    item.overview.href === path ||
-    item.groups.some((group) => group.links.some(([, href]) => href === path));
+    routeIsCurrent(path, item.overview?.href) ||
+    item.links.some((link) => routeIsCurrent(path, link.href));
 
   useEffect(() => setOpen(false), [path]);
   useEffect(() => {
@@ -126,7 +124,7 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
     const escape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setOpen(false);
-        root.current?.querySelector<HTMLButtonElement>('button')?.focus();
+        trigger.current?.focus();
       }
     };
     document.addEventListener('pointerdown', dismiss);
@@ -144,9 +142,11 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
       }}
+      onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
       <button
+        ref={trigger}
         className={active ? 'active' : ''}
         aria-expanded={open}
         aria-controls={id}
@@ -156,42 +156,42 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
           if (event.key !== 'ArrowDown') return;
           event.preventDefault();
           setOpen(true);
-          requestAnimationFrame(() => root.current?.querySelector<HTMLAnchorElement>('a')?.focus());
+          requestAnimationFrame(() =>
+            root.current?.querySelector<HTMLAnchorElement>('.mega-menu a')?.focus(),
+          );
         }}
-        onMouseEnter={() => setOpen(true)}
       >
         {item.label}
         <ChevronDown aria-hidden="true" />
       </button>
-      {open && (
-        <div className="mega-menu" id={id}>
-          <div className="mega-menu-intro">
-            <span className="mega-menu-kicker">{item.label}</span>
-            <p>{item.description}</p>
-            <Link href={item.overview.href}>
-              {item.overview.label}
+      <div
+        className={`mega-menu ${item.featured ? 'mega-menu-platform' : ''}`}
+        data-open={open}
+        id={id}
+        aria-hidden={!open}
+        inert={!open ? true : undefined}
+      >
+        <div className="mega-menu-intro">
+          <span className="mega-menu-kicker">{item.label}</span>
+          <p>{item.description}</p>
+        </div>
+        <div className="mega-menu-links">
+          {item.overview?.href && (
+            <Link className="mega-menu-overview" href={item.overview.href}>
+              <span>
+                <strong>{item.overview.label}</strong>
+                <small>{item.overview.description}</small>
+              </span>
               <ArrowUpRight aria-hidden="true" />
             </Link>
-          </div>
-          <div className="mega-menu-groups">
-            {item.groups.map((group) => (
-              <div className="mega-menu-group" key={group.label}>
-                <span>{group.label}</span>
-                {group.links.map(([label, href, description]) => (
-                  <Link
-                    aria-current={isCurrent(path, href) ? 'page' : undefined}
-                    href={href}
-                    key={href}
-                  >
-                    <strong>{label}</strong>
-                    <small>{description}</small>
-                  </Link>
-                ))}
-              </div>
+          )}
+          <div className="mega-menu-list">
+            {item.links.map((link) => (
+              <NavItem key={link.label} link={link} path={path} />
             ))}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -201,7 +201,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const path = usePathname();
   const mobileTrigger = useRef<HTMLButtonElement>(null);
-  const close = useRef<HTMLButtonElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const update = () => setScrolled(scrollY > 12);
@@ -212,29 +212,29 @@ export function SiteHeader() {
   useEffect(() => setOpen(false), [path]);
   useEffect(() => {
     if (!open) return;
-    const old = document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    close.current?.focus();
+    closeButton.current?.focus();
     const key = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false);
-      if (event.key === 'Tab') {
-        const panel = document.querySelector('#mobile-nav');
-        const nodes = panel?.querySelectorAll<HTMLElement>('a,button');
-        if (!nodes?.length) return;
-        const first = nodes[0];
-        const last = nodes[nodes.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
+      if (event.key !== 'Tab') return;
+      const nodes = document
+        .querySelector('#mobile-nav')
+        ?.querySelectorAll<HTMLElement>('a,button,summary');
+      if (!nodes?.length) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
     addEventListener('keydown', key);
     return () => {
-      document.body.style.overflow = old;
+      document.body.style.overflow = previousOverflow;
       removeEventListener('keydown', key);
       mobileTrigger.current?.focus();
     };
@@ -248,13 +248,6 @@ export function SiteHeader() {
           {navigation.map((item) => (
             <DesktopMenu item={item} path={path} key={item.label} />
           ))}
-          <Link
-            className={path === '/company' ? 'active nav-direct' : 'nav-direct'}
-            aria-current={path === '/company' ? 'page' : undefined}
-            href="/company"
-          >
-            Company
-          </Link>
         </nav>
         <div className="nav-actions">
           <a href={SITE.signInUrl}>Sign in</a>
@@ -267,7 +260,7 @@ export function SiteHeader() {
           className="menu-trigger"
           aria-expanded={open}
           aria-controls="mobile-nav"
-          aria-label="Open menu"
+          aria-label="Open navigation"
           onClick={() => setOpen(true)}
         >
           <Menu aria-hidden="true" />
@@ -275,43 +268,32 @@ export function SiteHeader() {
       </div>
       {open && (
         <div className="drawer-wrap" role="dialog" aria-modal="true" aria-label="Navigation">
-          <button
-            className="drawer-backdrop"
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-          />
           <aside id="mobile-nav" className="drawer">
             <div className="drawer-head">
               <Brand />
-              <button ref={close} aria-label="Close menu" onClick={() => setOpen(false)}>
+              <button
+                ref={closeButton}
+                aria-label="Close navigation"
+                onClick={() => setOpen(false)}
+              >
                 <X aria-hidden="true" />
               </button>
             </div>
             <nav aria-label="Mobile">
               {navigation.map((item) => (
-                <div className="drawer-group" key={item.label}>
-                  <span>{item.label}</span>
-                  <Link href={item.overview.href}>{item.overview.label}</Link>
-                  {item.groups.map((group) => (
-                    <div className="drawer-links" key={group.label}>
-                      {group.links.map(([label, href]) => (
-                        <Link
-                          aria-current={path === href ? 'page' : undefined}
-                          href={href}
-                          key={href}
-                        >
-                          {label}
-                        </Link>
-                      ))}
-                    </div>
-                  ))}
-                </div>
+                <details className="drawer-group" key={item.label}>
+                  <summary>
+                    {item.label}
+                    <ChevronDown aria-hidden="true" />
+                  </summary>
+                  <div className="drawer-links">
+                    {item.overview && <NavItem link={item.overview} path={path} />}
+                    {item.links.map((link) => (
+                      <NavItem key={link.label} link={link} path={path} />
+                    ))}
+                  </div>
+                </details>
               ))}
-              <div className="drawer-group">
-                <span>Company</span>
-                <Link href="/company">Company</Link>
-                <Link href="/contact">Contact</Link>
-              </div>
             </nav>
             <div className="drawer-actions">
               <a href={SITE.signInUrl}>Sign in</a>

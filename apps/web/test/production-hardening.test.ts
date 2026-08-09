@@ -44,12 +44,12 @@ test('robots references the canonical sitemap and excludes operational routes', 
   assert.equal(robots.includes('vercel.app'), false);
 });
 
-test('company navigation distinguishes the primary company route from about', () => {
+test('company navigation exposes truthful company destinations', () => {
   const header = read('components/site-header.tsx');
   const footer = read('components/site-footer.tsx');
 
-  assert.equal(header.includes('href="/company"'), true);
-  assert.equal(header.includes('href="/about"'), false);
+  assert.equal(header.includes("href: '/about'"), true);
+  assert.equal(header.includes("href: '/company#principles'"), true);
 
   assert.equal(footer.includes("['Company', '/company']"), true);
   assert.equal(footer.includes("['About', '/about']"), true);
@@ -61,7 +61,8 @@ test('desktop navigation uses governed, accessible disclosure menus', () => {
   assert.equal(header.includes("label: 'Platform'"), true);
   assert.equal(header.includes("label: 'Solutions'"), true);
   assert.equal(header.includes("label: 'Resources'"), true);
-  assert.equal(header.includes('className="mega-menu"'), true);
+  assert.equal(header.includes("label: 'Company'"), true);
+  assert.equal(header.includes('className={`mega-menu '), true);
   assert.equal(header.includes('aria-expanded={open}'), true);
   assert.equal(header.includes('aria-controls={id}'), true);
   assert.equal(header.includes('aria-haspopup="true"'), true);
@@ -69,4 +70,7 @@ test('desktop navigation uses governed, accessible disclosure menus', () => {
   assert.equal(header.includes("event.key !== 'ArrowDown'"), true);
   assert.equal(header.includes('event.currentTarget.contains(event.relatedTarget)'), true);
   assert.equal(header.includes("document.addEventListener('pointerdown', dismiss)"), true);
+  assert.equal(header.includes('Access Neptlium'), false);
+  assert.equal(header.includes('Enter Neptlium'), false);
+  assert.equal(header.includes('Launch App'), false);
 });
