@@ -1,31 +1,33 @@
 import type { Metadata } from 'next';
-import { DetailPage } from '@/components/detail-page';
+import { FoundationPage } from '@/components/foundation-page';
+import { CapitalSystemVisual, OperatingModelVisual } from '@/components/product-visuals';
+
 export const metadata: Metadata = {
-  title: 'Platform',
-  description:
-    'A unified operating environment for observing, modeling and controlling digital capital.',
+  title: 'Neptlium Platform | Capital Operating Infrastructure',
+  description: 'See how portfolio context, account infrastructure, treasury and allocation work as one capital system.',
   alternates: { canonical: '/platform' },
 };
+
 export default function Page() {
   return (
-    <DetailPage
-      eyebrow="Platform"
+    <FoundationPage
       title="One operating environment for modern capital."
-      intro="Neptlium organizes portfolio intelligence, Capital Account, treasury and allocation without collapsing observation, intent and authorization into one action."
-      sections={[
-        [
-          'Observe with context',
-          'Bring composition, concentration, liquidity and capital structure into a coherent operating view.',
-        ],
-        [
-          'Model deliberately',
-          'Compare possible structures in an analytical workspace. Modeling does not move capital and is never an execution instruction.',
-        ],
-        [
-          'Authorize explicitly',
-          'Keep consequential decisions reviewable, attributable and separate from execution.',
-        ],
+      intro="Portfolio context, account infrastructure, treasury and allocation work as one system—without collapsing analysis, authorization and execution into one action."
+      anchors={['Architecture', 'Platform systems', 'Operating model']}
+      lead={[
+        'From visibility to controlled action.',
+        'Neptlium connects what capital is, where it sits and how a proposed change should be reviewed before anything moves.',
       ]}
+      visual={<><CapitalSystemVisual /><OperatingModelVisual /></>}
+      cards={[
+        ['Portfolio Intelligence', 'Composition, concentration, liquidity and structure in one capital view.'],
+        ['Capital Account', 'Supported assets and networks organized within explicit account boundaries.'],
+        ['Treasury', 'Liquidity, reserves and readiness connected to the wider portfolio.'],
+        ['Allocation', 'Observe, model, review and authorize without confusing intent with execution.'],
+      ].map(([title, body]) => ({ title, body }))}
+      principle="Observe · Understand · Model · Review · Authorize"
+      cta="Explore Neptlium"
+      ctaHref="/portfolio-intelligence"
     />
   );
 }

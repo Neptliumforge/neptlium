@@ -51,8 +51,8 @@ test('company navigation exposes truthful company destinations', () => {
   assert.equal(header.includes("href: '/about'"), true);
   assert.equal(header.includes("href: '/company#principles'"), true);
 
-  assert.equal(footer.includes("['Company', '/company']"), true);
   assert.equal(footer.includes("['About', '/about']"), true);
+  assert.equal(footer.includes("['Principles', '/company#principles']"), true);
 });
 
 test('desktop navigation uses governed, accessible disclosure menus', () => {

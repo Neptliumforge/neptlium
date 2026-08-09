@@ -1,24 +1,14 @@
 import Link from 'next/link';
 import { Brand } from './brand';
-import { SITE } from '@/lib/content/site';
+
 const groups = [
   [
     'Platform',
     [
-      ['Platform', '/platform'],
       ['Portfolio Intelligence', '/portfolio-intelligence'],
       ['Capital Account', '/capital-account'],
       ['Treasury', '/treasury'],
       ['Allocation', '/allocation'],
-    ],
-  ],
-  [
-    'Solutions',
-    [
-      ['Individual capital', '/platform'],
-      ['Family capital', '/platform'],
-      ['Treasury teams', '/treasury'],
-      ['Investment organizations', '/platform'],
     ],
   ],
   [
@@ -27,14 +17,13 @@ const groups = [
       ['Research', '/research'],
       ['Learn', '/learn'],
       ['Security', '/security'],
-      ['Capital Universe', '/capital-universe'],
     ],
   ],
   [
     'Company',
     [
-      ['Company', '/company'],
       ['About', '/about'],
+      ['Principles', '/company#principles'],
       ['Contact', '/contact'],
     ],
   ],
@@ -43,20 +32,22 @@ const groups = [
     [
       ['Privacy', '/privacy'],
       ['Terms', '/terms'],
-      ['Cookie Policy', '/cookie-policy'],
-      ['Accessibility', '/accessibility'],
       ['Risk Disclosure', '/risk-disclosure'],
     ],
   ],
 ] as const;
+
 export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="footer-grid">
         <div>
           <Brand />
-          <p>{SITE.positioning}</p>
-          <a href={'mailto:' + SITE.supportEmail}>{SITE.supportEmail}</a>
+          <p>
+            Capital operating infrastructure
+            <br />
+            for digital ownership.
+          </p>
         </div>
         {groups.map(([title, links]) => (
           <nav key={title} aria-label={title}>
@@ -70,8 +61,11 @@ export function SiteFooter() {
         ))}
       </div>
       <div className="footer-base">
-        <span>{SITE.copyright}</span>
-        <span>Information only. Not investment advice.</span>
+        <span>© Neptlium</span>
+        <span>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
+        </span>
       </div>
     </footer>
   );

@@ -53,7 +53,7 @@ export function SectionHeader({
       )}
       <h2
         className={cn(
-          'text-balance text-2xl font-semibold leading-tight tracking-tight md:text-3xl lg:text-[2.125rem]',
+          'section-title text-balance',
           inverse ? 'text-inverse' : 'text-ink',
         )}
       >

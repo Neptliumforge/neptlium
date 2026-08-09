@@ -1,31 +1,33 @@
 import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
+import { AllocationVisual, OperatingModelVisual } from '@/components/product-visuals';
+
 export const metadata: Metadata = {
-  title: 'Allocation',
-  description: 'Observe, model and authorize capital decisions.',
+  title: 'Allocation | Neptlium',
+  description: 'Model capital structure without confusing analysis with execution.',
   alternates: { canonical: '/allocation' },
 };
+
 export default function Page() {
   return (
     <FoundationPage
-      eyebrow="Allocation"
       title="Capital structure before capital movement."
-      intro="Neptlium separates understanding a portfolio from changing it. Model allocation scenarios, evaluate structure and preserve explicit authorization between intent and execution."
-      anchors={['Decision pathway', 'Portfolio roles', 'Authorization']}
+      intro="Model how capital could be positioned without confusing analysis with execution."
+      anchors={['Decision pathway', 'Capital roles', 'Authorization']}
+      lead={[
+        'Observe. Model. Review. Authorize.',
+        'Each stage protects the distinction between understanding a possible structure and approving a consequential action.',
+      ]}
+      visual={<><OperatingModelVisual /><AllocationVisual /></>}
       cards={[
-        [
-          'Observe',
-          'Understand current structure, concentration, liquidity and portfolio role before proposing a change.',
-        ],
-        [
-          'Model',
-          'Compare possible allocations against mandate, risk, liquidity and time horizon without presenting forecasts.',
-        ],
-        [
-          'Authorize',
-          'Keep consequential capital decisions explicit, attributable and subject to the controls that apply.',
-        ],
+        ['Reserve', 'Capital intentionally preserved for liquidity and resilience.'],
+        ['Core', 'Capital aligned with the portfolio’s central long-term role.'],
+        ['Growth', 'Capital positioned for measured expansion.'],
+        ['Opportunity', 'Capital reserved for defined, selective opportunities.'],
+        ['Restricted', 'Capital held outside an active allocation mandate.'],
+        ['Analytical context', 'Concentration · Liquidity · Volatility · Reserve coverage · Network · Counterparty · Drift · Utilization'],
       ].map(([title, body]) => ({ title, body }))}
+      principle="Modeling does not move capital."
       cta="Explore the platform"
       ctaHref="/platform"
     />

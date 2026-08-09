@@ -52,3 +52,21 @@ test('recognized capital uses the governed shared identity system', async () => 
     assert.equal(registry.includes(`${identity}:`), true);
   }
 });
+
+test('public product visuals show structure without fabricated financial state', async () => {
+  const visuals = await webFile('components/product-visuals.tsx');
+  for (const visual of [
+    'CapitalSystemVisual',
+    'PortfolioVisual',
+    'CapitalAccountVisual',
+    'TreasuryVisual',
+    'AllocationVisual',
+    'OperatingModelVisual',
+    'SecurityFlowVisual',
+  ]) {
+    assert.equal(visuals.includes(`function ${visual}`), true);
+  }
+  assert.equal(visuals.includes('AssetIdentity'), true);
+  assert.equal(visuals.includes('Modeling does not move capital.'), true);
+  assert.equal(/\$[0-9]|\+[0-9]+(?:\.[0-9]+)?%/.test(visuals), false);
+});

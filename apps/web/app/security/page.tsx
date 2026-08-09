@@ -1,29 +1,27 @@
 import type { Metadata } from 'next';
 import { DetailPage } from '@/components/detail-page';
+import { SecurityFlowVisual } from '@/components/product-visuals';
+
 export const metadata: Metadata = {
-  title: 'Security',
-  description: 'The control principles and infrastructure boundaries guiding Neptlium.',
+  title: 'Security | Neptlium',
+  description: 'Verified access, explicit authorization and controlled server-side boundaries at Neptlium.',
   alternates: { canonical: '/security' },
 };
+
 export default function Page() {
   return (
     <DetailPage
-      eyebrow="Security"
-      title="Control, made explicit."
-      intro="Neptlium is designed around deliberate access, legible state and firm infrastructure boundaries. These principles are not claims of certification, insurance or regulatory approval."
+      title="Control is part of the system."
+      intro="Access, authorization and privileged operations remain separate concerns. These are architecture principles—not claims of certification, insurance or regulatory approval."
+      visual={<SecurityFlowVisual />}
       sections={[
-        [
-          'Role-aware access',
-          'Permissions should reflect responsibility, with clear separation between observation, modeling and authorization.',
-        ],
-        [
-          'Controlled boundaries',
-          'Privileged operations and capital actions remain separated from public application surfaces.',
-        ],
-        [
-          'Auditability and authorization',
-          'Intent, review and authorization should remain attributable and distinct from execution.',
-        ],
+        ['Authentication', 'Verified identity establishes access before account operations.'],
+        ['Authorization', 'Consequential actions remain explicit, attributable and distinct from execution.'],
+        ['Server-side privilege', 'Privileged credentials and service-role operations remain behind controlled server boundaries.'],
+        ['Data isolation', 'Row-level security and ownership boundaries constrain access to account information.'],
+        ['Idempotency', 'Financial operations are designed against accidental duplication.'],
+        ['Auditability', 'Operational events and state transitions are designed to remain traceable.'],
+        ['Fail-closed behavior', 'Unavailable dependencies do not become simulated success.'],
       ]}
     />
   );

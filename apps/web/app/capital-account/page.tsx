@@ -1,33 +1,67 @@
 import type { Metadata } from 'next';
-import { FoundationPage } from '@/components/foundation-page';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { AssetIdentity } from '@neptlium/ui';
+import { PageHeader } from '@/components/page-header';
+import { Section } from '@/components/section';
+import { SITE } from '@/lib/content/site';
+import { CapitalAccountVisual } from '@/components/product-visuals';
+
 export const metadata: Metadata = {
-  title: 'Capital Account',
-  description: 'A governed account foundation for supported capital operations.',
+  title: 'Capital Account | Neptlium',
+  description: 'Organize supported assets within explicit account, network and funding boundaries.',
   alternates: { canonical: '/capital-account' },
 };
+
+const assets = [
+  ['USDC', 'Base'],
+  ['ETH', 'Base'],
+  ['BTC', 'Bitcoin'],
+] as const;
+
 export default function Page() {
   return (
-    <FoundationPage
-      eyebrow="Capital Account"
-      title="Capital needs an operating layer."
-      intro="The Neptlium Capital Account is the account infrastructure through which supported digital capital can be organized and operated within explicit controls. Asset and network availability depends on production integrations and account eligibility."
-      anchors={['Account foundation', 'Governed operations', 'Availability']}
-      cards={[
-        [
-          'Fund and hold',
-          'Organize supported capital and maintain an understandable view of available and pending positions.',
-        ],
-        [
-          'Transfer and deploy',
-          'Connect capital movement with explicit authorization and the wider portfolio mandate.',
-        ],
-        [
-          'Review activity',
-          'Keep a complete operating view of account events without reducing ownership to a trading balance.',
-        ],
-      ].map(([title, body]) => ({ title, body }))}
-      cta="Get started"
-      ctaHref="https://app.neptlium.com/auth/sign-in"
-    />
+    <>
+      <PageHeader
+        title="Capital needs an operating layer."
+        intro="The Capital Account organizes supported digital capital within explicit account and network boundaries."
+        crumbs={[{ label: 'Home', href: '/' }, { label: 'Capital Account' }]}
+      />
+      <Section>
+        <CapitalAccountVisual />
+      </Section>
+      <Section>
+        <div className="route-split">
+          <div>
+            <h2>Account infrastructure, not a trading screen.</h2>
+            <p>Funding, asset context and account activity remain connected to the wider portfolio and its controls.</p>
+          </div>
+          <dl>
+            <div><dt>Account context</dt><dd>Supported capital organized in one account view.</dd></div>
+            <div><dt>Network context</dt><dd>Asset and network boundaries remain visible.</dd></div>
+            <div><dt>Operational control</dt><dd>Consequential actions remain explicit and reviewable.</dd></div>
+          </dl>
+        </div>
+      </Section>
+      <Section tone="surface">
+        <div className="supported-capital">
+          <h2>Supported capital direction</h2>
+          <div>
+            {assets.map(([asset, network]) => (
+              <article key={asset}>
+                <AssetIdentity asset={asset} network={network} size="lg" detailed />
+              </article>
+            ))}
+          </div>
+          <p>Asset and network availability depends on production integrations and account eligibility.</p>
+        </div>
+      </Section>
+      <Section>
+        <div className="route-action">
+          <a className="button" href={SITE.accessUrl}>Get started <ArrowRight size={17} aria-hidden="true" /></a>
+          <Link href="/platform">Explore the platform</Link>
+        </div>
+      </Section>
+    </>
   );
 }

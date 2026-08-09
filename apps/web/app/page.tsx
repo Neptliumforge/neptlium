@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
-  CircleGauge,
   Eye,
   Fingerprint,
   KeyRound,
@@ -15,6 +14,13 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { ProductStage } from '@/components/product-stage';
+import {
+  AllocationVisual,
+  CapitalSystemVisual,
+  OperatingModelVisual,
+  PortfolioVisual,
+  TreasuryVisual,
+} from '@/components/product-visuals';
 import { Reveal } from '@/components/reveal';
 import { SITE } from '@/lib/content/site';
 import { AssetIdentity } from '@neptlium/ui';
@@ -34,13 +40,6 @@ const platform = [
   ['Capital Account', 'A governed account layer for digital capital.', KeyRound],
   ['Treasury', 'Know what is available, reserved and exposed.', Landmark],
   ['Allocation', 'Model positioning before making consequential decisions.', SlidersHorizontal],
-] as const;
-const operatingModel = [
-  ['Observe', 'Establish the current capital position.'],
-  ['Understand', 'Make structure, liquidity and concentration legible.'],
-  ['Model', 'Explore possible portfolio structures without moving capital.'],
-  ['Review', 'Test intent against mandate and control boundaries.'],
-  ['Authorize', 'Keep consequential decisions explicit and attributable.'],
 ] as const;
 const controls = [
   ['Authentication', Fingerprint],
@@ -109,7 +108,6 @@ export default function HomePage() {
         <Reveal>
           <div className="visibility-layout">
             <div className="section-lead">
-              <p className="eyebrow">The problem</p>
               <h2>Ownership has expanded. The operating model has not.</h2>
               <p>
                 Digital capital can exist across assets, accounts, networks and providers while the
@@ -136,57 +134,23 @@ export default function HomePage() {
       <section className="section operating-section">
         <Reveal>
           <div className="section-lead">
-            <p className="eyebrow">The platform</p>
             <h2>One operating environment for modern capital.</h2>
             <p>
               Understand what you own, how it is positioned and what changes before capital moves.
             </p>
           </div>
         </Reveal>
-        <Reveal className="operating-frame">
-          <div className="interface-top">
-            <span>Neptlium / Platform</span>
-            <span className="status">Product architecture</span>
-          </div>
-          <div className="operating-body">
-            <div className="operating-map" aria-hidden="true">
-              <span />
-            </div>
-            <div className="capability-list">
-              {platform.map(([name, copy, Icon], i) => (
-                <div key={name}>
-                  <span>0{i + 1}</span>
-                  <Icon aria-hidden="true" />
-                  <p>{name}</p>
-                  <small>{copy}</small>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Reveal>
+        <Reveal><CapitalSystemVisual /></Reveal>
       </section>
 
       <section className="section steps">
         <Reveal>
           <div className="section-lead">
-            <p className="eyebrow">Operating model</p>
             <h2>Capital decisions should not begin with execution.</h2>
             <p>Each stage has a distinct purpose. Modeling does not move capital.</p>
           </div>
         </Reveal>
-        <div className="step-grid">
-          {operatingModel.map(([title, body], i) => (
-            <Reveal key={title}>
-              <article>
-                <span>0{i + 1}</span>
-                <CircleGauge aria-hidden="true" />
-                <h3>{title}</h3>
-                <p>{body}</p>
-                {title === 'Model' && <strong>Modeling does not move capital.</strong>}
-              </article>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal><OperatingModelVisual /></Reveal>
       </section>
 
       <ProductStage />
@@ -195,21 +159,13 @@ export default function HomePage() {
         <Reveal>
           <div className="visibility-layout">
             <div className="section-lead">
-              <p className="eyebrow">Portfolio Intelligence</p>
               <h2>Understand the whole position.</h2>
               <p>
                 Capital becomes more useful when ownership, liquidity, concentration and allocation
                 can be understood together.
               </p>
             </div>
-            <ol>
-              {['Composition', 'Concentration', 'Liquidity', 'Structure'].map((item, i) => (
-                <li key={item}>
-                  <span>0{i + 1}</span>
-                  {item}
-                </li>
-              ))}
-            </ol>
+            <PortfolioVisual />
           </div>
         </Reveal>
       </section>
@@ -254,25 +210,13 @@ export default function HomePage() {
         <Reveal>
           <div className="treasury-layout">
             <div className="section-lead">
-              <p className="eyebrow">Treasury</p>
               <h2>Liquidity is more than a balance.</h2>
               <p>
                 Understand available capital, reserves and treasury position as part of the same
                 environment used for portfolio and allocation decisions.
               </p>
             </div>
-            <div className="readiness-panel">
-              {[
-                ['Liquidity', 'Available capital context'],
-                ['Reserve', 'Protected capacity'],
-                ['Readiness', 'Decision capacity'],
-              ].map(([a, b]) => (
-                <div key={a}>
-                  <span>{a}</span>
-                  <strong>{b}</strong>
-                </div>
-              ))}
-            </div>
+            <TreasuryVisual />
           </div>
         </Reveal>
       </section>
@@ -281,7 +225,6 @@ export default function HomePage() {
         <Reveal>
           <div className="visibility-layout">
             <div className="section-lead">
-              <p className="eyebrow">Allocation</p>
               <h2>Capital structure before capital movement.</h2>
               <p>
                 Neptlium separates understanding a portfolio from changing it. Model allocation
@@ -289,14 +232,7 @@ export default function HomePage() {
                 execution.
               </p>
             </div>
-            <ol>
-              {['Reserve', 'Core', 'Growth', 'Opportunity', 'Restricted'].map((item, i) => (
-                <li key={item}>
-                  <span>0{i + 1}</span>
-                  {item}
-                </li>
-              ))}
-            </ol>
+            <AllocationVisual />
           </div>
         </Reveal>
       </section>
@@ -304,7 +240,6 @@ export default function HomePage() {
       <section className="section security-block">
         <Reveal>
           <div className="section-lead">
-            <p className="eyebrow">Control architecture</p>
             <h2>Control is part of the system.</h2>
             <p>
               Neptlium is designed so that access, modeling, authorization and execution remain
@@ -332,7 +267,7 @@ export default function HomePage() {
         <Reveal>
           <div className="research-layout">
             <div className="section-lead">
-              <p className="eyebrow">Research</p>
+              <p className="eyebrow">Neptlium Research</p>
               <h2>Thinking for a changing capital system.</h2>
               <p>
                 Research and perspective on allocation, ownership, treasury and digital-capital
@@ -360,7 +295,6 @@ export default function HomePage() {
       <section className="section steps">
         <Reveal>
           <div className="section-lead">
-            <p className="eyebrow">Built for</p>
             <h2>Built for capital that needs more than another account.</h2>
           </div>
         </Reveal>

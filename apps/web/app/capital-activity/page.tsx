@@ -1,21 +1,16 @@
+import type { Metadata } from 'next';
 import { DetailPage } from '@/components/detail-page';
+
+export const metadata: Metadata = {
+  title: 'Capital Activity | Neptlium',
+  description: 'Capital movement records presented with state, ownership and portfolio context.',
+  alternates: { canonical: '/capital-activity' },
+};
+
 export default function CapitalActivityPage() {
-  return (
-    <DetailPage
-      eyebrow="Platform"
-      title="Capital activity, recorded with context."
-      intro="Operational history and capital movement records belong inside an authenticated, provider-backed environment. No public activity or fabricated transactions are displayed here."
-      sections={[
-        [
-          'Connected records',
-          'Activity becomes available only when authoritative sources are connected.',
-        ],
-        ['Explicit state', 'Pending, completed and failed states remain distinct and traceable.'],
-        [
-          'Controlled visibility',
-          'Authenticated access and ownership boundaries govern operational records.',
-        ],
-      ]}
-    />
-  );
+  return <DetailPage title="Capital activity, recorded with context." intro="Movement records belong beside their account state and portfolio purpose. No public transactions are displayed." sections={[
+    ['Authoritative records', 'Activity appears when a verified account source provides it.'],
+    ['Explicit state', 'Pending, completed and failed events remain distinct.'],
+    ['Controlled visibility', 'Authenticated access and ownership boundaries govern operational records.'],
+  ]} />;
 }

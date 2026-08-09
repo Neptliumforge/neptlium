@@ -1,33 +1,31 @@
 import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
+
 export const metadata: Metadata = {
-  title: 'Learn',
-  description: 'A structured learning center for modern ownership.',
+  title: 'Learn | Neptlium',
+  description: 'Clear explanations of the concepts behind capital accounts, portfolios, treasury and allocation.',
   alternates: { canonical: '/learn' },
 };
-const topics = [
-  'Portfolio Basics',
-  'Capital Allocation',
-  'Investment Risk',
-  'Liquidity',
-  'Treasury',
-  'Digital Assets',
-  'Tokenization',
-  'Diversification',
-  'Portfolio Roles',
-  'Long-Term Ownership',
-];
+
 export default function Page() {
   return (
     <FoundationPage
-      eyebrow="Learn"
-      title="Build understanding before making decisions."
-      intro="A structured learning center for the concepts that shape modern ownership. Lessons are organized by topic and designed to clarify the relationship between portfolio purpose, risk, liquidity and control."
-      anchors={['Learning approach', 'Topics', 'Navigation']}
-      cards={topics.map((title) => ({
-        title,
-        body: `A dedicated learning path for ${title.toLowerCase()}, with definitions, context and practical questions to consider. Content will be published only when it is ready for careful review.`,
-      }))}
+      title="Understand the system before using it."
+      intro="Clear definitions for the concepts that shape capital organization and control."
+      anchors={['Foundations', 'Concepts', 'Platform']}
+      lead={[
+        'A practical capital vocabulary.',
+        'Learn distinguishes what capital is, how it is positioned and when a decision becomes an action.',
+      ]}
+      cards={[
+        ['Capital Account', 'Account infrastructure for supported assets and networks.'],
+        ['Portfolio Intelligence', 'A connected view of composition, concentration, liquidity and structure.'],
+        ['Treasury', 'The relationship between available capital, reserves and readiness.'],
+        ['Allocation', 'The deliberate assignment of capital to defined portfolio roles.'],
+        ['Reserve and liquidity', 'Capital preserved for resilience, and capital that can be acted on.'],
+        ['Modeling and execution', 'Modeling explores a possible structure. Execution changes capital.'],
+        ['Authorization', 'The explicit approval boundary before a consequential action.'],
+      ].map(([title, body]) => ({ title, body }))}
       cta="Explore the platform"
       ctaHref="/platform"
     />

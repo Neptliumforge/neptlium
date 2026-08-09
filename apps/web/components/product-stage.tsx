@@ -41,8 +41,7 @@ export function ProductStage() {
     <section className="product-stage">
       <Reveal>
         <div className="section-lead">
-          <p className="eyebrow">Product experience</p>
-          <h2>One architecture from position to decision.</h2>
+          <h2>Built around the capital decision, not the transaction.</h2>
           <p>
             Real Neptlium product areas, shown without illustrative balances or fabricated activity.
           </p>

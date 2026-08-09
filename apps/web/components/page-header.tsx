@@ -6,7 +6,7 @@ export function PageHeader({
   intro,
   crumbs,
 }: {
-  eyebrow: string
+  eyebrow?: string
   title: string
   intro?: string
   crumbs?: Crumb[]
@@ -15,8 +15,8 @@ export function PageHeader({
     <section className="border-b border-line bg-background">
       <div className="container-page py-14 md:py-20 lg:py-24">
         {crumbs && <Breadcrumb items={crumbs} />}
-        <p className="eyebrow">{eyebrow}</p>
-        <h1 className="mt-4 max-w-3xl text-balance text-3xl font-semibold leading-[1.1] tracking-tight text-ink md:text-4xl lg:text-[3rem]">
+        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+        <h1 className={`${eyebrow ? 'mt-4' : 'mt-6'} page-title max-w-3xl text-balance text-ink`}>
           {title}
         </h1>
         {intro && (

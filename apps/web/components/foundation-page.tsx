@@ -11,14 +11,20 @@ export function FoundationPage({
   intro,
   anchors,
   cards,
+  lead,
+  principle,
+  visual,
   cta = 'Explore Neptlium',
   ctaHref = '/contact',
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   intro: string;
   anchors: string[];
   cards: FoundationCard[];
+  lead?: readonly [string, string];
+  principle?: string;
+  visual?: React.ReactNode;
   cta?: string;
   ctaHref?: string;
 }) {
@@ -30,7 +36,7 @@ export function FoundationPage({
         intro={intro}
         crumbs={[{ label: 'Home', href: '/' }, { label: title }]}
       />
-      <nav className="border-b border-line bg-surface-subtle" aria-label="Page sections">
+      <nav className="border-b border-line" aria-label="Page sections">
         <div className="container-page flex gap-5 overflow-x-auto py-4 text-sm text-muted">
           {anchors.map((anchor) => (
             <a
@@ -45,28 +51,24 @@ export function FoundationPage({
       </nav>
       <Section>
         <div id={anchors[0].toLowerCase().replaceAll(' ', '-')} className="mx-auto max-w-3xl">
-          <p className="eyebrow">The role</p>
           <h2 className="mt-3 text-2xl font-semibold text-ink md:text-3xl">
-            A clear foundation for deliberate capital decisions.
+            {lead?.[0] ?? cards[0]?.title}
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted">
-            This experience is designed to connect information, context and control. It gives the
-            wider Neptlium platform a coherent place to grow without implying data, advice or
-            execution that is not available.
+            {lead?.[1] ?? cards[0]?.body}
           </p>
         </div>
       </Section>
+      {visual && <Section className="product-visual-section">{visual}</Section>}
       <Section tone="surface">
         <div id={anchors[1]?.toLowerCase().replaceAll(' ', '-')} className="container-page">
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="route-rows">
             {cards.map((card) => (
               <article
                 key={card.title}
-                className="rounded-2xl border border-line bg-background p-6 md:p-8"
               >
-                <p className="eyebrow">Foundation</p>
-                <h2 className="mt-3 text-xl font-semibold text-ink">{card.title}</h2>
-                <p className="mt-3 leading-relaxed text-muted">{card.body}</p>
+                <h2>{card.title}</h2>
+                <p>{card.body}</p>
                 {card.href && (
                   <Link
                     className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-ink"
@@ -85,10 +87,7 @@ export function FoundationPage({
           id={anchors[2]?.toLowerCase().replaceAll(' ', '-')}
           className="mx-auto flex max-w-3xl flex-col items-start gap-5"
         >
-          <p className="eyebrow">Next step</p>
-          <h2 className="text-2xl font-semibold text-ink md:text-3xl">
-            Continue with the wider operating environment.
-          </h2>
+          {principle && <p className="route-principle">{principle}</p>}
           <Link className="button" href={ctaHref}>
             {cta} <ArrowRight size={17} aria-hidden="true" />
           </Link>

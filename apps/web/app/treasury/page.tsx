@@ -1,32 +1,30 @@
 import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
+import { TreasuryVisual } from '@/components/product-visuals';
+
 export const metadata: Metadata = {
-  title: 'Treasury',
-  description: 'Connect liquidity, reserves and capital readiness.',
+  title: 'Treasury | Neptlium',
+  description: 'Understand available capital, reserves and operational readiness.',
   alternates: { canonical: '/treasury' },
 };
+
 export default function Page() {
   return (
     <FoundationPage
-      eyebrow="Treasury"
       title="Liquidity is more than a balance."
-      intro="Treasury connects portfolio ownership with capital readiness. Organize available capital, reserves, obligations and allocation capacity without losing sight of the wider portfolio."
+      intro="Understand what is available, reserved and operationally ready."
       anchors={['Treasury context', 'Capital readiness', 'Planning']}
+      lead={[
+        'Between portfolio context and allocation.',
+        'Treasury shows which capital can support the next decision and which capital has a different role.',
+      ]}
+      visual={<TreasuryVisual />}
       cards={[
-        [
-          'Liquidity and reserves',
-          'Understand what is available, reserved or positioned for future allocation.',
-        ],
-        [
-          'Upcoming obligations',
-          'Bring commitments and expected capital needs into the operating view.',
-        ],
-        [
-          'Allocation capacity',
-          'Connect treasury context with portfolio roles and deliberate planning.',
-        ],
+        ['Liquidity', 'Capital that can be acted on.'],
+        ['Reserve', 'Capital intentionally preserved.'],
+        ['Readiness', 'Capital operationally positioned for the next decision.'],
       ].map(([title, body]) => ({ title, body }))}
-      cta="Explore Treasury"
+      cta="Explore the platform"
       ctaHref="/platform"
     />
   );

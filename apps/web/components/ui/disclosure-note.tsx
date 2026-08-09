@@ -10,7 +10,7 @@ export function DisclosureNote({
   return (
     <p
       className={cn(
-        'border-l-2 border-line pl-4 text-[0.8125rem] leading-relaxed text-muted',
+        'caption-text border-l-2 border-line pl-4 leading-relaxed text-muted',
         className,
       )}
     >

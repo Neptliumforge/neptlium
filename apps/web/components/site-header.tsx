@@ -25,20 +25,17 @@ const navigation: readonly NavSection[] = [
       href: '/platform',
       description: 'One operating environment for modern digital capital.',
     },
-    description:
-      'A governed operating environment for understanding, organizing and directing capital.',
+    description: 'Portfolio context, account infrastructure, treasury and allocation.',
     links: [
       {
         label: 'Portfolio Intelligence',
         href: '/portfolio-intelligence',
-        description:
-          'Understand holdings, capital composition and portfolio structure through one governed view.',
+        description: 'Holdings, composition and portfolio structure in one view.',
       },
       {
         label: 'Capital Account',
         href: '/capital-account',
-        description:
-          'Account infrastructure for organizing and operating digital capital with explicit control.',
+        description: 'Governed infrastructure for supported digital capital.',
       },
       {
         label: 'Treasury',
@@ -54,7 +51,7 @@ const navigation: readonly NavSection[] = [
   },
   {
     label: 'Solutions',
-    description: 'Capital infrastructure organized around clear operating needs.',
+    description: 'Capital infrastructure for distinct operating needs.',
     links: [
       { label: 'Capital Organization', href: '/platform' },
       { label: 'Portfolio Oversight', href: '/portfolio-intelligence' },
@@ -65,17 +62,16 @@ const navigation: readonly NavSection[] = [
   },
   {
     label: 'Resources',
-    description: 'Research, learning and operating foundations from Neptlium.',
+    description: 'Research, learning and operating foundations.',
     links: [
       { label: 'Research & Perspectives', href: '/research' },
       { label: 'Learn', href: '/learn' },
-      { label: 'Platform Documentation', href: '/learn' },
       { label: 'Security', href: '/security' },
     ],
   },
   {
     label: 'Company',
-    description: 'The purpose, principles and people behind Neptlium.',
+    description: 'Purpose, principles and company information.',
     links: [
       { label: 'About Neptlium', href: '/about' },
       { label: 'Principles', href: '/company#principles' },
@@ -111,11 +107,15 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const active =
     routeIsCurrent(path, item.overview?.href) ||
     item.links.some((link) => routeIsCurrent(path, link.href));
 
   useEffect(() => setOpen(false), [path]);
+  useEffect(() => () => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+  }, []);
   useEffect(() => {
     if (!open) return;
     const dismiss = (event: PointerEvent) => {
@@ -142,8 +142,14 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
       }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => {
+        if (hoverTimer.current) clearTimeout(hoverTimer.current);
+        hoverTimer.current = setTimeout(() => setOpen(true), 90);
+      }}
+      onMouseLeave={() => {
+        if (hoverTimer.current) clearTimeout(hoverTimer.current);
+        hoverTimer.current = setTimeout(() => setOpen(false), 120);
+      }}
     >
       <button
         ref={trigger}
@@ -264,6 +270,7 @@ export function SiteHeader() {
           onClick={() => setOpen(true)}
         >
           <Menu aria-hidden="true" />
+          <span>Menu</span>
         </button>
       </div>
       {open && (
