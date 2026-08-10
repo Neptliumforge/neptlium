@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   SlidersHorizontal,
 } from 'lucide-react';
+import { PlatformWindow } from '@/components/platform-window';
 import { ProductStage } from '@/components/product-stage';
 import {
   AllocationVisual,
@@ -32,11 +33,7 @@ export const metadata: Metadata = {
 };
 
 const platform = [
-  [
-    'Portfolio Intelligence',
-    'See capital as a portfolio, not a collection of accounts.',
-    ScanSearch,
-  ],
+  ['Portfolio Intelligence', 'See capital as a portfolio, not a collection of accounts.', ScanSearch],
   ['Capital Account', 'A governed account layer for digital capital.', KeyRound],
   ['Treasury', 'Know what is available, reserved and exposed.', Landmark],
   ['Allocation', 'Model positioning before making consequential decisions.', SlidersHorizontal],
@@ -52,56 +49,53 @@ const audiences = [
   ['Individual capital', 'A coherent operating view for personally controlled digital capital.'],
   ['Family capital', 'Structure ownership, reserves and long-term allocation more deliberately.'],
   ['Treasury teams', 'Bring digital capital into a more disciplined treasury operating model.'],
-  [
-    'Investment organizations',
-    'Separate portfolio structure, allocation intent and operating control.',
-  ],
+  ['Investment organizations', 'Separate portfolio structure, allocation intent and operating control.'],
 ] as const;
 
 export default function HomePage() {
   return (
     <>
-      <section className="hero">
-        <div className="hero-field" aria-hidden="true">
-          <div className="hero-grid" />
-          <div className="orbit one" />
-          <div className="orbit two" />
-          <div className="flow-line flow-one" />
-          <div className="flow-line flow-two" />
-          <div className="hero-core">
-            <span />
-          </div>
-          <div className="hero-glow" />
+      <div className="capital-account-signal">
+        <div className="capital-account-signal-inner">
+          <span className="capital-account-signal-label">Capital Account</span>
+          <p>One governed account infrastructure for modern digital capital.</p>
+          <Link href="/capital-account">
+            Explore <ArrowRight aria-hidden="true" />
+          </Link>
         </div>
-        <div className="hero-inner">
-          <p className="eyebrow">Capital operating infrastructure</p>
-          <h1>
-            Own across markets.
-            <br />
-            Operate as one portfolio.
-          </h1>
-          <p className="hero-copy">
-            Neptlium brings portfolio intelligence, capital accounts, treasury and allocation into
-            one governed environment for digital capital.
-          </p>
-          <div className="hero-actions">
-            <a className="button" href={SITE.accessUrl}>
-              Get started <ArrowRight aria-hidden="true" />
-            </a>
-            <Link className="text-link" href="/platform">
-              Explore platform <ArrowRight aria-hidden="true" />
-            </Link>
+      </div>
+
+      <section className="neptlium-hero">
+        <div className="neptlium-hero-inner">
+          <div className="neptlium-hero-copy">
+            <p className="eyebrow">Capital operating infrastructure</p>
+            <h1>Own across markets. Operate as one portfolio.</h1>
+            <p>
+              Neptlium brings portfolio intelligence, capital accounts, treasury and allocation into
+              one governed environment for digital capital.
+            </p>
+            <div className="neptlium-hero-actions">
+              <a className="button" href={SITE.accessUrl}>
+                Open Neptlium <ArrowRight aria-hidden="true" />
+              </a>
+              <Link className="text-link" href="/platform">
+                Explore platform <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+            <div className="neptlium-hero-proof" aria-label="Neptlium core platform systems">
+              {platform.map(([name], index) => (
+                <span key={name}>
+                  <i>0{index + 1}</i>
+                  {name}
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="hero-systems" aria-label="Neptlium platform systems">
-            {platform.map(([name], index) => (
-              <span key={name}>
-                <i>0{index + 1}</i>
-                {name}
-              </span>
-            ))}
+
+          <div className="neptlium-hero-visual">
+            <PlatformWindow />
           </div>
         </div>
-        <p className="hero-note">See clearly · Model deliberately · Authorize explicitly</p>
       </section>
 
       <section className="section visibility-section">
@@ -322,7 +316,7 @@ export default function HomePage() {
           </p>
           <div className="final-actions">
             <a className="button" href={SITE.accessUrl}>
-              Get started <ArrowRight aria-hidden="true" />
+              Open Neptlium <ArrowRight aria-hidden="true" />
             </a>
             <Link className="text-link" href="/platform">
               Explore Neptlium <ArrowRight aria-hidden="true" />
