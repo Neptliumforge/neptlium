@@ -1,9 +1,12 @@
 'use server';
 
-import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { onboardingPayloadSchema, type ProvisioningPayload } from '@neptlium/lib';
 import { requireUser } from '@/lib/auth';
-import { completeAccountOnboarding } from '@/lib/api/client';
+import {
+  completeAccountOnboarding,
+  getOnboardingDraftApi,
+  saveOnboardingDraftApi,
+} from '@/lib/api/client';
 
 export interface OnboardingDraft {
   readonly data: Partial<ProvisioningPayload>;
@@ -18,38 +21,32 @@ function unavailable(message: string): ProvisioningResult {
 }
 
 export async function getOnboardingDraft(): Promise<OnboardingDraft> {
-  const user = await requireUser();
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
-    .from('onboarding_drafts')
-    .select('data, step_index')
-    .eq('user_id', user.id)
-    .maybeSingle();
-  const parsed = onboardingPayloadSchema.partial().safeParse(data?.data);
-
-  return {
-    data: parsed.success ? (parsed.data as Partial<ProvisioningPayload>) : {},
-    stepIndex: parsed.success ? Math.min(Math.max(data?.step_index ?? 0, 0), 7) : 0,
-  };
+  await requireUser();
+  try {
+    const draft = await getOnboardingDraftApi();
+    const parsed = onboardingPayloadSchema.partial().safeParse(draft.data);
+    return {
+      data: parsed.success ? (parsed.data as Partial<ProvisioningPayload>) : {},
+      stepIndex: parsed.success ? Math.min(Math.max(draft.stepIndex, 0), 7) : 0,
+    };
+  } catch {
+    return { data: {}, stepIndex: 0 };
+  }
 }
 
 export async function saveOnboardingDraft(draft: OnboardingDraft): Promise<void> {
-  const user = await requireUser();
+  await requireUser();
   const parsed = onboardingPayloadSchema.partial().safeParse(draft.data);
   if (!parsed.success || draft.stepIndex < 0 || draft.stepIndex > 7) return;
 
-  const supabase = await createSupabaseServerClient();
-  await supabase
-    .from('onboarding_drafts')
-    .upsert(
-      {
-        user_id: user.id,
-        data: parsed.data,
-        step_index: draft.stepIndex,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id' },
-    );
+  try {
+    await saveOnboardingDraftApi({
+      data: parsed.data as Record<string, unknown>,
+      stepIndex: draft.stepIndex,
+    });
+  } catch {
+    // Draft persistence is best-effort. Final onboarding remains fail-closed.
+  }
 }
 
 export async function submitProvisioning(input: ProvisioningPayload): Promise<ProvisioningResult> {
