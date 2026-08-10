@@ -4,14 +4,11 @@ import {
   ArrowRight,
   Eye,
   Fingerprint,
-  KeyRound,
   Landmark,
   Layers3,
   LockKeyhole,
   Network,
-  ScanSearch,
   ShieldCheck,
-  SlidersHorizontal,
 } from 'lucide-react';
 import { PlatformWindow } from '@/components/platform-window';
 import { ProductStage } from '@/components/product-stage';
@@ -32,12 +29,6 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 };
 
-const platform = [
-  ['Portfolio Intelligence', 'See capital as a portfolio, not a collection of accounts.', ScanSearch],
-  ['Capital Account', 'A governed account layer for digital capital.', KeyRound],
-  ['Treasury', 'Know what is available, reserved and exposed.', Landmark],
-  ['Allocation', 'Model positioning before making consequential decisions.', SlidersHorizontal],
-] as const;
 const controls = [
   ['Authentication', Fingerprint],
   ['Authorization', ShieldCheck],
@@ -82,14 +73,6 @@ export default function HomePage() {
                 Explore platform <ArrowRight aria-hidden="true" />
               </Link>
             </div>
-            <div className="neptlium-hero-proof" aria-label="Neptlium core platform systems">
-              {platform.map(([name], index) => (
-                <span key={name}>
-                  <i>0{index + 1}</i>
-                  {name}
-                </span>
-              ))}
-            </div>
           </div>
 
           <div className="neptlium-hero-visual">
@@ -109,10 +92,7 @@ export default function HomePage() {
                 positions into one coherent operating environment.
               </p>
             </div>
-            <div
-              className="capital-convergence"
-              aria-label="Fragmented capital resolving into one operating view"
-            >
+            <div className="capital-convergence" aria-label="Fragmented capital resolving into one operating view">
               <div>
                 {['Assets', 'Accounts', 'Networks', 'Positions', 'Providers'].map((item) => (
                   <span key={item}>{item}</span>
@@ -129,9 +109,7 @@ export default function HomePage() {
         <Reveal>
           <div className="section-lead">
             <h2>One operating environment for modern capital.</h2>
-            <p>
-              Understand what you own, how it is positioned and what changes before capital moves.
-            </p>
+            <p>Understand what you own, how it is positioned and what changes before capital moves.</p>
           </div>
         </Reveal>
         <Reveal><CapitalSystemVisual /></Reveal>
@@ -154,10 +132,7 @@ export default function HomePage() {
           <div className="visibility-layout">
             <div className="section-lead">
               <h2>Understand the whole position.</h2>
-              <p>
-                Capital becomes more useful when ownership, liquidity, concentration and allocation
-                can be understood together.
-              </p>
+              <p>Capital becomes more useful when ownership, liquidity, concentration and allocation can be understood together.</p>
             </div>
             <PortfolioVisual />
           </div>
@@ -169,10 +144,7 @@ export default function HomePage() {
           <div className="section-lead">
             <p className="eyebrow">Capital Account</p>
             <h2>Capital needs an operating layer.</h2>
-            <p>
-              The Neptlium Capital Account is the account infrastructure through which supported
-              digital capital can be organized and operated within explicit controls.
-            </p>
+            <p>The Neptlium Capital Account is the account infrastructure through which supported digital capital can be organized and operated within explicit controls.</p>
           </div>
         </Reveal>
         <div className="asset-row">
@@ -184,20 +156,12 @@ export default function HomePage() {
             <Reveal key={asset}>
               <article>
                 <span>0{i + 1}</span>
-                <AssetIdentity
-                  asset={asset}
-                  network={network}
-                  size="xl"
-                  detailed
-                  className="asset-pair"
-                />
+                <AssetIdentity asset={asset} network={network} size="xl" detailed className="asset-pair" />
               </article>
             </Reveal>
           ))}
         </div>
-        <p className="qualifier">
-          Asset and network availability depends on production integrations and account eligibility.
-        </p>
+        <p className="qualifier">Asset and network availability depends on production integrations and account eligibility.</p>
       </section>
 
       <section className="section treasury-section">
@@ -205,10 +169,7 @@ export default function HomePage() {
           <div className="treasury-layout">
             <div className="section-lead">
               <h2>Liquidity is more than a balance.</h2>
-              <p>
-                Understand available capital, reserves and treasury position as part of the same
-                environment used for portfolio and allocation decisions.
-              </p>
+              <p>Understand available capital, reserves and treasury position as part of the same environment used for portfolio and allocation decisions.</p>
             </div>
             <TreasuryVisual />
           </div>
@@ -220,11 +181,7 @@ export default function HomePage() {
           <div className="visibility-layout">
             <div className="section-lead">
               <h2>Capital structure before capital movement.</h2>
-              <p>
-                Neptlium separates understanding a portfolio from changing it. Model allocation
-                scenarios, evaluate structure and preserve explicit authorization between intent and
-                execution.
-              </p>
+              <p>Neptlium separates understanding a portfolio from changing it. Model allocation scenarios, evaluate structure and preserve explicit authorization between intent and execution.</p>
             </div>
             <AllocationVisual />
           </div>
@@ -235,26 +192,17 @@ export default function HomePage() {
         <Reveal>
           <div className="section-lead">
             <h2>Control is part of the system.</h2>
-            <p>
-              Neptlium is designed so that access, modeling, authorization and execution remain
-              distinct operating concerns.
-            </p>
+            <p>Neptlium is designed so that access, modeling, authorization and execution remain distinct operating concerns.</p>
           </div>
         </Reveal>
         <div className="control-grid">
           {controls.map(([label, Icon]) => (
             <Reveal key={label}>
-              <div>
-                <Icon aria-hidden="true" />
-                <span>{label}</span>
-              </div>
+              <div><Icon aria-hidden="true" /><span>{label}</span></div>
             </Reveal>
           ))}
         </div>
-        <p className="qualifier">
-          Architecture principles only. No certification, regulatory approval or custody readiness
-          is claimed.
-        </p>
+        <p className="qualifier">Architecture principles only. No certification, regulatory approval or custody readiness is claimed.</p>
       </section>
 
       <section className="section research-section">
@@ -263,44 +211,22 @@ export default function HomePage() {
             <div className="section-lead">
               <p className="eyebrow">Neptlium Research</p>
               <h2>Thinking for a changing capital system.</h2>
-              <p>
-                Research and perspective on allocation, ownership, treasury and digital-capital
-                infrastructure.
-              </p>
+              <p>Research and perspective on allocation, ownership, treasury and digital-capital infrastructure.</p>
             </div>
             <div className="research-index">
-              {[
-                'Capital structure',
-                'Allocation',
-                'Ownership',
-                'Treasury',
-                'Infrastructure risk',
-              ].map((x) => (
-                <span key={x}>{x}</span>
-              ))}
-              <Link href="/research">
-                Explore research <ArrowRight aria-hidden="true" />
-              </Link>
+              {['Capital structure', 'Allocation', 'Ownership', 'Treasury', 'Infrastructure risk'].map((x) => <span key={x}>{x}</span>)}
+              <Link href="/research">Explore research <ArrowRight aria-hidden="true" /></Link>
             </div>
           </div>
         </Reveal>
       </section>
 
       <section className="section steps">
-        <Reveal>
-          <div className="section-lead">
-            <h2>Built for capital that needs more than another account.</h2>
-          </div>
-        </Reveal>
+        <Reveal><div className="section-lead"><h2>Built for capital that needs more than another account.</h2></div></Reveal>
         <div className="step-grid">
           {audiences.map(([title, body], i) => (
             <Reveal key={title}>
-              <article>
-                <span>0{i + 1}</span>
-                <Layers3 aria-hidden="true" />
-                <h3>{title}</h3>
-                <p>{body}</p>
-              </article>
+              <article><span>0{i + 1}</span><Layers3 aria-hidden="true" /><h3>{title}</h3><p>{body}</p></article>
             </Reveal>
           ))}
         </div>
@@ -310,17 +236,10 @@ export default function HomePage() {
         <Reveal>
           <p className="eyebrow">Neptlium</p>
           <h2>The operating layer for digital capital.</h2>
-          <p>
-            Ownership is becoming more complex. Capital operations should become more coherent.
-            Neptlium is building the environment for that transition.
-          </p>
+          <p>Ownership is becoming more complex. Capital operations should become more coherent. Neptlium is building the environment for that transition.</p>
           <div className="final-actions">
-            <a className="button" href={SITE.accessUrl}>
-              Open Neptlium <ArrowRight aria-hidden="true" />
-            </a>
-            <Link className="text-link" href="/platform">
-              Explore Neptlium <ArrowRight aria-hidden="true" />
-            </Link>
+            <a className="button" href={SITE.accessUrl}>Open Neptlium <ArrowRight aria-hidden="true" /></a>
+            <Link className="text-link" href="/platform">Explore Neptlium <ArrowRight aria-hidden="true" /></Link>
           </div>
         </Reveal>
       </section>
