@@ -6,6 +6,8 @@ export type ErrorCode =
   | 'payload_too_large'
   | 'rate_limited'
   | 'not_found'
+  | 'data_unavailable'
+  | 'account_not_provisioned'
   | 'invalid_state_transition'
   | 'idempotency_conflict'
   | 'idempotency_key_required'
