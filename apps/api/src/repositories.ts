@@ -83,10 +83,10 @@ export interface CustomerActivityRecord {
 }
 
 export interface CustomerActivityQuery {
-  status?: string;
-  asset?: string;
-  network?: string;
-  search?: string;
+  status?: string | undefined;
+  asset?: string | undefined;
+  network?: string | undefined;
+  search?: string | undefined;
   offset: number;
   limit: number;
 }
