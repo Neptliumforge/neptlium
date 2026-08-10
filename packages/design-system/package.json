@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Neptlium shared design tokens, Tailwind config, and utility CSS.",
+  "description": "Neptlium shared utility CSS and Tailwind compatibility configuration.",
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "lint": "tsc -p tsconfig.json --noEmit",
@@ -19,6 +19,9 @@
     "tailwind.config.ts",
     "README.md"
   ],
+  "dependencies": {
+    "@neptlium/ui": "workspace:*"
+  },
   "devDependencies": {
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",

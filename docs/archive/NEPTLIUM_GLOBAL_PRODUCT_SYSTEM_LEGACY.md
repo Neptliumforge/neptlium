@@ -1,3 +1,15 @@
+# HISTORICAL — SUPERSEDED
+
+**Do not use this document as implementation authority.**
+
+This document records an earlier Neptlium architecture and is retained only for historical reference.
+
+# HISTORICAL — SUPERSEDED
+
+**Do not use this document as implementation authority.**
+
+This document records an earlier Neptlium architecture and is retained only for historical reference.
+
 # Neptlium Global Product System
 
 Marketing explains the capital operating system.

@@ -5,8 +5,8 @@
  *   import baseConfig from "@neptlium/design-system/tailwind";
  *   export default { ...baseConfig, content: ["./src/**\/*.{ts,tsx}"] };
  *
- * Color values use hsl(var(--x)) where --x is an HSL channel string defined
- * in tokens.css (the institutional midnight-navy palette).
+ * Color values reference canonical semantic CSS variables defined
+ * in @neptlium/ui/styles/tokens.css.
  */
 import type { Config } from "tailwindcss";
 
@@ -20,75 +20,72 @@ const config: Omit<Config, "content"> = {
     },
     extend: {
       fontFamily: {
-        display: ["var(--font-display)"],
-        body:    ["var(--font-body)"],
+        display: ["var(--font-sans)"],
+        body:    ["var(--font-sans)"],
         mono:    ["var(--font-mono)"],
       },
       colors: {
-        border:     "hsl(var(--border))",
-        input:      "hsl(var(--input))",
-        ring:       "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        panel:      "hsl(var(--panel))",
-        elevated:   "hsl(var(--elevated))",
+        border:     "var(--color-border-default)",
+        input:      "var(--color-surface-inset)",
+        ring:       "var(--color-border-focus)",
+        background: "var(--color-canvas)",
+        foreground: "var(--color-text-primary)",
+        panel:      "var(--color-panel)",
+        elevated:   "var(--color-surface-raised)",
         primary: {
-          DEFAULT:    "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT:    "var(--color-accent-primary)",
+          foreground: "var(--color-accent-primary-foreground)",
         },
         secondary: {
-          DEFAULT:    "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT:    "var(--color-surface-secondary)",
+          foreground: "var(--color-text-primary)",
         },
         destructive: {
-          DEFAULT:    "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT:    "var(--color-danger)",
+          foreground: "var(--color-danger-foreground)",
         },
-        success: "hsl(var(--success))",
-        warning: "hsl(var(--warning))",
+        success: "var(--color-success)",
+        warning: "var(--color-warning)",
         muted: {
-          DEFAULT:    "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT:    "var(--color-surface-secondary)",
+          foreground: "var(--color-text-muted)",
         },
         accent: {
-          DEFAULT:    "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT:    "var(--color-surface-raised)",
+          foreground: "var(--color-text-primary)",
         },
         popover: {
-          DEFAULT:    "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT:    "var(--color-surface-floating)",
+          foreground: "var(--color-text-primary)",
         },
         card: {
-          DEFAULT:    "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT:    "var(--color-card)",
+          foreground: "var(--color-text-primary)",
         },
         sidebar: {
-          DEFAULT:              "hsl(var(--sidebar-background))",
-          foreground:           "hsl(var(--sidebar-foreground))",
-          primary:              "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent:               "hsl(var(--sidebar-accent))",
-          "accent-foreground":  "hsl(var(--sidebar-accent-foreground))",
-          border:               "hsl(var(--sidebar-border))",
-          ring:                 "hsl(var(--sidebar-ring))",
+          DEFAULT:              "var(--color-sidebar)",
+          foreground:           "var(--color-text-secondary)",
+          primary:              "var(--color-accent-primary)",
+          "primary-foreground": "var(--color-accent-primary-foreground)",
+          accent:               "var(--color-surface-secondary)",
+          "accent-foreground":  "var(--color-text-primary)",
+          border:               "var(--color-border-hairline)",
+          ring:                 "var(--color-border-focus)",
         },
       },
       backgroundImage: {
-        "gradient-hero":    "var(--gradient-hero)",
         "gradient-cta":     "var(--gradient-cta-primary)",
-        "gradient-panel":   "var(--gradient-panel)",
-        "gradient-border":  "var(--gradient-border)",
       },
       boxShadow: {
-        elevated:    "var(--shadow-elevated)",
+        elevated:    "var(--shadow-elevation-3)",
         glow:        "var(--shadow-glow)",
-        card:        "var(--shadow-card)",
+        card:        "var(--shadow-elevation-1)",
         "focus-ring": "var(--shadow-focus-ring)",
       },
       borderRadius: {
-        lg:   "var(--radius)",
-        md:   "calc(var(--radius) - 2px)",
-        sm:   "calc(var(--radius) - 4px)",
+        lg:   "var(--radius-md)",
+        md:   "var(--radius-sm)",
+        sm:   "var(--radius-xs)",
         full: "9999px",
       },
       keyframes: {
@@ -114,10 +111,10 @@ const config: Omit<Config, "content"> = {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up":   "accordion-up 0.2s ease-out",
-        "fade-up":        "fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
-        "fade-in":        "fade-in 0.6s ease-out both",
+        "accordion-down": "accordion-down var(--motion-duration-normal) var(--motion-ease-out)",
+        "accordion-up":   "accordion-up var(--motion-duration-normal) var(--motion-ease-out)",
+        "fade-up":        "fade-up var(--motion-duration-slow) cubic-bezier(0.16, 1, 0.3, 1) both",
+        "fade-in":        "fade-in var(--motion-duration-slow) ease-out both",
         shimmer:          "ds-shimmer 2.5s linear infinite",
       },
     },

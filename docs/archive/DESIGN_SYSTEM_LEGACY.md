@@ -1,3 +1,9 @@
+# HISTORICAL — SUPERSEDED
+
+**Do not use this document as implementation authority.**
+
+This file preserves the previous Neptlium design architecture for historical reference only.
+
 # NEPTLIUM
 
 ## Institutional Capital Operating System

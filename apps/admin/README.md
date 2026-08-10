@@ -1,6 +1,18 @@
 # @neptlium/admin
 
-Role-gated internal operations console deployed separately at `https://admin.neptlium.com` with Vercel root `apps/admin`. It is not customer navigation. Supabase server authorization and RLS remain mandatory; service-role use must be server-only and narrowly scoped.
+Role-gated internal operations console for `admin.neptlium.com`.
+
+## CURRENT
+
+Supabase Auth, server guards, service-role data access, and role thresholds protect screens for users, allocations, deposits, withdrawals, transactions, security, and capabilities. Some actions update legacy workflow status directly.
+
+Database status changes do not prove provider execution, balanced ledger posting, settlement, or reconciliation. These controls remain operational metadata until migrated to governed API commands.
+
+## Environment
+
+See `.env.example`. Supabase URL/publishable key and site URL are browser-safe. `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never reach client components, logs, or tracked files.
+
+## Commands
 
 ```sh
 pnpm --filter @neptlium/admin dev
@@ -9,4 +21,6 @@ pnpm --filter @neptlium/admin lint
 pnpm --filter @neptlium/admin build
 ```
 
-Browser-safe variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL`. Server-only variable: `SUPABASE_SERVICE_ROLE_KEY`. Missing provider credentials do not block frontend deployment; Coinbase CDP and Alchemy integrations are not complete. Never fabricate financial or provider states.
+Clerk is TARGET identity architecture only; no Clerk implementation exists.
+
+Architecture: [`docs/12_ADMIN_OPERATIONS.md`](../../docs/12_ADMIN_OPERATIONS.md).

@@ -1,47 +1,75 @@
 # Neptlium
 
-Neptlium is capital operating infrastructure for modern ownership. This pnpm/Turborepo monorepo contains the public website, authenticated platform, internal console, shared packages, and tracked Supabase history.
+Neptlium is a capital operating platform for understanding, funding, governing, transferring, allocating, and reconciling capital without making any provider the source of financial truth.
 
-Neptlium is crypto-only. Planned provider-dependent assets are USDC on Base, ETH on Base, and BTC on Bitcoin. Custody, execution, provider connectivity, pricing, regulatory approval, and production asset availability are not represented as complete.
+## Monorepo
 
-## Workspaces
+| Workspace    | Domain               | Responsibility                                                                  |
+| ------------ | -------------------- | ------------------------------------------------------------------------------- |
+| `apps/web`   | `neptlium.com`       | Public product and company website.                                             |
+| `apps/app`   | `app.neptlium.com`   | Authenticated customer application.                                             |
+| `apps/admin` | `admin.neptlium.com` | Internal operational-control console.                                           |
+| `apps/api`   | `api.neptlium.com`   | Versioned API, provider, ledger, security, worker, and reconciliation boundary. |
 
-| Workspace    | Boundary                                      | Deployment                                  |
-| ------------ | --------------------------------------------- | ------------------------------------------- |
-| `apps/web`   | Public website                                | `apps/web` → `https://neptlium.com`         |
-| `apps/app`   | Authenticated platform                        | `apps/app` → `https://app.neptlium.com`     |
-| `apps/admin` | Role-gated internal console                   | `apps/admin` → `https://admin.neptlium.com` |
-| `apps/api`   | Versioned backend API                         | `apps/api` → `https://api.neptlium.com`     |
-| `packages/*` | Shared UI, design, runtime, types, and config | Internal packages                           |
-| `supabase`   | Append-only migration history                 | Separately reviewed process                 |
+Shared packages live under `packages/*`; append-only Supabase migration history lives under `supabase/migrations`.
 
-The API Foundation provides health, authenticated wallet boundaries, deterministic state machines, append-only double-entry ledger primitives, idempotency, verified webhook ingestion, and private Supabase persistence. Provider-backed operations fail with `provider_not_configured` until separately reviewed credentials and adapters exist. See [the API guide](apps/api/README.md).
+## Current foundation
 
-## Product boundaries
+- Supabase provides the current Auth, Postgres, RLS, and server-data foundation.
+- Clerk authentication/session/MFA with provider-independent Neptlium principals is TARGET architecture only; it is not installed or live.
+- Circle Developer-Controlled Wallets is implemented for test USDC on Base Sepolia wallet/address/balance observation. Transfer execution and Circle webhook ingestion remain disabled.
+- Stripe fiat funding and Stripe Onramp are TARGET only; neither is installed or live.
+- Ledger, webhook inbox, idempotency, treasury policy, worker, audit, and reconciliation groundwork exists, but unsupported durable repository operations fail closed.
 
-Authenticated navigation is exactly Overview, Portfolio, Capital Account, Treasury, and Allocation. Allocation modes are Observe, Model, and Authorize.
+## Authoritative documentation
 
-Modeling does not move capital.
+Start with:
 
-Authorize remains unavailable until real ledger, custody, security, and execution infrastructure exists.
+- [`docs/00_PRODUCT_CONSTITUTION.md`](docs/00_PRODUCT_CONSTITUTION.md)
+- [`docs/01_PLATFORM_ARCHITECTURE.md`](docs/01_PLATFORM_ARCHITECTURE.md)
+- [`docs/02_AUTHENTICATED_APPLICATION.md`](docs/02_AUTHENTICATED_APPLICATION.md)
+- [`docs/03_DESIGN_SYSTEM.md`](docs/03_DESIGN_SYSTEM.md)
+- [`docs/04_IDENTITY_AND_ACCESS.md`](docs/04_IDENTITY_AND_ACCESS.md)
+- [`docs/05_CAPITAL_ACCOUNT.md`](docs/05_CAPITAL_ACCOUNT.md)
+- [`docs/06_TREASURY.md`](docs/06_TREASURY.md)
+- [`docs/07_ALLOCATION_ENGINE.md`](docs/07_ALLOCATION_ENGINE.md)
+- [`docs/08_TRANSFER_ARCHITECTURE.md`](docs/08_TRANSFER_ARCHITECTURE.md)
+- [`docs/09_LEDGER_AND_RECONCILIATION.md`](docs/09_LEDGER_AND_RECONCILIATION.md)
+- [`docs/10_PROVIDER_ARCHITECTURE.md`](docs/10_PROVIDER_ARCHITECTURE.md)
+- [`docs/11_API_ARCHITECTURE.md`](docs/11_API_ARCHITECTURE.md)
+- [`docs/12_ADMIN_OPERATIONS.md`](docs/12_ADMIN_OPERATIONS.md)
+- [`docs/13_SECURITY.md`](docs/13_SECURITY.md)
+- [`docs/14_DEPLOYMENT.md`](docs/14_DEPLOYMENT.md)
 
-Never fabricate financial data, customers, partners, pricing, certifications, custody readiness, regulatory approval, or provider availability.
+Files under `docs/archive` are historical only. Implementation-specific references that remain outside the numbered set are subordinate to it.
+
+## Roadmap
+
+1. Phase 0 — documentation and design-authority normalization.
+2. Authenticated-shell alignment without changing financial behavior.
+3. Durable Capital Account repository, ledger, webhook, and reconciliation completion.
+4. Governed Treasury, Allocation, Transfer, and admin control workflows.
+5. Separately reviewed identity migration from Supabase Auth to Clerk.
+6. Separately reviewed Stripe fiat funding/Onramp and future provider expansion.
+
+TARGET items are not promises of current availability.
+
+## Financial correctness
+
+- Provider observation is evidence, not canonical ledger truth.
+- Modeling, approval, admin status, or provider submission does not prove execution or settlement.
+- Financial mutations must be authenticated, authorized, owner-validated, idempotent, audited, balanced, and reconciled.
+- Reservations precede spend/submission where required and prevent double use of capital.
+- Posted financial history is append-only; corrections use reversals or compensating entries.
+- Missing capability, verification, durable storage, or configuration fails closed.
+- Never fabricate balances, holdings, execution, settlement, customers, providers, or regulatory status.
 
 ## Commands
 
 ```sh
-pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm lint
 pnpm test
 pnpm build
 pnpm format:check
 ```
-
-## Environment and security
-
-Copy the relevant app example to untracked `.env.local`. Browser-safe variables use `NEXT_PUBLIC_`; server-only variables must never enter browser bundles, logs, or tracked files. Missing provider credentials are expected and do not block frontend deployment.
-
-Supabase Auth and RLS remain authorization boundaries. Preserve applied migrations and containment records. See [Architecture](docs/ARCHITECTURE.md), [API Foundation](docs/API_FOUNDATION.md), [Deployment](docs/DEPLOYMENT.md), [Security](docs/SECURITY.md), and [Supabase](docs/SUPABASE.md).
-
-Support: `support@neptlium.com`.

@@ -1,3 +1,9 @@
+# HISTORICAL — SUPERSEDED
+
+**Do not use this document as implementation authority.**
+
+This file preserves an earlier Neptlium platform architecture and has been superseded by the current architecture documentation.
+
 # Architecture
 
 Neptlium is a pnpm/Turborepo monorepo. `apps/web`, `apps/app`, and `apps/admin` deploy independently to `https://neptlium.com`, `https://app.neptlium.com`, and `https://admin.neptlium.com`. Internal `@neptlium/*` packages provide UI, design tokens, runtime infrastructure, contracts, and configuration. `supabase` owns append-only migration history.

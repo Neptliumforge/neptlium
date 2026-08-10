@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "@neptlium/ui/styles/tokens.css";
 
-@import "@neptlium/design-system/tokens.css";
 @import "@neptlium/design-system/utilities.css";
 
 @source "../../../packages/design-system/src";

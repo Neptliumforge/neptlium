@@ -192,3 +192,7 @@ supabase/.cache/
 !README.md
 !LICENSE
 .vercel
+
+# Local environment secrets
+.env.local
+.env.*.local

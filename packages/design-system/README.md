@@ -1,8 +1,8 @@
 # @neptlium/design-system
 
-Canonical design tokens, utility CSS, and Tailwind configuration for Neptlium applications.
+Higher-level utility CSS and Tailwind compatibility configuration for Neptlium applications.
 
-Import `@neptlium/design-system/tokens.css` before utility styles. The package contains no application or backend logic.
+Import canonical tokens from `@neptlium/ui/styles/tokens.css`, then import `@neptlium/design-system/utilities.css` when these higher-level utilities are needed. The legacy design-system token export only forwards to the UI package. The package contains no application or backend logic.
 
 ```sh
 pnpm --filter @neptlium/design-system typecheck

@@ -1,3 +1,9 @@
+# HISTORICAL — SUPERSEDED
+
+**Do not use this document as implementation authority.**
+
+This file preserves an earlier Neptlium roadmap and is retained for historical reference only.
+
 # Roadmap
 
 Roadmap items are directional and do not represent released capabilities.

@@ -1,6 +1,18 @@
 # @neptlium/web
 
-Public Neptlium website deployed separately at `https://neptlium.com` with Vercel root `apps/web`. It owns public product, security, research, contact, and draft legal content; it owns no authenticated or privileged operations.
+Public product and company website for `neptlium.com`. It owns no authenticated session, privileged operation, or canonical financial state.
+
+## CURRENT
+
+The site presents Neptlium's capital operating platform, Capital Account, Treasury, Allocation, capital universe, security/trust, company, research, and draft legal content. It must distinguish implemented foundation from target capability.
+
+Current provider foundation is Supabase plus Circle testnet Capital Account observation. Clerk identity, Stripe fiat funding/Onramp, future equities providers, and other target capabilities must not be represented as live.
+
+## Environment
+
+No environment variable is currently required. Any future browser-safe value must use `NEXT_PUBLIC_*`; server credentials never belong in this app.
+
+## Commands
 
 ```sh
 pnpm --filter @neptlium/web dev
@@ -9,6 +21,6 @@ pnpm --filter @neptlium/web lint
 pnpm --filter @neptlium/web build
 ```
 
-No environment variable is currently required. Browser-safe additions must use `NEXT_PUBLIC_`; server credentials never belong in this client. Missing provider credentials do not block deployment. Coinbase CDP and Alchemy integrations are not complete.
+Never imply provider availability, custody/execution readiness, financial results, customers, pricing, certification, or regulatory approval without verified evidence.
 
-Neptlium is crypto-only. Planned provider-dependent assets are USDC on Base, ETH on Base, and BTC on Bitcoin. Do not imply provider availability, custody or execution readiness, financial results, customers, pricing, certifications, or regulatory approval. Legal drafts require qualified review. Support: `support@neptlium.com`.
+Architecture: [`docs/00_PRODUCT_CONSTITUTION.md`](../../docs/00_PRODUCT_CONSTITUTION.md).
