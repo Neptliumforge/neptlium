@@ -1,16 +1,20 @@
 import Link from 'next/link';
 import { AssetAmount, AssetIdentity, Badge, Input, Surface } from '@neptlium/ui';
-import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { requireUser } from '@/lib/auth';
+import { getCapitalActivity } from '@/lib/api/client';
 
 const PAGE_SIZE = 20;
 
 const STATUS_TONE: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
   completed: 'success',
+  settled: 'success',
   pending: 'warning',
   pending_review: 'warning',
+  confirming: 'warning',
+  submitted: 'warning',
   failed: 'danger',
   cancelled: 'neutral',
+  reversed: 'danger',
 };
 
 const selectClasses =
@@ -24,48 +28,29 @@ interface TransactionsSearchParams {
   readonly page?: string;
 }
 
-interface TransactionRow {
-  readonly id: string;
-  readonly type: string;
-  readonly asset: string;
-  readonly network: string;
-  readonly amount: number;
-  readonly status: string;
-  readonly reference: string | null;
-  readonly counterparty: string | null;
-  readonly created_at: string;
-}
-
 export default async function TransactionsPage({ searchParams }: { readonly searchParams: Promise<TransactionsSearchParams> }) {
-  const user = await requireUser();
+  await requireUser();
   const params = await searchParams;
-  const supabase = await createSupabaseServerClient();
   const page = Math.max(1, Number(params.page) || 1);
   const offset = (page - 1) * PAGE_SIZE;
 
-  const { data: distinctRows } = await supabase
-    .from('wallet_transactions')
-    .select('asset, network')
-    .eq('profile_id', user.id);
+  let result;
+  let loadError = false;
+  try {
+    result = await getCapitalActivity({
+      offset,
+      limit: PAGE_SIZE,
+      ...(params.status ? { status: params.status } : {}),
+      ...(params.asset ? { asset: params.asset } : {}),
+      ...(params.network ? { network: params.network } : {}),
+      ...(params.q ? { q: params.q } : {}),
+    });
+  } catch {
+    result = { state: 'EMPTY' as const, data: [], total: 0, assets: [], networks: [], next_offset: null };
+    loadError = true;
+  }
 
-  const assets = [...new Set((distinctRows ?? []).map((row) => row.asset))];
-  const networks = [...new Set((distinctRows ?? []).map((row) => row.network))];
-
-  let query = supabase
-    .from('wallet_transactions')
-    .select('id, type, asset, network, amount, status, reference, counterparty, created_at', { count: 'exact' })
-    .eq('profile_id', user.id)
-    .order('created_at', { ascending: false })
-    .range(offset, offset + PAGE_SIZE - 1);
-
-  if (params.status) query = query.eq('status', params.status);
-  if (params.asset) query = query.eq('asset', params.asset);
-  if (params.network) query = query.eq('network', params.network);
-  if (params.q) query = query.or(`reference.ilike.%${params.q}%,counterparty.ilike.%${params.q}%`);
-
-  const { data, count } = await query;
-  const transactions = (data ?? []) as readonly TransactionRow[];
-  const totalPages = count ? Math.max(1, Math.ceil(count / PAGE_SIZE)) : 1;
+  const totalPages = result.total ? Math.max(1, Math.ceil(result.total / PAGE_SIZE)) : 1;
 
   function pageHref(targetPage: number): string {
     const search = new URLSearchParams();
@@ -82,7 +67,7 @@ export default async function TransactionsPage({ searchParams }: { readonly sear
     <div className="space-y-6">
       <header>
         <h1>Capital Activity</h1>
-        <p className="mt-1 text-sm text-text-muted">Canonical account activity and its operational state.</p>
+        <p className="mt-1 text-sm text-text-muted">Account activity and operational state supplied by the Neptlium API.</p>
       </header>
 
       <Surface className="p-4 sm:p-5">
@@ -97,22 +82,26 @@ export default async function TransactionsPage({ searchParams }: { readonly sear
               <option value="">All statuses</option>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
+              <option value="submitted">Submitted</option>
+              <option value="confirming">Confirming</option>
+              <option value="settled">Settled</option>
               <option value="failed">Failed</option>
               <option value="cancelled">Cancelled</option>
+              <option value="reversed">Reversed</option>
             </select>
           </label>
           <label className="grid gap-1.5 text-xs font-medium text-text-secondary" htmlFor="asset">
             Asset
             <select id="asset" name="asset" defaultValue={params.asset ?? ''} className={selectClasses}>
               <option value="">All assets</option>
-              {assets.map((asset) => <option key={asset} value={asset}>{asset}</option>)}
+              {result.assets.map((asset) => <option key={asset} value={asset}>{asset}</option>)}
             </select>
           </label>
           <label className="grid gap-1.5 text-xs font-medium text-text-secondary" htmlFor="network">
             Network
             <select id="network" name="network" defaultValue={params.network ?? ''} className={selectClasses}>
               <option value="">All networks</option>
-              {networks.map((network) => <option key={network} value={network}>{network}</option>)}
+              {result.networks.map((network) => <option key={network} value={network}>{network}</option>)}
             </select>
           </label>
           <button type="submit" className="h-10 rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Filter</button>
@@ -120,10 +109,15 @@ export default async function TransactionsPage({ searchParams }: { readonly sear
       </Surface>
 
       <Surface>
-        {transactions.length === 0 ? (
+        {loadError ? (
+          <div className="px-5 py-8">
+            <p className="text-sm font-medium">Capital activity is unavailable.</p>
+            <p className="mt-1 text-sm text-text-muted">The Neptlium API could not load account activity. Try again later.</p>
+          </div>
+        ) : result.data.length === 0 ? (
           <div className="px-5 py-8">
             <p className="text-sm font-medium">No capital activity yet.</p>
-            <p className="mt-1 text-sm text-text-muted">Activity will appear here when canonical account events are available. Adjust filters if you expected an existing event.</p>
+            <p className="mt-1 text-sm text-text-muted">Activity will appear here when account events are available. Adjust filters if you expected an existing event.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -139,7 +133,7 @@ export default async function TransactionsPage({ searchParams }: { readonly sear
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((transaction) => (
+                {result.data.map((transaction) => (
                   <tr key={transaction.id} className="border-b border-border-hairline last:border-0">
                     <td className="px-4 py-3 capitalize text-text-primary">{transaction.type}</td>
                     <td className="px-4 py-3"><AssetIdentity asset={transaction.asset} network={transaction.network} size="sm" /></td>
@@ -148,7 +142,7 @@ export default async function TransactionsPage({ searchParams }: { readonly sear
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-text-secondary">{transaction.reference ?? transaction.counterparty ?? 'Not available'}</td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[transaction.status] ?? 'neutral'}>{transaction.status.replaceAll('_', ' ')}</Badge></td>
-                    <td className="px-4 py-3 text-text-muted">{new Date(transaction.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-text-muted">{new Date(transaction.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>
