@@ -258,7 +258,7 @@ export function SiteHeader() {
         <div className="nav-actions">
           <a href={SITE.signInUrl}>Sign in</a>
           <a className="button small" href={SITE.accessUrl}>
-            Get started
+            Access Neptlium
           </a>
         </div>
         <button
@@ -305,7 +305,7 @@ export function SiteHeader() {
             <div className="drawer-actions">
               <a href={SITE.signInUrl}>Sign in</a>
               <a className="button" href={SITE.accessUrl}>
-                Get started
+                Access Neptlium
               </a>
             </div>
           </aside>
