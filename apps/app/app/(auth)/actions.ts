@@ -33,9 +33,7 @@ export async function login(
   const password = readRequiredField(formData, 'password');
   const next = safeInternalPath(readRequiredField(formData, 'next'));
 
-  if (!isValidEmail(email)) {
-    return { error: 'Enter a valid email address.', success: false };
-  }
+  if (!isValidEmail(email)) return { error: 'Enter a valid email address.', success: false };
   if (!password) return { error: 'Password is required.', success: false };
 
   const supabase = await createSupabaseServerClient();
@@ -59,12 +57,13 @@ export async function login(
 
   if (next !== '/dashboard') redirect(next);
 
+  let provisioned = false;
   try {
-    const context = await getAccountContext();
-    redirect(context.provisionedAt ? '/dashboard' : '/onboarding');
+    provisioned = Boolean((await getAccountContext()).provisionedAt);
   } catch {
-    redirect('/onboarding');
+    provisioned = false;
   }
+  redirect(provisioned ? '/dashboard' : '/onboarding');
 }
 
 export async function signup(
