@@ -1,0 +1,199 @@
+.route-detail-page {
+  background: var(--marketing-bg-deep);
+}
+
+.route-detail-hero {
+  border-bottom: 1px solid var(--marketing-border-soft);
+}
+
+.route-detail-hero .container-page {
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+
+.route-detail-hero h1 {
+  max-width: 16ch;
+  margin: 0;
+  color: var(--marketing-text);
+  font-size: clamp(2.25rem, 4.25vw, 4rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.route-detail-hero .eyebrow + h1 {
+  margin-top: 1rem;
+}
+
+.route-detail-hero .container-page > p:last-child {
+  max-width: 38rem;
+  margin: 1.25rem 0 0;
+  color: var(--marketing-text-secondary);
+  font-size: clamp(1rem, 1.2vw, 1.1875rem);
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+}
+
+.route-detail-showcase {
+  border-bottom: 1px solid var(--marketing-border-soft);
+  background: var(--marketing-bg);
+}
+
+.route-detail-showcase > .container-page {
+  padding-block: clamp(2.75rem, 5vw, 4.5rem);
+}
+
+.route-detail-showcase .has-visual {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.72fr) minmax(30rem, 1.28fr);
+  align-items: center;
+  gap: clamp(2.5rem, 5vw, 5rem);
+}
+
+.route-detail-points {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--marketing-border-soft);
+  border-bottom: 1px solid var(--marketing-border-soft);
+}
+
+.has-visual .route-detail-points {
+  grid-template-columns: 1fr;
+}
+
+.route-detail-points article {
+  padding: 1rem 1.25rem;
+  border-right: 1px solid var(--marketing-border-soft);
+  border-bottom: 1px solid var(--marketing-border-soft);
+}
+
+.route-detail-points article:nth-child(2n) {
+  border-right: 0;
+}
+
+.route-detail-points article:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.has-visual .route-detail-points article {
+  border-right: 0;
+}
+
+.has-visual .route-detail-points article:last-child {
+  border-bottom: 0;
+}
+
+.route-detail-points h2 {
+  margin: 0;
+  color: var(--marketing-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.route-detail-points p {
+  margin: 0.45rem 0 0;
+  color: var(--marketing-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.route-detail-visual {
+  min-width: 0;
+}
+
+.route-detail-action {
+  border-bottom: 1px solid var(--marketing-border-soft);
+}
+
+.route-detail-action .container-page {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2rem;
+  padding-block: 2rem;
+}
+
+.route-detail-action span {
+  color: var(--marketing-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.route-detail-action h2 {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--marketing-text);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.route-detail-action .container-page > div {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.route-detail-action .container-page > div > a:not(.button) {
+  color: var(--marketing-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+@media (max-width: 67.999rem) {
+  .route-detail-showcase .has-visual {
+    grid-template-columns: 1fr;
+  }
+
+  .route-detail-action .container-page {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .route-detail-hero .container-page {
+    padding-block: 2.75rem;
+  }
+
+  .route-detail-hero h1 {
+    font-size: clamp(2rem, 10vw, 2.75rem);
+  }
+
+  .route-detail-showcase > .container-page {
+    padding-block: 2.25rem;
+  }
+
+  .route-detail-points {
+    grid-template-columns: 1fr;
+  }
+
+  .route-detail-points article,
+  .route-detail-points article:nth-child(2n),
+  .route-detail-points article:nth-last-child(-n + 2) {
+    padding: 1rem 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--marketing-border-soft);
+  }
+
+  .route-detail-points article:last-child {
+    border-bottom: 0;
+  }
+
+  .route-detail-action .container-page {
+    padding-block: 1.75rem;
+  }
+
+  .route-detail-action .container-page > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .route-detail-action .button {
+    width: 100%;
+  }
+}
