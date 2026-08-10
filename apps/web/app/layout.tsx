@@ -4,6 +4,7 @@ import './marketing-shell.css';
 import './navigation-depth.css';
 import './navigation-integration.css';
 import './footer-depth.css';
+import './hero-platform.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
