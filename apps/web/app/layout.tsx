@@ -9,6 +9,7 @@ import './platform-calibration.css';
 import './production-hardening.css';
 import './apple-calibration.css';
 import './product-showcase-calibration.css';
+import './route-product-consolidation.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
