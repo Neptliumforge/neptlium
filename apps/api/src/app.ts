@@ -4,7 +4,12 @@ import { loadConfig, type Config } from './config.js';
 import { ApiError } from './errors.js';
 import { digest, validatePair, type Asset, type Network } from './domain.js';
 import { MemoryRepository, type ApiRepository } from './repositories.js';
-import { DisabledProvider, type WebhookVerifier } from './providers.js';
+import {
+  DisabledCapitalProvider,
+  type CapitalProvider,
+  type WebhookVerifier,
+} from './providers.js';
+import { CircleCapitalProvider, initializeCircleSdk } from './circle.js';
 import { MemoryRateLimiter, type RateLimiter } from './security.js';
 import { JsonObserver, MemoryObserver, type Observer } from './observability.js';
 
@@ -15,6 +20,7 @@ export interface Dependencies {
   webhookVerifiers?: Partial<Record<'alchemy' | 'coinbase', WebhookVerifier>>;
   rateLimiter?: RateLimiter;
   observer?: Observer;
+  capitalProvider?: CapitalProvider;
 }
 export interface Injection {
   method: string;
@@ -66,12 +72,22 @@ export async function buildApp(deps: Dependencies = {}) {
   const config = deps.config ?? loadConfig();
   if (config.NODE_ENV === 'production' && !deps.repository)
     throw new Error('A durable repository must be injected in production');
+  if (config.NODE_ENV === 'production' && deps.repository instanceof MemoryRepository)
+    throw new Error('MemoryRepository cannot be used in production');
   if (config.NODE_ENV === 'production' && !deps.rateLimiter)
     throw new Error('A distributed rate limiter must be injected in production');
   const repository = deps.repository ?? new MemoryRepository();
   const limiter = deps.rateLimiter ?? new MemoryRateLimiter();
   const observer =
     deps.observer ?? (config.NODE_ENV === 'test' ? new MemoryObserver() : new JsonObserver());
+  const capitalProvider =
+    deps.capitalProvider ??
+    (config.circleConfigured
+      ? new CircleCapitalProvider(
+          initializeCircleSdk(config.CIRCLE_API_KEY, config.CIRCLE_ENTITY_SECRET),
+          config.CIRCLE_WALLET_SET_ID,
+        )
+      : new DisabledCapitalProvider());
   const authenticate =
     deps.authenticate ??
     (async (token: string) => {
@@ -120,7 +136,7 @@ export async function buildApp(deps: Dependencies = {}) {
       isWrite ? 30 : 120,
       60_000,
     );
-    if (method === 'GET' && path === '/v1/health') {
+    if (method === 'GET' && (path === '/health' || path === '/v1/health')) {
       const repositoryReady = await repository.ready();
       return {
         data: {
@@ -141,6 +157,7 @@ export async function buildApp(deps: Dependencies = {}) {
               config.alchemyConfigured && deps.webhookVerifiers?.alchemy
                 ? 'configured'
                 : 'not_configured',
+            circle: capitalProvider.readiness(),
           },
         },
       };
@@ -158,16 +175,96 @@ export async function buildApp(deps: Dependencies = {}) {
         data: {
           status: ready ? 'ready' : 'not_ready',
           mainnet: false,
-          supported_assets: ['USDC', 'ETH', 'BTC'],
-          networks: ['base-sepolia', 'bitcoin-testnet'],
+          supported_assets: ['USDC'],
+          networks: ['BASE-SEPOLIA'],
+          capabilities: [
+            {
+              asset: 'USDC',
+              network: 'BASE-SEPOLIA',
+              environment: 'testnet',
+              state: 'testnet-enabled',
+            },
+          ],
         },
       };
+    }
+    if (method === 'POST' && path === '/v1/account/provision') {
+      const user = await owner(context);
+      const result = await repository.provisionAccount(user.id);
+      return { data: { status: 'provisioned', profile_id: result.profileId } };
+    }
+    if (method === 'POST' && path === '/v1/account/onboarding') {
+      const user = await owner(context);
+      const result = await repository.completeOnboarding(user.id, context.body);
+      return { data: { status: 'completed', profile_id: result.profileId } };
     }
     if (method === 'POST' && path === '/v1/wallet/deposit-addresses') {
       await owner(context);
       const body = mutation(context.body);
       validatePair(body.asset, body.network);
-      return { data: await new DisabledProvider('coinbase').createDepositAddress() };
+      throw new ApiError(410, 'route_replaced', 'Use the Capital Account deposit-address route');
+    }
+    if (method === 'POST' && path === '/v1/capital-account/provider-wallet') {
+      const user = await owner(context);
+      const key = idempotencyKey(context);
+      const existing = await repository.getProviderWallet(user.id);
+      if (existing) return { data: { status: existing.status, environment: existing.environment } };
+      if (!capitalProvider.supports('USDC', 'BASE-SEPOLIA'))
+        throw new ApiError(503, 'provider_not_configured', 'Capital provider is not configured');
+      const link = await capitalProvider.provisionWallet({
+        refId: `neptlium:${user.id}`,
+        idempotencyKey: key,
+      });
+      await repository.linkProviderWallet(user.id, link);
+      await repository.audit({
+        actorId: user.id,
+        operation: 'provider_wallet.linked',
+        resourceId: link.providerWalletId,
+        newState: link.status,
+        requestId: context.requestId,
+      });
+      return { status: 201, data: { status: link.status, environment: link.environment } };
+    }
+    if (method === 'GET' && path === '/v1/capital-account/deposit-address') {
+      const user = await owner(context);
+      const asset = context.query.get('asset');
+      const network = context.query.get('network');
+      if (!capitalProvider.supports(asset ?? '', network ?? ''))
+        throw new ApiError(422, 'unsupported_capability', 'Asset or network is unavailable');
+      const link = await repository.getProviderWallet(user.id);
+      if (!link)
+        throw new ApiError(
+          404,
+          'provider_wallet_not_linked',
+          'Capital Account provider wallet is not linked',
+        );
+      const destination = await capitalProvider.getDepositAddress(link);
+      return {
+        data: {
+          asset: 'USDC',
+          network: 'BASE-SEPOLIA',
+          address: destination.address,
+          provider_state: destination.status,
+          environment: destination.environment,
+        },
+      };
+    }
+    if (method === 'GET' && path === '/v1/capital-account/balances') {
+      const user = await owner(context);
+      const link = await repository.getProviderWallet(user.id);
+      if (!link)
+        throw new ApiError(
+          404,
+          'provider_wallet_not_linked',
+          'Capital Account provider wallet is not linked',
+        );
+      return {
+        data: {
+          balances: await capitalProvider.getBalances(link),
+          reconciliation_state: 'unreconciled',
+          canonical_ledger_balance: null,
+        },
+      };
     }
     if (method === 'GET' && path === '/v1/wallet/deposits') {
       const user = await owner(context);
@@ -229,11 +326,23 @@ export async function buildApp(deps: Dependencies = {}) {
     }
     if (
       method === 'POST' &&
-      (path === '/v1/webhooks/alchemy' || path === '/v1/webhooks/coinbase')
+      (path === '/v1/webhooks/alchemy' ||
+        path === '/v1/webhooks/coinbase' ||
+        path === '/v1/webhooks/circle')
     ) {
-      const provider = path.endsWith('alchemy') ? 'alchemy' : 'coinbase';
+      const provider = path.endsWith('alchemy')
+        ? 'alchemy'
+        : path.endsWith('circle')
+          ? 'circle'
+          : 'coinbase';
       // Verification is deliberately injected: inventing a provider signature algorithm is unsafe.
       // Until a reviewed adapter is installed, this endpoint fails closed.
+      if (provider === 'circle')
+        throw new ApiError(
+          503,
+          'provider_not_configured',
+          'Circle webhook verification is disabled pending implementation against the reviewed official contract',
+        );
       const verifier = deps.webhookVerifiers?.[provider];
       if (!verifier)
         throw new ApiError(
@@ -281,6 +390,8 @@ export async function buildApp(deps: Dependencies = {}) {
         : {}),
     };
     try {
+      if (headers.origin && !config.allowedOrigins.includes(headers.origin))
+        throw new ApiError(403, 'forbidden', 'Origin is not allowed');
       if (rawBody.length > 1_048_576)
         throw new ApiError(413, 'payload_too_large', 'Request body exceeds 1 MiB');
       let body: unknown;

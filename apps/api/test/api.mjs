@@ -11,6 +11,7 @@ import { DurableWorker, MemoryJobStore } from '../dist/workers.js';
 import { evaluateWithdrawalPolicy } from '../dist/treasury.js';
 import { reconcile } from '../dist/reconciliation.js';
 import { MemoryObserver } from '../dist/observability.js';
+import { SupabaseRepository } from '../dist/supabase-repository.js';
 const config = loadConfig({
   NODE_ENV: 'test',
   API_ALLOWED_ORIGINS: 'http://localhost',
@@ -30,8 +31,11 @@ test('production readiness fails closed when durable persistence is unavailable'
     SUPABASE_ANON_KEY: 'anon',
     SUPABASE_SERVICE_ROLE_KEY: 'service',
   });
-  const repository = new MemoryRepository();
-  repository.ready = () => false;
+  const repository = new SupabaseRepository(
+    'https://example.supabase.co',
+    'service',
+    async () => new Response('{}', { status: 503 }),
+  );
   const app = await buildApp({
     config: production,
     authenticate,
@@ -42,6 +46,18 @@ test('production readiness fails closed when durable persistence is unavailable'
   const status = await app.inject({ method: 'GET', url: '/v1/status' });
   assert.equal(status.statusCode, 503);
   assert.equal(status.json().status, 'not_ready');
+});
+test('production rejects MemoryRepository construction', async () => {
+  const production = loadConfig({ NODE_ENV: 'production' });
+  await assert.rejects(
+    () =>
+      buildApp({
+        config: production,
+        repository: new MemoryRepository(),
+        rateLimiter: new MemoryRateLimiter(),
+      }),
+    /MemoryRepository cannot be used/,
+  );
 });
 test('rate limits abusive write bursts without exposing request data', async () => {
   const app = await buildApp({ config, authenticate });
@@ -138,8 +154,138 @@ test('auth and disabled provider fail closed', async () => {
         payload: { asset: 'ETH', network: 'base-sepolia' },
       })
     ).statusCode,
-    503,
+    410,
   );
+});
+const circleWallet = {
+  provider: 'circle',
+  providerWalletId: 'wallet-test',
+  providerWalletSetId: 'set-test',
+  accountType: 'EOA',
+  blockchain: 'BASE-SEPOLIA',
+  address: '0x1111111111111111111111111111111111111111',
+  environment: 'testnet',
+  status: 'live',
+};
+const circleProvider = {
+  identity: 'circle',
+  environment: 'testnet',
+  readiness: () => 'configured',
+  supports: (asset, network) => asset === 'USDC' && network === 'BASE-SEPOLIA',
+  provisionWallet: async () => circleWallet,
+  lookupWallet: async () => circleWallet,
+  getDepositAddress: async (wallet) => wallet,
+  getBalances: async () => [
+    {
+      asset: 'USDC',
+      network: 'BASE-SEPOLIA',
+      available: '12.5',
+      observedAt: '2026-08-10T00:00:00.000Z',
+      synchronizationState: 'provider_observed',
+    },
+  ],
+  createTransfer: async () => {
+    throw new Error('disabled');
+  },
+  getTransfer: async () => {
+    throw new Error('disabled');
+  },
+  listTransactions: async () => [],
+  reconciliationMetadata: () => ({}),
+};
+test('Circle configuration is explicit and rejects mainnet or partial credentials', () => {
+  assert.throws(
+    () => loadConfig({ NODE_ENV: 'test', CIRCLE_ENVIRONMENT: 'production' }),
+    /mainnet/,
+  );
+  assert.throws(
+    () =>
+      loadConfig({ NODE_ENV: 'test', CIRCLE_API_KEY: 'only-one', CIRCLE_ENVIRONMENT: 'testnet' }),
+    /both credentials/,
+  );
+  assert.equal(loadConfig({ NODE_ENV: 'test' }).circleConfigured, false);
+});
+test('Capital Account routes normalize Circle address and provider-observed balance', async () => {
+  const repository = new MemoryRepository();
+  repository.linkProviderWallet('user-1', circleWallet);
+  const app = await buildApp({ config, authenticate, repository, capitalProvider: circleProvider });
+  const headers = { authorization: 'Bearer valid' };
+  const address = await app.inject({
+    method: 'GET',
+    url: '/v1/capital-account/deposit-address?asset=USDC&network=BASE-SEPOLIA',
+    headers,
+  });
+  assert.deepEqual(address.json(), {
+    asset: 'USDC',
+    network: 'BASE-SEPOLIA',
+    address: circleWallet.address,
+    provider_state: 'live',
+    environment: 'testnet',
+  });
+  const balance = await app.inject({ method: 'GET', url: '/v1/capital-account/balances', headers });
+  assert.equal(balance.json().balances[0].available, '12.5');
+  assert.equal(balance.json().canonical_ledger_balance, null);
+});
+test('provider wallet access is authenticated, owner-scoped and capability gated', async () => {
+  const repository = new MemoryRepository();
+  repository.linkProviderWallet('user-1', circleWallet);
+  const app = await buildApp({ config, authenticate, repository, capitalProvider: circleProvider });
+  assert.equal(
+    (await app.inject({ method: 'GET', url: '/v1/capital-account/balances' })).statusCode,
+    401,
+  );
+  assert.equal(
+    (
+      await app.inject({
+        method: 'GET',
+        url: '/v1/capital-account/deposit-address?asset=BTC&network=bitcoin-testnet',
+        headers: { authorization: 'Bearer valid' },
+      })
+    ).statusCode,
+    422,
+  );
+  const otherApp = await buildApp({
+    config,
+    authenticate: async () => ({ id: 'user-2' }),
+    repository,
+    capitalProvider: circleProvider,
+  });
+  assert.equal(
+    (
+      await otherApp.inject({
+        method: 'GET',
+        url: '/v1/capital-account/balances',
+        headers: { authorization: 'Bearer valid' },
+      })
+    ).statusCode,
+    404,
+  );
+});
+test('on-demand wallet provisioning is idempotent and returns no provider identifiers', async () => {
+  let calls = 0;
+  const provider = {
+    ...circleProvider,
+    provisionWallet: async () => {
+      calls += 1;
+      return circleWallet;
+    },
+  };
+  const app = await buildApp({ config, authenticate, capitalProvider: provider });
+  const headers = { authorization: 'Bearer valid', 'idempotency-key': 'wallet-request-1' };
+  const first = await app.inject({
+    method: 'POST',
+    url: '/v1/capital-account/provider-wallet',
+    headers,
+  });
+  const second = await app.inject({
+    method: 'POST',
+    url: '/v1/capital-account/provider-wallet',
+    headers,
+  });
+  assert.equal(first.statusCode, 201);
+  assert.equal(second.statusCode, 200);
+  assert.equal(calls, 1);
+  assert.deepEqual(first.json(), { status: 'live', environment: 'testnet' });
 });
 test('malformed and oversized bodies return safe validation errors', async () => {
   const app = await buildApp({ config, authenticate });
@@ -274,10 +420,18 @@ test('webhooks verify, deduplicate and reject replay', async () => {
 });
 
 test('serverless boundary enforces exact CORS and bearer authentication', async () => {
-  const { serverlessHandler } = await import('../dist/serverless.js');
+  const { createServerlessHandler } = await import('../dist/serverless.js');
+  const canonical = await buildApp({ config, authenticate, capitalProvider: circleProvider });
+  const serverlessHandler = createServerlessHandler(Promise.resolve(canonical));
   const invoke = async ({ method = 'GET', url = '/health', headers = {} } = {}) => {
     const result = { statusCode: 0, headers: {}, body: '' };
-    const req = { method, url, headers };
+    const req = {
+      method,
+      url,
+      headers,
+      socket: { remoteAddress: 'test' },
+      async *[Symbol.asyncIterator]() {},
+    };
     const res = {
       setHeader(name, value) {
         result.headers[name.toLowerCase()] = value;
@@ -300,4 +454,101 @@ test('serverless boundary enforces exact CORS and bearer authentication', async 
   const missingToken = await invoke({ method: 'POST', url: '/v1/account/provision' });
   assert.equal(missingToken.statusCode, 401);
   assert.equal(JSON.parse(missingToken.body).error.code, 'authentication_required');
+  const provision = await invoke({
+    method: 'POST',
+    url: '/v1/capital-account/provider-wallet',
+    headers: { authorization: 'Bearer valid', 'idempotency-key': 'serverless-wallet' },
+  });
+  assert.equal(provision.statusCode, 201);
+  const address = await invoke({
+    method: 'GET',
+    url: '/v1/capital-account/deposit-address?asset=USDC&network=BASE-SEPOLIA',
+    headers: { authorization: 'Bearer valid' },
+  });
+  assert.equal(address.statusCode, 200);
+  assert.equal(JSON.parse(address.body).network, 'BASE-SEPOLIA');
+});
+
+function durableFixture({ owner = 'user-a', walletId = 'account-a', existing } = {}) {
+  const calls = [];
+  const request = async (url, init = {}) => {
+    calls.push({ url, init });
+    if (url.includes('wallet_accounts?')) {
+      const requestedOwner = new URL(url).searchParams.get('owner_id')?.replace('eq.', '');
+      return new Response(JSON.stringify(requestedOwner === owner ? [{ id: walletId }] : []), {
+        status: 200,
+      });
+    }
+    if (url.includes('capital_provider_wallets?'))
+      return new Response(JSON.stringify(existing ? [existing] : []), { status: 200 });
+    if (url.endsWith('/capital_provider_wallets')) return new Response(init.body, { status: 201 });
+    return new Response('{}', { status: 200 });
+  };
+  return {
+    repository: new SupabaseRepository('https://project.supabase.co', 'service-test', request),
+    calls,
+  };
+}
+const linkRow = {
+  provider: 'circle',
+  provider_wallet_id: 'wallet-a',
+  provider_wallet_set_id: 'set-a',
+  provider_account_type: 'EOA',
+  blockchain: 'BASE-SEPOLIA',
+  address: circleWallet.address,
+  environment: 'testnet',
+  status: 'live',
+};
+const durableLink = { ...circleWallet, providerWalletId: 'wallet-a', providerWalletSetId: 'set-a' };
+test('durable repository resolves linkage strictly through authenticated owner wallet account', async () => {
+  const own = durableFixture({ existing: linkRow });
+  assert.equal((await own.repository.getProviderWallet('user-a')).providerWalletId, 'wallet-a');
+  assert.equal(await own.repository.getProviderWallet('user-b'), undefined);
+  assert.equal(
+    own.calls.some(({ url }) => url.includes('owner_id=eq.user-a')),
+    true,
+  );
+});
+test('durable linkage fails closed without canonical account and never accepts client wallet id', async () => {
+  const { repository, calls } = durableFixture();
+  await assert.rejects(
+    () => repository.linkProviderWallet('user-b', circleWallet),
+    (error) => error.status === 409,
+  );
+  assert.equal(
+    calls.some(({ init }) => String(init.body).includes('wallet_id')),
+    false,
+  );
+});
+test('durable linkage is idempotent only for identical linkage and rejects conflicts', async () => {
+  const identical = durableFixture({ existing: linkRow });
+  assert.equal(
+    (await identical.repository.linkProviderWallet('user-a', durableLink)).providerWalletId,
+    'wallet-a',
+  );
+  const conflict = durableFixture({ existing: linkRow });
+  await assert.rejects(
+    () =>
+      conflict.repository.linkProviderWallet('user-a', {
+        ...circleWallet,
+        providerWalletId: 'wallet-b',
+      }),
+    (error) => error.status === 409 && error.code === 'provider_wallet_conflict',
+  );
+});
+test('Circle transfer execution is unconditionally disabled', async () => {
+  const { CircleCapitalProvider } = await import('../dist/circle.js');
+  const provider = new CircleCapitalProvider({});
+  await assert.rejects(
+    () =>
+      provider.createTransfer({
+        wallet: circleWallet,
+        idempotencyKey: 'transfer-key',
+        asset: 'USDC',
+        network: 'BASE-SEPOLIA',
+        amount: '1',
+        destination: circleWallet.address,
+      }),
+    (error) => error.code === 'provider_execution_disabled',
+  );
 });

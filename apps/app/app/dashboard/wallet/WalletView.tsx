@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { ArrowDownToLine, ArrowUpFromLine, Clock3 } from 'lucide-react';
+import { ArrowDownToLine, ArrowUpFromLine, Clock3, Copy } from 'lucide-react';
 import {
   AssetAmount,
   AssetIdentity,
@@ -25,6 +25,20 @@ export interface WalletTransaction {
 interface Props {
   readonly transactions: readonly WalletTransaction[];
   readonly historyError: boolean;
+  readonly capitalAccount?: {
+    readonly destination: {
+      readonly asset: 'USDC';
+      readonly network: 'BASE-SEPOLIA';
+      readonly address: string;
+      readonly provider_state: string;
+      readonly environment: 'testnet';
+    };
+    readonly balance?: {
+      readonly available: string;
+      readonly observedAt: string;
+      readonly synchronizationState: 'provider_observed';
+    };
+  };
 }
 type Tab = 'Overview' | 'Deposit' | 'Withdraw' | 'History';
 const tabs: readonly Tab[] = ['Overview', 'Deposit', 'Withdraw', 'History'];
@@ -40,12 +54,15 @@ const tone: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
   failed: 'danger',
   cancelled: 'neutral',
 };
-export function WalletView({ transactions, historyError }: Props) {
+export function WalletView({ transactions, historyError, capitalAccount }: Props) {
   const [active, setActive] = useState<Tab>('Overview');
   return (
     <Stack className="py-1">
       <header>
-        <h1>Capital Account</h1>
+        <div className="flex items-center gap-2">
+          <h1>Capital Account</h1>
+          <Badge tone="warning">Testnet</Badge>
+        </div>
         <p className="mt-1 text-sm text-text-muted">
           Funding, balances, and authenticated capital activity.
         </p>
@@ -102,34 +119,72 @@ export function WalletView({ transactions, historyError }: Props) {
           <Section title="Assets">
             <Surface className="px-4 sm:px-5">
               <Group>
-                {assets.map(([asset, description]) => (
+                {(capitalAccount ? assets.slice(0, 1) : assets).map(([asset, description]) => (
                   <Row key={asset}>
                     <AssetIdentity
                       asset={asset}
                       network={description.includes('Base') ? 'Base' : 'Bitcoin'}
                       detailed
                     />
-                    <AssetAmount asset={asset} state="unavailable" className="text-sm" />
+                    {capitalAccount?.balance && asset === 'USDC' ? (
+                      <span className="text-sm tabular-nums">
+                        {capitalAccount.balance.available} test USDC
+                      </span>
+                    ) : (
+                      <AssetAmount asset={asset} state="unavailable" className="text-sm" />
+                    )}
                   </Row>
                 ))}
               </Group>
             </Surface>
           </Section>
-          <div className="py-5 text-center">
-            <p className="text-sm font-medium">Account provisioning</p>
-            <p className="mx-auto mt-1 max-w-md text-sm text-text-muted">
-              Your Capital Account is being prepared. Funding will become available when
-              provisioning is complete.
+          {!capitalAccount && (
+            <div className="py-5 text-center">
+              <p className="text-sm font-medium">Account provisioning</p>
+              <p className="mx-auto mt-1 max-w-md text-sm text-text-muted">
+                Your Capital Account is being prepared. Funding will become available when
+                provisioning is complete.
+              </p>
+            </div>
+          )}
+          {capitalAccount?.balance && (
+            <p className="text-xs text-text-muted">
+              Provider-observed balance as of{' '}
+              {new Date(capitalAccount.balance.observedAt).toLocaleString()}. This is not a
+              reconciled Neptlium ledger balance and has no real-money value.
             </p>
-          </div>
+          )}
         </>
       )}
-      {active === 'Deposit' && (
-        <State
-          title="Deposits are not available yet"
-          copy="Funding will become available when your Capital Account is ready."
-        />
-      )}
+      {active === 'Deposit' &&
+        (capitalAccount ? (
+          <Surface className="space-y-4 p-5">
+            <div className="flex items-center justify-between">
+              <AssetIdentity asset="USDC" network="Base Sepolia" detailed />
+              <Badge tone="warning">Testnet only</Badge>
+            </div>
+            <p className="text-sm text-text-muted">
+              Send only test USDC on Base Sepolia. A deposit is not complete until provider
+              observation and Neptlium reconciliation occur.
+            </p>
+            <code className="block overflow-x-auto rounded bg-surface-2 p-3 text-sm">
+              {capitalAccount.destination.address}
+            </code>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => navigator.clipboard.writeText(capitalAccount.destination.address)}
+            >
+              <Copy className="size-4" />
+              Copy address
+            </Button>
+          </Surface>
+        ) : (
+          <State
+            title="Deposits are not available yet"
+            copy="Your testnet Capital Account has not been linked. Contact operations to provision it on demand."
+          />
+        ))}
       {active === 'Withdraw' && (
         <State
           title="Withdrawals are not available yet"

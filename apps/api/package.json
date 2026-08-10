@@ -16,6 +16,8 @@
     "clean": "rm -rf dist",
     "vercel-build": "node build-vercel.mjs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@circle-fin/developer-controlled-wallets": "^10.8.0"
+  },
   "devDependencies": {}
 }

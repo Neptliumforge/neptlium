@@ -2,42 +2,103 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { ApiError } from './errors.js';
 
 export type ProviderState = 'configured' | 'not_configured' | 'degraded' | 'disabled';
-export interface AddressProvider {
-  readonly name: string;
-  readiness(): ProviderState;
-  createDepositAddress(): Promise<never>;
+export type CapitalEnvironment = 'testnet';
+export type CapitalAsset = 'USDC';
+export type CapitalNetwork = 'BASE-SEPOLIA';
+
+export interface ProviderWalletLink {
+  provider: string;
+  providerWalletId: string;
+  providerWalletSetId?: string;
+  accountType: 'EOA';
+  blockchain: CapitalNetwork;
+  address: string;
+  environment: CapitalEnvironment;
+  status: 'live' | 'pending' | 'disabled';
+}
+export interface ProviderBalance {
+  asset: CapitalAsset;
+  network: CapitalNetwork;
+  available: string;
+  observedAt: string;
+  synchronizationState: 'provider_observed';
 }
 export interface ProviderTransaction {
   providerReference: string;
-  state: 'pending' | 'confirmed' | 'failed';
-  confirmations: number;
+  providerState: string;
+  ledgerState:
+    | 'proposed'
+    | 'approved'
+    | 'reserved'
+    | 'submitted'
+    | 'partially_filled'
+    | 'settled'
+    | 'failed'
+    | 'reversed'
+    | 'cancelled';
+  observedAt: string;
 }
-export interface WalletProvider extends AddressProvider {
-  submitWithdrawal(input: {
-    operationId: string;
-    asset: string;
-    network: string;
+export interface CapitalProvider {
+  readonly identity: string;
+  readonly environment: CapitalEnvironment;
+  readiness(): ProviderState;
+  supports(asset: string, network: string): boolean;
+  provisionWallet(input: {
+    refId: string;
+    idempotencyKey: string;
+    walletSetId?: string;
+  }): Promise<ProviderWalletLink>;
+  lookupWallet(providerWalletId: string): Promise<ProviderWalletLink>;
+  getDepositAddress(wallet: ProviderWalletLink): Promise<ProviderWalletLink>;
+  getBalances(wallet: ProviderWalletLink): Promise<ProviderBalance[]>;
+  createTransfer(input: {
+    wallet: ProviderWalletLink;
+    idempotencyKey: string;
+    asset: CapitalAsset;
+    network: CapitalNetwork;
     amount: string;
     destination: string;
   }): Promise<ProviderTransaction>;
-  getTransaction(providerReference: string): Promise<ProviderTransaction>;
+  getTransfer(providerReference: string): Promise<ProviderTransaction>;
+  listTransactions(providerWalletId: string): Promise<ProviderTransaction[]>;
+  reconciliationMetadata(wallet: ProviderWalletLink): Record<string, string>;
 }
 
-export class DisabledProvider implements AddressProvider {
-  constructor(public readonly name: string) {}
+export class DisabledCapitalProvider implements CapitalProvider {
+  readonly identity = 'disabled';
+  readonly environment = 'testnet' as const;
   readiness(): ProviderState {
     return 'not_configured';
   }
-  async createDepositAddress(): Promise<never> {
-    throw new ApiError(503, 'provider_not_configured', `${this.name} provider is not configured`);
+  supports(): boolean {
+    return false;
   }
-}
-export class DisabledWalletProvider extends DisabledProvider implements WalletProvider {
-  async submitWithdrawal(): Promise<never> {
-    throw new ApiError(503, 'provider_not_configured', `${this.name} provider is not configured`);
+  private unavailable(): never {
+    throw new ApiError(503, 'provider_not_configured', 'Capital provider is not configured');
   }
-  async getTransaction(): Promise<never> {
-    throw new ApiError(503, 'provider_not_configured', `${this.name} provider is not configured`);
+  async provisionWallet(): Promise<never> {
+    return this.unavailable();
+  }
+  async lookupWallet(): Promise<never> {
+    return this.unavailable();
+  }
+  async getDepositAddress(): Promise<never> {
+    return this.unavailable();
+  }
+  async getBalances(): Promise<never> {
+    return this.unavailable();
+  }
+  async createTransfer(): Promise<never> {
+    return this.unavailable();
+  }
+  async getTransfer(): Promise<never> {
+    return this.unavailable();
+  }
+  async listTransactions(): Promise<never> {
+    return this.unavailable();
+  }
+  reconciliationMetadata(): Record<string, string> {
+    return {};
   }
 }
 
@@ -46,7 +107,6 @@ export interface WebhookVerificationInput {
   headers: Readonly<Record<string, string | undefined>>;
   now?: number;
 }
-
 export interface WebhookVerifier {
   verify(input: WebhookVerificationInput): void | Promise<void>;
 }
@@ -64,17 +124,11 @@ export class TimestampedHmacTestVerifier implements WebhookVerifier {
       throw new ApiError(401, 'invalid_webhook', 'Missing webhook verification headers');
     if (Math.abs(now - Number(timestamp) * 1000) > this.toleranceSeconds * 1000)
       throw new ApiError(401, 'invalid_webhook', 'Webhook timestamp is outside tolerance');
-    const suppliedHex = signature.replace(/^sha256=/, '');
     const expected = createHmac('sha256', this.secret)
       .update(`${timestamp}.`)
       .update(rawBody)
       .digest();
-    let supplied: Buffer;
-    try {
-      supplied = Buffer.from(suppliedHex, 'hex');
-    } catch {
-      throw new ApiError(401, 'invalid_webhook', 'Invalid webhook signature');
-    }
+    const supplied = Buffer.from(signature.replace(/^sha256=/, ''), 'hex');
     if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected))
       throw new ApiError(401, 'invalid_webhook', 'Invalid webhook signature');
   }
@@ -91,7 +145,6 @@ export type ReconciliationClassification =
   | 'network_mismatch'
   | 'pending_timeout'
   | 'unknown_state';
-
 export function classifyMismatch(
   provider: Record<string, unknown> | undefined,
   internal: Record<string, unknown> | undefined,
@@ -103,8 +156,7 @@ export function classifyMismatch(
     ['asset', 'asset_mismatch'],
     ['network', 'network_mismatch'],
     ['confirmations', 'confirmation_mismatch'],
-  ] as const) {
+  ] as const)
     if (provider[field] !== internal[field]) return result;
-  }
   return undefined;
 }

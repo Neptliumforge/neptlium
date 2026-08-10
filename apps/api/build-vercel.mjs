@@ -23,10 +23,16 @@ execFileSync(
   },
 );
 
-const serverless = join(root, 'dist', 'serverless.js');
-const app = join(root, 'dist', 'app.js');
+const requiredRuntimeModules = [
+  'serverless.js',
+  'app.js',
+  'circle.js',
+  'providers.js',
+  'repositories.js',
+  'supabase-repository.js',
+];
 
-if (!existsSync(serverless) || !existsSync(app)) {
+if (requiredRuntimeModules.some((module) => !existsSync(join(root, 'dist', module)))) {
   throw new Error(
     'Neptlium API production build did not emit required runtime modules',
   );

@@ -8,6 +8,14 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     throw new Error('Invalid API configuration: API_PORT');
   if (env.ENABLE_MAINNET === 'true')
     throw new Error('Mainnet cannot be enabled by the API Foundation runtime');
+  if (env.CIRCLE_ENVIRONMENT && env.CIRCLE_ENVIRONMENT !== 'testnet')
+    throw new Error('Circle mainnet cannot be enabled by this testnet-only runtime');
+  const circleCredentialsPresent = Boolean(env.CIRCLE_API_KEY || env.CIRCLE_ENTITY_SECRET);
+  if (
+    circleCredentialsPresent &&
+    (!env.CIRCLE_API_KEY || !env.CIRCLE_ENTITY_SECRET || env.CIRCLE_ENVIRONMENT !== 'testnet')
+  )
+    throw new Error('Circle requires both credentials and CIRCLE_ENVIRONMENT=testnet');
   const validUrl = (value: string | undefined, name: string) => {
     if (value) {
       try {
@@ -43,6 +51,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     ALCHEMY_API_KEY: env.ALCHEMY_API_KEY,
     ALCHEMY_WEBHOOK_SIGNING_KEY: env.ALCHEMY_WEBHOOK_SIGNING_KEY,
     COINBASE_WEBHOOK_SIGNING_KEY: env.COINBASE_WEBHOOK_SIGNING_KEY,
+    CIRCLE_API_KEY: env.CIRCLE_API_KEY,
+    CIRCLE_ENTITY_SECRET: env.CIRCLE_ENTITY_SECRET,
+    CIRCLE_ENVIRONMENT: env.CIRCLE_ENVIRONMENT,
+    CIRCLE_WALLET_SET_ID: env.CIRCLE_WALLET_SET_ID,
     WEBHOOK_TOLERANCE_SECONDS: webhookToleranceSeconds,
     allowedOrigins: (env.API_ALLOWED_ORIGINS ?? 'http://localhost:3000')
       .split(',')
@@ -54,6 +66,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
       env.CDP_API_KEY_ID && env.CDP_API_KEY_SECRET && env.CDP_WALLET_SECRET,
     ),
     alchemyConfigured: Boolean(env.ALCHEMY_API_KEY && ALCHEMY_RPC_URL),
+    circleConfigured: Boolean(circleCredentialsPresent && env.CIRCLE_ENVIRONMENT === 'testnet'),
   };
 }
 export type Config = ReturnType<typeof loadConfig>;

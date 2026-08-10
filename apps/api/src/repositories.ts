@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { ApiError } from './errors.js';
 import type { Asset, DepositState, Network, WithdrawalState } from './domain.js';
 import { transition } from './domain.js';
+import type { ProviderWalletLink } from './providers.js';
 
 export interface Withdrawal {
   id: string;
@@ -54,6 +55,15 @@ export type WebhookInsertResult = 'inserted' | 'duplicate';
 
 export interface ApiRepository {
   ready(): boolean | Promise<boolean>;
+  provisionAccount(ownerId: string): Promise<{ profileId: string }>;
+  completeOnboarding(ownerId: string, payload: unknown): Promise<{ profileId: string }>;
+  getProviderWallet(
+    ownerId: string,
+  ): ProviderWalletLink | undefined | Promise<ProviderWalletLink | undefined>;
+  linkProviderWallet(
+    ownerId: string,
+    link: ProviderWalletLink,
+  ): ProviderWalletLink | Promise<ProviderWalletLink>;
   createWithdrawalIdempotently(input: {
     ownerId: string;
     operation: string;
@@ -88,9 +98,31 @@ export class MemoryRepository implements ApiRepository {
   readonly audits: AuditEvent[] = [];
   readonly idempotency = new Map<string, IdempotencyRecord>();
   readonly webhooks = new Map<string, WebhookRecord>();
+  readonly providerWallets = new Map<string, ProviderWalletLink>();
 
   ready() {
     return true;
+  }
+  async provisionAccount(ownerId: string) {
+    return { profileId: ownerId };
+  }
+  async completeOnboarding(ownerId: string) {
+    return { profileId: ownerId };
+  }
+  getProviderWallet(ownerId: string) {
+    const value = this.providerWallets.get(ownerId);
+    return value ? structuredClone(value) : undefined;
+  }
+  linkProviderWallet(ownerId: string, link: ProviderWalletLink) {
+    const existing = this.providerWallets.get(ownerId);
+    if (existing && existing.providerWalletId !== link.providerWalletId)
+      throw new ApiError(
+        409,
+        'provider_wallet_conflict',
+        'Capital Account already has a provider wallet',
+      );
+    this.providerWallets.set(ownerId, structuredClone(link));
+    return structuredClone(link);
   }
 
   createWithdrawalIdempotently(input: {
