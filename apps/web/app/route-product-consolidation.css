@@ -1,0 +1,313 @@
+/* Neptlium Route Product Architecture
+   Product routes should explain one idea quickly, show one real surface, then move on. */
+
+.route-page-header {
+  border-bottom: 1px solid var(--marketing-border-soft);
+  background: var(--marketing-bg-deep);
+}
+
+.route-page-header-inner {
+  padding-block: clamp(2.75rem, 5vw, 4.75rem);
+}
+
+.route-page-header .eyebrow {
+  margin: 1.25rem 0 0;
+}
+
+.route-page-header h1 {
+  max-width: 17ch;
+  margin: 1rem 0 0;
+  color: var(--marketing-text);
+  font-family: var(--nts-font-sans);
+  font-size: clamp(2.25rem, 4.2vw, 4rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.route-page-intro {
+  max-width: 37rem;
+  margin: 1.25rem 0 0;
+  color: var(--marketing-text-secondary);
+  font-size: clamp(1rem, 1.2vw, 1.1875rem);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+
+.route-product-nav {
+  border-bottom: 1px solid var(--marketing-border-soft);
+  background: color-mix(in oklab, var(--marketing-bg-deep) 98%, transparent);
+}
+
+.route-product-nav .container-page {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-block: 0.875rem;
+  scrollbar-width: none;
+}
+
+.route-product-nav .container-page::-webkit-scrollbar {
+  display: none;
+}
+
+.route-product-nav a {
+  flex: none;
+  color: var(--marketing-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.route-product-nav a:hover {
+  color: var(--marketing-text);
+}
+
+.route-product-showcase {
+  border-bottom: 1px solid var(--marketing-border-soft);
+  background:
+    radial-gradient(circle at 78% 42%, color-mix(in oklab, var(--marketing-blue) 6%, transparent), transparent 34%),
+    var(--marketing-bg-deep);
+}
+
+.route-product-showcase-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(32rem, 1.22fr);
+  align-items: center;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  min-height: clamp(32rem, 62vh, 42rem);
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+
+.route-product-copy {
+  max-width: 31rem;
+}
+
+.route-product-kicker {
+  color: var(--marketing-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.route-product-copy h2 {
+  max-width: 15ch;
+  margin: 0.875rem 0 0;
+  color: var(--marketing-text);
+  font-size: clamp(1.875rem, 3vw, 3rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.route-product-copy > p {
+  max-width: 34rem;
+  margin: 1rem 0 0;
+  color: var(--marketing-text-secondary);
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.55;
+  letter-spacing: -0.012em;
+}
+
+.route-product-principle {
+  display: block;
+  margin-top: 1.25rem;
+  color: var(--marketing-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.route-product-link,
+.route-product-actions > a:not(.button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  color: var(--marketing-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.route-product-link svg {
+  width: 0.875rem;
+}
+
+.route-product-visual {
+  min-width: 0;
+}
+
+.route-product-visual > * + * {
+  margin-top: 0.875rem;
+}
+
+.route-product-capabilities {
+  border-bottom: 1px solid var(--marketing-border-soft);
+  background: var(--marketing-bg);
+}
+
+.route-product-capabilities > .container-page,
+.route-product-capabilities .container-page {
+  padding-block: clamp(2.25rem, 4vw, 3.75rem);
+}
+
+.route-product-capability-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--marketing-border-soft);
+  border-bottom: 1px solid var(--marketing-border-soft);
+}
+
+.route-product-capability-grid article {
+  min-height: 8rem;
+  padding: 1.25rem;
+  border-right: 1px solid var(--marketing-border-soft);
+}
+
+.route-product-capability-grid article:last-child {
+  border-right: 0;
+}
+
+.route-product-capability-grid h3 {
+  margin: 0;
+  color: var(--marketing-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.route-product-capability-grid p {
+  margin: 0.5rem 0 0;
+  color: var(--marketing-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.route-product-capability-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  color: var(--marketing-text-secondary);
+  font-size: 0.75rem;
+}
+
+.route-product-capability-grid a svg {
+  width: 0.75rem;
+}
+
+.route-product-asset-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.route-product-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.route-product-actions > a:not(.button) {
+  margin-top: 0;
+}
+
+.route-product-disclosure {
+  padding-top: 0 !important;
+  color: var(--marketing-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 67.999rem) {
+  .route-product-showcase-grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    gap: 2.25rem;
+  }
+
+  .route-product-copy {
+    max-width: 38rem;
+  }
+
+  .route-product-capability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .route-product-capability-grid article:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .route-product-capability-grid article:nth-child(n + 3) {
+    border-top: 1px solid var(--marketing-border-soft);
+  }
+}
+
+@media (max-width: 40rem) {
+  .route-page-header-inner {
+    padding-block: 2.5rem 2.75rem;
+  }
+
+  .route-page-header h1 {
+    max-width: 15ch;
+    font-size: clamp(2rem, 10vw, 2.75rem);
+  }
+
+  .route-page-intro {
+    font-size: 1rem;
+  }
+
+  .route-product-nav .container-page {
+    gap: 1rem;
+    padding-block: 0.75rem;
+  }
+
+  .route-product-showcase-grid {
+    gap: 1.75rem;
+    padding-block: 2.5rem;
+  }
+
+  .route-product-copy h2 {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+  }
+
+  .route-product-copy > p {
+    font-size: 1rem;
+  }
+
+  .route-product-capabilities > .container-page,
+  .route-product-capabilities .container-page {
+    padding-block: 2rem;
+  }
+
+  .route-product-capability-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .route-product-capability-grid article,
+  .route-product-capability-grid article:nth-child(2n) {
+    min-height: auto;
+    padding: 1rem 0;
+    border-right: 0;
+    border-top: 1px solid var(--marketing-border-soft);
+  }
+
+  .route-product-capability-grid article:first-child {
+    border-top: 0;
+  }
+
+  .route-product-actions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .route-product-actions .button {
+    width: 100%;
+  }
+}
