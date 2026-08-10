@@ -1,4 +1,6 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "turbo query affected --base=$VERCEL_GIT_PREVIOUS_SHA --packages @neptlium/web --exit-code",
   "headers": [
     {
       "source": "/(.*)",
