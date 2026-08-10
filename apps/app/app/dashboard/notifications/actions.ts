@@ -1,27 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
+import {
+  markAllNotificationsRead,
+  markNotificationRead,
+} from "@/lib/api/client";
 
 export async function markNotificationReadAction(notificationId: string): Promise<void> {
-  const user = await requireUser();
-  const supabase = await createSupabaseServerClient();
-
-  await supabase
-    .from("notifications")
-    .update({ read_at: new Date().toISOString() })
-    .eq("id", notificationId)
-    .eq("user_id", user.id);
-
+  await requireUser();
+  await markNotificationRead(notificationId);
   revalidatePath("/dashboard/notifications");
 }
 
 export async function markAllNotificationsReadAction(): Promise<void> {
-  const user = await requireUser();
-  const supabase = await createSupabaseServerClient();
-
-  await supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("user_id", user.id).is("read_at", null);
-
+  await requireUser();
+  await markAllNotificationsRead();
   revalidatePath("/dashboard/notifications");
 }
