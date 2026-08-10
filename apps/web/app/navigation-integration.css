@@ -1,0 +1,31 @@
+/* Integration boundary: neutralize legacy globals.css menu layout where the new navigation owns structure. */
+.mega-menu {
+  display: block;
+  grid-template-columns: none;
+}
+
+.mega-menu-platform {
+  grid-template-columns: none;
+}
+
+.mega-menu-platform .mega-menu-intro {
+  display: flex;
+}
+
+@media (max-width: 67.999rem) {
+  .drawer nav {
+    display: block;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .drawer nav a {
+    min-height: initial;
+    border-bottom: initial;
+    font-size: inherit;
+  }
+
+  .drawer nav a small {
+    display: block;
+  }
+}
