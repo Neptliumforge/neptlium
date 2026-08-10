@@ -1,0 +1,311 @@
+:root {
+  /* Marketing semantics are aliases over the canonical Neptlium design system. */
+  --marketing-max-width: 82.5rem;
+  --marketing-header-height: 4.5rem;
+  --marketing-header-height-mobile: 4.125rem;
+  --marketing-bg: var(--n-bg);
+  --marketing-bg-deep: var(--n-black);
+  --marketing-surface-1: var(--n-surface-1);
+  --marketing-surface-2: var(--n-surface-2);
+  --marketing-surface-3: var(--n-surface-3);
+  --marketing-text: var(--n-text-primary);
+  --marketing-text-secondary: var(--n-text-secondary);
+  --marketing-text-muted: var(--n-text-tertiary);
+  --marketing-blue: var(--n-blue-500);
+  --marketing-blue-hover: var(--n-blue-400);
+  --marketing-blue-pressed: var(--n-blue-600);
+  --marketing-border: color-mix(in oklab, var(--n-text-secondary) 14%, transparent);
+  --marketing-border-soft: color-mix(in oklab, var(--n-text-secondary) 8%, transparent);
+  --marketing-grid: color-mix(in oklab, var(--n-text-secondary) 7%, transparent);
+  --marketing-blue-line: color-mix(in oklab, var(--marketing-blue) 28%, transparent);
+  --marketing-blue-field: color-mix(in oklab, var(--marketing-blue) 9%, transparent);
+  --marketing-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.container-page,
+.nav-shell {
+  width: min(calc(100% - (var(--page-gutter) * 2)), var(--marketing-max-width));
+  margin-inline: auto;
+}
+
+@media (min-width: 80rem) {
+  .container-page,
+  .nav-shell {
+    width: min(calc(100% - 4rem), var(--marketing-max-width));
+  }
+}
+
+/* Precision marketing header. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  height: var(--marketing-header-height);
+  border-bottom: 1px solid var(--marketing-border-soft);
+  background: color-mix(in oklab, var(--marketing-bg-deep) 96%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  isolation: isolate;
+  transition:
+    background-color 180ms var(--marketing-ease),
+    border-color 180ms var(--marketing-ease),
+    box-shadow 180ms var(--marketing-ease);
+}
+
+.site-header.scrolled {
+  border-bottom-color: var(--marketing-border);
+  background: color-mix(in oklab, var(--marketing-bg-deep) 98%, transparent);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.01),
+    0 12px 40px rgb(0 0 0 / 0.12);
+}
+
+.nav-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(11rem, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  height: 100%;
+  column-gap: clamp(2rem, 4vw, 4.5rem);
+}
+
+/* Canonical mark presentation only; logo geometry remains untouched. */
+.brand {
+  display: inline-flex;
+  width: max-content;
+  align-items: center;
+  gap: 0.6875rem;
+  color: var(--marketing-text);
+  font-size: 1.0625rem;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  width: 1.875rem;
+  height: 1.875rem;
+  flex: none;
+}
+
+.brand:hover {
+  color: var(--marketing-text);
+}
+
+/* Desktop navigation is intentionally quiet: blue is a signal, not decoration. */
+.desktop-nav {
+  display: flex;
+  min-width: 0;
+  align-self: stretch;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.125rem;
+}
+
+.nav-menu {
+  position: relative;
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.nav-menu > button {
+  position: relative;
+  display: inline-flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0 0.875rem;
+  border: 0;
+  background: transparent;
+  color: color-mix(in oklab, var(--marketing-text) 76%, transparent);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.012em;
+  cursor: pointer;
+  box-shadow: none;
+  transition: color 160ms var(--marketing-ease);
+}
+
+.nav-menu > button::after {
+  content: '';
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0;
+  left: 0.875rem;
+  height: 1px;
+  background: var(--marketing-blue);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition:
+    transform 180ms var(--marketing-ease),
+    opacity 180ms var(--marketing-ease);
+}
+
+.nav-menu > button:hover,
+.nav-menu > button.active,
+.nav-menu > button[aria-expanded='true'] {
+  color: var(--marketing-text);
+  box-shadow: none;
+}
+
+.nav-menu > button.active::after,
+.nav-menu > button[aria-expanded='true']::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.nav-menu > button svg {
+  width: 0.6875rem;
+  height: 0.6875rem;
+  stroke-width: 1.75;
+  opacity: 0.68;
+  transition:
+    transform 180ms var(--marketing-ease),
+    opacity 180ms var(--marketing-ease);
+}
+
+.nav-menu > button:hover svg,
+.nav-menu > button[aria-expanded='true'] svg {
+  opacity: 1;
+}
+
+.nav-menu > button[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+
+/* Keep existing mega-menu behavior aligned to the new header height until pass 2. */
+.mega-menu {
+  top: var(--marketing-header-height);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.nav-actions > a:first-child {
+  display: inline-flex;
+  min-height: 2.625rem;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.875rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--marketing-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition:
+    color 160ms var(--marketing-ease),
+    background-color 160ms var(--marketing-ease);
+}
+
+.nav-actions > a:first-child:hover {
+  color: var(--marketing-text);
+  background: color-mix(in oklab, var(--marketing-surface-2) 74%, transparent);
+}
+
+.nav-actions .button.small {
+  min-height: 2.625rem;
+  padding-inline: 1.125rem;
+  border-radius: 0.5rem;
+  background: var(--marketing-blue);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.04);
+  font-size: 0.875rem;
+  transition:
+    background-color 160ms var(--marketing-ease),
+    box-shadow 160ms var(--marketing-ease);
+}
+
+.nav-actions .button.small:hover {
+  background: var(--marketing-blue-hover);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+
+.nav-actions .button.small:active {
+  background: var(--marketing-blue-pressed);
+}
+
+.menu-trigger {
+  display: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--marketing-border);
+  border-radius: 0.625rem;
+  background: color-mix(in oklab, var(--marketing-surface-1) 68%, transparent);
+  color: var(--marketing-text-secondary);
+  cursor: pointer;
+  transition:
+    color 160ms var(--marketing-ease),
+    border-color 160ms var(--marketing-ease),
+    background-color 160ms var(--marketing-ease);
+}
+
+.menu-trigger:hover {
+  color: var(--marketing-text);
+  border-color: color-mix(in oklab, var(--marketing-text-secondary) 24%, transparent);
+  background: var(--marketing-surface-1);
+}
+
+.menu-trigger svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke-width: 1.7;
+}
+
+.menu-trigger span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 67.999rem) {
+  .site-header {
+    height: var(--marketing-header-height-mobile);
+  }
+
+  .nav-shell {
+    display: flex;
+    width: min(calc(100% - (var(--page-gutter) * 2)), var(--marketing-max-width));
+    gap: 1rem;
+  }
+
+  .desktop-nav,
+  .nav-actions {
+    display: none;
+  }
+
+  .menu-trigger {
+    display: inline-flex;
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
+
+  .brand-mark {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}
