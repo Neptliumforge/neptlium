@@ -47,6 +47,20 @@ test('customer app has no direct Supabase data access outside auth/session excep
   assert.deepEqual(violations, [], `Direct Supabase data access found: ${violations.join(', ')}`);
 });
 
+test('Supabase client imports exist only in the current auth/session exception set', () => {
+  const violations = [];
+  for (const file of sourceFiles) {
+    const path = normalize(file);
+    const text = source(file);
+    const importsSupabase =
+      /from\s+['"]@supabase\//.test(text) ||
+      /from\s+['"]@neptlium\/lib\/supabase\/(?:server|client)['"]/.test(text) ||
+      /createSupabase(?:Server|Browser)Client/.test(text);
+    if (importsSupabase && !isAuthSessionException(path)) violations.push(path);
+  }
+  assert.deepEqual(violations, [], `Supabase client outside auth/session boundary: ${violations.join(', ')}`);
+});
+
 test('financial and product pages do not import Supabase clients', () => {
   const productRoots = [
     'app/dashboard/page.tsx',
