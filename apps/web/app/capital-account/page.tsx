@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { AssetIdentity } from '@neptlium/ui';
 import { PageHeader } from '@/components/page-header';
-import { Section } from '@/components/section';
 import { SITE } from '@/lib/content/site';
 import { CapitalAccountVisual } from '@/components/product-visuals';
 
@@ -21,47 +20,60 @@ const assets = [
 
 export default function Page() {
   return (
-    <>
+    <div className="route-product-page capital-account-route">
       <PageHeader
+        eyebrow="Capital Account"
         title="Capital needs an operating layer."
-        intro="The Capital Account organizes supported digital capital within explicit account and network boundaries."
+        intro="Organize supported digital capital within explicit account, network and authorization boundaries."
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Capital Account' }]}
       />
-      <Section>
-        <CapitalAccountVisual />
-      </Section>
-      <Section>
-        <div className="route-split">
-          <div>
-            <h2>Account infrastructure, not a trading screen.</h2>
-            <p>Funding, asset context and account activity remain connected to the wider portfolio and its controls.</p>
+
+      <section className="route-product-showcase">
+        <div className="container-page route-product-showcase-grid">
+          <div className="route-product-copy">
+            <span className="route-product-kicker">Account infrastructure</span>
+            <h2>One governed account view.</h2>
+            <p>
+              Funding, asset context and account activity remain connected to the wider portfolio without turning the account into a trading screen.
+            </p>
+            <div className="route-product-asset-strip" aria-label="Supported capital direction">
+              {assets.map(([asset, network]) => (
+                <AssetIdentity key={asset} asset={asset} network={network} size="md" detailed />
+              ))}
+            </div>
+            <div className="route-product-actions">
+              <a className="button" href={SITE.accessUrl}>
+                Open Neptlium <ArrowRight aria-hidden="true" />
+              </a>
+              <Link href="/platform">Explore platform</Link>
+            </div>
           </div>
-          <dl>
-            <div><dt>Account context</dt><dd>Supported capital organized in one account view.</dd></div>
-            <div><dt>Network context</dt><dd>Asset and network boundaries remain visible.</dd></div>
-            <div><dt>Operational control</dt><dd>Consequential actions remain explicit and reviewable.</dd></div>
-          </dl>
-        </div>
-      </Section>
-      <Section tone="surface">
-        <div className="supported-capital">
-          <h2>Supported capital direction</h2>
-          <div>
-            {assets.map(([asset, network]) => (
-              <article key={asset}>
-                <AssetIdentity asset={asset} network={network} size="lg" detailed />
-              </article>
-            ))}
+
+          <div className="route-product-visual">
+            <CapitalAccountVisual />
           </div>
-          <p>Asset and network availability depends on production integrations and account eligibility.</p>
         </div>
-      </Section>
-      <Section>
-        <div className="route-action">
-          <a className="button" href={SITE.accessUrl}>Get started <ArrowRight size={17} aria-hidden="true" /></a>
-          <Link href="/platform">Explore the platform</Link>
+      </section>
+
+      <section className="route-product-capabilities">
+        <div className="container-page route-product-capability-grid">
+          <article>
+            <h3>Account context</h3>
+            <p>Supported capital organized in one account view.</p>
+          </article>
+          <article>
+            <h3>Network context</h3>
+            <p>Asset and network boundaries remain visible.</p>
+          </article>
+          <article>
+            <h3>Operational control</h3>
+            <p>Consequential actions remain explicit and reviewable.</p>
+          </article>
         </div>
-      </Section>
-    </>
+        <p className="container-page route-product-disclosure">
+          Asset and network availability depends on production integrations and account eligibility.
+        </p>
+      </section>
+    </div>
   );
 }
