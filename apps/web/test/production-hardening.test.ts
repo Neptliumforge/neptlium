@@ -75,26 +75,35 @@ test('desktop navigation uses governed, accessible disclosure menus', () => {
   assert.equal(header.includes('Launch App'), false);
 });
 
-test('first view represents the real Neptlium platform without fabricated financial values', () => {
+test('first view represents the Neptlium operating model without fabricated financial values', () => {
   const page = read('app/page.tsx');
-  const platform = read('components/platform-window.tsx');
+  const architecture = read('components/hero-architecture.tsx');
+  const stage = read('components/product-stage.tsx');
 
-  assert.equal(page.includes('<PlatformWindow />'), true);
-  assert.equal(page.includes('Own across markets. Operate as one portfolio.'), true);
-  assert.equal(page.includes('Open Neptlium'), true);
+  assert.equal(page.includes('<HeroArchitecture />'), true);
+  assert.equal(page.includes('Digital capital,'), true);
+  assert.equal(page.includes('organized around'), true);
+  assert.equal(page.includes('Enter Neptlium'), true);
 
-  for (const label of ['Overview', 'Portfolio', 'Capital Account', 'Treasury', 'Allocation']) {
-    assert.equal(platform.includes(`'${label}'`), true, `Missing platform system: ${label}`);
+  for (const label of ['Capital Account', 'Treasury', 'Allocation']) {
+    assert.equal(stage.includes(`'${label}'`), true, `Missing staged product system: ${label}`);
   }
 
-  assert.equal(platform.includes("['USDC', 'Base']"), true);
-  assert.equal(platform.includes("['ETH', 'Base']"), true);
-  assert.equal(platform.includes("['BTC', 'Bitcoin']"), true);
-  assert.equal(platform.includes('Not configured'), true);
-  assert.equal(platform.includes('No activity yet. Capital activity will appear here.'), true);
+  for (const state of ['Observe', 'Organize', 'Govern', 'Resolve']) {
+    assert.equal(architecture.includes(state), true, `Missing operating state: ${state}`);
+  }
 
   for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%']) {
-    assert.equal(platform.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
+    assert.equal(
+      page.includes(fabricatedValue),
+      false,
+      `Fabricated value found: ${fabricatedValue}`,
+    );
+    assert.equal(
+      stage.includes(fabricatedValue),
+      false,
+      `Fabricated value found: ${fabricatedValue}`,
+    );
   }
 });
 

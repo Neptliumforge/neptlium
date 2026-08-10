@@ -1,58 +1,45 @@
 export function HeroArchitecture() {
   return (
-    <div className="capital-architecture" aria-hidden="true">
-      <div className="architecture-label architecture-label-top">
-        <span>OWNERSHIP ENVIRONMENTS</span>
-        <b>04</b>
+    <div
+      className="hero-capital-form"
+      aria-label="Capital converging into a governed operating center"
+    >
+      <div className="hero-form-meta hero-form-meta-top">
+        <span>Capital inputs</span>
+        <b>Observed</b>
       </div>
-      <div className="architecture-plane">
-        <div className="architecture-source source-a">
+
+      <div className="hero-form-field" aria-hidden="true">
+        <span className="hero-form-axis" />
+        <span className="hero-form-line hero-form-line-a" />
+        <span className="hero-form-line hero-form-line-b" />
+        <span className="hero-form-line hero-form-line-c" />
+        <span className="hero-form-line hero-form-line-d" />
+        <span className="hero-form-orbit" />
+        <span className="hero-form-core">
           <i />
-          Digital
-        </div>
-        <div className="architecture-source source-b">
-          <i />
-          Public
-        </div>
-        <div className="architecture-source source-c">
-          <i />
-          Tokenized
-        </div>
-        <div className="architecture-source source-d">
-          <i />
-          Reserve
-        </div>
-        <svg viewBox="0 0 680 470" preserveAspectRatio="none">
-          <path d="M20 75H165L252 183H329" />
-          <path d="M20 180H145L241 213H329" />
-          <path d="M20 292H145L241 243H329" />
-          <path d="M20 397H165L252 273H329" />
-          <path className="signal" d="M351 228H530L653 130" />
-          <path d="M351 228H530L653 340" />
-        </svg>
-        <div className="architecture-core">
-          <span>
-            GOVERNED
-            <br />
-            OPERATING LAYER
-          </span>
-          <i />
-          <b>NT / 01</b>
-        </div>
-        <div className="architecture-output output-a">
-          <span>Portfolio view</span>
-          <b>UNIFIED</b>
-        </div>
-        <div className="architecture-output output-b">
-          <span>Control boundary</span>
-          <b>EXPLICIT</b>
-        </div>
+        </span>
+        <span className="hero-form-output" />
       </div>
-      <div className="architecture-rail">
-        <span>CLASSIFY</span>
-        <span>UNDERSTAND</span>
-        <span>MODEL</span>
-        <span>AUTHORIZE</span>
+
+      <ol className="hero-form-sequence">
+        <li>
+          <span>01</span> Observe
+        </li>
+        <li>
+          <span>02</span> Organize
+        </li>
+        <li>
+          <span>03</span> Govern
+        </li>
+        <li>
+          <span>04</span> Resolve
+        </li>
+      </ol>
+
+      <div className="hero-form-meta hero-form-meta-bottom">
+        <span>Operating center</span>
+        <b>NT / 01</b>
       </div>
     </div>
   );

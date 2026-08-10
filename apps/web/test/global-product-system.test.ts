@@ -41,12 +41,14 @@ test('public product language keeps Capital Account and truthful availability', 
 });
 
 test('recognized capital uses the governed shared identity system', async () => {
-  const [home, universe, registry] = await Promise.all([
-    webFile('app/page.tsx'),
+  const [stage, visuals, universe, registry] = await Promise.all([
+    webFile('components/product-stage.tsx'),
+    webFile('components/product-visuals.tsx'),
     webFile('app/capital-universe/page.tsx'),
     readFile(new URL('../../../packages/ui/src/components/Identity.tsx', import.meta.url), 'utf8'),
   ]);
-  assert.equal(home.includes('AssetIdentity'), true);
+  assert.equal(stage.includes('CapitalAccountVisual'), true);
+  assert.equal(visuals.includes('AssetIdentity'), true);
   assert.equal(universe.includes('AssetIdentity'), true);
   for (const identity of ['bitcoin', 'ethereum', 'usdc', 'base']) {
     assert.equal(registry.includes(`${identity}:`), true);
