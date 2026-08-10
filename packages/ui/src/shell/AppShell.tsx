@@ -19,8 +19,8 @@ export function AppShell({
 }: AppShellProps): ReactElement {
   return (
     <div className="min-h-screen overflow-x-hidden bg-canvas text-text-primary">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[80px] flex-col xl:w-[248px] border-r border-border-hairline bg-sidebar lg:flex">
-        <div className="flex h-[72px] shrink-0 items-center gap-2.5 justify-center border-b border-border-hairline px-3 xl:justify-start xl:px-5">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[80px] flex-col border-r border-border-hairline bg-sidebar lg:flex xl:w-[248px]">
+        <div className="flex h-16 shrink-0 items-center justify-center gap-2.5 border-b border-border-hairline px-3 xl:justify-start xl:px-5">
           <NeptliumMark size={22} />
           <span className="hidden text-body-sm font-semibold tracking-tight xl:inline">
             Neptlium
@@ -43,10 +43,10 @@ export function AppShell({
             </div>
           )}
         </header>
-        <header className="hidden h-[72px] shrink-0 items-center justify-end border-b border-border-hairline bg-topnav px-8 lg:flex">
+        <header className="hidden h-16 shrink-0 items-center justify-end border-b border-border-hairline bg-topnav px-8 lg:flex">
           {utility}
         </header>
-        <main className="min-w-0 flex-1 px-3 py-5 sm:px-4 sm:py-6 md:px-6 lg:px-8 lg:py-7">
+        <main className="min-w-0 flex-1 px-3 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-5 sm:px-4 sm:pt-6 md:px-6 lg:px-8 lg:py-7">
           <div className="mx-auto w-full max-w-[1360px]">{children}</div>
         </main>
       </div>

@@ -19,8 +19,6 @@ export interface SidebarProps {
 
 export function Sidebar({ items }: SidebarProps): ReactElement {
   const pathname = usePathname();
-
-  // Build ordered list of groups with their items, preserving insertion order
   const sections: Array<{ heading: string | undefined; items: NavItem[] }> = [];
   const seenGroups = new Map<string | undefined, number>();
 
@@ -45,16 +43,19 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
           <div className="space-y-0.5">
             {section.items.map((item) => {
               const isActive =
-                pathname === item.href || pathname.startsWith(item.href + "/");
+                pathname === item.href ||
+                (item.href !== "/dashboard" &&
+                  pathname.startsWith(item.href + "/"));
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-label={item.label}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "flex min-h-11 items-center justify-center gap-2.5 rounded-md px-3 py-2 text-body-sm xl:justify-start font-medium transition-colors duration-150 ease-out",
+                    "relative flex min-h-11 items-center justify-center gap-2.5 rounded-md px-3 py-2 text-body-sm font-medium transition-colors duration-150 ease-out before:absolute before:inset-y-2.5 before:left-0 before:w-0.5 before:rounded-full before:bg-transparent xl:justify-start",
                     isActive
-                      ? "bg-surface-2 text-accent-primary"
+                      ? "bg-surface-2 text-text-primary before:bg-accent-primary"
                       : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
                   )}
                 >

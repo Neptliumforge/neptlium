@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { AppShell, MobileNavigation, Sidebar } from "@neptlium/ui";
-import { dashboardNavItems } from "@/components/navigation/dashboardNav";
+import {
+  dashboardMobilePrimaryNavItems,
+  dashboardMobileSecondaryNavItems,
+  dashboardNavItems,
+} from "@/components/navigation/dashboardNav";
 import { ProfileMenu } from "@/components/navigation/ProfileMenu";
 import { filterNavByRole } from "@/components/security/filterNavByRole";
 import { resolveRole } from "@/components/security/resolveRole";
@@ -14,6 +18,14 @@ export default async function DashboardLayout({
   const { user, profile } = await requireProvisionedUser();
   const role = await resolveRole(user.id);
   const navItems = filterNavByRole(dashboardNavItems, role);
+  const mobilePrimaryItems = filterNavByRole(
+    dashboardMobilePrimaryNavItems,
+    role,
+  );
+  const mobileSecondaryItems = filterNavByRole(
+    dashboardMobileSecondaryNavItems,
+    role,
+  );
   const displayName =
     profile.fullName ??
     profile.displayName ??
@@ -31,7 +43,13 @@ export default async function DashboardLayout({
     <AppShell
       sidebar={<Sidebar items={navItems} />}
       utility={profileMenu}
-      mobileNav={<MobileNavigation items={navItems} profile={profileMenu} />}
+      mobileNav={
+        <MobileNavigation
+          primaryItems={mobilePrimaryItems}
+          secondaryItems={mobileSecondaryItems}
+          profile={profileMenu}
+        />
+      }
     >
       {children}
     </AppShell>
