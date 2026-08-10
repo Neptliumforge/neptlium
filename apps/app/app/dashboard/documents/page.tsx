@@ -1,7 +1,7 @@
 import { FileText } from "lucide-react";
 import { Badge, Card, CardContent, EmptyState } from "@neptlium/ui";
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
+import { getDocuments } from "@/lib/api/client";
 import { DownloadButton } from "./DownloadButton";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -12,16 +12,15 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default async function DocumentsPage() {
-  const user = await requireUser();
-  const supabase = await createSupabaseServerClient();
-
-  const { data } = await supabase
-    .from("documents")
-    .select("id, category, title, created_at")
-    .eq("profile_id", user.id)
-    .order("created_at", { ascending: false });
-
-  const documents = data ?? [];
+  await requireUser();
+  let documents;
+  let loadError = false;
+  try {
+    documents = (await getDocuments()).data;
+  } catch {
+    documents = [];
+    loadError = true;
+  }
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -31,7 +30,9 @@ export default async function DocumentsPage() {
       </div>
 
       <Card>
-        {documents.length === 0 ? (
+        {loadError ? (
+          <CardContent className="p-6"><p className="text-sm text-text-muted">Documents are unavailable. Try again later.</p></CardContent>
+        ) : documents.length === 0 ? (
           <EmptyState
             icon={<FileText className="size-5" aria-hidden="true" />}
             title="No documents uploaded"
@@ -49,7 +50,7 @@ export default async function DocumentsPage() {
                     <Badge tone="neutral">{CATEGORY_LABELS[document.category] ?? document.category}</Badge>
                     <span className="text-body-sm font-medium text-text-primary">{document.title}</span>
                   </div>
-                  <p className="text-caption text-text-muted">{new Date(document.created_at).toLocaleDateString()}</p>
+                  <p className="text-caption text-text-muted">{new Date(document.createdAt).toLocaleDateString()}</p>
                 </div>
                 <DownloadButton documentId={document.id} />
               </div>
