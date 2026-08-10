@@ -20,6 +20,133 @@
   --marketing-blue-line: color-mix(in oklab, var(--marketing-blue) 28%, transparent);
   --marketing-blue-field: color-mix(in oklab, var(--marketing-blue) 9%, transparent);
   --marketing-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* NTS — Neptlium Typography System 1.0. Production-safe, no remote font fetch. */
+  --nts-font-sans: Geist, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --nts-font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
+  --nts-weight-regular: 400;
+  --nts-weight-medium: 500;
+  --nts-weight-emphasis: 550;
+  --nts-weight-semibold: 600;
+  --nts-display: clamp(2.5rem, 2rem + 1.65vw, 3.75rem);
+  --nts-h1: clamp(2rem, 1.72rem + 1vw, 2.75rem);
+  --nts-h2: clamp(1.625rem, 1.48rem + 0.55vw, 2rem);
+  --nts-h3: 1.125rem;
+  --nts-lead: clamp(1.0625rem, 1rem + 0.18vw, 1.1875rem);
+  --nts-body: 0.9375rem;
+  --nts-nav: 0.875rem;
+  --nts-caption: 0.8125rem;
+  --nts-label: 0.6875rem;
+  --nts-measure-display: 16ch;
+  --nts-measure-heading: 22ch;
+  --nts-measure-lead: 34rem;
+  --nts-measure-body: 62ch;
+  --nts-measure-ui: 44ch;
+}
+
+/* NTS 1.0 global primitives. Authority comes from proportion, not volume. */
+.neptlium-display {
+  max-width: var(--nts-measure-display);
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-display);
+  font-weight: var(--nts-weight-emphasis);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  word-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.neptlium-heading-1 {
+  max-width: var(--nts-measure-heading);
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-h1);
+  font-weight: var(--nts-weight-emphasis);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  word-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.neptlium-heading-2 {
+  max-width: var(--nts-measure-heading);
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-h2);
+  font-weight: var(--nts-weight-emphasis);
+  line-height: 1.12;
+  letter-spacing: -0.028em;
+  word-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.neptlium-heading-3 {
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-h3);
+  font-weight: var(--nts-weight-emphasis);
+  line-height: 1.3;
+  letter-spacing: -0.018em;
+}
+
+.neptlium-lead {
+  max-width: var(--nts-measure-lead);
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-lead);
+  font-weight: var(--nts-weight-regular);
+  line-height: 1.55;
+  letter-spacing: -0.012em;
+  word-spacing: 0;
+}
+
+.neptlium-body {
+  max-width: var(--nts-measure-body);
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-body);
+  font-weight: var(--nts-weight-regular);
+  line-height: 1.62;
+  letter-spacing: -0.006em;
+}
+
+.neptlium-nav {
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-nav);
+  font-weight: var(--nts-weight-medium);
+  line-height: 1;
+  letter-spacing: -0.012em;
+  word-spacing: 0;
+}
+
+.neptlium-label {
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-label);
+  font-weight: var(--nts-weight-semibold);
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.neptlium-caption {
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-caption);
+  font-weight: var(--nts-weight-regular);
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+.neptlium-numeric,
+.neptlium-value {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+.neptlium-numeric {
+  letter-spacing: -0.025em;
+}
+
+.neptlium-value {
+  font-family: var(--nts-font-sans);
+  font-size: clamp(1.75rem, 1.5rem + 0.7vw, 2.375rem);
+  font-weight: var(--nts-weight-medium);
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .container-page,
@@ -76,8 +203,9 @@
   align-items: center;
   gap: 0.6875rem;
   color: var(--marketing-text);
+  font-family: var(--nts-font-sans);
   font-size: 1.0625rem;
-  font-weight: 650;
+  font-weight: var(--nts-weight-semibold);
   line-height: 1;
   letter-spacing: -0.025em;
   white-space: nowrap;
@@ -121,10 +249,12 @@
   border: 0;
   background: transparent;
   color: color-mix(in oklab, var(--marketing-text) 76%, transparent);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-nav);
+  font-weight: var(--nts-weight-medium);
   line-height: 1;
   letter-spacing: -0.012em;
+  word-spacing: 0;
   cursor: pointer;
   box-shadow: none;
   transition: color 160ms var(--marketing-ease);
@@ -202,8 +332,9 @@
   border-radius: 0.5rem;
   background: transparent;
   color: var(--marketing-text-secondary);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-nav);
+  font-weight: var(--nts-weight-medium);
   letter-spacing: -0.01em;
   transition:
     color 160ms var(--marketing-ease),
@@ -222,7 +353,10 @@
   background: var(--marketing-blue);
   color: #fff;
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.04);
-  font-size: 0.875rem;
+  font-family: var(--nts-font-sans);
+  font-size: var(--nts-nav);
+  font-weight: var(--nts-weight-medium);
+  letter-spacing: -0.01em;
   transition:
     background-color 160ms var(--marketing-ease),
     box-shadow 160ms var(--marketing-ease);
