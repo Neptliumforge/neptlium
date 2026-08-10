@@ -1,0 +1,198 @@
+/*
+ * Neptlium Marketing Type Calibration 2.0
+ * Inspired by the hierarchy discipline of Apple product pages, not a copy of Apple assets.
+ * Uses production-safe system typography; on Apple platforms this naturally resolves to SF.
+ */
+:root {
+  --marketing-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --marketing-display: clamp(2.75rem, 4.55vw, 4.75rem);
+  --marketing-section-title: clamp(2.25rem, 3.35vw, 3.5rem);
+  --marketing-subsection-title: clamp(1.5rem, 2vw, 2rem);
+  --marketing-lead: clamp(1.1875rem, 1.38vw, 1.3125rem);
+  --marketing-body: 1.0625rem;
+  --marketing-small: 0.875rem;
+}
+
+body {
+  font-family: var(--marketing-font);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Apple-level hierarchy: larger, cleaner, less artificially tracked. */
+main h1,
+main h2,
+main h3,
+.site-footer h2,
+.site-footer h3,
+.mega-menu h2,
+.drawer h2 {
+  font-family: var(--marketing-font);
+  font-synthesis: none;
+}
+
+.neptlium-hero-copy h1 {
+  max-width: 12.5ch;
+  margin: 1rem 0 1.35rem;
+  font-size: var(--marketing-display);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  word-spacing: 0;
+  text-wrap: balance;
+}
+
+.neptlium-hero-copy > p:not(.eyebrow) {
+  max-width: 31rem;
+  font-size: var(--marketing-lead);
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: -0.012em;
+}
+
+.section-lead h2,
+.final-cta h2 {
+  max-width: 17ch;
+  font-size: var(--marketing-section-title);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.038em;
+  word-spacing: 0;
+  text-wrap: balance;
+}
+
+.section-lead > p:not(.eyebrow),
+.final-cta > div > p:not(.eyebrow),
+.final-cta > p:not(.eyebrow) {
+  max-width: 36rem;
+  font-size: var(--marketing-lead);
+  font-weight: 400;
+  line-height: 1.48;
+  letter-spacing: -0.012em;
+}
+
+.section h3,
+.product-stage h3 {
+  font-size: var(--marketing-subsection-title);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.028em;
+}
+
+.section p,
+.section li,
+.site-footer p {
+  font-family: var(--marketing-font);
+}
+
+.eyebrow,
+.neptlium-label,
+.capital-account-signal-label {
+  font-family: var(--marketing-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+}
+
+.button,
+.text-link,
+.nav-menu > button,
+.nav-actions a,
+.mega-item,
+.drawer a,
+.drawer button,
+.site-footer a {
+  font-family: var(--marketing-font);
+}
+
+/* Remove the former numbered proof rail from layout even if stale markup returns. */
+.neptlium-hero-proof {
+  display: none !important;
+}
+
+/* Rebalance the first view after removing the proof rail. */
+.neptlium-hero-inner {
+  grid-template-columns: minmax(0, 0.86fr) minmax(35rem, 1.14fr);
+  gap: clamp(3.5rem, 6.5vw, 7rem);
+  min-height: clamp(42rem, 76vh, 50rem);
+  padding-block: clamp(4.5rem, 8vh, 6.75rem);
+}
+
+.neptlium-hero-copy {
+  max-width: 38rem;
+  align-self: center;
+}
+
+.neptlium-hero-actions {
+  margin-top: 2.15rem;
+}
+
+/* Link-style product identity: logo/wordmark owns the left edge; navigation begins after clear air. */
+.nav-shell {
+  grid-template-columns: minmax(13.5rem, auto) minmax(0, 1fr) auto;
+  column-gap: clamp(2.5rem, 5vw, 5.5rem);
+}
+
+.brand {
+  gap: 0.625rem;
+  font-family: var(--marketing-font);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.brand-mark {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+/* Platform preview profile control: quiet, top-right, utility-level rather than decorative. */
+.platform-window-topbar {
+  position: relative;
+  padding-right: 1rem;
+}
+
+.platform-window-profile {
+  width: 2rem;
+  height: 2rem;
+  margin-left: auto;
+  border-color: color-mix(in oklab, var(--marketing-text-secondary) 16%, transparent);
+  background: color-mix(in oklab, var(--marketing-surface-2) 76%, transparent);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.025) inset;
+}
+
+@media (max-width: 67.999rem) {
+  .neptlium-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 3.25rem;
+    min-height: auto;
+  }
+
+  .neptlium-hero-copy h1 {
+    max-width: 13ch;
+    font-size: clamp(2.75rem, 9vw, 4rem);
+    line-height: 1;
+  }
+
+  .section-lead h2,
+  .final-cta h2 {
+    font-size: clamp(2.125rem, 7vw, 3rem);
+  }
+}
+
+@media (max-width: 39.999rem) {
+  .neptlium-hero-copy h1 {
+    font-size: clamp(2.625rem, 12vw, 3.5rem);
+    letter-spacing: -0.042em;
+  }
+
+  .neptlium-hero-copy > p:not(.eyebrow),
+  .section-lead > p:not(.eyebrow),
+  .final-cta > p:not(.eyebrow) {
+    font-size: 1.125rem;
+    line-height: 1.48;
+  }
+}
