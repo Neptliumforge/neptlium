@@ -24,7 +24,6 @@ test('customer state endpoints require an authenticated principal', async () => 
   const response = await app.inject({ method: 'GET', url: '/v1/customer/overview' });
   assert.equal(response.statusCode, 401);
   assert.equal(response.json().error.code, 'authentication_required');
-  await app.close();
 });
 
 test('overview returns explicit backend-owned resource states instead of numeric fallbacks', async () => {
@@ -39,7 +38,6 @@ test('overview returns explicit backend-owned resource states instead of numeric
   assert.equal(body.allocation.state, 'NOT_CONFIGURED');
   assert.equal(body.activity.state, 'EMPTY');
   assert.equal('value' in body.capital.total, false);
-  await app.close();
 });
 
 test('Capital Account keeps provider observation separate from canonical state', async () => {
@@ -51,7 +49,6 @@ test('Capital Account keeps provider observation separate from canonical state',
   assert.equal(body.canonical.available.state, 'UNAVAILABLE');
   assert.equal(body.provider_observation.state, 'NOT_CONFIGURED');
   assert.equal(body.funding.state, 'NOT_CONFIGURED');
-  await app.close();
 });
 
 test('account context is owner-scoped behind the API boundary', async () => {
@@ -60,7 +57,6 @@ test('account context is owner-scoped behind the API boundary', async () => {
   assert.equal(response.statusCode, 200);
   assert.equal(response.json().id, 'owner-1');
   assert.equal(response.json().role, 'user');
-  await app.close();
 });
 
 test('customer mutations do not accept unauthenticated callers', async () => {
@@ -72,5 +68,4 @@ test('customer mutations do not accept unauthenticated callers', async () => {
     const response = await app.inject({ method: 'POST', url, ...(payload ? { payload } : {}) });
     assert.equal(response.statusCode, 401, url);
   }
-  await app.close();
 });
