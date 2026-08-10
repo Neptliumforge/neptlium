@@ -298,8 +298,6 @@ The product should be:
 
 Visual sophistication must improve comprehension rather than decorate financial complexity.
 
-The authoritative visual specification is `03_DESIGN_SYSTEM.md`.
-
 ## 15. Product evolution
 
 Neptlium should evolve by extending stable financial primitives rather than repeatedly rebuilding the platform around new providers or features.

@@ -421,8 +421,6 @@ A provider observation must not receive the same visual authority as reconciled 
 
 ## 18. Design authority
 
-The authenticated application follows `03_DESIGN_SYSTEM.md`.
-
 Its doctrine is:
 
 **Capital Precision**

@@ -1,7 +1,7 @@
 # Repository Guidance
 
 - Inspect live code, migrations, tests, and configuration before describing or changing behavior.
-- The numbered documents `docs/00_*` through `docs/14_*` are authoritative. Resolve conflicts in their favor.
+- The numbered documents `docs/00_*` through `docs/14_*` are authoritative when present. `docs/03_DESIGN_SYSTEM.md` is intentionally absent during the current visual-authority reconstruction and must not be inferred from historical files or existing runtime styling until a replacement is created.
 - `docs/archive` is historical context only, never current architecture.
 
 ## Application boundaries
