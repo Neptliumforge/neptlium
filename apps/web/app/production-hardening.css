@@ -1,0 +1,83 @@
+/* Final production hardening for the Neptlium marketing shell. */
+
+html {
+  overflow-x: clip;
+  background: var(--marketing-bg-deep);
+}
+
+body {
+  overflow-x: clip;
+}
+
+.site-header,
+.neptlium-hero,
+.site-footer {
+  contain: paint;
+}
+
+:where(a, button, summary):focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--marketing-blue) 78%, white 10%);
+  outline-offset: 3px;
+}
+
+.mega-menu a:focus-visible,
+.drawer a:focus-visible,
+.drawer button:focus-visible,
+.platform-window a:focus-visible {
+  border-radius: 0.5rem;
+}
+
+.platform-window [aria-current='page'] {
+  color: var(--marketing-text);
+}
+
+.platform-window strong[aria-label$='unavailable'] {
+  speak: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .mega-menu,
+  .drawer,
+  .neptlium-hero-visual,
+  .platform-window,
+  .platform-window-glow {
+    transform: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .site-header,
+  .mega-menu,
+  .drawer,
+  .platform-window,
+  .site-footer {
+    border-color: CanvasText;
+  }
+
+  .nav-menu > button::after,
+  .platform-window-nav-item.is-active::before,
+  .platform-window-sidebar-foot i {
+    background: Highlight;
+  }
+}
+
+@media (max-width: 23.4375rem) {
+  .neptlium-hero-actions {
+    align-items: stretch;
+  }
+
+  .neptlium-hero-actions .button,
+  .neptlium-hero-actions .text-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
