@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
-import { Section } from '@/components/section';
 
 export type FoundationCard = { title: string; body: string; href?: string };
 
@@ -28,71 +27,61 @@ export function FoundationPage({
   cta?: string;
   ctaHref?: string;
 }) {
+  const overviewId = anchors[0]?.toLowerCase().replaceAll(' ', '-') || 'overview';
+  const systemsId = anchors[1]?.toLowerCase().replaceAll(' ', '-') || 'systems';
+
   return (
-    <>
+    <div className="route-product-page">
       <PageHeader
         eyebrow={eyebrow}
         title={title}
         intro={intro}
         crumbs={[{ label: 'Home', href: '/' }, { label: title }]}
       />
-      <nav className="border-b border-line" aria-label="Page sections">
-        <div className="container-page flex gap-5 overflow-x-auto py-4 text-sm text-muted">
+
+      <nav className="route-product-nav" aria-label="Page sections">
+        <div className="container-page">
           {anchors.map((anchor) => (
-            <a
-              key={anchor}
-              href={`#${anchor.toLowerCase().replaceAll(' ', '-')}`}
-              className="whitespace-nowrap hover:text-ink"
-            >
+            <a key={anchor} href={`#${anchor.toLowerCase().replaceAll(' ', '-')}`}>
               {anchor}
             </a>
           ))}
         </div>
       </nav>
-      <Section>
-        <div id={anchors[0].toLowerCase().replaceAll(' ', '-')} className="mx-auto max-w-3xl">
-          <h2 className="mt-3 text-2xl font-semibold text-ink md:text-3xl">
-            {lead?.[0] ?? cards[0]?.title}
-          </h2>
-          <p className="mt-5 text-base leading-relaxed text-muted">
-            {lead?.[1] ?? cards[0]?.body}
-          </p>
+
+      <section className="route-product-showcase" id={overviewId}>
+        <div className="container-page route-product-showcase-grid">
+          <div className="route-product-copy">
+            <span className="route-product-kicker">Product overview</span>
+            <h2>{lead?.[0] ?? cards[0]?.title}</h2>
+            <p>{lead?.[1] ?? cards[0]?.body}</p>
+            {principle && <strong className="route-product-principle">{principle}</strong>}
+            <Link className="route-product-link" href={ctaHref}>
+              {cta} <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+
+          {visual && <div className="route-product-visual">{visual}</div>}
         </div>
-      </Section>
-      {visual && <Section className="product-visual-section">{visual}</Section>}
-      <Section tone="surface">
-        <div id={anchors[1]?.toLowerCase().replaceAll(' ', '-')} className="container-page">
-          <div className="route-rows">
+      </section>
+
+      <section className="route-product-capabilities" id={systemsId}>
+        <div className="container-page">
+          <div className="route-product-capability-grid">
             {cards.map((card) => (
-              <article
-                key={card.title}
-              >
-                <h2>{card.title}</h2>
+              <article key={card.title}>
+                <h3>{card.title}</h3>
                 <p>{card.body}</p>
                 {card.href && (
-                  <Link
-                    className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-ink"
-                    href={card.href}
-                  >
-                    Explore <ArrowRight size={16} aria-hidden="true" />
+                  <Link href={card.href}>
+                    Explore <ArrowRight aria-hidden="true" />
                   </Link>
                 )}
               </article>
             ))}
           </div>
         </div>
-      </Section>
-      <Section>
-        <div
-          id={anchors[2]?.toLowerCase().replaceAll(' ', '-')}
-          className="mx-auto flex max-w-3xl flex-col items-start gap-5"
-        >
-          {principle && <p className="route-principle">{principle}</p>}
-          <Link className="button" href={ctaHref}>
-            {cta} <ArrowRight size={17} aria-hidden="true" />
-          </Link>
-        </div>
-      </Section>
-    </>
+      </section>
+    </div>
   );
 }
