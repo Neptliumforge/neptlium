@@ -5,9 +5,39 @@ import { Field, Input, Label, Stack, Surface } from '@neptlium/ui';
 
 type Mode = 'Observe' | 'Model' | 'Authorize';
 const modes: readonly Mode[] = ['Observe', 'Model', 'Authorize'];
-const lifecycle = ['Observed', 'Modeled', 'Authorized', 'Executed', 'Reconciled'] as const;
 
-export function AllocationModes() {
+type ResourceState =
+  | { readonly state: 'VALUE'; readonly value: unknown }
+  | { readonly state: 'EMPTY' }
+  | { readonly state: 'NOT_CONFIGURED'; readonly reason: string }
+  | { readonly state: 'UNAVAILABLE'; readonly reason: string }
+  | { readonly state: 'PENDING'; readonly reason: string };
+
+export interface AllocationApiState {
+  readonly observed: ResourceState;
+  readonly modeled: ResourceState;
+  readonly authorized: ResourceState;
+  readonly executed: ResourceState;
+  readonly reconciled: ResourceState;
+}
+
+const lifecycle = [
+  ['Observed', 'observed'],
+  ['Modeled', 'modeled'],
+  ['Authorized', 'authorized'],
+  ['Executed', 'executed'],
+  ['Reconciled', 'reconciled'],
+] as const;
+
+function stateLabel(state: ResourceState | undefined): string {
+  if (!state || state.state === 'UNAVAILABLE') return 'Unavailable';
+  if (state.state === 'NOT_CONFIGURED') return 'Not configured';
+  if (state.state === 'PENDING') return 'Pending';
+  if (state.state === 'EMPTY') return 'No state yet';
+  return 'Available';
+}
+
+export function AllocationModes({ state }: { readonly state: AllocationApiState | null }) {
   const [mode, setMode] = useState<Mode>('Observe');
   const [label, setLabel] = useState('');
   const [amount, setAmount] = useState('');
@@ -21,11 +51,11 @@ export function AllocationModes() {
       </header>
 
       <ol className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border-hairline bg-border-hairline sm:grid-cols-5" aria-label="Allocation lifecycle">
-        {lifecycle.map((state, index) => (
-          <li key={state} className="bg-surface-1 px-3 py-3">
+        {lifecycle.map(([labelName, key], index) => (
+          <li key={labelName} className="bg-surface-1 px-3 py-3">
             <span className="block text-[11px] text-accent-primary">0{index + 1}</span>
-            <strong className="mt-2 block text-xs font-medium">{state}</strong>
-            {index > 2 && <small className="mt-1 block text-[11px] text-text-muted">Unavailable</small>}
+            <strong className="mt-2 block text-xs font-medium">{labelName}</strong>
+            <small className="mt-1 block text-[11px] text-text-muted">{stateLabel(state?.[key])}</small>
           </li>
         ))}
       </ol>
@@ -34,6 +64,7 @@ export function AllocationModes() {
         {modes.map((item) => (
           <button
             key={item}
+            type="button"
             role="tab"
             aria-selected={mode === item}
             onClick={() => setMode(item)}
@@ -46,8 +77,12 @@ export function AllocationModes() {
 
       {mode === 'Observe' && (
         <div className="border-y border-border-hairline py-7">
-          <p className="text-sm font-medium">Observed allocation unavailable</p>
-          <p className="mt-1 max-w-2xl text-sm text-text-muted">Observed allocation requires canonical portfolio and supported custody/provider evidence. No reconciled allocation state is available.</p>
+          <p className="text-sm font-medium">{state === null ? 'Allocation state is unavailable' : stateLabel(state.observed)}</p>
+          <p className="mt-1 max-w-2xl text-sm text-text-muted">
+            {state === null
+              ? 'The Neptlium API could not load the current allocation state. Try again later.'
+              : 'Observed allocation is supplied only when canonical portfolio and supported evidence can establish it.'}
+          </p>
         </div>
       )}
 
@@ -55,7 +90,8 @@ export function AllocationModes() {
         <Surface className="p-5">
           <div className="max-w-2xl">
             <h2 className="text-base font-semibold">Illustrative local model</h2>
-            <p className="mt-1 text-sm text-text-muted">This browser-local demonstration does not use pricing, predict returns, recommend allocations, persist a policy, or call an execution provider.</p>
+            <p className="mt-1 text-sm text-text-muted">This browser-local preview does not persist a policy, become the API modeled state, move capital, or call an execution provider.</p>
+            <p className="mt-2 text-xs text-text-muted">Backend modeled state: {stateLabel(state?.modeled)}</p>
           </div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <Field>
@@ -78,8 +114,8 @@ export function AllocationModes() {
 
       {mode === 'Authorize' && (
         <div className="border-y border-border-hairline py-7">
-          <p className="text-sm font-medium">Authorization unavailable</p>
-          <p className="mt-1 max-w-2xl text-sm text-text-muted">Authorization requires real policy, ledger, reservation, security, execution, and reconciliation infrastructure. No allocation request can be submitted here.</p>
+          <p className="text-sm font-medium">{state === null ? 'Authorization state is unavailable' : stateLabel(state.authorized)}</p>
+          <p className="mt-1 max-w-2xl text-sm text-text-muted">Authorization remains API-owned and cannot be advanced by this frontend. Execution and reconciliation remain distinct later states.</p>
         </div>
       )}
     </Stack>
