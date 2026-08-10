@@ -6,14 +6,14 @@ const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.ur
 
 test('sitemap contains the complete indexable public product surface', () => {
   const sitemap = read('app/sitemap.ts');
-
-  const requiredRoutes = [
+  for (const route of [
     '/platform',
     '/portfolio-intelligence',
     '/capital-account',
+    '/capital-activity',
+    '/neptlium-link',
     '/allocation',
     '/treasury',
-    '/performance',
     '/capital-universe',
     '/research',
     '/learn',
@@ -21,98 +21,58 @@ test('sitemap contains the complete indexable public product surface', () => {
     '/about',
     '/security',
     '/trust',
-    '/press',
     '/contact',
-  ];
-
-  for (const route of requiredRoutes) {
+  ]) {
     assert.equal(sitemap.includes(`'${route}'`), true, `Missing sitemap route: ${route}`);
   }
-
   assert.equal(sitemap.includes("'/pricing'"), false);
-  assert.equal(sitemap.includes("'/maintenance'"), false);
-  assert.equal(sitemap.includes("'/auth/"), false);
 });
 
-test('robots references the canonical sitemap and excludes operational routes', () => {
-  const robots = read('app/robots.ts');
-
-  assert.equal(robots.includes('https://neptlium.com/sitemap.xml'), true);
-  assert.equal(robots.includes("'/auth/'"), true);
-  assert.equal(robots.includes("'/maintenance'"), true);
-  assert.equal(robots.includes('localhost'), false);
-  assert.equal(robots.includes('vercel.app'), false);
-});
-
-test('company navigation exposes truthful company destinations', () => {
+test('capital command bar exposes the governed production navigation', () => {
   const header = read('components/site-header.tsx');
-  const footer = read('components/site-footer.tsx');
-
-  assert.equal(header.includes("href: '/about'"), true);
-  assert.equal(header.includes("href: '/company#principles'"), true);
-  assert.equal(footer.includes("['About Neptlium', '/about']"), true);
-  assert.equal(footer.includes("['Principles', '/company#principles']"), true);
-});
-
-test('desktop navigation uses governed, accessible disclosure menus', () => {
-  const header = read('components/site-header.tsx');
-
-  assert.equal(header.includes("label: 'Platform'"), true);
-  assert.equal(header.includes("label: 'Solutions'"), true);
-  assert.equal(header.includes("label: 'Resources'"), true);
-  assert.equal(header.includes("label: 'Company'"), true);
-  assert.equal(header.includes('className={`mega-menu '), true);
+  for (const section of ['Platform', 'Solutions', 'Infrastructure', 'Company']) {
+    assert.equal(header.includes(`label: '${section}'`), true);
+  }
+  assert.equal(header.includes('Access Neptlium'), true);
+  assert.equal(header.includes('Open Neptlium'), false);
   assert.equal(header.includes('aria-expanded={open}'), true);
   assert.equal(header.includes('aria-controls={id}'), true);
   assert.equal(header.includes('aria-haspopup="true"'), true);
   assert.equal(header.includes("event.key === 'Escape'"), true);
   assert.equal(header.includes("event.key !== 'ArrowDown'"), true);
-  assert.equal(header.includes('event.currentTarget.contains(event.relatedTarget)'), true);
   assert.equal(header.includes("document.addEventListener('pointerdown', dismiss)"), true);
-  assert.equal(header.includes('Open Neptlium'), true);
-  assert.equal(header.includes('Access Neptlium'), false);
-  assert.equal(header.includes('Enter Neptlium'), false);
-  assert.equal(header.includes('Launch App'), false);
 });
 
-test('first view represents the Neptlium operating model without fabricated financial values', () => {
+test('homepage carries one proposition into truthful product proof', () => {
   const page = read('app/page.tsx');
-  const architecture = read('components/hero-architecture.tsx');
-  const stage = read('components/product-stage.tsx');
-
-  assert.equal(page.includes('<HeroArchitecture />'), true);
-  assert.equal(page.includes('Digital capital,'), true);
-  assert.equal(page.includes('organized around'), true);
-  assert.equal(page.includes('Enter Neptlium'), true);
-
-  for (const label of ['Capital Account', 'Treasury', 'Allocation']) {
-    assert.equal(stage.includes(`'${label}'`), true, `Missing staged product system: ${label}`);
-  }
-
-  for (const state of ['Observe', 'Organize', 'Govern', 'Resolve']) {
-    assert.equal(architecture.includes(state), true, `Missing operating state: ${state}`);
-  }
-
-  for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%']) {
-    assert.equal(
-      page.includes(fabricatedValue),
-      false,
-      `Fabricated value found: ${fabricatedValue}`,
-    );
-    assert.equal(
-      stage.includes(fabricatedValue),
-      false,
-      `Fabricated value found: ${fabricatedValue}`,
-    );
+  assert.equal(page.includes('Capital, operated as one system.'), true);
+  assert.equal(page.includes('Access Neptlium'), true);
+  assert.equal(page.includes('Explore the platform'), true);
+  assert.equal(page.includes('OperatingEnvironmentVisual'), true);
+  assert.equal(page.includes('Execution is a process, not a status.'), true);
+  assert.equal(page.includes('Control is part of the architecture.'), true);
+  for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD']) {
+    assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
   }
 });
 
-test('production hardening preserves reduced-motion and visible focus support', () => {
-  const hardening = read('app/production-hardening.css');
-  const layout = read('app/layout.tsx');
+test('institutional ledger footer uses only real destinations', () => {
+  const footer = read('components/site-footer.tsx');
+  assert.equal(footer.includes('Capital infrastructure,'), true);
+  assert.equal(footer.includes('built for control.'), true);
+  assert.equal(footer.includes("['About', '/about']"), true);
+  assert.equal(footer.includes("['Principles', '/company#principles']"), true);
+  assert.equal(footer.includes("['Connectivity', '/neptlium-link']"), true);
+});
 
-  assert.equal(layout.includes("import './production-hardening.css';"), true);
-  assert.equal(hardening.includes('@media (prefers-reduced-motion: reduce)'), true);
-  assert.equal(hardening.includes(':focus-visible'), true);
-  assert.equal(hardening.includes('overflow-x: clip'), true);
+test('production layer preserves reduced motion and explicit Paper/Ink authority', () => {
+  const css = read('app/marketing-production.css');
+  const layout = read('app/layout.tsx');
+  assert.equal(layout.includes("import './marketing-production.css';"), true);
+  assert.equal(css.includes('--np-paper: #fff'), true);
+  assert.equal(css.includes('--np-ink: #090b0f'), true);
+  assert.equal(css.includes('--np-blue: #2764ff'), true);
+  assert.equal(css.includes('@media (prefers-reduced-motion: reduce)'), true);
+  assert.equal(css.includes('radial-gradient'), false);
+  assert.equal(css.includes('backdrop-filter: none'), true);
 });

@@ -1,26 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-  Building2,
-  ChevronDown,
-  CircleHelp,
-  Contact,
-  FileText,
-  KeyRound,
-  Landmark,
-  Layers3,
-  Menu,
-  ScanSearch,
-  ShieldCheck,
-  SlidersHorizontal,
-  Sparkles,
-  X,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Brand } from './brand';
@@ -29,118 +10,52 @@ import { SITE } from '@/lib/content/site';
 type NavLink = {
   label: string;
   href?: string;
-  description?: string;
-  icon?: LucideIcon;
+  description: string;
+  status?: 'Architecture' | 'In development';
 };
 
 type NavSection = {
-  label: string;
+  label: 'Platform' | 'Solutions' | 'Infrastructure' | 'Company';
   eyebrow: string;
   description: string;
-  overview?: NavLink;
   links: readonly NavLink[];
-  featured?: boolean;
+  lifecycle?: readonly string[];
 };
 
 const navigation: readonly NavSection[] = [
   {
     label: 'Platform',
-    eyebrow: 'Capital operating infrastructure',
-    featured: true,
-    overview: {
-      label: 'Platform Overview',
-      href: '/platform',
-      description: 'One operating environment for modern digital capital.',
-      icon: Layers3,
-    },
-    description: 'Understand, organize and govern digital capital through one operating environment.',
+    eyebrow: 'Capital operations',
+    description: 'The operating surfaces that organize capital position, liquidity and governed decisions.',
     links: [
-      {
-        label: 'Portfolio Intelligence',
-        href: '/portfolio-intelligence',
-        description: 'Understand portfolio composition and capital structure through one governed view.',
-        icon: ScanSearch,
-      },
-      {
-        label: 'Capital Account',
-        href: '/capital-account',
-        description: 'Infrastructure for organizing and operating supported digital capital with explicit control.',
-        icon: KeyRound,
-      },
-      {
-        label: 'Treasury',
-        href: '/treasury',
-        description: 'Visibility into liquidity, reserves and treasury positioning.',
-        icon: Landmark,
-      },
-      {
-        label: 'Allocation',
-        href: '/allocation',
-        description: 'Observe, model and review capital positioning against objectives and policy.',
-        icon: SlidersHorizontal,
-      },
+      { label: 'Capital Account', href: '/capital-account', description: 'Controlled capital state, availability and activity.' },
+      { label: 'Portfolio', href: '/portfolio-intelligence', description: 'Positions and exposure in one coherent view.' },
+      { label: 'Treasury', href: '/treasury', description: 'Liquidity, reserves and governed capital movement.' },
+      { label: 'Allocation', href: '/allocation', description: 'Observe, model and authorize capital distribution.' },
+      { label: 'Capital Activity', href: '/capital-activity', description: 'A truthful record of capital operations as they become available.' },
     ],
+    lifecycle: ['Observe', 'Model', 'Authorize', 'Execute', 'Reconcile'],
   },
   {
     label: 'Solutions',
     eyebrow: 'Operating outcomes',
-    description: 'Capital infrastructure organized around the decisions and operating needs it supports.',
+    description: 'Capital infrastructure organized around the work it is designed to support.',
     links: [
-      {
-        label: 'Capital Organization',
-        href: '/platform',
-        description: 'Structure digital capital into a coherent operating view.',
-        icon: Layers3,
-      },
-      {
-        label: 'Portfolio Oversight',
-        href: '/portfolio-intelligence',
-        description: 'Understand portfolio positioning, composition and concentration.',
-        icon: ScanSearch,
-      },
-      {
-        label: 'Treasury Management',
-        href: '/treasury',
-        description: 'Maintain visibility over liquidity, reserves and treasury activity.',
-        icon: Landmark,
-      },
-      {
-        label: 'Allocation Planning',
-        href: '/allocation',
-        description: 'Model and review capital positioning before allocation decisions.',
-        icon: SlidersHorizontal,
-      },
-      {
-        label: 'Digital Asset Operations',
-        href: '/capital-account',
-        description: 'Operate supported capital workflows through controlled infrastructure.',
-        icon: KeyRound,
-      },
+      { label: 'Capital Management', href: '/platform', description: 'Bring capital position and operating context into one system.' },
+      { label: 'Treasury Operations', href: '/treasury', description: 'Govern liquidity, funding state and capital movement.' },
+      { label: 'Allocation Governance', href: '/allocation', description: 'Move from observed exposure to policy-backed decisions.' },
+      { label: 'Digital Asset Infrastructure', href: '/capital-account', description: 'Operate supported digital-capital workflows behind explicit controls.' },
     ],
   },
   {
-    label: 'Resources',
-    eyebrow: 'Research and operating foundations',
-    description: 'Research, learning and security guidance for the Neptlium operating model.',
+    label: 'Infrastructure',
+    eyebrow: 'Control plane',
+    description: 'Provider evidence, ledger architecture and reconciliation remain separated from customer interaction.',
     links: [
-      {
-        label: 'Research & Perspectives',
-        href: '/research',
-        description: 'Research and thinking on digital capital, allocation, treasury and infrastructure.',
-        icon: FileText,
-      },
-      {
-        label: 'Learn',
-        href: '/learn',
-        description: 'Understand the concepts behind modern capital operations.',
-        icon: CircleHelp,
-      },
-      {
-        label: 'Security',
-        href: '/security',
-        description: 'Neptlium’s approach to access, protection and operational control.',
-        icon: ShieldCheck,
-      },
+      { label: 'API Infrastructure', href: '/platform', description: 'The privileged boundary for capital operations and provider orchestration.' },
+      { label: 'Provider Connectivity', href: '/neptlium-link', description: 'Connectivity architecture for external capital infrastructure.' },
+      { label: 'Ledger & Reconciliation', description: 'Canonical financial-history and discrepancy-resolution architecture.', status: 'Architecture' },
+      { label: 'Security & Governance', href: '/security', description: 'Identity, authorization, ownership and operational controls.' },
     ],
   },
   {
@@ -148,83 +63,50 @@ const navigation: readonly NavSection[] = [
     eyebrow: 'Neptlium',
     description: 'Purpose, principles and company information.',
     links: [
-      {
-        label: 'About Neptlium',
-        href: '/about',
-        description: 'The mission and infrastructure thesis behind Neptlium.',
-        icon: Building2,
-      },
-      {
-        label: 'Principles',
-        href: '/company#principles',
-        description: 'The operating principles behind governed capital infrastructure.',
-        icon: Sparkles,
-      },
-      {
-        label: 'Security',
-        href: '/security',
-        description: 'Our approach to security, access and operational integrity.',
-        icon: ShieldCheck,
-      },
-      {
-        label: 'Contact',
-        href: '/contact',
-        description: 'Company, product and general inquiries.',
-        icon: Contact,
-      },
+      { label: 'About', href: '/about', description: 'The mission and operating thesis behind Neptlium.' },
+      { label: 'Principles', href: '/company#principles', description: 'The principles governing capital operations and product truth.' },
+      { label: 'Security', href: '/security', description: 'How access, authorization and operational control are approached.' },
+      { label: 'Contact', href: '/contact', description: 'Company, product and general inquiries.' },
     ],
   },
 ] as const;
 
 const routeIsCurrent = (path: string, href?: string) => href?.split('#')[0] === path;
 
-function NavItem({ link, path }: { link: NavLink; path: string }) {
-  const Icon = link.icon;
+function MenuLink({ link, path }: { link: NavLink; path: string }) {
   const content = (
     <>
-      {Icon && (
-        <span className="mega-item-icon" aria-hidden="true">
-          <Icon />
-        </span>
-      )}
-      <span className="mega-item-copy">
+      <span className="command-link-copy">
         <strong>{link.label}</strong>
-        {link.description && <small>{link.description}</small>}
+        <small>{link.description}</small>
       </span>
-      {link.href && <ArrowUpRight className="mega-item-arrow" aria-hidden="true" />}
+      {link.status ? <span className="command-status">{link.status}</span> : <ArrowRight aria-hidden="true" />}
     </>
   );
 
   return link.href ? (
-    <Link className="mega-item" aria-current={routeIsCurrent(path, link.href) ? 'page' : undefined} href={link.href}>
+    <Link className="command-link" href={link.href} aria-current={routeIsCurrent(path, link.href) ? 'page' : undefined}>
       {content}
     </Link>
   ) : (
-    <span className="mega-item nav-unavailable" aria-disabled="true">
+    <span className="command-link is-architectural" aria-disabled="true">
       {content}
     </span>
   );
 }
 
-function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: string }) {
+function DesktopCommandMenu({ item, path }: { item: NavSection; path: string }) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const active =
-    routeIsCurrent(path, item.overview?.href) ||
-    item.links.some((link) => routeIsCurrent(path, link.href));
+  const active = item.links.some((link) => routeIsCurrent(path, link.href));
 
   useEffect(() => setOpen(false), [path]);
-  useEffect(
-    () => () => {
-      if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    },
-    [],
-  );
+
   useEffect(() => {
     if (!open) return;
+
     const dismiss = (event: PointerEvent) => {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
     };
@@ -234,6 +116,7 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
         trigger.current?.focus();
       }
     };
+
     document.addEventListener('pointerdown', dismiss);
     document.addEventListener('keydown', escape);
     return () => {
@@ -244,18 +127,10 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
 
   return (
     <div
-      className="nav-menu"
+      className="command-menu-root"
       ref={root}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
-      }}
-      onMouseEnter={() => {
-        if (hoverTimer.current) clearTimeout(hoverTimer.current);
-        hoverTimer.current = setTimeout(() => setOpen(true), 80);
-      }}
-      onMouseLeave={() => {
-        if (hoverTimer.current) clearTimeout(hoverTimer.current);
-        hoverTimer.current = setTimeout(() => setOpen(false), 150);
       }}
     >
       <button
@@ -270,7 +145,7 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
           event.preventDefault();
           setOpen(true);
           requestAnimationFrame(() =>
-            root.current?.querySelector<HTMLAnchorElement>('.mega-menu a')?.focus(),
+            root.current?.querySelector<HTMLAnchorElement>('.capital-command-menu a')?.focus(),
           );
         }}
       >
@@ -279,51 +154,50 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
       </button>
 
       <div
-        className={`mega-menu mega-menu-${item.label.toLowerCase()} ${item.featured ? 'mega-menu-platform' : ''}`}
-        data-open={open}
+        className="capital-command-menu"
         id={id}
+        data-open={open}
         aria-hidden={!open}
         inert={!open ? true : undefined}
       >
-        <div className="mega-menu-plane">
-          <div className="mega-menu-intro">
-            <span className="mega-menu-kicker">{item.eyebrow}</span>
+        <div className="capital-command-inner">
+          <div className="command-intro">
+            <span>{item.eyebrow}</span>
             <h2>{item.label}</h2>
             <p>{item.description}</p>
-            {item.overview?.href && (
-              <Link className="mega-menu-overview" href={item.overview.href}>
-                <span>
-                  <strong>{item.overview.label}</strong>
-                  <small>{item.overview.description}</small>
-                </span>
-                <ArrowRight aria-hidden="true" />
-              </Link>
+          </div>
+
+          <div className="command-links">
+            {item.links.map((link) => (
+              <MenuLink link={link} path={path} key={link.label} />
+            ))}
+          </div>
+
+          <aside className="command-system-panel">
+            {item.lifecycle ? (
+              <>
+                <span>Capital operations</span>
+                <strong>One system. Explicit state.</strong>
+                <ol>
+                  {item.lifecycle.map((state, index) => (
+                    <li key={state}>
+                      <i>{String(index + 1).padStart(2, '0')}</i>
+                      <span>{state}</span>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            ) : (
+              <>
+                <span>{item.eyebrow}</span>
+                <strong>Capability follows verified architecture.</strong>
+                <p>
+                  Neptlium distinguishes current product capability from architectural direction
+                  and unavailable execution.
+                </p>
+              </>
             )}
-          </div>
-
-          <div className="mega-menu-links">
-            <span className="mega-menu-column-label">
-              {item.featured ? 'Core systems' : item.label === 'Resources' ? 'Explore' : 'Capabilities'}
-            </span>
-            <div className="mega-menu-list">
-              {item.links.map((link) => (
-                <NavItem key={link.label} link={link} path={path} />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mega-menu-footer">
-          <span>Neptlium · Capital operating infrastructure</span>
-          {item.overview?.href ? (
-            <Link href={item.overview.href}>
-              Explore {item.label.toLowerCase()} <ArrowRight aria-hidden="true" />
-            </Link>
-          ) : (
-            <Link href="/platform">
-              Explore Neptlium <ArrowRight aria-hidden="true" />
-            </Link>
-          )}
+          </aside>
         </div>
       </div>
     </div>
@@ -331,47 +205,31 @@ function DesktopMenu({ item, path }: { item: (typeof navigation)[number]; path: 
 }
 
 export function SiteHeader() {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileSection, setMobileSection] = useState<string | null>(null);
   const path = usePathname();
-  const mobileTrigger = useRef<HTMLButtonElement>(null);
-  const closeButton = useRef<HTMLButtonElement>(null);
-  const mobilePanel = useRef<HTMLElement>(null);
-
-  const activeMobileSection = navigation.find((item) => item.label === mobileSection) ?? null;
-
-  useEffect(() => {
-    const update = () => setScrolled(scrollY > 12);
-    update();
-    addEventListener('scroll', update, { passive: true });
-    return () => removeEventListener('scroll', update);
-  }, []);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSection, setMobileSection] = useState<string | null>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const close = useRef<HTMLButtonElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setOpen(false);
+    setMobileOpen(false);
     setMobileSection(null);
   }, [path]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!mobileOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    closeButton.current?.focus();
+    close.current?.focus();
 
-    const key = (event: KeyboardEvent) => {
+    const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        if (mobileSection) {
-          setMobileSection(null);
-        } else {
-          setOpen(false);
-        }
+        setMobileOpen(false);
         return;
       }
       if (event.key !== 'Tab') return;
-      const nodes = mobilePanel.current?.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled])',
-      );
+      const nodes = panel.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
       if (!nodes?.length) return;
       const first = nodes[0];
       const last = nodes[nodes.length - 1];
@@ -384,116 +242,85 @@ export function SiteHeader() {
       }
     };
 
-    addEventListener('keydown', key);
+    document.addEventListener('keydown', onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
-      removeEventListener('keydown', key);
-      mobileTrigger.current?.focus();
+      document.removeEventListener('keydown', onKeyDown);
+      trigger.current?.focus();
     };
-  }, [open, mobileSection]);
+  }, [mobileOpen]);
 
   return (
-    <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
+    <header className="site-header capital-command-bar">
       <div className="nav-shell">
         <Brand />
-        <nav className="desktop-nav" aria-label="Primary">
+        <nav className="desktop-command-nav" aria-label="Primary navigation">
           {navigation.map((item) => (
-            <DesktopMenu item={item} path={path} key={item.label} />
+            <DesktopCommandMenu item={item} path={path} key={item.label} />
           ))}
         </nav>
-        <div className="nav-actions">
+
+        <div className="command-actions">
           <a href={SITE.signInUrl}>Sign in</a>
-          <a className="button small" href={SITE.accessUrl}>
-            Open Neptlium
+          <a className="button command-primary-action" href={SITE.accessUrl}>
+            Access Neptlium <ArrowRight aria-hidden="true" />
           </a>
         </div>
+
         <button
-          ref={mobileTrigger}
-          className="menu-trigger"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
+          ref={trigger}
+          className="command-mobile-trigger"
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-command-sheet"
           aria-label="Open navigation"
-          onClick={() => setOpen(true)}
+          onClick={() => setMobileOpen(true)}
         >
           <Menu aria-hidden="true" />
-          <span>Menu</span>
         </button>
       </div>
 
-      {open && (
-        <div className="drawer-wrap" role="dialog" aria-modal="true" aria-label="Navigation">
-          <aside id="mobile-nav" className="drawer" ref={mobilePanel}>
-            <div className="drawer-head">
+      {mobileOpen && (
+        <div className="mobile-command-wrap" role="dialog" aria-modal="true" aria-label="Navigation">
+          <div id="mobile-command-sheet" className="mobile-command-sheet" ref={panel}>
+            <div className="mobile-command-head">
               <Brand />
-              <button
-                ref={closeButton}
-                className="drawer-close"
-                aria-label="Close navigation"
-                onClick={() => setOpen(false)}
-              >
+              <button ref={close} aria-label="Close navigation" onClick={() => setMobileOpen(false)}>
                 <X aria-hidden="true" />
               </button>
             </div>
 
-            <div className="drawer-stage" data-detail={mobileSection ? 'true' : 'false'}>
-              {!activeMobileSection ? (
-                <nav className="drawer-root" aria-label="Mobile">
-                  <div className="drawer-root-intro">
-                    <span>Neptlium</span>
-                    <p>Capital operating infrastructure for modern digital capital.</p>
-                  </div>
-                  <div className="drawer-section-list">
-                    {navigation.map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => setMobileSection(item.label)}
-                      >
-                        <span>
-                          <strong>{item.label}</strong>
-                          <small>{item.description}</small>
-                        </span>
-                        <ArrowRight aria-hidden="true" />
-                      </button>
-                    ))}
-                  </div>
-                </nav>
-              ) : (
-                <nav className="drawer-detail" aria-label={`${activeMobileSection.label} navigation`}>
-                  <button
-                    className="drawer-back"
-                    type="button"
-                    onClick={() => setMobileSection(null)}
-                  >
-                    <ArrowLeft aria-hidden="true" />
-                    Back
-                  </button>
-
-                  <div className="drawer-detail-head">
-                    <span>{activeMobileSection.eyebrow}</span>
-                    <h2>{activeMobileSection.label}</h2>
-                    <p>{activeMobileSection.description}</p>
-                  </div>
-
-                  <div className="drawer-detail-links">
-                    {activeMobileSection.overview && (
-                      <NavItem link={activeMobileSection.overview} path={path} />
+            <nav className="mobile-command-nav" aria-label="Mobile navigation">
+              {navigation.map((item) => {
+                const expanded = mobileSection === item.label;
+                return (
+                  <section key={item.label}>
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      onClick={() => setMobileSection(expanded ? null : item.label)}
+                    >
+                      <span>{item.label}</span>
+                      <span aria-hidden="true">{expanded ? '−' : '+'}</span>
+                    </button>
+                    {expanded && (
+                      <div className="mobile-command-links">
+                        {item.links.map((link) => (
+                          <MenuLink link={link} path={path} key={link.label} />
+                        ))}
+                      </div>
                     )}
-                    {activeMobileSection.links.map((link) => (
-                      <NavItem key={link.label} link={link} path={path} />
-                    ))}
-                  </div>
-                </nav>
-              )}
-            </div>
+                  </section>
+                );
+              })}
+            </nav>
 
-            <div className="drawer-actions">
+            <div className="mobile-command-actions">
               <a href={SITE.signInUrl}>Sign in</a>
               <a className="button" href={SITE.accessUrl}>
-                Open Neptlium <ArrowUpRight aria-hidden="true" />
+                Access Neptlium <ArrowRight aria-hidden="true" />
               </a>
             </div>
-          </aside>
+          </div>
         </div>
       )}
     </header>

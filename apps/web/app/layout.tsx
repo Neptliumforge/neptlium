@@ -12,13 +12,15 @@ import './product-showcase-calibration.css';
 import './route-product-consolidation.css';
 import './detail-product-consolidation.css';
 import './home-composition.css';
+import './marketing-production.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
 import { SITE } from '@/lib/content/site';
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: 'Neptlium — Capital Operating Infrastructure', template: '%s — Neptlium' },
+  title: { default: 'Neptlium — Capital Operating Platform', template: '%s — Neptlium' },
   description: SITE.description,
   applicationName: SITE.name,
   creator: SITE.name,
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: SITE.name,
-    title: 'Neptlium — Capital Operating Infrastructure',
+    title: 'Neptlium — Capital Operating Platform',
     description: SITE.description,
     url: SITE.url,
     locale: 'en_US',
@@ -35,18 +37,20 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Neptlium — Capital Operating Infrastructure',
+    title: 'Neptlium — Capital Operating Platform',
     description: SITE.description,
     images: ['/opengraph-image'],
   },
   robots: { index: true, follow: true },
 };
+
 export const viewport: Viewport = {
-  colorScheme: 'dark',
-  themeColor: '#050806',
+  colorScheme: 'light',
+  themeColor: '#FFFFFF',
   width: 'device-width',
   initialScale: 1,
 };
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -57,14 +61,12 @@ const jsonLd = {
   email: SITE.supportEmail,
   sameAs: [],
 };
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <SkipLink />
         <SiteHeader />
         <main id="main-content">{children}</main>
