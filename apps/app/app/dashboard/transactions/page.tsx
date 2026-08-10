@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeftRight } from 'lucide-react';
-import { AssetIdentity, Badge, Card, CardContent, EmptyState, Input } from '@neptlium/ui';
+import { AssetAmount, AssetIdentity, Badge, Input, Surface } from '@neptlium/ui';
 import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { requireUser } from '@/lib/auth';
 
@@ -9,12 +8,13 @@ const PAGE_SIZE = 20;
 const STATUS_TONE: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
   completed: 'success',
   pending: 'warning',
+  pending_review: 'warning',
   failed: 'danger',
   cancelled: 'neutral',
 };
 
 const selectClasses =
-  'h-10 rounded-md border border-border-default bg-surface-2 px-3 text-body text-text-primary transition-colors duration-150 ease-out focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]';
+  'h-10 rounded-md border border-border-default bg-surface-1 px-3 text-body text-text-primary transition-colors duration-150 ease-out focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]';
 
 interface TransactionsSearchParams {
   readonly status?: string;
@@ -36,15 +36,10 @@ interface TransactionRow {
   readonly created_at: string;
 }
 
-export default async function TransactionsPage({
-  searchParams,
-}: {
-  readonly searchParams: Promise<TransactionsSearchParams>;
-}) {
+export default async function TransactionsPage({ searchParams }: { readonly searchParams: Promise<TransactionsSearchParams> }) {
   const user = await requireUser();
   const params = await searchParams;
   const supabase = await createSupabaseServerClient();
-
   const page = Math.max(1, Number(params.page) || 1);
   const offset = (page - 1) * PAGE_SIZE;
 
@@ -58,9 +53,7 @@ export default async function TransactionsPage({
 
   let query = supabase
     .from('wallet_transactions')
-    .select('id, type, asset, network, amount, status, reference, counterparty, created_at', {
-      count: 'exact',
-    })
+    .select('id, type, asset, network, amount, status, reference, counterparty, created_at', { count: 'exact' })
     .eq('profile_id', user.id)
     .order('created_at', { ascending: false })
     .range(offset, offset + PAGE_SIZE - 1);
@@ -81,151 +74,81 @@ export default async function TransactionsPage({
     if (params.network) search.set('network', params.network);
     if (params.q) search.set('q', params.q);
     if (targetPage > 1) search.set('page', String(targetPage));
-    const query = search.toString();
-    return query ? `/dashboard/transactions?${query}` : '/dashboard/transactions';
+    const value = search.toString();
+    return value ? `/dashboard/transactions?${value}` : '/dashboard/transactions';
   }
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      <div>
-        <h1 className="text-[1.35rem] font-semibold leading-tight tracking-tight text-text-primary sm:text-2xl">
-          Capital Activity
-        </h1>
-        <p className="mt-2 text-sm leading-6 text-text-secondary">
-          Review deposits, withdrawals, goals, journal entries, and database-backed activity
-        </p>
-      </div>
+    <div className="space-y-6">
+      <header>
+        <h1>Capital Activity</h1>
+        <p className="mt-1 text-sm text-text-muted">Canonical account activity and its operational state.</p>
+      </header>
 
-      <Card>
-        <CardContent className="p-6">
-          <form method="get" className="flex flex-wrap items-end gap-3">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="q" className="text-body-sm font-medium text-text-secondary">
-                Search
-              </label>
-              <Input
-                id="q"
-                name="q"
-                defaultValue={params.q ?? ''}
-                placeholder="Reference or counterparty"
-                className="h-10 w-56"
-              />
-            </div>
+      <Surface className="p-4 sm:p-5">
+        <form method="get" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(13rem,1fr)_repeat(3,auto)_auto] xl:items-end">
+          <label className="grid gap-1.5 text-xs font-medium text-text-secondary" htmlFor="q">
+            Search
+            <Input id="q" name="q" defaultValue={params.q ?? ''} placeholder="Reference or counterparty" className="h-10" />
+          </label>
+          <label className="grid gap-1.5 text-xs font-medium text-text-secondary" htmlFor="status">
+            Status
+            <select id="status" name="status" defaultValue={params.status ?? ''} className={selectClasses}>
+              <option value="">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="failed">Failed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>
+          <label className="grid gap-1.5 text-xs font-medium text-text-secondary" htmlFor="asset">
+            Asset
+            <select id="asset" name="asset" defaultValue={params.asset ?? ''} className={selectClasses}>
+              <option value="">All assets</option>
+              {assets.map((asset) => <option key={asset} value={asset}>{asset}</option>)}
+            </select>
+          </label>
+          <label className="grid gap-1.5 text-xs font-medium text-text-secondary" htmlFor="network">
+            Network
+            <select id="network" name="network" defaultValue={params.network ?? ''} className={selectClasses}>
+              <option value="">All networks</option>
+              {networks.map((network) => <option key={network} value={network}>{network}</option>)}
+            </select>
+          </label>
+          <button type="submit" className="h-10 rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Filter</button>
+        </form>
+      </Surface>
 
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="status" className="text-body-sm font-medium text-text-secondary">
-                Status
-              </label>
-              <select
-                id="status"
-                name="status"
-                defaultValue={params.status ?? ''}
-                className={selectClasses}
-              >
-                <option value="">All statuses</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-                <option value="failed">Failed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="asset" className="text-body-sm font-medium text-text-secondary">
-                Asset
-              </label>
-              <select
-                id="asset"
-                name="asset"
-                defaultValue={params.asset ?? ''}
-                className={selectClasses}
-              >
-                <option value="">All assets</option>
-                {assets.map((asset) => (
-                  <option key={asset} value={asset}>
-                    {asset}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="network" className="text-body-sm font-medium text-text-secondary">
-                Network
-              </label>
-              <select
-                id="network"
-                name="network"
-                defaultValue={params.network ?? ''}
-                className={selectClasses}
-              >
-                <option value="">All networks</option>
-                {networks.map((network) => (
-                  <option key={network} value={network}>
-                    {network}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              type="submit"
-              className="h-10 rounded-md bg-accent-emerald px-4 text-body-sm font-medium text-accent-emerald-foreground hover:brightness-105"
-            >
-              Filter
-            </button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card>
+      <Surface>
         {transactions.length === 0 ? (
-          <EmptyState
-            icon={<ArrowLeftRight className="size-5" aria-hidden="true" />}
-            title="No transactions found"
-            description="Activity will appear here once your account begins moving capital, or adjust your filters."
-          />
+          <div className="px-5 py-8">
+            <p className="text-sm font-medium">No capital activity yet.</p>
+            <p className="mt-1 text-sm text-text-muted">Activity will appear here when canonical account events are available. Adjust filters if you expected an existing event.</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-body-sm">
-              <thead className="border-b border-border-default">
+            <table className="w-full text-sm">
+              <thead className="border-b border-border-hairline bg-surface-2/60">
                 <tr>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Type</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">
-                    Asset / Network
-                  </th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Amount</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Reference</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Status</th>
-                  <th className="px-4 py-2 text-left font-medium text-text-secondary">Date</th>
+                  <th className="px-4 py-3 text-left font-medium text-text-secondary">Type</th>
+                  <th className="px-4 py-3 text-left font-medium text-text-secondary">Asset / Network</th>
+                  <th className="px-4 py-3 text-left font-medium text-text-secondary">Amount</th>
+                  <th className="px-4 py-3 text-left font-medium text-text-secondary">Reference</th>
+                  <th className="px-4 py-3 text-left font-medium text-text-secondary">State</th>
+                  <th className="px-4 py-3 text-left font-medium text-text-secondary">Time</th>
                 </tr>
               </thead>
               <tbody>
                 {transactions.map((transaction) => (
-                  <tr key={transaction.id} className="border-b border-border-hairline">
-                    <td className="px-4 py-2 capitalize text-text-primary">{transaction.type}</td>
-                    <td className="px-4 py-2 text-text-primary">
-                      <AssetIdentity
-                        asset={transaction.asset}
-                        network={transaction.network}
-                        size="sm"
-                      />
+                  <tr key={transaction.id} className="border-b border-border-hairline last:border-0">
+                    <td className="px-4 py-3 capitalize text-text-primary">{transaction.type}</td>
+                    <td className="px-4 py-3"><AssetIdentity asset={transaction.asset} network={transaction.network} size="sm" /></td>
+                    <td className="px-4 py-3 text-text-primary">
+                      <AssetAmount value={Number(transaction.amount)} asset={transaction.asset as 'USDC' | 'ETH' | 'BTC'} className="text-sm" />
                     </td>
-                    <td className="px-4 py-2 text-text-primary">
-                      {transaction.type === 'withdrawal' ? '-' : ''}
-                      {Number(transaction.amount).toFixed(2)}
-                    </td>
-                    <td className="px-4 py-2 font-mono text-text-secondary">
-                      {transaction.reference ?? transaction.counterparty ?? '—'}
-                    </td>
-                    <td className="px-4 py-2">
-                      <Badge tone={STATUS_TONE[transaction.status] ?? 'neutral'}>
-                        {transaction.status}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-2 text-text-muted">
-                      {new Date(transaction.created_at).toLocaleDateString()}
-                    </td>
+                    <td className="px-4 py-3 font-mono text-xs text-text-secondary">{transaction.reference ?? transaction.counterparty ?? 'Not available'}</td>
+                    <td className="px-4 py-3"><Badge tone={STATUS_TONE[transaction.status] ?? 'neutral'}>{transaction.status.replaceAll('_', ' ')}</Badge></td>
+                    <td className="px-4 py-3 text-text-muted">{new Date(transaction.created_at).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -235,30 +158,14 @@ export default async function TransactionsPage({
 
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-border-hairline p-4">
-            <p className="text-body-sm text-text-muted">
-              Page {page} of {totalPages}
-            </p>
+            <p className="text-sm text-text-muted">Page {page} of {totalPages}</p>
             <div className="flex gap-2">
-              {page > 1 && (
-                <Link
-                  href={pageHref(page - 1)}
-                  className="rounded-md border border-border-default px-3 py-1.5 text-body-sm text-text-primary hover:bg-surface-2"
-                >
-                  Previous
-                </Link>
-              )}
-              {page < totalPages && (
-                <Link
-                  href={pageHref(page + 1)}
-                  className="rounded-md border border-border-default px-3 py-1.5 text-body-sm text-text-primary hover:bg-surface-2"
-                >
-                  Next
-                </Link>
-              )}
+              {page > 1 && <Link href={pageHref(page - 1)} className="rounded-md border border-border-default px-3 py-1.5 text-sm hover:bg-surface-2">Previous</Link>}
+              {page < totalPages && <Link href={pageHref(page + 1)} className="rounded-md border border-border-default px-3 py-1.5 text-sm hover:bg-surface-2">Next</Link>}
             </div>
           </div>
         )}
-      </Card>
+      </Surface>
     </div>
   );
 }

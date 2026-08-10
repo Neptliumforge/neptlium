@@ -2,24 +2,14 @@
  * Neptlium Design System — Shared Utility Classes
  *
  * Consumes semantic variables from @neptlium/ui/styles/tokens.css.
- * Works in both apps:
- *   apps/app  — --color-* defined by @theme in packages/ui/styles/tokens.css
- *   apps/web  — imports the canonical UI tokens directly
- *
- * Import after tokens:
- *   @import "@neptlium/design-system/utilities.css";
  */
-
-
 .container-narrow {
   margin-inline: auto;
   width: 100%;
   max-width: 72rem;
   padding-inline: 1.5rem;
 }
-@media (min-width: 640px) {
-  .container-narrow { padding-inline: 2rem; }
-}
+@media (min-width: 640px) { .container-narrow { padding-inline: 2rem; } }
 
 .container-wide {
   margin-inline: auto;
@@ -27,24 +17,19 @@
   max-width: 80rem;
   padding-inline: 1.5rem;
 }
-@media (min-width: 640px) {
-  .container-wide { padding-inline: 2rem; }
-}
-
+@media (min-width: 640px) { .container-wide { padding-inline: 2rem; } }
 
 .ds-panel {
   background: var(--color-surface-primary);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-md);
 }
-
 .ds-panel-elevated {
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-elevation-2);
 }
-
 .ds-card {
   background: var(--color-surface-primary);
   border: 1px solid var(--color-border-default);
@@ -52,98 +37,48 @@
   box-shadow: var(--shadow-elevation-1);
 }
 
+.ds-text-gradient { background: none; color: var(--color-text-primary); }
+.ds-text-gradient-primary { background: none; color: var(--color-accent-primary); }
 
-.ds-text-gradient {
-  background: none;
-  background-clip: border-box;
-  color: var(--color-text-primary);
-}
-
-.ds-text-gradient-primary {
-  background: none;
-  background-clip: border-box;
-  color: var(--color-accent-primary);
-}
-
-
+/* Neutral structural patterns only. Blue never becomes environmental atmosphere. */
 .ds-grid-pattern {
   background-image:
     linear-gradient(var(--color-border-hairline) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-border-hairline) 1px, transparent 1px);
   background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 75%);
+  mask-image: linear-gradient(to bottom, black, transparent 80%);
 }
-
-.ds-hairline {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-border-default) 30%,
-    var(--color-border-default) 70%,
-    transparent
-  );
-  height: 1px;
-}
-
-.ds-enterprise-grid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(color-mix(in oklab, var(--color-border-default) 35%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--color-border-default) 35%, transparent) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black, transparent 80%);
-  opacity: 0.6;
-}
-
+.ds-hairline { height: 1px; background: var(--color-border-default); }
+.ds-enterprise-grid,
 .ds-blueprint-grid {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(color-mix(in oklab, var(--color-border-default) 60%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--color-border-default) 60%, transparent) 1px, transparent 1px),
-    linear-gradient(color-mix(in oklab, var(--color-border-default) 28%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--color-border-default) 28%, transparent) 1px, transparent 1px);
-  background-size: 140px 140px, 140px 140px, 28px 28px, 28px 28px;
-  mask-image: radial-gradient(ellipse 90% 85% at 50% 40%, black, transparent 82%);
-  opacity: 0.55;
+    linear-gradient(color-mix(in oklab, var(--color-border-default) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--color-border-default) 45%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.45;
 }
-
-.ds-accent-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(40% 50% at 12% 0%, color-mix(in oklab, var(--color-accent-primary) 8%, transparent), transparent 70%);
-}
+.ds-accent-glow { display: none; }
 
 .ds-noise-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.ds-section-seam {
-  position: relative;
-}
+.ds-section-seam { position: relative; }
 .ds-section-seam::before {
   content: "";
   position: absolute;
   inset-inline: 0;
   top: 0;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in oklab, var(--color-border-default) 90%, transparent) 25%,
-    color-mix(in oklab, var(--color-border-default) 90%, transparent) 75%,
-    transparent
-  );
+  background: var(--color-border-hairline);
 }
-
 
 .ds-card-lift {
   transition:
@@ -176,49 +111,42 @@
   transform: translateY(-1px);
 }
 
-/* CTA button using brand gradient */
 .ds-btn-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--gradient-cta-primary);
+  background: var(--color-accent-primary);
   color: var(--color-accent-primary-foreground);
-  font-weight: 600;
+  font-weight: 500;
   border-radius: var(--radius-sm);
-  transition: filter var(--motion-duration-normal) var(--motion-ease-out);
+  transition: background-color var(--motion-duration-normal) var(--motion-ease-out);
 }
-.ds-btn-cta:hover { filter: brightness(1.1); }
-.ds-btn-cta:focus-visible {
-  outline: none;
-  box-shadow: var(--shadow-focus-ring);
-}
-
+.ds-btn-cta:hover { background: var(--color-accent-primary-hover); }
+.ds-btn-cta:active { background: var(--color-accent-primary-pressed); }
+.ds-btn-cta:focus-visible { outline: none; box-shadow: var(--shadow-focus-ring); }
 
 .ds-financial-number {
   font-family: var(--font-numeric);
   font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1;
 }
 
 @keyframes ds-shimmer {
-  0%   { background-position: -200% 0; }
+  0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-
 @keyframes ds-fade-up {
-  0%   { opacity: 0; transform: translateY(12px); }
+  0% { opacity: 0; transform: translateY(12px); }
   100% { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes ds-fade-in {
-  0%   { opacity: 0; }
+  0% { opacity: 0; }
   100% { opacity: 1; }
 }
-
 @keyframes ds-drift-slow {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50%       { transform: translate3d(2%, -1.5%, 0) scale(1.06); }
+  50% { transform: translate3d(2%, -1.5%, 0) scale(1.06); }
 }
-
 @media (prefers-reduced-motion: reduce) {
   .ds-motion-safe { animation: none !important; }
 }

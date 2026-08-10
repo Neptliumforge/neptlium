@@ -3,8 +3,12 @@ import type { Metadata } from "next";
 import "./global.css";
 
 export const metadata: Metadata = {
-  title: "Neptlium | Institutional Capital Operating System",
-  description: "Institutional capital operations platform"
+  title: "Neptlium | Capital Operating Platform",
+  description: "Governed capital operations platform",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -13,7 +17,7 @@ export default function RootLayout({
   readonly children: React.ReactNode;
 }): React.ReactElement {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <body className="antialiased">{children}</body>
     </html>
   );

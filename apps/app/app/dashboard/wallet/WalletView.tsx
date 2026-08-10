@@ -1,6 +1,7 @@
 'use client';
+
 import { useState } from 'react';
-import { ArrowDownToLine, ArrowUpFromLine, Clock3, Copy } from 'lucide-react';
+import { ArrowDownToLine, ArrowUpFromLine, Copy } from 'lucide-react';
 import {
   AssetAmount,
   AssetIdentity,
@@ -13,6 +14,7 @@ import {
   Stack,
   Surface,
 } from '@neptlium/ui';
+
 export interface WalletTransaction {
   id: string;
   type: string;
@@ -22,6 +24,7 @@ export interface WalletTransaction {
   status: string;
   created_at: string;
 }
+
 interface Props {
   readonly transactions: readonly WalletTransaction[];
   readonly historyError: boolean;
@@ -40,6 +43,7 @@ interface Props {
     };
   };
 }
+
 type Tab = 'Overview' | 'Deposit' | 'Withdraw' | 'History';
 const tabs: readonly Tab[] = ['Overview', 'Deposit', 'Withdraw', 'History'];
 const assets = [
@@ -54,8 +58,10 @@ const tone: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
   failed: 'danger',
   cancelled: 'neutral',
 };
+
 export function WalletView({ transactions, historyError, capitalAccount }: Props) {
   const [active, setActive] = useState<Tab>('Overview');
+
   return (
     <Stack className="py-1">
       <header>
@@ -63,29 +69,23 @@ export function WalletView({ transactions, historyError, capitalAccount }: Props
           <h1>Capital Account</h1>
           <Badge tone="warning">Testnet</Badge>
         </div>
-        <p className="mt-1 text-sm text-text-muted">
-          Funding, balances, and authenticated capital activity.
-        </p>
+        <p className="mt-1 text-sm text-text-muted">Controlled capital state, funding capability, and account activity.</p>
       </header>
-      <section className="space-y-4 border-b border-border-hairline pb-6">
+
+      <section className="border-y border-border-hairline py-6">
         <div>
-          <p className="text-xs text-text-muted">Total balance</p>
-          <Money
-            state="unavailable"
-            className="mt-2 block text-[2.5rem] font-medium leading-none"
-          />
+          <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Total capital</p>
+          <Money state="unavailable" className="mt-2 block text-[2.5rem] font-medium leading-none sm:text-[2.75rem]" />
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs text-text-muted">Available</p>
-            <Money state="unavailable" className="mt-1 block" />
-          </div>
-          <div>
-            <p className="text-xs text-text-muted">Pending</p>
-            <Money state="unavailable" className="mt-1 block" />
-          </div>
-        </div>
-        <div className="flex gap-2">
+        <dl className="mt-6 grid grid-cols-3 gap-4">
+          {['Available', 'Reserved', 'Pending'].map((label) => (
+            <div key={label}>
+              <dt className="text-xs text-text-muted">{label}</dt>
+              <dd className="mt-1"><Money state="unavailable" className="text-sm font-medium sm:text-base" /></dd>
+            </div>
+          ))}
+        </dl>
+        <div className="mt-5 flex flex-wrap gap-2">
           <Button size="sm" onClick={() => setActive('Deposit')}>
             <ArrowDownToLine className="size-4" />
             Deposit
@@ -96,11 +96,8 @@ export function WalletView({ transactions, historyError, capitalAccount }: Props
           </Button>
         </div>
       </section>
-      <div
-        className="flex overflow-x-auto border-b border-border-hairline"
-        role="tablist"
-        aria-label="Capital Account sections"
-      >
+
+      <div className="flex overflow-x-auto border-b border-border-hairline" role="tablist" aria-label="Capital Account sections">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -108,12 +105,13 @@ export function WalletView({ transactions, historyError, capitalAccount }: Props
             role="tab"
             aria-selected={active === tab}
             onClick={() => setActive(tab)}
-            className={`min-h-11 shrink-0 px-4 text-sm font-medium ${active === tab ? '-mb-px border-b-2 border-accent-primary text-text-primary' : 'text-text-muted'}`}
+            className={`min-h-11 shrink-0 px-4 text-sm font-medium ${active === tab ? '-mb-px border-b-2 border-accent-primary text-text-primary' : 'text-text-muted hover:text-text-secondary'}`}
           >
             {tab}
           </button>
         ))}
       </div>
+
       {active === 'Overview' && (
         <>
           <Section title="Assets">
@@ -121,15 +119,12 @@ export function WalletView({ transactions, historyError, capitalAccount }: Props
               <Group>
                 {(capitalAccount ? assets.slice(0, 1) : assets).map(([asset, description]) => (
                   <Row key={asset}>
-                    <AssetIdentity
-                      asset={asset}
-                      network={description.includes('Base') ? 'Base' : 'Bitcoin'}
-                      detailed
-                    />
+                    <AssetIdentity asset={asset} network={description.includes('Base') ? 'Base' : 'Bitcoin'} detailed />
                     {capitalAccount?.balance && asset === 'USDC' ? (
-                      <span className="text-sm tabular-nums">
-                        {capitalAccount.balance.available} test USDC
-                      </span>
+                      <div className="text-right">
+                        <span className="text-sm font-medium tabular-nums">{capitalAccount.balance.available} test USDC</span>
+                        <p className="mt-1 text-xs text-text-muted">Provider observed</p>
+                      </div>
                     ) : (
                       <AssetAmount asset={asset} state="unavailable" className="text-sm" />
                     )}
@@ -138,70 +133,54 @@ export function WalletView({ transactions, historyError, capitalAccount }: Props
               </Group>
             </Surface>
           </Section>
+
           {!capitalAccount && (
-            <div className="py-5 text-center">
+            <div className="border-y border-border-hairline py-6">
               <p className="text-sm font-medium">Account provisioning</p>
-              <p className="mx-auto mt-1 max-w-md text-sm text-text-muted">
-                Your Capital Account is being prepared. Funding will become available when
-                provisioning is complete.
-              </p>
+              <p className="mt-1 max-w-xl text-sm text-text-muted">Your testnet Capital Account is not linked. Funding capability will appear only when provisioning is complete.</p>
             </div>
           )}
+
           {capitalAccount?.balance && (
-            <p className="text-xs text-text-muted">
-              Provider-observed balance as of{' '}
-              {new Date(capitalAccount.balance.observedAt).toLocaleString()}. This is not a
-              reconciled Neptlium ledger balance and has no real-money value.
+            <p className="text-xs leading-5 text-text-muted">
+              Provider-observed balance as of {new Date(capitalAccount.balance.observedAt).toLocaleString()}. This is not a reconciled Neptlium ledger balance and has no real-money value.
             </p>
           )}
         </>
       )}
+
       {active === 'Deposit' &&
         (capitalAccount ? (
           <Surface className="space-y-4 p-5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <AssetIdentity asset="USDC" network="Base Sepolia" detailed />
               <Badge tone="warning">Testnet only</Badge>
             </div>
-            <p className="text-sm text-text-muted">
-              Send only test USDC on Base Sepolia. A deposit is not complete until provider
-              observation and Neptlium reconciliation occur.
-            </p>
-            <code className="block overflow-x-auto rounded bg-surface-2 p-3 text-sm">
-              {capitalAccount.destination.address}
-            </code>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => navigator.clipboard.writeText(capitalAccount.destination.address)}
-            >
+            <p className="text-sm text-text-muted">Send only test USDC on Base Sepolia. A deposit is not complete until provider observation and Neptlium reconciliation occur.</p>
+            <code className="block overflow-x-auto rounded-md bg-surface-2 p-3 text-sm">{capitalAccount.destination.address}</code>
+            <Button type="button" variant="secondary" onClick={() => navigator.clipboard.writeText(capitalAccount.destination.address)}>
               <Copy className="size-4" />
               Copy address
             </Button>
           </Surface>
         ) : (
-          <State
-            title="Deposits are not available yet"
-            copy="Your testnet Capital Account has not been linked. Contact operations to provision it on demand."
-          />
+          <State title="Deposits are not available" copy="Your testnet Capital Account has not been linked. Deposit capability remains unavailable until provisioning is complete." />
         ))}
+
       {active === 'Withdraw' && (
-        <State
-          title="Withdrawals are not available yet"
-          copy="Withdrawal controls will become available after Capital Account provisioning and authorization controls are ready."
-        />
+        <State title="Withdrawals are not available" copy="Withdrawal execution remains disabled until durable authorization, reservation, provider execution, and reconciliation controls are ready." />
       )}
+
       {active === 'History' && (
-        <Section title="Activity">
+        <Section title="Capital activity">
           <Surface className="px-4 sm:px-5">
             {historyError ? (
-              <p className="py-7 text-sm text-text-muted">
-                Activity could not be loaded. Try again later.
-              </p>
+              <p className="py-7 text-sm text-text-muted">Capital activity could not be loaded. Try again later.</p>
             ) : transactions.length === 0 ? (
-              <p className="py-7 text-sm text-text-muted">
-                No activity yet. Your Capital Account activity will appear here.
-              </p>
+              <div className="py-7">
+                <p className="text-sm font-medium">No capital activity yet.</p>
+                <p className="mt-1 text-sm text-text-muted">Activity will appear here when canonical account events are available.</p>
+              </div>
             ) : (
               <Group>
                 {transactions.map((tx) => (
@@ -210,22 +189,12 @@ export function WalletView({ transactions, historyError, capitalAccount }: Props
                       <AssetIdentity asset={tx.asset} network={tx.network} size="sm" />
                       <div>
                         <p className="text-sm capitalize">{tx.type}</p>
-                        <p className="text-xs text-text-muted">
-                          {new Date(tx.created_at).toLocaleDateString()}
-                        </p>
+                        <p className="text-xs text-text-muted">{new Date(tx.created_at).toLocaleDateString()}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <AssetAmount
-                        value={Number(tx.amount)}
-                        asset={tx.asset as 'USDC' | 'ETH' | 'BTC'}
-                        className="text-sm"
-                      />
-                      <div className="mt-1">
-                        <Badge tone={tone[tx.status] ?? 'neutral'}>
-                          {tx.status.replaceAll('_', ' ')}
-                        </Badge>
-                      </div>
+                      <AssetAmount value={Number(tx.amount)} asset={tx.asset as 'USDC' | 'ETH' | 'BTC'} className="text-sm" />
+                      <div className="mt-1"><Badge tone={tone[tx.status] ?? 'neutral'}>{tx.status.replaceAll('_', ' ')}</Badge></div>
                     </div>
                   </Row>
                 ))}
@@ -237,12 +206,12 @@ export function WalletView({ transactions, historyError, capitalAccount }: Props
     </Stack>
   );
 }
+
 function State({ title, copy }: { readonly title: string; readonly copy: string }) {
   return (
-    <Surface className="px-5 py-8 text-center">
-      <Clock3 className="mx-auto size-5 text-text-muted" />
-      <p className="mt-3 text-sm font-medium">{title}</p>
-      <p className="mx-auto mt-1 max-w-md text-sm text-text-muted">{copy}</p>
-    </Surface>
+    <div className="border-y border-border-hairline py-7">
+      <p className="text-sm font-medium">{title}</p>
+      <p className="mt-1 max-w-xl text-sm text-text-muted">{copy}</p>
+    </div>
   );
 }

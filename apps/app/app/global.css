@@ -1,29 +1,21 @@
 @import 'tailwindcss';
 @import '@neptlium/ui/styles/tokens.css';
-
-/* Shared higher-level utilities consume the canonical UI semantic tokens. */
 @import '@neptlium/design-system/utilities.css';
-
-/* Scan design-system source for any Tailwind v4 class references */
 @source "../../../packages/design-system/src";
-
-/* apps/app's own source is scanned automatically; packages/ui lives outside this
-   directory tree and its component classes must be scanned explicitly. */
 @source "../../../packages/ui/src";
 
 @layer base {
-  html {
-    color-scheme: dark;
-  }
+  html { color-scheme: light; }
 
   body {
     background-color: var(--color-canvas);
     color: var(--color-text-primary);
     font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
   }
 
   ::selection {
-    background-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
+    background-color: color-mix(in oklab, var(--color-primary) 24%, transparent);
     color: var(--color-text-primary);
   }
 
@@ -32,37 +24,17 @@
     scrollbar-width: thin;
   }
 
-  *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
   *::-webkit-scrollbar-thumb {
     background-color: var(--color-border-strong);
-    border-radius: var(--radius-full);
     border: 2px solid transparent;
+    border-radius: var(--radius-full);
     background-clip: content-box;
   }
-
-  *::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
+  *::-webkit-scrollbar-track { background-color: transparent; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* The authenticated shell deliberately keeps its navigation rail dark in the
-   light appearance. These contextual aliases preserve contrast while all
-   values continue to derive from the canonical semantic token vocabulary. */
+/* The rail is an explicit Ink authority region while the operating canvas is Paper. */
 html[data-theme='light'] aside {
   --color-surface-1: var(--color-sidebar);
   --color-surface-2: var(--color-sidebar-surface-secondary);
@@ -75,41 +47,44 @@ html[data-theme='light'] aside {
   --color-border-strong: var(--color-sidebar-border-strong);
 }
 
-/* Authenticated product hierarchy. Route markup predates the shared shell and
-   uses several equivalent Tailwind sizes; these scoped rules keep every page
-   operationally consistent without changing its semantic heading structure. */
+/* Capital Precision authenticated hierarchy. */
 main h1 {
   font-family: var(--font-sans);
-  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  font-size: clamp(1.625rem, 2.2vw, 1.875rem);
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
 }
-
 main h2 {
-  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  font-size: clamp(1.0625rem, 1.3vw, 1.25rem);
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
-
 main h3 {
-  font-size: clamp(0.875rem, 1vw, 1rem);
+  font-size: clamp(.9375rem, 1vw, 1.0625rem);
   font-weight: 600;
   line-height: 1.4;
 }
+main :where(p, li, td, th, label, input, select, textarea, button) { overflow-wrap: anywhere; }
+main :where(table) { min-width: 100%; }
+main :where(.tabular-nums) { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
 
-main :where(p, li, td, th, label, input, select, textarea, button) {
-  overflow-wrap: anywhere;
-}
-
-main :where(table) {
-  min-width: 100%;
-}
+/* Shared surface calibration for Paper depth without card-wall heaviness. */
+main [class*='bg-surface-1'],
+main [class*='bg-card'] { box-shadow: none; }
+main [class*='border-border'] { border-color: var(--color-border-hairline); }
 
 @media (max-width: 479px) {
-  main :where(.overflow-x-auto) {
-    margin-inline: -0.25rem;
-    padding-inline: 0.25rem;
+  main :where(.overflow-x-auto) { margin-inline: -.25rem; padding-inline: .25rem; }
+  main h1 { font-size: 1.625rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
   }
 }

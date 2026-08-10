@@ -14,18 +14,19 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-accent-primary text-accent-primary-foreground hover:bg-accent-primary-hover active:bg-accent-primary-pressed shadow-sm',
+          'bg-accent-primary text-accent-primary-foreground hover:bg-accent-primary-hover active:bg-accent-primary-pressed',
         accent:
-          'bg-accent-primary text-accent-primary-foreground hover:bg-accent-primary-hover active:bg-accent-primary-pressed shadow-sm',
-        cta: '[background:var(--gradient-cta-primary)] text-white shadow-sm hover:brightness-110 active:brightness-95',
+          'bg-accent-primary text-accent-primary-foreground hover:bg-accent-primary-hover active:bg-accent-primary-pressed',
+        cta:
+          'bg-accent-primary text-accent-primary-foreground hover:bg-accent-primary-hover active:bg-accent-primary-pressed',
         secondary:
           'bg-surface-3 text-text-primary border border-border-default hover:border-border-hover',
         ghost: 'bg-transparent text-text-secondary hover:bg-surface-2 hover:text-text-primary',
         outline: 'bg-transparent text-text-primary border border-border-default hover:bg-surface-2',
         soft: 'bg-accent-primary/12 text-accent-primary hover:bg-accent-primary/20',
-        destructive: 'bg-danger text-danger-foreground hover:brightness-110 shadow-sm',
-        success: 'bg-success text-success-foreground hover:brightness-110 shadow-sm',
-        warning: 'bg-warning text-warning-foreground hover:brightness-110 shadow-sm',
+        destructive: 'bg-danger text-danger-foreground hover:brightness-110',
+        success: 'bg-success text-success-foreground hover:brightness-110',
+        warning: 'bg-warning text-warning-foreground hover:brightness-110',
       },
       size: {
         sm: 'h-9 px-3 text-body-sm',

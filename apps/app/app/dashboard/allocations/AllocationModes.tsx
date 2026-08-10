@@ -1,106 +1,87 @@
 'use client';
+
 import { useState } from 'react';
-import { Eye, LockKeyhole } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  EmptyState,
-  Field,
-  Input,
-  Label,
-} from '@neptlium/ui';
+import { Field, Input, Label, Stack, Surface } from '@neptlium/ui';
+
 type Mode = 'Observe' | 'Model' | 'Authorize';
+const modes: readonly Mode[] = ['Observe', 'Model', 'Authorize'];
+const lifecycle = ['Observed', 'Modeled', 'Authorized', 'Executed', 'Reconciled'] as const;
+
 export function AllocationModes() {
   const [mode, setMode] = useState<Mode>('Observe');
   const [label, setLabel] = useState('');
   const [amount, setAmount] = useState('');
+
   return (
-    <div className="space-y-6 py-4">
+    <Stack>
       <header>
-        <h1 className="text-lg font-semibold">Allocation</h1>
-        <p className="mt-1 text-sm text-text-muted">
-          Observe, model, and understand authorization readiness.
-        </p>
-        <p className="mt-2 font-medium text-accent-primary">Modeling does not move capital.</p>
+        <h1>Allocation</h1>
+        <p className="mt-1 text-sm text-text-muted">Observe existing exposure, model a proposed state, and understand authorization readiness.</p>
+        <p className="mt-2 text-sm font-medium text-accent-primary">Modeling does not move capital.</p>
       </header>
-      <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="Allocation modes">
-        {(['Observe', 'Model', 'Authorize'] as Mode[]).map((item) => (
+
+      <ol className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border-hairline bg-border-hairline sm:grid-cols-5" aria-label="Allocation lifecycle">
+        {lifecycle.map((state, index) => (
+          <li key={state} className="bg-surface-1 px-3 py-3">
+            <span className="block text-[11px] text-accent-primary">0{index + 1}</span>
+            <strong className="mt-2 block text-xs font-medium">{state}</strong>
+            {index > 2 && <small className="mt-1 block text-[11px] text-text-muted">Unavailable</small>}
+          </li>
+        ))}
+      </ol>
+
+      <div className="grid grid-cols-3 gap-0 border-b border-border-hairline" role="tablist" aria-label="Allocation modes">
+        {modes.map((item) => (
           <button
             key={item}
             role="tab"
             aria-selected={mode === item}
             onClick={() => setMode(item)}
-            className={`min-h-11 rounded-md border px-3 text-sm ${mode === item ? 'border-accent-primary text-accent-primary' : 'border-border-default text-text-secondary'}`}
+            className={`relative min-h-11 px-3 text-sm font-medium ${mode === item ? 'text-text-primary after:absolute after:inset-x-4 after:bottom-0 after:h-0.5 after:bg-accent-primary' : 'text-text-muted hover:text-text-secondary'}`}
           >
             {item}
           </button>
         ))}
       </div>
+
       {mode === 'Observe' && (
-        <Card>
-          <CardContent>
-            <EmptyState
-              icon={<Eye className="size-5" />}
-              title="Observed allocation unavailable"
-              description="Observed allocation requires connected portfolio and custody data. No connected data is available."
-            />
-          </CardContent>
-        </Card>
+        <div className="border-y border-border-hairline py-7">
+          <p className="text-sm font-medium">Observed allocation unavailable</p>
+          <p className="mt-1 max-w-2xl text-sm text-text-muted">Observed allocation requires canonical portfolio and supported custody/provider evidence. No reconciled allocation state is available.</p>
+        </div>
       )}
+
       {mode === 'Model' && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Illustrative local model</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-text-muted">
-              This non-persistent demonstration stays in your browser. It does not use pricing,
-              predict returns, recommend allocations, or call an execution provider.
-            </p>
+        <Surface className="p-5">
+          <div className="max-w-2xl">
+            <h2 className="text-base font-semibold">Illustrative local model</h2>
+            <p className="mt-1 text-sm text-text-muted">This browser-local demonstration does not use pricing, predict returns, recommend allocations, persist a policy, or call an execution provider.</p>
+          </div>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <Field>
               <Label htmlFor="scenario-label">Scenario label</Label>
-              <Input
-                id="scenario-label"
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-                placeholder="Illustrative scenario"
-              />
+              <Input id="scenario-label" value={label} onChange={(event) => setLabel(event.target.value)} placeholder="Illustrative scenario" />
             </Field>
             <Field>
               <Label htmlFor="scenario-amount">Illustrative asset units</Label>
-              <Input
-                id="scenario-amount"
-                type="number"
-                min="0"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="—"
-              />
+              <Input id="scenario-amount" type="number" min="0" value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="Enter asset units" />
             </Field>
-            {(label || amount) && (
-              <div className="rounded-md border border-border-default p-4">
-                <p className="text-xs text-text-muted">Local preview only</p>
-                <p className="mt-1 text-sm">
-                  {label || 'Unnamed scenario'}: {amount || '—'} unspecified asset units
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+          </div>
+          {(label || amount) && (
+            <div className="mt-5 border-t border-border-hairline pt-4">
+              <p className="text-xs text-text-muted">Local preview only</p>
+              <p className="mt-1 text-sm">{label || 'Unnamed scenario'} · {amount || 'No amount entered'} · unspecified asset units</p>
+            </div>
+          )}
+        </Surface>
       )}
+
       {mode === 'Authorize' && (
-        <Card>
-          <CardContent>
-            <EmptyState
-              icon={<LockKeyhole className="size-5" />}
-              title="Authorization unavailable"
-              description="Authorization requires real ledger, custody, security, and execution infrastructure. No allocation request can be submitted here."
-            />
-          </CardContent>
-        </Card>
+        <div className="border-y border-border-hairline py-7">
+          <p className="text-sm font-medium">Authorization unavailable</p>
+          <p className="mt-1 max-w-2xl text-sm text-text-muted">Authorization requires real policy, ledger, reservation, security, execution, and reconciliation infrastructure. No allocation request can be submitted here.</p>
+        </div>
       )}
-    </div>
+    </Stack>
   );
 }
