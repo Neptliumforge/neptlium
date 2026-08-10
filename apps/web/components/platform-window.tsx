@@ -7,6 +7,7 @@ import {
   SlidersHorizontal,
   Wallet,
 } from 'lucide-react';
+import { AssetIdentity } from '@neptlium/ui';
 import { Brand } from './brand';
 
 const nav = [
@@ -40,8 +41,8 @@ export function PlatformWindow() {
           ))}
         </nav>
         <div className="platform-window-sidebar-foot">
-          <span>Governed environment</span>
           <i aria-hidden="true" />
+          <span>Governed environment</span>
         </div>
       </aside>
 
@@ -51,8 +52,11 @@ export function PlatformWindow() {
             <span>Overview</span>
             <small>Capital operating environment</small>
           </div>
-          <div className="platform-window-profile" aria-hidden="true">
-            <CircleUserRound />
+          <div className="platform-window-topbar-utility">
+            <span className="platform-window-preview-label">Platform preview</span>
+            <div className="platform-window-profile" aria-hidden="true">
+              <CircleUserRound />
+            </div>
           </div>
         </header>
 
@@ -89,13 +93,12 @@ export function PlatformWindow() {
             <div className="platform-window-assets">
               {assets.map(([asset, network]) => (
                 <div key={asset}>
-                  <span className="platform-window-asset-mark" aria-hidden="true">
-                    {asset.slice(0, 1)}
-                  </span>
-                  <span>
-                    <strong>{asset}</strong>
-                    <small>{network}</small>
-                  </span>
+                  <AssetIdentity
+                    asset={asset}
+                    network={network}
+                    size="sm"
+                    className="platform-window-asset-identity"
+                  />
                 </div>
               ))}
             </div>
@@ -106,14 +109,22 @@ export function PlatformWindow() {
               <span>Allocation</span>
               <h4>Current policy</h4>
               <p>Not configured</p>
-              <a href="/allocation">Create model <ArrowRight aria-hidden="true" /></a>
+              <a href="/allocation">
+                Create model <ArrowRight aria-hidden="true" />
+              </a>
             </section>
             <section>
               <span>Treasury</span>
               <h4>Liquidity position</h4>
               <div className="platform-window-mini-metrics">
-                <div><small>Available</small><strong>—</strong></div>
-                <div><small>Reserve</small><strong>—</strong></div>
+                <div>
+                  <small>Available</small>
+                  <strong>—</strong>
+                </div>
+                <div>
+                  <small>Reserve</small>
+                  <strong>—</strong>
+                </div>
               </div>
             </section>
           </div>
