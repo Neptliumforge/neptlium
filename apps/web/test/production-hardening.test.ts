@@ -50,8 +50,7 @@ test('company navigation exposes truthful company destinations', () => {
 
   assert.equal(header.includes("href: '/about'"), true);
   assert.equal(header.includes("href: '/company#principles'"), true);
-
-  assert.equal(footer.includes("['About', '/about']"), true);
+  assert.equal(footer.includes("['About Neptlium', '/about']"), true);
   assert.equal(footer.includes("['Principles', '/company#principles']"), true);
 });
 
@@ -70,7 +69,41 @@ test('desktop navigation uses governed, accessible disclosure menus', () => {
   assert.equal(header.includes("event.key !== 'ArrowDown'"), true);
   assert.equal(header.includes('event.currentTarget.contains(event.relatedTarget)'), true);
   assert.equal(header.includes("document.addEventListener('pointerdown', dismiss)"), true);
+  assert.equal(header.includes('Open Neptlium'), true);
   assert.equal(header.includes('Access Neptlium'), false);
   assert.equal(header.includes('Enter Neptlium'), false);
   assert.equal(header.includes('Launch App'), false);
+});
+
+test('first view represents the real Neptlium platform without fabricated financial values', () => {
+  const page = read('app/page.tsx');
+  const platform = read('components/platform-window.tsx');
+
+  assert.equal(page.includes('<PlatformWindow />'), true);
+  assert.equal(page.includes('Own across markets. Operate as one portfolio.'), true);
+  assert.equal(page.includes('Open Neptlium'), true);
+
+  for (const label of ['Overview', 'Portfolio', 'Capital Account', 'Treasury', 'Allocation']) {
+    assert.equal(platform.includes(`'${label}'`), true, `Missing platform system: ${label}`);
+  }
+
+  assert.equal(platform.includes("['USDC', 'Base']"), true);
+  assert.equal(platform.includes("['ETH', 'Base']"), true);
+  assert.equal(platform.includes("['BTC', 'Bitcoin']"), true);
+  assert.equal(platform.includes('Not configured'), true);
+  assert.equal(platform.includes('No activity yet. Capital activity will appear here.'), true);
+
+  for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%']) {
+    assert.equal(platform.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
+  }
+});
+
+test('production hardening preserves reduced-motion and visible focus support', () => {
+  const hardening = read('app/production-hardening.css');
+  const layout = read('app/layout.tsx');
+
+  assert.equal(layout.includes("import './production-hardening.css';"), true);
+  assert.equal(hardening.includes('@media (prefers-reduced-motion: reduce)'), true);
+  assert.equal(hardening.includes(':focus-visible'), true);
+  assert.equal(hardening.includes('overflow-x: clip'), true);
 });
