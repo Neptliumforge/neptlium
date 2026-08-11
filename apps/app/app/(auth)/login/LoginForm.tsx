@@ -4,14 +4,7 @@ import { useActionState, useState } from "react";
 import type { KeyboardEvent } from "react";
 import Link from "next/link";
 import { Mail } from "lucide-react";
-import {
-  Button,
-  Field,
-  FieldError,
-  FieldHint,
-  Input,
-  Label,
-} from "@neptlium/ui";
+import { Button, Field, FieldError, FieldHint, Input, Label } from "@neptlium/ui";
 import { login } from "../actions";
 import { initialAuthActionState } from "../schema";
 import { AuthShell } from "../components/AuthShell";
@@ -21,19 +14,10 @@ const emailInputClass =
   "h-11 rounded-md border-[color:var(--color-border-default)] bg-[color:var(--color-surface-1)] pl-10 transition-[border-color,box-shadow] focus:border-[color:var(--color-border-focus)] focus:shadow-[var(--shadow-focus-ring)]";
 const passwordInputClass =
   "h-11 rounded-md border-[color:var(--color-border-default)] bg-[color:var(--color-surface-1)] transition-[border-color,box-shadow] focus:border-[color:var(--color-border-focus)] focus:shadow-[var(--shadow-focus-ring)]";
-const ctaClass = "h-11 w-full rounded-md text-[14px] font-semibold";
+const ctaClass = "h-11 w-full rounded-md text-[14px] font-medium";
 
-export function LoginForm({
-  next,
-  callbackFailed,
-}: {
-  readonly next?: string;
-  readonly callbackFailed?: boolean;
-}) {
-  const [state, formAction, isPending] = useActionState(
-    login,
-    initialAuthActionState,
-  );
+export function LoginForm({ next, callbackFailed }: { readonly next?: string; readonly callbackFailed?: boolean }) {
+  const [state, formAction, isPending] = useActionState(login, initialAuthActionState);
   const [capsLock, setCapsLock] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -44,32 +28,19 @@ export function LoginForm({
   return (
     <AuthShell>
       <div className="flex flex-col gap-6">
-        <div className="mb-6 h-7" />
-
         <div className="space-y-1.5">
-          <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-text-primary">
-            Sign in to Neptlium
-          </h1>
-          <p className="text-[13px] text-text-muted">
-            Continue to your capital environment.
-          </p>
+          <h1 className="text-[26px] font-medium tracking-[-0.025em] text-text-primary">Sign in to Neptlium</h1>
+          <p className="text-[14px] leading-6 text-text-muted">Continue to your capital operating environment.</p>
         </div>
 
         <form action={formAction} className="flex flex-col gap-4">
           <input type="hidden" name="next" value={next ?? ""} />
-          {callbackFailed && (
-            <AuthNotice>
-              This verification link is invalid or has expired. Request a new
-              link to continue.
-            </AuthNotice>
-          )}
+          {callbackFailed ? <AuthNotice>This verification link is invalid or has expired. Request a new link to continue.</AuthNotice> : null}
+
           <Field>
             <Label htmlFor="login-email">Email address</Label>
             <div className="relative">
-              <Mail
-                className="pointer-events-none absolute left-3 top-1/2 size-[15px] -translate-y-1/2 text-text-muted"
-                aria-hidden="true"
-              />
+              <Mail className="pointer-events-none absolute left-3 top-1/2 size-[15px] -translate-y-1/2 text-text-muted" aria-hidden="true" />
               <Input
                 id="login-email"
                 name="email"
@@ -90,12 +61,7 @@ export function LoginForm({
           <Field>
             <div className="flex items-center justify-between">
               <Label htmlFor="login-password">Password</Label>
-              <Link
-                href="/reset-password"
-                className="text-[12px] text-text-muted hover:text-text-secondary"
-              >
-                Forgot password?
-              </Link>
+              <Link href="/reset-password" className="text-[12px] text-text-muted hover:text-text-secondary">Forgot password?</Link>
             </div>
             <Input
               id="login-password"
@@ -109,28 +75,18 @@ export function LoginForm({
               aria-describedby="login-error"
               className={passwordInputClass}
             />
-            {capsLock && <FieldHint>Caps Lock is on</FieldHint>}
+            {capsLock ? <FieldHint>Caps Lock is on</FieldHint> : null}
             <FieldError id="login-error">{state.error}</FieldError>
           </Field>
 
-          <Button
-            type="submit"
-            variant="cta"
-            className={ctaClass}
-            loading={isPending}
-          >
+          <Button type="submit" variant="cta" className={ctaClass} loading={isPending}>
             {isPending ? "Signing in…" : "Sign in"}
           </Button>
         </form>
 
         <p className="text-center text-[13px] text-text-muted">
           New to Neptlium?{" "}
-          <Link
-            href="/auth/sign-up"
-            className="font-medium text-accent-primary hover:brightness-110"
-          >
-            Create Account
-          </Link>
+          <Link href="/auth/sign-up" className="font-medium text-accent-primary hover:brightness-110">Create account</Link>
         </p>
       </div>
     </AuthShell>

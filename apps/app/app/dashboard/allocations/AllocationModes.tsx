@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Field, Input, Label, Stack, Surface } from '@neptlium/ui';
+import { Input, Label, Stack } from '@neptlium/ui';
+import { ProductStateBadge, ProductStateMessage } from '@/components/product/ProductState';
 
 type Mode = 'Observe' | 'Model' | 'Authorize';
 const modes: readonly Mode[] = ['Observe', 'Model', 'Authorize'];
@@ -29,7 +30,15 @@ const lifecycle = [
   ['Reconciled', 'reconciled'],
 ] as const;
 
-function stateLabel(state: ResourceState | undefined): string {
+function productState(state: ResourceState | undefined) {
+  if (!state || state.state === 'UNAVAILABLE') return 'UNAVAILABLE' as const;
+  if (state.state === 'NOT_CONFIGURED') return 'NOT_CONFIGURED' as const;
+  if (state.state === 'PENDING') return 'PENDING' as const;
+  if (state.state === 'EMPTY') return 'NO_ACTIVITY' as const;
+  return 'READY' as const;
+}
+
+function stateLabel(state: ResourceState | undefined) {
   if (!state || state.state === 'UNAVAILABLE') return 'Unavailable';
   if (state.state === 'NOT_CONFIGURED') return 'Not configured';
   if (state.state === 'PENDING') return 'Pending';
@@ -39,28 +48,31 @@ function stateLabel(state: ResourceState | undefined): string {
 
 export function AllocationModes({ state }: { readonly state: AllocationApiState | null }) {
   const [mode, setMode] = useState<Mode>('Observe');
-  const [label, setLabel] = useState('');
-  const [amount, setAmount] = useState('');
+  const [objective, setObjective] = useState('');
+  const [notes, setNotes] = useState('');
 
   return (
     <Stack>
       <header>
         <h1>Allocation</h1>
-        <p className="mt-1 text-sm text-text-muted">Observe existing exposure, model a proposed state, and understand authorization readiness.</p>
-        <p className="mt-2 text-sm font-medium text-accent-primary">Modeling does not move capital.</p>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
+          Observe capital distribution, model policy intent, and keep authorization, execution, and reconciliation explicitly separate.
+        </p>
       </header>
 
-      <ol className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border-hairline bg-border-hairline sm:grid-cols-5" aria-label="Allocation lifecycle">
-        {lifecycle.map(([labelName, key], index) => (
-          <li key={labelName} className="bg-surface-1 px-3 py-3">
-            <span className="block text-[11px] text-accent-primary">0{index + 1}</span>
-            <strong className="mt-2 block text-xs font-medium">{labelName}</strong>
-            <small className="mt-1 block text-[11px] text-text-muted">{stateLabel(state?.[key])}</small>
+      <ol className="grid border-y border-border-hairline sm:grid-cols-5" aria-label="Allocation lifecycle">
+        {lifecycle.map(([label, key], index) => (
+          <li key={label} className="border-b border-border-hairline py-4 last:border-b-0 sm:border-b-0 sm:border-r sm:px-4 sm:last:border-r-0">
+            <span className="text-[11px] tabular-nums text-accent-primary">0{index + 1}</span>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className="text-sm font-medium text-text-primary">{label}</span>
+              <ProductStateBadge state={productState(state?.[key])}>{stateLabel(state?.[key])}</ProductStateBadge>
+            </div>
           </li>
         ))}
       </ol>
 
-      <div className="grid grid-cols-3 gap-0 border-b border-border-hairline" role="tablist" aria-label="Allocation modes">
+      <div className="flex border-b border-border-hairline" role="tablist" aria-label="Allocation workspace modes">
         {modes.map((item) => (
           <button
             key={item}
@@ -68,56 +80,57 @@ export function AllocationModes({ state }: { readonly state: AllocationApiState 
             role="tab"
             aria-selected={mode === item}
             onClick={() => setMode(item)}
-            className={`relative min-h-11 px-3 text-sm font-medium ${mode === item ? 'text-text-primary after:absolute after:inset-x-4 after:bottom-0 after:h-0.5 after:bg-accent-primary' : 'text-text-muted hover:text-text-secondary'}`}
+            className={`relative min-h-11 px-4 text-sm font-medium ${mode === item ? 'text-text-primary after:absolute after:inset-x-4 after:bottom-0 after:h-0.5 after:bg-accent-primary' : 'text-text-muted hover:text-text-secondary'}`}
           >
             {item}
           </button>
         ))}
       </div>
 
-      {mode === 'Observe' && (
-        <div className="border-y border-border-hairline py-7">
-          <p className="text-sm font-medium">{state === null ? 'Allocation state is unavailable' : stateLabel(state.observed)}</p>
-          <p className="mt-1 max-w-2xl text-sm text-text-muted">
-            {state === null
-              ? 'The Neptlium API could not load the current allocation state. Try again later.'
-              : 'Observed allocation is supplied only when canonical portfolio and supported evidence can establish it.'}
-          </p>
-        </div>
-      )}
-
-      {mode === 'Model' && (
-        <Surface className="p-5">
-          <div className="max-w-2xl">
-            <h2 className="text-base font-semibold">Illustrative local model</h2>
-            <p className="mt-1 text-sm text-text-muted">This browser-local preview does not persist a policy, become the API modeled state, move capital, or call an execution provider.</p>
-            <p className="mt-2 text-xs text-text-muted">Backend modeled state: {stateLabel(state?.modeled)}</p>
-          </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <Field>
-              <Label htmlFor="scenario-label">Scenario label</Label>
-              <Input id="scenario-label" value={label} onChange={(event) => setLabel(event.target.value)} placeholder="Illustrative scenario" />
-            </Field>
-            <Field>
-              <Label htmlFor="scenario-amount">Illustrative asset units</Label>
-              <Input id="scenario-amount" type="number" min="0" value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="Enter asset units" />
-            </Field>
-          </div>
-          {(label || amount) && (
-            <div className="mt-5 border-t border-border-hairline pt-4">
-              <p className="text-xs text-text-muted">Local preview only</p>
-              <p className="mt-1 text-sm">{label || 'Unnamed scenario'} · {amount || 'No amount entered'} · unspecified asset units</p>
-            </div>
+      {mode === 'Observe' ? (
+        <div className="border-y border-border-hairline py-6">
+          {state === null ? (
+            <ProductStateMessage state="ERROR" title="Allocation state unavailable">The Neptlium API could not load the current allocation state.</ProductStateMessage>
+          ) : (
+            <ProductStateMessage state={productState(state.observed)} title="Observed capital distribution">
+              Observed state appears only when canonical portfolio evidence can establish it. No modeled value is substituted for what actually exists.
+            </ProductStateMessage>
           )}
-        </Surface>
-      )}
-
-      {mode === 'Authorize' && (
-        <div className="border-y border-border-hairline py-7">
-          <p className="text-sm font-medium">{state === null ? 'Authorization state is unavailable' : stateLabel(state.authorized)}</p>
-          <p className="mt-1 max-w-2xl text-sm text-text-muted">Authorization remains API-owned and cannot be advanced by this frontend. Execution and reconciliation remain distinct later states.</p>
         </div>
-      )}
+      ) : null}
+
+      {mode === 'Model' ? (
+        <div className="border-y border-border-hairline py-6">
+          <div className="max-w-2xl">
+            <p className="text-sm font-medium text-text-primary">Modeled policy workspace</p>
+            <p className="mt-1 text-sm leading-6 text-text-muted">
+              Use this local draft to structure intent before a durable modeled-policy API exists. Nothing entered here is canonical, authorized, or executable.
+            </p>
+          </div>
+          <div className="mt-5 grid max-w-3xl gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="allocation-objective">Objective</Label>
+              <Input id="allocation-objective" value={objective} onChange={(event) => setObjective(event.target.value)} placeholder="e.g. Preserve liquidity" className="mt-2" />
+            </div>
+            <div>
+              <Label htmlFor="allocation-notes">Policy notes</Label>
+              <Input id="allocation-notes" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Constraints or review notes" className="mt-2" />
+            </div>
+          </div>
+          <div className="mt-5 border-t border-border-hairline pt-4">
+            <ProductStateBadge state="UNAVAILABLE">Execution unavailable</ProductStateBadge>
+            <p className="mt-2 text-sm text-text-muted">Allocation execution remains out of scope until deposit, reservation, transfer, ledger, and reconciliation are production-proven.</p>
+          </div>
+        </div>
+      ) : null}
+
+      {mode === 'Authorize' ? (
+        <div className="border-y border-border-hairline py-6">
+          <ProductStateMessage state={state ? productState(state.authorized) : 'UNAVAILABLE'} title="Authorization">
+            Authorization is API-owned. This frontend cannot advance modeled allocation into execution, settlement, or reconciliation.
+          </ProductStateMessage>
+        </div>
+      ) : null}
     </Stack>
   );
 }

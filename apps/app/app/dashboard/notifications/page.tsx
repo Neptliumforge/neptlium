@@ -1,9 +1,9 @@
-import { Bell } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, EmptyState } from "@neptlium/ui";
-import { requireUser } from "@/lib/auth";
-import { getNotifications } from "@/lib/api/client";
-import { NotificationItem } from "./NotificationItem";
-import { MarkAllReadButton } from "./MarkAllReadButton";
+import { Section, Stack } from '@neptlium/ui';
+import { requireUser } from '@/lib/auth';
+import { getNotifications } from '@/lib/api/client';
+import { ProductStateMessage } from '@/components/product/ProductState';
+import { NotificationItem } from './NotificationItem';
+import { MarkAllReadButton } from './MarkAllReadButton';
 
 export default async function NotificationsPage() {
   await requireUser();
@@ -18,24 +18,20 @@ export default async function NotificationsPage() {
   const hasUnread = notifications.some((notification) => !notification.readAt);
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      <div>
-        <h1 className="text-[1.35rem] font-semibold leading-tight tracking-tight text-text-primary sm:text-2xl">Notifications</h1>
-        <p className="mt-2 text-sm leading-6 text-text-secondary">Account, security, and portfolio alerts</p>
-      </div>
+    <Stack>
+      <header>
+        <h1>Notifications</h1>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">Account, security, and operational notices.</p>
+      </header>
 
-      <Card>
-        <CardHeader className="flex-row items-center justify-between">
-          <CardTitle>Recent notifications</CardTitle>
-          {hasUnread && <MarkAllReadButton />}
-        </CardHeader>
-        <CardContent>
+      <Section title="Recent notifications" action={hasUnread ? <MarkAllReadButton /> : undefined}>
+        <div className="border-y border-border-hairline">
           {loadError ? (
-            <p className="py-6 text-sm text-text-muted">Notifications are unavailable. Try again later.</p>
+            <ProductStateMessage state="ERROR" title="Notifications unavailable">Notification state could not be loaded from the Neptlium API.</ProductStateMessage>
           ) : notifications.length === 0 ? (
-            <EmptyState icon={<Bell className="size-5" aria-hidden="true" />} title="No notifications" description="You're all caught up." />
+            <ProductStateMessage state="NO_ACTIVITY" title="No notifications">You are up to date.</ProductStateMessage>
           ) : (
-            <ul className="flex flex-col gap-3">
+            <ul className="divide-y divide-border-hairline">
               {notifications.map((notification) => (
                 <NotificationItem
                   key={notification.id}
@@ -49,8 +45,8 @@ export default async function NotificationsPage() {
               ))}
             </ul>
           )}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </Section>
+    </Stack>
   );
 }
