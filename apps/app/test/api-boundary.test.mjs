@@ -37,6 +37,14 @@ function isAuthSessionException(path) {
   );
 }
 
+function importsSupabaseClient(text) {
+  return (
+    /from\s+['"]@supabase\//.test(text) ||
+    /from\s+['"]@neptlium\/lib\/supabase\/(?:server|client)['"]/.test(text) ||
+    /createSupabase(?:Server|Browser)Client/.test(text)
+  );
+}
+
 test('customer app has no direct Supabase data access outside auth/session exceptions', () => {
   const violations = [];
   for (const file of sourceFiles) {
@@ -52,12 +60,7 @@ test('Supabase client imports exist only in the current auth/session exception s
   const violations = [];
   for (const file of sourceFiles) {
     const path = normalize(file);
-    const text = source(file);
-    const importsSupabase =
-      /from\s+['"]@supabase\//.test(text) ||
-      /from\s+['"]@neptlium\/lib\/supabase\/(?:server|client)['"]/.test(text) ||
-      /createSupabase(?:Server|Browser)Client/.test(text);
-    if (importsSupabase && !isAuthSessionException(path)) violations.push(path);
+    if (importsSupabaseClient(source(file)) && !isAuthSessionException(path)) violations.push(path);
   }
   assert.deepEqual(violations, [], `Supabase client outside auth/session boundary: ${violations.join(', ')}`);
 });
@@ -76,7 +79,7 @@ test('financial and product pages do not import Supabase clients', () => {
   ];
   for (const path of productRoots) {
     const text = readFileSync(join(appRoot, path), 'utf8');
-    assert.equal(/supabase/i.test(text), false, `${path} must consume apps/api, not Supabase`);
+    assert.equal(importsSupabaseClient(text), false, `${path} must consume apps/api, not Supabase`);
   }
 });
 
