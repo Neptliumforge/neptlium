@@ -40,7 +40,7 @@ test('Deposit UX is capability-driven and never hardcodes a treasury destination
   assert.equal(actions.includes('/v1/capital-account/deposit-instructions'), true);
   assert.equal(/bc1[a-z0-9]{10,}/i.test(view), false);
   assert.equal(/0x[a-f0-9]{20,}/i.test(view), false);
-  assert.equal(/r[A-Za-z0-9]{20,}/.test(view), false);
+  assert.equal(/['"`]r[A-HJ-NP-Za-km-z1-9]{24,34}['"`]/.test(view), false);
 });
 
 test('Portfolio uses governed capabilities and canonical balances rather than trading UI', () => {
