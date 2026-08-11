@@ -48,7 +48,8 @@ test('Capital Account keeps provider observation separate from canonical state',
   assert.equal(body.canonical.total.state, 'UNAVAILABLE');
   assert.equal(body.canonical.available.state, 'UNAVAILABLE');
   assert.equal(body.provider_observation.state, 'NOT_CONFIGURED');
-  assert.equal(body.funding.state, 'NOT_CONFIGURED');
+  assert.equal(body.funding.state, 'VALUE');
+  assert.equal(body.funding.value.capabilities_endpoint, '/v1/funding/capabilities');
 });
 
 test('account context is owner-scoped behind the API boundary', async () => {

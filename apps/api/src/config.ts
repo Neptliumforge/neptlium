@@ -35,6 +35,20 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     webhookToleranceSeconds > 3600
   )
     throw new Error('Invalid API configuration: WEBHOOK_TOLERANCE_SECONDS');
+
+  const stripeTreasuryEligibilityVerified = env.STRIPE_TREASURY_ELIGIBILITY_VERIFIED === 'true';
+  const stripeTreasuryLiveExecutionEnabled = env.STRIPE_TREASURY_LIVE_EXECUTION_ENABLED === 'true';
+  if (stripeTreasuryLiveExecutionEnabled && !stripeTreasuryEligibilityVerified)
+    throw new Error('Stripe Treasury live execution requires verified Treasury eligibility');
+  const circleLiveCapabilityVerified = env.CIRCLE_LIVE_CAPABILITY_VERIFIED === 'true';
+  const circleLiveExecutionEnabled = env.CIRCLE_LIVE_EXECUTION_ENABLED === 'true';
+  if (circleLiveExecutionEnabled && !circleLiveCapabilityVerified)
+    throw new Error('Circle live execution requires verified live capability');
+  // This runtime remains testnet-only for Circle execution. The LIVE flags are capability
+  // registry gates only and cannot activate Circle mainnet while CIRCLE_ENVIRONMENT is testnet.
+  if (circleLiveExecutionEnabled)
+    throw new Error('Circle LIVE execution is not supported by the current runtime');
+
   return {
     NODE_ENV: environment as Environment,
     API_HOST: env.API_HOST ?? '0.0.0.0',
@@ -55,6 +69,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     CIRCLE_ENTITY_SECRET: env.CIRCLE_ENTITY_SECRET,
     CIRCLE_ENVIRONMENT: env.CIRCLE_ENVIRONMENT,
     CIRCLE_WALLET_SET_ID: env.CIRCLE_WALLET_SET_ID,
+    STRIPE_SECRET_KEY: env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID: env.STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID,
+    STRIPE_TREASURY_ELIGIBILITY_VERIFIED: stripeTreasuryEligibilityVerified,
+    STRIPE_TREASURY_LIVE_EXECUTION_ENABLED: stripeTreasuryLiveExecutionEnabled,
+    CIRCLE_LIVE_CAPABILITY_VERIFIED: circleLiveCapabilityVerified,
+    CIRCLE_LIVE_EXECUTION_ENABLED: circleLiveExecutionEnabled,
     WEBHOOK_TOLERANCE_SECONDS: webhookToleranceSeconds,
     allowedOrigins: (env.API_ALLOWED_ORIGINS ?? 'http://localhost:3000')
       .split(',')
@@ -67,6 +88,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     ),
     alchemyConfigured: Boolean(env.ALCHEMY_API_KEY && ALCHEMY_RPC_URL),
     circleConfigured: Boolean(circleCredentialsPresent && env.CIRCLE_ENVIRONMENT === 'testnet'),
+    stripeTreasuryConfigured: Boolean(
+      env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET && env.STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID,
+    ),
   };
 }
 export type Config = ReturnType<typeof loadConfig>;

@@ -12,10 +12,17 @@ import {
 import { CircleCapitalProvider, initializeCircleSdk } from './circle.js';
 import { MemoryRateLimiter, type RateLimiter } from './security.js';
 import { JsonObserver, MemoryObserver, type Observer } from './observability.js';
+import {
+  MemoryFinancialRepository,
+  SupabaseFinancialRepository,
+  type FinancialRepository,
+} from './financial-repository.js';
+import { handleFinancialRoute } from './financial-routes.js';
 
 export interface Dependencies {
   config?: Config;
   repository?: ApiRepository;
+  financialRepository?: FinancialRepository;
   authenticate?: (token: string) => Promise<{ id: string; role?: string } | null>;
   webhookVerifiers?: Partial<Record<'alchemy' | 'coinbase', WebhookVerifier>>;
   rateLimiter?: RateLimiter;
@@ -91,6 +98,13 @@ export async function buildApp(deps: Dependencies = {}) {
   if (config.NODE_ENV === 'production' && !deps.rateLimiter)
     throw new Error('A distributed rate limiter must be injected in production');
   const repository = deps.repository ?? new MemoryRepository();
+  const financialRepository =
+    deps.financialRepository ??
+    (config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
+      ? new SupabaseFinancialRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
+      : new MemoryFinancialRepository());
+  if (config.NODE_ENV === 'production' && financialRepository instanceof MemoryFinancialRepository)
+    throw new Error('MemoryFinancialRepository cannot be used in production');
   const limiter = deps.rateLimiter ?? new MemoryRateLimiter();
   const observer =
     deps.observer ?? (config.NODE_ENV === 'test' ? new MemoryObserver() : new JsonObserver());
@@ -150,8 +164,17 @@ export async function buildApp(deps: Dependencies = {}) {
       isWrite ? 30 : 120,
       60_000,
     );
+
+    const financialResult = await handleFinancialRoute(context, {
+      config,
+      repository: financialRepository,
+      ownerId: async () => (await owner(context)).id,
+    });
+    if (financialResult) return financialResult;
+
     if (method === 'GET' && (path === '/health' || path === '/v1/health')) {
       const repositoryReady = await repository.ready();
+      const governedFinancialStorageReady = await financialRepository.ready();
       return {
         data: {
           status: 'ok',
@@ -164,6 +187,7 @@ export async function buildApp(deps: Dependencies = {}) {
             : repositoryReady
               ? 'ready'
               : 'degraded',
+          governed_financial_storage: governedFinancialStorageReady ? 'ready' : 'not_ready',
           providers: {
             coinbase: 'not_configured',
             alchemy:
@@ -171,6 +195,7 @@ export async function buildApp(deps: Dependencies = {}) {
                 ? 'configured'
                 : 'not_configured',
             circle: capitalProvider.readiness(),
+            stripe_treasury: config.stripeTreasuryConfigured ? 'configured_gated' : 'not_configured',
           },
         },
       };
@@ -272,14 +297,22 @@ export async function buildApp(deps: Dependencies = {}) {
       };
     }
     if (method === 'GET' && path === '/v1/customer/treasury') {
-      await owner(context);
+      const user = await owner(context);
+      const balances = await financialRepository.getCanonicalBalances(user.id).catch(() => []);
+      const aliases = await financialRepository.listAliases(user.id).catch(() => []);
+      const transfers = await financialRepository.listTransfers(user.id, 20).catch(() => []);
       return {
         data: {
-          available_liquidity: unavailable('canonical_liquidity_unavailable'),
-          reserved: unavailable('reservation_balance_unavailable'),
+          available_liquidity: balances.length
+            ? { state: 'VALUE', value: balances.map((item) => ({ asset: item.asset, network: item.network, available_atomic: item.availableAtomic })) }
+            : unavailable('canonical_liquidity_unavailable'),
+          reserved: balances.length
+            ? { state: 'VALUE', value: balances.map((item) => ({ asset: item.asset, network: item.network, reserved_atomic: item.reservedAtomic })) }
+            : unavailable('reservation_balance_unavailable'),
           committed: unavailable('canonical_commitment_balance_unavailable'),
-          funding: notConfigured('live_funding_not_configured'),
-          transfers: unavailable('governed_transfer_execution_unavailable'),
+          funding: { state: 'VALUE', value: { capabilities_endpoint: '/v1/funding/capabilities' } },
+          transfers: { state: transfers.length ? 'VALUE' : 'EMPTY', value: transfers.map((item) => ({ id: item.id, state: item.state, asset: item.asset, network: item.network, amount_atomic: item.amountAtomic })) },
+          aliases: { state: aliases.length ? 'VALUE' : 'EMPTY', value: aliases.map((item) => ({ id: item.id, alias: item.alias, verification_state: item.verificationState, activation_state: item.activationState })) },
         },
       };
     }
@@ -358,19 +391,27 @@ export async function buildApp(deps: Dependencies = {}) {
 
     if (method === 'GET' && path === '/v1/capital-account/state') {
       const user = await owner(context);
+      const canonicalBalances = await financialRepository.getCanonicalBalances(user.id).catch(() => []);
+      const canonical = canonicalBalances.length
+        ? {
+            total: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.totalAtomic })) },
+            available: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.availableAtomic })) },
+            reserved: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.reservedAtomic })) },
+            pending: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.pendingAtomic })) },
+          }
+        : {
+            total: unavailable('canonical_capital_balance_unavailable'),
+            available: unavailable('canonical_available_balance_unavailable'),
+            reserved: unavailable('reservation_balance_unavailable'),
+            pending: unavailable('canonical_pending_balance_unavailable'),
+          };
       const link = await repository.getProviderWallet(user.id);
-      const canonical = {
-        total: unavailable('canonical_capital_balance_unavailable'),
-        available: unavailable('canonical_available_balance_unavailable'),
-        reserved: unavailable('reservation_balance_unavailable'),
-        pending: unavailable('canonical_pending_balance_unavailable'),
-      };
       if (!link) {
         return {
           data: {
             canonical,
             provider_observation: notConfigured('provider_wallet_not_linked'),
-            funding: notConfigured('provider_wallet_not_linked'),
+            funding: { state: 'VALUE', value: { capabilities_endpoint: '/v1/funding/capabilities' } },
           },
         };
       }
@@ -386,7 +427,7 @@ export async function buildApp(deps: Dependencies = {}) {
               environment: link.environment,
             },
           },
-          funding: { state: 'VALUE', value: { environment: link.environment } },
+          funding: { state: 'VALUE', value: { capabilities_endpoint: '/v1/funding/capabilities' } },
         },
       };
     }
@@ -439,23 +480,6 @@ export async function buildApp(deps: Dependencies = {}) {
           address: destination.address,
           provider_state: destination.status,
           environment: destination.environment,
-        },
-      };
-    }
-    if (method === 'GET' && path === '/v1/capital-account/balances') {
-      const user = await owner(context);
-      const link = await repository.getProviderWallet(user.id);
-      if (!link)
-        throw new ApiError(
-          404,
-          'provider_wallet_not_linked',
-          'Capital Account provider wallet is not linked',
-        );
-      return {
-        data: {
-          balances: await capitalProvider.getBalances(link),
-          reconciliation_state: 'unreconciled',
-          canonical_ledger_balance: null,
         },
       };
     }

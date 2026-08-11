@@ -193,19 +193,7 @@ const circleProvider = {
   listTransactions: async () => [],
   reconciliationMetadata: () => ({}),
 };
-test('Circle configuration is explicit and rejects mainnet or partial credentials', () => {
-  assert.throws(
-    () => loadConfig({ NODE_ENV: 'test', CIRCLE_ENVIRONMENT: 'production' }),
-    /mainnet/,
-  );
-  assert.throws(
-    () =>
-      loadConfig({ NODE_ENV: 'test', CIRCLE_API_KEY: 'only-one', CIRCLE_ENVIRONMENT: 'testnet' }),
-    /both credentials/,
-  );
-  assert.equal(loadConfig({ NODE_ENV: 'test' }).circleConfigured, false);
-});
-test('Capital Account routes normalize Circle address and provider-observed balance', async () => {
+test('Capital Account keeps provider address observation separate from canonical customer balance', async () => {
   const repository = new MemoryRepository();
   repository.linkProviderWallet('user-1', circleWallet);
   const app = await buildApp({ config, authenticate, repository, capitalProvider: circleProvider });
@@ -223,8 +211,11 @@ test('Capital Account routes normalize Circle address and provider-observed bala
     environment: 'testnet',
   });
   const balance = await app.inject({ method: 'GET', url: '/v1/capital-account/balances', headers });
-  assert.equal(balance.json().balances[0].available, '12.5');
-  assert.equal(balance.json().canonical_ledger_balance, null);
+  assert.equal(balance.statusCode, 200);
+  assert.equal(balance.json().source, 'NEPTLIUM_CANONICAL_LEDGER');
+  assert.equal(balance.json().state, 'EMPTY');
+  assert.deepEqual(balance.json().balances, []);
+  assert.equal(JSON.stringify(balance.json()).includes('12.5'), false);
 });
 test('provider wallet access is authenticated, owner-scoped and capability gated', async () => {
   const repository = new MemoryRepository();
@@ -250,16 +241,37 @@ test('provider wallet access is authenticated, owner-scoped and capability gated
     repository,
     capitalProvider: circleProvider,
   });
+  const otherBalance = await otherApp.inject({
+    method: 'GET',
+    url: '/v1/capital-account/balances',
+    headers: { authorization: 'Bearer valid' },
+  });
+  assert.equal(otherBalance.statusCode, 200);
+  assert.equal(otherBalance.json().source, 'NEPTLIUM_CANONICAL_LEDGER');
+  assert.equal(otherBalance.json().state, 'EMPTY');
+  assert.deepEqual(otherBalance.json().balances, []);
   assert.equal(
     (
       await otherApp.inject({
         method: 'GET',
-        url: '/v1/capital-account/balances',
+        url: '/v1/capital-account/deposit-address?asset=USDC&network=BASE-SEPOLIA',
         headers: { authorization: 'Bearer valid' },
       })
     ).statusCode,
     404,
   );
+});
+test('Circle configuration is explicit and rejects mainnet or partial credentials', () => {
+  assert.throws(
+    () => loadConfig({ NODE_ENV: 'test', CIRCLE_ENVIRONMENT: 'production' }),
+    /mainnet/,
+  );
+  assert.throws(
+    () =>
+      loadConfig({ NODE_ENV: 'test', CIRCLE_API_KEY: 'only-one', CIRCLE_ENVIRONMENT: 'testnet' }),
+    /both credentials/,
+  );
+  assert.equal(loadConfig({ NODE_ENV: 'test' }).circleConfigured, false);
 });
 test('on-demand wallet provisioning is idempotent and returns no provider identifiers', async () => {
   let calls = 0;
