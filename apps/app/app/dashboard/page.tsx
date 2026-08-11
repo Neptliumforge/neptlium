@@ -1,175 +1,147 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import {
-  AssetAmount,
-  AssetIdentity,
-  Badge,
-  Group,
-  IdentityMark,
-  Row,
-  Section,
-  Stack,
-  Surface,
-  identityRegistry,
-} from '@neptlium/ui';
+import { Row, Section, Stack } from '@neptlium/ui';
 import { requireProvisionedUser } from '@/lib/auth';
-import { getOverviewState, type ResourceState } from '@/lib/api/client';
+import { getOverviewState } from '@/lib/api/client';
+import {
+  getCanonicalBalances,
+  getFundingActivity,
+  getTransferActivity,
+  type FundingActivity,
+  type TransferActivity,
+} from '@/lib/api/financial';
+import { CapitalPosition } from '@/components/product/CapitalPosition';
+import { FinancialValue, ProductStateBadge } from '@/components/product/ProductState';
 
-const tone: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
-  completed: 'success',
-  settled: 'success',
-  pending: 'warning',
-  pending_review: 'warning',
-  confirming: 'warning',
-  submitted: 'warning',
-  failed: 'danger',
-  cancelled: 'neutral',
-  reversed: 'danger',
-};
-
-function stateText(state: ResourceState): string {
-  if (state.state === 'NOT_CONFIGURED') return 'Not configured';
-  if (state.state === 'PENDING') return 'Pending';
-  if (state.state === 'EMPTY') return 'No data yet';
-  return 'Unavailable';
+function activityState(state: string) {
+  if (['AVAILABLE', 'RECONCILED', 'SETTLED'].includes(state)) return 'AVAILABLE' as const;
+  if (['FAILED', 'RETURNED', 'REVERSED'].includes(state)) return 'ERROR' as const;
+  if (state === 'RESERVED') return 'RESERVED' as const;
+  if (['AUTHORIZED', 'PENDING_APPROVAL'].includes(state)) return 'REQUIRES_APPROVAL' as const;
+  return 'PENDING' as const;
 }
+
+type RecentActivity =
+  | ({ readonly kind: 'Deposit' } & FundingActivity)
+  | ({ readonly kind: 'Transfer' } & TransferActivity);
 
 export default async function DashboardPage() {
   await requireProvisionedUser();
-  let overview;
-  let loadError = false;
-  try {
-    overview = await getOverviewState();
-  } catch {
-    overview = null;
-    loadError = true;
-  }
 
-  const capital = overview?.capital;
-  const activity = overview?.activity.state === 'VALUE' ? overview.activity.value : [];
+  const [overviewResult, balancesResult, fundingResult, transferResult] = await Promise.allSettled([
+    getOverviewState(),
+    getCanonicalBalances(),
+    getFundingActivity(),
+    getTransferActivity(),
+  ]);
+
+  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+  const balances = balancesResult.status === 'fulfilled' ? balancesResult.value.balances : [];
+  const balanceError = balancesResult.status === 'rejected';
+  const funding = fundingResult.status === 'fulfilled' ? fundingResult.value.data : [];
+  const transfers = transferResult.status === 'fulfilled' ? transferResult.value.data : [];
+  const activityError = fundingResult.status === 'rejected' && transferResult.status === 'rejected';
+  const recent: RecentActivity[] = [
+    ...funding.map((item) => ({ ...item, kind: 'Deposit' as const })),
+    ...transfers.map((item) => ({ ...item, kind: 'Transfer' as const })),
+  ]
+    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+    .slice(0, 5);
 
   return (
     <Stack>
       <header>
         <h1>Overview</h1>
-        <p className="mt-1 text-sm text-text-muted">Capital state, attention, and the next governed decision.</p>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
+          Canonical capital state, current operating readiness, and the items that need attention.
+        </p>
       </header>
 
-      <section className="border-y border-border-hairline py-6">
-        {loadError ? (
-          <div>
-            <p className="text-sm font-medium">Capital position is unavailable</p>
-            <p className="mt-1 text-sm text-text-muted">The Neptlium API could not load the current account state. Try again later.</p>
-          </div>
-        ) : (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Total capital</p>
-              <span className="mt-2 block text-[2.5rem] font-medium leading-none text-text-primary sm:text-[2.75rem]">{capital ? stateText(capital.total) : 'Unavailable'}</span>
-            </div>
-            <dl className="grid grid-cols-3 gap-4">
-              {[
-                ['Available', capital?.available],
-                ['Reserved', capital?.reserved],
-                ['Allocated', capital?.allocated],
-              ].map(([label, state]) => (
-                <div key={label as string}>
-                  <dt className="text-xs text-text-muted">{label as string}</dt>
-                  <dd className="mt-1 text-sm font-medium text-text-primary sm:text-base">{state ? stateText(state as ResourceState) : 'Unavailable'}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        )}
-      </section>
+      <CapitalPosition balances={balances} loadError={balanceError} />
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-x-10 gap-y-2 lg:grid-cols-3">
         <Section title="Portfolio">
-          <Surface className="px-4 sm:px-5">
-            <Link href="/dashboard/portfolio" className="flex min-h-20 items-center gap-4 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">Capital exposure</p>
-                <p className="mt-1 text-xs text-text-muted">{overview ? stateText(overview.portfolio) : 'Unavailable'}</p>
+          <Link
+            href="/dashboard/portfolio"
+            className="group block border-b border-border-hairline py-5 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]"
+          >
+            <Row>
+              <div>
+                <p className="text-sm font-medium text-text-primary">Capital visibility</p>
+                <p className="mt-1 text-sm text-text-muted">
+                  {balances.length ? `${balances.length} canonical asset balance${balances.length === 1 ? '' : 's'}` : 'No portfolio positions yet.'}
+                </p>
               </div>
-              <ArrowRight className="size-4 text-text-muted" aria-hidden="true" />
-            </Link>
-          </Surface>
-        </Section>
-
-        <Section title="Capital Account">
-          <Surface className="px-4 sm:px-5">
-            <Link href="/dashboard/wallet" className="flex min-h-20 items-center gap-4 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">Controlled capital state</p>
-                <span className="mt-2 flex flex-wrap items-center gap-3 text-xs text-text-muted">
-                  {(['usdc', 'ethereum', 'bitcoin'] as const).map((id) => (
-                    <span key={id} className="inline-flex items-center gap-1.5">
-                      <IdentityMark identity={identityRegistry[id]} size="xs" decorative />
-                      {identityRegistry[id].symbol}
-                    </span>
-                  ))}
-                </span>
-              </div>
-              <span className="text-sm font-medium text-text-primary">{capital ? stateText(capital.total) : 'Unavailable'}</span>
-              <ArrowRight className="size-4 text-text-muted" aria-hidden="true" />
-            </Link>
-          </Surface>
+              <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Row>
+          </Link>
         </Section>
 
         <Section title="Treasury">
-          <Surface className="px-4 sm:px-5">
-            <Link href="/dashboard/treasury" className="flex min-h-20 items-center gap-4 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium">Liquidity and reserves</p>
-                <p className="mt-1 text-xs text-text-muted">{overview ? stateText(overview.treasury) : 'Unavailable'}</p>
+          <Link
+            href="/dashboard/treasury"
+            className="group block border-b border-border-hairline py-5 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]"
+          >
+            <Row>
+              <div>
+                <p className="text-sm font-medium text-text-primary">Liquidity and movement</p>
+                <p className="mt-1 text-sm text-text-muted">
+                  {overview?.treasury.state === 'VALUE' ? 'Canonical treasury state available' : 'Governed by canonical balances and capability state'}
+                </p>
               </div>
-              <ArrowRight className="size-4 text-text-muted" aria-hidden="true" />
-            </Link>
-          </Surface>
+              <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Row>
+          </Link>
         </Section>
 
         <Section title="Allocation">
-          <Surface className="px-4 sm:px-5">
+          <Link
+            href="/dashboard/allocations"
+            className="group block border-b border-border-hairline py-5 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]"
+          >
             <Row>
               <div>
-                <p className="text-sm font-medium">Current policy</p>
-                <p className="text-xs text-text-muted">{overview ? stateText(overview.allocation) : 'Unavailable'}</p>
+                <p className="text-sm font-medium text-text-primary">Policy workspace</p>
+                <p className="mt-1 text-sm text-text-muted">Execution remains unavailable until governed execution is production-proven.</p>
               </div>
-              <Link href="/dashboard/allocations" className="text-sm font-medium text-accent-primary">Review allocation</Link>
+              <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </Row>
-          </Surface>
+          </Link>
         </Section>
       </div>
 
       <Section
-        title="Capital activity"
-        action={<Link href="/dashboard/transactions" className="text-sm text-accent-primary">See all</Link>}
+        title="Recent activity"
+        action={<Link href="/dashboard/transactions" className="text-sm font-medium text-accent-primary">See all</Link>}
       >
-        <Surface className="px-4 sm:px-5">
-          {loadError ? (
-            <p className="py-7 text-sm text-text-muted">Capital activity could not be loaded. Try again later.</p>
-          ) : activity.length === 0 ? (
-            <div className="py-7">
+        <div className="border-y border-border-hairline">
+          {activityError ? (
+            <div className="py-6">
+              <p className="text-sm font-medium text-text-primary">Activity unavailable</p>
+              <p className="mt-1 text-sm text-text-muted">The Neptlium API could not load canonical activity.</p>
+            </div>
+          ) : recent.length === 0 ? (
+            <div className="py-6">
               <p className="text-sm font-medium text-text-primary">No capital activity yet.</p>
-              <p className="mt-1 text-sm text-text-muted">Activity will appear here when canonical account events are available.</p>
+              <p className="mt-1 text-sm text-text-muted">Funding and governed movement will appear here when canonical intents exist.</p>
             </div>
           ) : (
-            <Group>
-              {activity.map((item) => (
-                <Row key={item.id}>
-                  <div className="flex min-w-0 items-center gap-3">
-                    <AssetIdentity asset={item.asset} network={item.network} size="sm" />
-                    <p className="text-sm capitalize">{item.type}</p>
-                  </div>
-                  <div className="text-right">
-                    <AssetAmount value={Number(item.amount)} asset={item.asset as 'USDC' | 'ETH' | 'BTC'} className="text-sm" />
-                    <div className="mt-1"><Badge tone={tone[item.status] ?? 'neutral'}>{item.status.replaceAll('_', ' ')}</Badge></div>
-                  </div>
-                </Row>
-              ))}
-            </Group>
+            recent.map((item) => (
+              <div key={`${item.kind}:${item.id}`} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-5">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-text-primary">{item.kind} · {item.asset}</p>
+                  <p className="mt-1 truncate text-xs text-text-muted">{item.network ?? item.rail} · {new Date(item.created_at).toLocaleString()}</p>
+                </div>
+                <div className="text-sm font-medium">
+                  {'amount_atomic' in item && item.amount_atomic
+                    ? <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} />
+                    : <span className="text-text-muted">Amount unavailable</span>}
+                </div>
+                <ProductStateBadge state={activityState(item.state)}>{item.state.replaceAll('_', ' ')}</ProductStateBadge>
+              </div>
+            ))
           )}
-        </Surface>
+        </div>
       </Section>
     </Stack>
   );

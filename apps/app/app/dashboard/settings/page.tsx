@@ -1,6 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@neptlium/ui';
+import { Section, Stack } from '@neptlium/ui';
 import { requireProvisionedUser } from '@/lib/auth';
 import { getAccountSettings } from '@/lib/api/client';
+import { ProductStateMessage } from '@/components/product/ProductState';
 import { MfaEnrollment } from './MfaEnrollment';
 import { RevokeSessionsButton } from './RevokeSessionsButton';
 
@@ -27,79 +28,80 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <Stack>
       <header>
         <h1>Settings</h1>
-        <p className="mt-1 text-sm text-text-muted">Account, security, and preference management.</p>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">Profile, security, organization context, and account preferences.</p>
       </header>
 
-      <Card>
-        <CardHeader><CardTitle>Profile</CardTitle></CardHeader>
-        <CardContent className="grid gap-5 sm:grid-cols-2">
+      <Section title="Profile">
+        <div className="border-y border-border-hairline py-5">
           {settings ? (
-            <>
+            <dl className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
               <SettingValue label="Name" value={displayValue(settings.profile.fullName ?? settings.profile.displayName)} />
               <SettingValue label="Email" value={displayValue(settings.profile.email)} />
               <SettingValue label="Account purpose" value={displayValue(settings.profile.investorType, 'Not configured')} />
               <SettingValue label="Compliance status" value={displayValue(settings.profile.complianceStatus, 'Not configured')} capitalize />
-            </>
+            </dl>
           ) : (
-            <p className="col-span-full text-sm text-text-muted">Account settings are unavailable. Try again later.</p>
+            <ProductStateMessage state="ERROR" title="Account settings unavailable">Profile settings could not be loaded from the Neptlium API.</ProductStateMessage>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </Section>
 
-      {settings?.organization && (
-        <Card>
-          <CardHeader><CardTitle>Organization</CardTitle></CardHeader>
-          <CardContent className="grid gap-5 sm:grid-cols-2">
+      {settings?.organization ? (
+        <Section title="Organization">
+          <dl className="grid gap-x-10 gap-y-5 border-y border-border-hairline py-5 sm:grid-cols-2">
             <SettingValue label="Company name" value={displayValue(settings.organization.name)} />
             <SettingValue label="Your role" value={displayValue(settings.organization.role)} />
             <SettingValue label="Industry" value={displayValue(settings.organization.industry)} />
             <SettingValue label="Country" value={displayValue(settings.organization.country)} />
             <SettingValue label="Organization size" value={displayValue(settings.organization.organizationSize)} />
-            {settings.organization.aumRange && <SettingValue label="Assets under management" value={settings.organization.aumRange} />}
-          </CardContent>
-        </Card>
-      )}
+            {settings.organization.aumRange ? <SettingValue label="Reported AUM range" value={settings.organization.aumRange} /> : null}
+          </dl>
+        </Section>
+      ) : null}
 
-      <Card>
-        <CardHeader><CardTitle>Multi-factor authentication</CardTitle></CardHeader>
-        <CardContent><MfaEnrollment /></CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader><CardTitle>Sessions</CardTitle></CardHeader>
-        <CardContent className="flex flex-col gap-6">
-          <RevokeSessionsButton />
-          <div className="flex flex-col gap-2">
-            <p className="text-sm font-medium text-text-secondary">Recent security activity</p>
-            {settings === null ? (
-              <p className="text-sm text-text-muted">Security activity is unavailable. Try again later.</p>
-            ) : settings.securityActivity.length > 0 ? (
-              <ul className="flex flex-col divide-y divide-border-hairline border-y border-border-hairline">
-                {settings.securityActivity.map((event) => (
-                  <li key={event.id} className="flex flex-col gap-1 py-3 text-sm sm:flex-row sm:items-center sm:justify-between">
-                    <span className="text-text-primary">{EVENT_LABELS[event.eventType] ?? event.eventType}</span>
-                    <span className="text-text-muted">{new Date(event.createdAt).toLocaleString()}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-text-muted">No recorded security activity yet.</p>
-            )}
+      <Section title="Security">
+        <div className="divide-y divide-border-hairline border-y border-border-hairline">
+          <div className="py-5">
+            <p className="text-sm font-medium text-text-primary">Multi-factor authentication</p>
+            <p className="mt-1 mb-4 text-sm text-text-muted">Manage the currently supported Supabase Auth MFA controls.</p>
+            <MfaEnrollment />
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          <div className="py-5">
+            <p className="text-sm font-medium text-text-primary">Sessions</p>
+            <p className="mt-1 mb-4 text-sm text-text-muted">Revoke other authenticated sessions without changing financial authorization state.</p>
+            <RevokeSessionsButton />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Recent security activity">
+        <div className="border-y border-border-hairline">
+          {settings === null ? (
+            <ProductStateMessage state="UNAVAILABLE" title="Security activity unavailable" />
+          ) : settings.securityActivity.length ? (
+            settings.securityActivity.map((event) => (
+              <div key={event.id} className="flex flex-col gap-1 border-b border-border-hairline py-4 text-sm last:border-0 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                <span className="text-text-primary">{EVENT_LABELS[event.eventType] ?? event.eventType}</span>
+                <time className="text-xs text-text-muted" dateTime={event.createdAt}>{new Date(event.createdAt).toLocaleString()}</time>
+              </div>
+            ))
+          ) : (
+            <ProductStateMessage state="NO_ACTIVITY" title="No recorded security activity yet" />
+          )}
+        </div>
+      </Section>
+    </Stack>
   );
 }
 
-function SettingValue({ label, value, capitalize = false }: { label: string; value: string; capitalize?: boolean }) {
+function SettingValue({ label, value, capitalize = false }: { readonly label: string; readonly value: string; readonly capitalize?: boolean }) {
   return (
     <div>
-      <p className="text-sm text-text-muted">{label}</p>
-      <p className={`mt-1 text-sm text-text-primary ${capitalize ? 'capitalize' : ''}`}>{value}</p>
+      <dt className="text-xs text-text-muted">{label}</dt>
+      <dd className={`mt-1.5 text-sm font-medium text-text-primary ${capitalize ? 'capitalize' : ''}`}>{value}</dd>
     </div>
   );
 }

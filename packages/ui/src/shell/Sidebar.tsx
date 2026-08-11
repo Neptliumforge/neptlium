@@ -9,7 +9,6 @@ export interface NavItem {
   readonly label: string;
   readonly href: string;
   readonly icon?: ReactNode;
-  /** Optional group heading. Items with the same group value are visually grouped. */
   readonly group?: string;
 }
 
@@ -35,17 +34,16 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
     <div className="space-y-4">
       {sections.map((section) => (
         <div key={section.heading ?? "__root__"}>
-          {section.heading && (
-            <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-widest text-text-muted">
+          {section.heading ? (
+            <p className="mb-1 px-3 text-[10px] font-medium uppercase tracking-widest text-text-muted">
               {section.heading}
             </p>
-          )}
+          ) : null}
           <div className="space-y-0.5">
             {section.items.map((item) => {
               const isActive =
                 pathname === item.href ||
-                (item.href !== "/dashboard" &&
-                  pathname.startsWith(item.href + "/"));
+                (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
               return (
                 <Link
                   key={item.href}
@@ -59,17 +57,11 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
                       : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
                   )}
                 >
-                  {item.icon && (
-                    <span
-                      className={cn(
-                        "shrink-0",
-                        isActive ? "text-accent-primary" : "text-text-muted",
-                      )}
-                      aria-hidden="true"
-                    >
+                  {item.icon ? (
+                    <span className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")} aria-hidden="true">
                       {item.icon}
                     </span>
-                  )}
+                  ) : null}
                   <span className="hidden xl:inline">{item.label}</span>
                 </Link>
               );
