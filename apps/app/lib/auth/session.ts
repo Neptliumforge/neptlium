@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { hasRole, type Role } from "@neptlium/lib";
 import { resolveRole } from "@/components/security/resolveRole";
+import { ApiClientError, getAccountContext } from "@/lib/api/client";
 
 export async function getCurrentUser() {
   const supabase = await createSupabaseServerClient();
@@ -23,33 +24,29 @@ export interface SessionProfile {
 }
 
 /**
- * Loads the current user's `profiles` row, joined on `id` (set to
- * `auth.users.id` by the handle_new_user trigger — `profiles.user_id` is a
- * separate, unpopulated column and must not be used here).
+ * Account/profile business state is resolved through api.neptlium.com.
+ * Supabase remains here only for the current authenticated session identity.
  */
 export async function getCurrentProfile(): Promise<SessionProfile | null> {
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select("id, email, full_name, display_name, investor_type, organization_id, compliance_status, provisioned_at")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (!data) return null;
-
-  return {
-    id: data.id,
-    email: data.email,
-    fullName: data.full_name,
-    displayName: data.display_name,
-    investorType: data.investor_type,
-    organizationId: data.organization_id,
-    complianceStatus: data.compliance_status,
-    provisionedAt: data.provisioned_at
-  };
+  try {
+    const context = await getAccountContext();
+    return {
+      id: context.id,
+      email: context.email,
+      fullName: context.fullName,
+      displayName: context.displayName,
+      investorType: context.investorType,
+      organizationId: context.organizationId,
+      complianceStatus: context.complianceStatus,
+      provisionedAt: context.provisionedAt,
+    };
+  } catch (error) {
+    if (error instanceof ApiClientError && error.code === 'account_not_provisioned') return null;
+    throw error;
+  }
 }
 
 export async function getCurrentRole(): Promise<Role | null> {

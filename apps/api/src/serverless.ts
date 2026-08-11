@@ -42,7 +42,7 @@ export function createServerlessHandler(application: Promise<CanonicalApplicatio
         ),
       ),
       ...(chunks.length ? { payload: Buffer.concat(chunks).toString('utf8') } : {}),
-      clientAddress: req.socket.remoteAddress ?? 'serverless',
+      clientAddress: req.socket?.remoteAddress ?? 'serverless',
     });
     res.writeHead(response.statusCode, response.headers);
     res.end(response.body);

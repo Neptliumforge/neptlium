@@ -52,6 +52,16 @@ const jsonHeaders = {
   'referrer-policy': 'no-referrer',
 };
 
+type ResourceState<T = never> =
+  | { state: 'VALUE'; value: T }
+  | { state: 'EMPTY' }
+  | { state: 'NOT_CONFIGURED'; reason: string }
+  | { state: 'UNAVAILABLE'; reason: string }
+  | { state: 'PENDING'; reason: string };
+
+const unavailable = (reason: string): ResourceState => ({ state: 'UNAVAILABLE', reason });
+const notConfigured = (reason: string): ResourceState => ({ state: 'NOT_CONFIGURED', reason });
+
 function assertObject(value: unknown): asserts value is Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value))
     throw new ApiError(422, 'validation_failed', 'Request body must be an object');
@@ -66,6 +76,10 @@ function mutation(value: unknown) {
   )
     throw new ApiError(422, 'validation_failed', 'Invalid asset or network');
   return { asset: asset as Asset, network: network as Network };
+}
+function positiveInt(value: string | null, fallback: number, maximum: number) {
+  const parsed = Number(value ?? fallback);
+  return Number.isInteger(parsed) && parsed > 0 ? Math.min(parsed, maximum) : fallback;
 }
 
 export async function buildApp(deps: Dependencies = {}) {
@@ -151,7 +165,6 @@ export async function buildApp(deps: Dependencies = {}) {
               ? 'ready'
               : 'degraded',
           providers: {
-            // Credentials alone do not prove readiness. A reviewed runtime adapter is required.
             coinbase: 'not_configured',
             alchemy:
               config.alchemyConfigured && deps.webhookVerifiers?.alchemy
@@ -188,6 +201,35 @@ export async function buildApp(deps: Dependencies = {}) {
         },
       };
     }
+
+    if (method === 'GET' && path === '/v1/account/context') {
+      const user = await owner(context);
+      return { data: await repository.getAccountContext(user.id) };
+    }
+    if (method === 'GET' && path === '/v1/account/settings') {
+      const user = await owner(context);
+      return { data: await repository.getAccountSettings(user.id) };
+    }
+    if (method === 'GET' && path === '/v1/account/onboarding-draft') {
+      const user = await owner(context);
+      return { data: await repository.getOnboardingDraft(user.id) };
+    }
+    if (method === 'POST' && path === '/v1/account/onboarding-draft') {
+      const user = await owner(context);
+      assertObject(context.body);
+      const data = context.body.data;
+      const stepIndex = context.body.step_index;
+      if (!data || typeof data !== 'object' || Array.isArray(data) || !Number.isInteger(stepIndex))
+        throw new ApiError(422, 'validation_failed', 'Invalid onboarding draft');
+      const safeStepIndex = Number(stepIndex);
+      if (safeStepIndex < 0 || safeStepIndex > 7)
+        throw new ApiError(422, 'validation_failed', 'Invalid onboarding step');
+      await repository.saveOnboardingDraft(user.id, {
+        data: data as Record<string, unknown>,
+        stepIndex: safeStepIndex,
+      });
+      return { data: { status: 'saved' } };
+    }
     if (method === 'POST' && path === '/v1/account/provision') {
       const user = await owner(context);
       const result = await repository.provisionAccount(user.id);
@@ -198,6 +240,157 @@ export async function buildApp(deps: Dependencies = {}) {
       const result = await repository.completeOnboarding(user.id, context.body);
       return { data: { status: 'completed', profile_id: result.profileId } };
     }
+
+    if (method === 'GET' && path === '/v1/customer/overview') {
+      const user = await owner(context);
+      const activity = await repository.listCustomerActivity(user.id, { offset: 0, limit: 5 });
+      return {
+        data: {
+          capital: {
+            total: unavailable('canonical_capital_balance_unavailable'),
+            available: unavailable('canonical_available_balance_unavailable'),
+            reserved: unavailable('reservation_balance_unavailable'),
+            allocated: unavailable('canonical_allocation_balance_unavailable'),
+          },
+          portfolio: unavailable('canonical_portfolio_unavailable'),
+          treasury: unavailable('canonical_treasury_state_unavailable'),
+          allocation: notConfigured('allocation_policy_not_configured'),
+          activity: activity.data.length
+            ? ({ state: 'VALUE', value: activity.data } satisfies ResourceState<typeof activity.data>)
+            : ({ state: 'EMPTY' } satisfies ResourceState<typeof activity.data>),
+        },
+      };
+    }
+    if (method === 'GET' && path === '/v1/customer/portfolio') {
+      await owner(context);
+      return {
+        data: {
+          value: unavailable('canonical_portfolio_value_unavailable'),
+          positions: unavailable('canonical_positions_unavailable'),
+          performance: unavailable('canonical_reporting_history_unavailable'),
+        },
+      };
+    }
+    if (method === 'GET' && path === '/v1/customer/treasury') {
+      await owner(context);
+      return {
+        data: {
+          available_liquidity: unavailable('canonical_liquidity_unavailable'),
+          reserved: unavailable('reservation_balance_unavailable'),
+          committed: unavailable('canonical_commitment_balance_unavailable'),
+          funding: notConfigured('live_funding_not_configured'),
+          transfers: unavailable('governed_transfer_execution_unavailable'),
+        },
+      };
+    }
+    if (method === 'GET' && path === '/v1/customer/allocation') {
+      await owner(context);
+      return {
+        data: {
+          observed: unavailable('canonical_allocation_observation_unavailable'),
+          modeled: { state: 'EMPTY' },
+          authorized: unavailable('allocation_authorization_unavailable'),
+          executed: unavailable('allocation_execution_unavailable'),
+          reconciled: unavailable('allocation_reconciliation_unavailable'),
+        },
+      };
+    }
+    if (method === 'GET' && path === '/v1/capital-activity') {
+      const user = await owner(context);
+      const offset = Math.max(0, Number(context.query.get('offset') ?? 0) || 0);
+      const limit = positiveInt(context.query.get('limit'), 20, 50);
+      const optional = (name: string) => {
+        const value = context.query.get(name)?.trim();
+        return value ? value.slice(0, 80) : undefined;
+      };
+      const page = await repository.listCustomerActivity(user.id, {
+        offset,
+        limit,
+        ...(optional('status') ? { status: optional('status') } : {}),
+        ...(optional('asset') ? { asset: optional('asset') } : {}),
+        ...(optional('network') ? { network: optional('network') } : {}),
+        ...(optional('q') ? { search: optional('q') } : {}),
+      });
+      return {
+        data: {
+          state: page.data.length ? 'VALUE' : 'EMPTY',
+          data: page.data,
+          total: page.total,
+          assets: page.assets,
+          networks: page.networks,
+          next_offset: offset + page.data.length < page.total ? offset + page.data.length : null,
+        },
+      };
+    }
+
+    if (method === 'GET' && path === '/v1/notifications') {
+      const user = await owner(context);
+      const notifications = await repository.listNotifications(user.id);
+      return { data: { state: notifications.length ? 'VALUE' : 'EMPTY', data: notifications } };
+    }
+    const notificationMatch = path.match(/^\/v1\/notifications\/([^/]+)\/read$/);
+    if (method === 'POST' && notificationMatch?.[1]) {
+      const user = await owner(context);
+      await repository.markNotificationRead(user.id, notificationMatch[1]);
+      return { data: { status: 'updated' } };
+    }
+    if (method === 'POST' && path === '/v1/notifications/read-all') {
+      const user = await owner(context);
+      await repository.markAllNotificationsRead(user.id);
+      return { data: { status: 'updated' } };
+    }
+
+    if (method === 'GET' && path === '/v1/documents') {
+      const user = await owner(context);
+      const documents = await repository.listDocuments(user.id);
+      return { data: { state: documents.length ? 'VALUE' : 'EMPTY', data: documents } };
+    }
+    const documentMatch = path.match(/^\/v1\/documents\/([^/]+)\/download$/);
+    if (method === 'POST' && documentMatch?.[1]) {
+      const user = await owner(context);
+      return {
+        data: {
+          url: await repository.createDocumentDownloadUrl(user.id, documentMatch[1], 60),
+          expires_in: 60,
+        },
+      };
+    }
+
+    if (method === 'GET' && path === '/v1/capital-account/state') {
+      const user = await owner(context);
+      const link = await repository.getProviderWallet(user.id);
+      const canonical = {
+        total: unavailable('canonical_capital_balance_unavailable'),
+        available: unavailable('canonical_available_balance_unavailable'),
+        reserved: unavailable('reservation_balance_unavailable'),
+        pending: unavailable('canonical_pending_balance_unavailable'),
+      };
+      if (!link) {
+        return {
+          data: {
+            canonical,
+            provider_observation: notConfigured('provider_wallet_not_linked'),
+            funding: notConfigured('provider_wallet_not_linked'),
+          },
+        };
+      }
+      const balances = await capitalProvider.getBalances(link);
+      return {
+        data: {
+          canonical,
+          provider_observation: {
+            state: 'VALUE',
+            value: {
+              balances,
+              reconciliation_state: 'unreconciled',
+              environment: link.environment,
+            },
+          },
+          funding: { state: 'VALUE', value: { environment: link.environment } },
+        },
+      };
+    }
+
     if (method === 'POST' && path === '/v1/wallet/deposit-addresses') {
       await owner(context);
       const body = mutation(context.body);
@@ -302,8 +495,7 @@ export async function buildApp(deps: Dependencies = {}) {
         withdrawal: { ownerId: user.id, ...pair, amount, destination },
       });
       if (creation.replayed) return { data: creation.value };
-      const result = creation.value;
-      return { status: 202, data: result };
+      return { status: 202, data: creation.value };
     }
     const match = path.match(/^\/v1\/wallet\/withdrawals\/([^/]+)(\/cancel)?$/);
     if (match && match[1] && method === 'GET' && !match[2])
@@ -335,8 +527,6 @@ export async function buildApp(deps: Dependencies = {}) {
         : path.endsWith('circle')
           ? 'circle'
           : 'coinbase';
-      // Verification is deliberately injected: inventing a provider signature algorithm is unsafe.
-      // Until a reviewed adapter is installed, this endpoint fails closed.
       if (provider === 'circle')
         throw new ApiError(
           503,
@@ -358,9 +548,7 @@ export async function buildApp(deps: Dependencies = {}) {
         { provider, eventId, digest: eventDigest, state: 'verified' },
         context.requestId,
       );
-      if (insertion === 'duplicate') {
-        return { data: { received: true, duplicate: true } };
-      }
+      if (insertion === 'duplicate') return { data: { received: true, duplicate: true } };
       return { status: 202, data: { received: true, duplicate: false } };
     }
     throw new ApiError(404, 'not_found', 'Route not found');
@@ -519,7 +707,7 @@ export async function buildApp(deps: Dependencies = {}) {
         Object.entries(req.headers).filter(([, v]) => typeof v === 'string'),
       ) as Record<string, string>,
       payload: Buffer.concat(chunks).toString() || undefined,
-      clientAddress: req.socket.remoteAddress ?? 'unknown',
+      clientAddress: req.socket?.remoteAddress ?? 'unknown',
     });
     res.writeHead(response.statusCode, response.headers);
     res.end(response.body);

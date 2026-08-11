@@ -53,10 +53,114 @@ export interface IdempotentResult<T> {
 }
 export type WebhookInsertResult = 'inserted' | 'duplicate';
 
+export interface AccountContext {
+  id: string;
+  email: string | null;
+  fullName: string | null;
+  displayName: string | null;
+  investorType: string | null;
+  organizationId: string | null;
+  complianceStatus: string | null;
+  provisionedAt: string | null;
+  role: string;
+}
+
+export interface OnboardingDraftRecord {
+  data: Record<string, unknown>;
+  stepIndex: number;
+}
+
+export interface CustomerActivityRecord {
+  id: string;
+  type: string;
+  asset: string;
+  network: string;
+  amount: string;
+  status: string;
+  reference: string | null;
+  counterparty: string | null;
+  createdAt: string;
+}
+
+export interface CustomerActivityQuery {
+  status?: string | undefined;
+  asset?: string | undefined;
+  network?: string | undefined;
+  search?: string | undefined;
+  offset: number;
+  limit: number;
+}
+
+export interface CustomerActivityPage {
+  data: CustomerActivityRecord[];
+  total: number;
+  assets: string[];
+  networks: string[];
+}
+
+export interface SecurityActivityRecord {
+  id: string;
+  eventType: string;
+  userAgent: string | null;
+  createdAt: string;
+}
+
+export interface OrganizationRecord {
+  id: string;
+  name: string | null;
+  role: string | null;
+  website: string | null;
+  industry: string | null;
+  country: string | null;
+  organizationSize: string | null;
+  aumRange: string | null;
+}
+
+export interface AccountSettingsRecord {
+  profile: AccountContext;
+  organization: OrganizationRecord | null;
+  securityActivity: SecurityActivityRecord[];
+}
+
+export interface CustomerNotificationRecord {
+  id: string;
+  category: string;
+  title: string;
+  body: string | null;
+  readAt: string | null;
+  createdAt: string;
+}
+
+export interface CustomerDocumentRecord {
+  id: string;
+  category: string;
+  title: string;
+  createdAt: string;
+}
+
 export interface ApiRepository {
   ready(): boolean | Promise<boolean>;
   provisionAccount(ownerId: string): Promise<{ profileId: string }>;
   completeOnboarding(ownerId: string, payload: unknown): Promise<{ profileId: string }>;
+  getAccountContext(ownerId: string): AccountContext | Promise<AccountContext>;
+  getOnboardingDraft(ownerId: string): OnboardingDraftRecord | Promise<OnboardingDraftRecord>;
+  saveOnboardingDraft(ownerId: string, draft: OnboardingDraftRecord): void | Promise<void>;
+  listCustomerActivity(
+    ownerId: string,
+    query: CustomerActivityQuery,
+  ): CustomerActivityPage | Promise<CustomerActivityPage>;
+  getAccountSettings(ownerId: string): AccountSettingsRecord | Promise<AccountSettingsRecord>;
+  listNotifications(
+    ownerId: string,
+  ): CustomerNotificationRecord[] | Promise<CustomerNotificationRecord[]>;
+  markNotificationRead(ownerId: string, notificationId: string): void | Promise<void>;
+  markAllNotificationsRead(ownerId: string): void | Promise<void>;
+  listDocuments(ownerId: string): CustomerDocumentRecord[] | Promise<CustomerDocumentRecord[]>;
+  createDocumentDownloadUrl(
+    ownerId: string,
+    documentId: string,
+    expiresInSeconds: number,
+  ): string | Promise<string>;
   getProviderWallet(
     ownerId: string,
   ): ProviderWalletLink | undefined | Promise<ProviderWalletLink | undefined>;
@@ -99,6 +203,10 @@ export class MemoryRepository implements ApiRepository {
   readonly idempotency = new Map<string, IdempotencyRecord>();
   readonly webhooks = new Map<string, WebhookRecord>();
   readonly providerWallets = new Map<string, ProviderWalletLink>();
+  readonly onboardingDrafts = new Map<string, OnboardingDraftRecord>();
+  readonly customerActivity: CustomerActivityRecord[] = [];
+  readonly notifications: CustomerNotificationRecord[] = [];
+  readonly documents: CustomerDocumentRecord[] = [];
 
   ready() {
     return true;
@@ -108,6 +216,68 @@ export class MemoryRepository implements ApiRepository {
   }
   async completeOnboarding(ownerId: string) {
     return { profileId: ownerId };
+  }
+  getAccountContext(ownerId: string): AccountContext {
+    return {
+      id: ownerId,
+      email: null,
+      fullName: null,
+      displayName: null,
+      investorType: null,
+      organizationId: null,
+      complianceStatus: null,
+      provisionedAt: new Date(0).toISOString(),
+      role: 'user',
+    };
+  }
+  getOnboardingDraft(ownerId: string): OnboardingDraftRecord {
+    return structuredClone(this.onboardingDrafts.get(ownerId) ?? { data: {}, stepIndex: 0 });
+  }
+  saveOnboardingDraft(ownerId: string, draft: OnboardingDraftRecord) {
+    this.onboardingDrafts.set(ownerId, structuredClone(draft));
+  }
+  listCustomerActivity(ownerId: string, query: CustomerActivityQuery): CustomerActivityPage {
+    const scoped = this.customerActivity.filter((item) => {
+      const record = item as CustomerActivityRecord & { ownerId?: string };
+      if (record.ownerId && record.ownerId !== ownerId) return false;
+      if (query.status && item.status !== query.status) return false;
+      if (query.asset && item.asset !== query.asset) return false;
+      if (query.network && item.network !== query.network) return false;
+      if (query.search) {
+        const needle = query.search.toLowerCase();
+        if (!`${item.reference ?? ''} ${item.counterparty ?? ''}`.toLowerCase().includes(needle))
+          return false;
+      }
+      return true;
+    });
+    return {
+      data: scoped.slice(query.offset, query.offset + query.limit).map((item) => structuredClone(item)),
+      total: scoped.length,
+      assets: [...new Set(scoped.map((item) => item.asset))],
+      networks: [...new Set(scoped.map((item) => item.network))],
+    };
+  }
+  getAccountSettings(ownerId: string): AccountSettingsRecord {
+    return { profile: this.getAccountContext(ownerId), organization: null, securityActivity: [] };
+  }
+  listNotifications() {
+    return this.notifications.map((item) => structuredClone(item));
+  }
+  markNotificationRead(_ownerId: string, notificationId: string) {
+    const notification = this.notifications.find((item) => item.id === notificationId);
+    if (notification) notification.readAt = new Date().toISOString();
+  }
+  markAllNotificationsRead() {
+    const now = new Date().toISOString();
+    for (const notification of this.notifications) notification.readAt ??= now;
+  }
+  listDocuments() {
+    return this.documents.map((item) => structuredClone(item));
+  }
+  createDocumentDownloadUrl(_ownerId: string, documentId: string) {
+    if (!this.documents.some((item) => item.id === documentId))
+      throw new ApiError(404, 'not_found', 'Document not found');
+    return `https://example.invalid/documents/${encodeURIComponent(documentId)}`;
   }
   getProviderWallet(ownerId: string) {
     const value = this.providerWallets.get(ownerId);

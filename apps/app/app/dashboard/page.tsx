@@ -6,33 +6,47 @@ import {
   Badge,
   Group,
   IdentityMark,
-  Money,
   Row,
   Section,
   Stack,
   Surface,
   identityRegistry,
 } from '@neptlium/ui';
-import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { requireProvisionedUser } from '@/lib/auth';
+import { getOverviewState, type ResourceState } from '@/lib/api/client';
 
 const tone: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
   completed: 'success',
+  settled: 'success',
   pending: 'warning',
   pending_review: 'warning',
+  confirming: 'warning',
+  submitted: 'warning',
   failed: 'danger',
   cancelled: 'neutral',
+  reversed: 'danger',
 };
 
+function stateText(state: ResourceState): string {
+  if (state.state === 'NOT_CONFIGURED') return 'Not configured';
+  if (state.state === 'PENDING') return 'Pending';
+  if (state.state === 'EMPTY') return 'No data yet';
+  return 'Unavailable';
+}
+
 export default async function DashboardPage() {
-  const { profile } = await requireProvisionedUser();
-  const supabase = await createSupabaseServerClient();
-  const { data: activity, error } = await supabase
-    .from('wallet_transactions')
-    .select('id,type,asset,network,amount,status,created_at')
-    .eq('profile_id', profile.id)
-    .order('created_at', { ascending: false })
-    .limit(5);
+  await requireProvisionedUser();
+  let overview;
+  let loadError = false;
+  try {
+    overview = await getOverviewState();
+  } catch {
+    overview = null;
+    loadError = true;
+  }
+
+  const capital = overview?.capital;
+  const activity = overview?.activity.state === 'VALUE' ? overview.activity.value : [];
 
   return (
     <Stack>
@@ -42,20 +56,31 @@ export default async function DashboardPage() {
       </header>
 
       <section className="border-y border-border-hairline py-6">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end">
+        {loadError ? (
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Total capital</p>
-            <Money state="unavailable" className="mt-2 block text-[2.5rem] font-medium leading-none text-text-primary sm:text-[2.75rem]" />
+            <p className="text-sm font-medium">Capital position is unavailable</p>
+            <p className="mt-1 text-sm text-text-muted">The Neptlium API could not load the current account state. Try again later.</p>
           </div>
-          <dl className="grid grid-cols-3 gap-4">
-            {['Available', 'Reserved', 'Allocated'].map((label) => (
-              <div key={label}>
-                <dt className="text-xs text-text-muted">{label}</dt>
-                <dd className="mt-1"><Money state="unavailable" className="text-sm font-medium text-text-primary sm:text-base" /></dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Total capital</p>
+              <span className="mt-2 block text-[2.5rem] font-medium leading-none text-text-primary sm:text-[2.75rem]">{capital ? stateText(capital.total) : 'Unavailable'}</span>
+            </div>
+            <dl className="grid grid-cols-3 gap-4">
+              {[
+                ['Available', capital?.available],
+                ['Reserved', capital?.reserved],
+                ['Allocated', capital?.allocated],
+              ].map(([label, state]) => (
+                <div key={label as string}>
+                  <dt className="text-xs text-text-muted">{label as string}</dt>
+                  <dd className="mt-1 text-sm font-medium text-text-primary sm:text-base">{state ? stateText(state as ResourceState) : 'Unavailable'}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
@@ -64,7 +89,7 @@ export default async function DashboardPage() {
             <Link href="/dashboard/portfolio" className="flex min-h-20 items-center gap-4 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]">
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">Capital exposure</p>
-                <p className="mt-1 text-xs text-text-muted">Positions and concentration appear when canonical holdings are available.</p>
+                <p className="mt-1 text-xs text-text-muted">{overview ? stateText(overview.portfolio) : 'Unavailable'}</p>
               </div>
               <ArrowRight className="size-4 text-text-muted" aria-hidden="true" />
             </Link>
@@ -85,7 +110,7 @@ export default async function DashboardPage() {
                   ))}
                 </span>
               </div>
-              <Money state="unavailable" className="text-sm font-medium text-text-primary" />
+              <span className="text-sm font-medium text-text-primary">{capital ? stateText(capital.total) : 'Unavailable'}</span>
               <ArrowRight className="size-4 text-text-muted" aria-hidden="true" />
             </Link>
           </Surface>
@@ -96,7 +121,7 @@ export default async function DashboardPage() {
             <Link href="/dashboard/treasury" className="flex min-h-20 items-center gap-4 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]">
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">Liquidity and reserves</p>
-                <p className="mt-1 text-xs text-text-muted">Treasury readiness remains unavailable until canonical capital state exists.</p>
+                <p className="mt-1 text-xs text-text-muted">{overview ? stateText(overview.treasury) : 'Unavailable'}</p>
               </div>
               <ArrowRight className="size-4 text-text-muted" aria-hidden="true" />
             </Link>
@@ -108,9 +133,9 @@ export default async function DashboardPage() {
             <Row>
               <div>
                 <p className="text-sm font-medium">Current policy</p>
-                <p className="text-xs text-text-muted">Not configured</p>
+                <p className="text-xs text-text-muted">{overview ? stateText(overview.allocation) : 'Unavailable'}</p>
               </div>
-              <Link href="/dashboard/allocations" className="text-sm font-medium text-accent-primary">Create model</Link>
+              <Link href="/dashboard/allocations" className="text-sm font-medium text-accent-primary">Review allocation</Link>
             </Row>
           </Surface>
         </Section>
@@ -121,9 +146,9 @@ export default async function DashboardPage() {
         action={<Link href="/dashboard/transactions" className="text-sm text-accent-primary">See all</Link>}
       >
         <Surface className="px-4 sm:px-5">
-          {error ? (
+          {loadError ? (
             <p className="py-7 text-sm text-text-muted">Capital activity could not be loaded. Try again later.</p>
-          ) : !activity?.length ? (
+          ) : activity.length === 0 ? (
             <div className="py-7">
               <p className="text-sm font-medium text-text-primary">No capital activity yet.</p>
               <p className="mt-1 text-sm text-text-muted">Activity will appear here when canonical account events are available.</p>

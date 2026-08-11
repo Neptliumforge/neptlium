@@ -1,23 +1,21 @@
 import { Bell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from "@neptlium/ui";
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
+import { getNotifications } from "@/lib/api/client";
 import { NotificationItem } from "./NotificationItem";
 import { MarkAllReadButton } from "./MarkAllReadButton";
 
 export default async function NotificationsPage() {
-  const user = await requireUser();
-  const supabase = await createSupabaseServerClient();
-
-  const { data } = await supabase
-    .from("notifications")
-    .select("id, category, title, body, read_at, created_at")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(50);
-
-  const notifications = data ?? [];
-  const hasUnread = notifications.some((notification) => !notification.read_at);
+  await requireUser();
+  let notifications;
+  let loadError = false;
+  try {
+    notifications = (await getNotifications()).data;
+  } catch {
+    notifications = [];
+    loadError = true;
+  }
+  const hasUnread = notifications.some((notification) => !notification.readAt);
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -32,7 +30,9 @@ export default async function NotificationsPage() {
           {hasUnread && <MarkAllReadButton />}
         </CardHeader>
         <CardContent>
-          {notifications.length === 0 ? (
+          {loadError ? (
+            <p className="py-6 text-sm text-text-muted">Notifications are unavailable. Try again later.</p>
+          ) : notifications.length === 0 ? (
             <EmptyState icon={<Bell className="size-5" aria-hidden="true" />} title="No notifications" description="You're all caught up." />
           ) : (
             <ul className="flex flex-col gap-3">
@@ -43,8 +43,8 @@ export default async function NotificationsPage() {
                   category={notification.category}
                   title={notification.title}
                   body={notification.body}
-                  createdAt={notification.created_at}
-                  readAt={notification.read_at}
+                  createdAt={notification.createdAt}
+                  readAt={notification.readAt}
                 />
               ))}
             </ul>

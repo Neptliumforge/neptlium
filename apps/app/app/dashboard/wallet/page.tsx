@@ -1,49 +1,38 @@
-import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { requireProvisionedUser } from '@/lib/auth';
-import { WalletView, type WalletTransaction } from './WalletView';
-import { apiRequest } from '@/lib/api/client';
+import {
+  getCapitalAccountDepositAddress,
+  getCapitalAccountState,
+  getCapitalActivity,
+} from '@/lib/api/client';
+import { WalletView } from './WalletView';
+
 export default async function WalletPage() {
-  const { profile } = await requireProvisionedUser();
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('wallet_transactions')
-    .select('id,type,asset,network,amount,status,created_at')
-    .eq('profile_id', profile.id)
-    .order('created_at', { ascending: false })
-    .limit(50);
-  let capitalAccount;
-  try {
-    const [destination, balance] = await Promise.all([
-      apiRequest<{
-        asset: 'USDC';
-        network: 'BASE-SEPOLIA';
-        address: string;
-        provider_state: string;
-        environment: 'testnet';
-      }>('/v1/capital-account/deposit-address?asset=USDC&network=BASE-SEPOLIA'),
-      apiRequest<{
-        balances: Array<{
-          asset: 'USDC';
-          network: 'BASE-SEPOLIA';
-          available: string;
-          observedAt: string;
-          synchronizationState: 'provider_observed';
-        }>;
-        reconciliation_state: string;
-      }>('/v1/capital-account/balances'),
-    ]);
-    capitalAccount = {
-      destination,
-      ...(balance.balances[0] ? { balance: balance.balances[0] } : {}),
-    };
-  } catch {
-    capitalAccount = undefined;
+  await requireProvisionedUser();
+
+  const [stateResult, historyResult] = await Promise.allSettled([
+    getCapitalAccountState(),
+    getCapitalActivity({ limit: 50 }),
+  ]);
+
+  const capitalAccount = stateResult.status === 'fulfilled' ? stateResult.value : null;
+  const history = historyResult.status === 'fulfilled' ? historyResult.value.data : [];
+
+  let destination;
+  if (capitalAccount?.funding.state === 'VALUE') {
+    try {
+      destination = await getCapitalAccountDepositAddress();
+    } catch {
+      destination = undefined;
+    }
   }
+
   return (
     <WalletView
-      transactions={(data ?? []) as WalletTransaction[]}
-      historyError={Boolean(error)}
-      {...(capitalAccount ? { capitalAccount } : {})}
+      transactions={history}
+      historyError={historyResult.status === 'rejected'}
+      stateError={stateResult.status === 'rejected'}
+      capitalAccount={capitalAccount}
+      {...(destination ? { destination } : {})}
     />
   );
 }
