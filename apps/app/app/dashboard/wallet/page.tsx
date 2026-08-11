@@ -1,38 +1,37 @@
 import { requireProvisionedUser } from '@/lib/auth';
 import {
-  getCapitalAccountDepositAddress,
-  getCapitalAccountState,
-  getCapitalActivity,
-} from '@/lib/api/client';
+  getCanonicalBalances,
+  getFundingActivity,
+  getFundingCapabilities,
+  getTransferActivity,
+  getTransferAliases,
+  getTransferCapabilities,
+} from '@/lib/api/financial';
 import { WalletView } from './WalletView';
 
 export default async function WalletPage() {
   await requireProvisionedUser();
 
-  const [stateResult, historyResult] = await Promise.allSettled([
-    getCapitalAccountState(),
-    getCapitalActivity({ limit: 50 }),
+  const [capabilities, balances, funding, transferCapabilities, transfers, aliases] = await Promise.allSettled([
+    getFundingCapabilities(),
+    getCanonicalBalances(),
+    getFundingActivity(),
+    getTransferCapabilities(),
+    getTransferActivity(),
+    getTransferAliases(),
   ]);
-
-  const capitalAccount = stateResult.status === 'fulfilled' ? stateResult.value : null;
-  const history = historyResult.status === 'fulfilled' ? historyResult.value.data : [];
-
-  let destination;
-  if (capitalAccount?.funding.state === 'VALUE') {
-    try {
-      destination = await getCapitalAccountDepositAddress();
-    } catch {
-      destination = undefined;
-    }
-  }
 
   return (
     <WalletView
-      transactions={history}
-      historyError={historyResult.status === 'rejected'}
-      stateError={stateResult.status === 'rejected'}
-      capitalAccount={capitalAccount}
-      {...(destination ? { destination } : {})}
+      capabilities={capabilities.status === 'fulfilled' ? capabilities.value.capabilities : []}
+      capabilityError={capabilities.status === 'rejected'}
+      balances={balances.status === 'fulfilled' ? balances.value.balances : []}
+      balanceError={balances.status === 'rejected'}
+      fundingActivity={funding.status === 'fulfilled' ? funding.value.data : []}
+      fundingActivityError={funding.status === 'rejected'}
+      transferCapabilities={transferCapabilities.status === 'fulfilled' ? transferCapabilities.value.capabilities : []}
+      transferActivity={transfers.status === 'fulfilled' ? transfers.value.data : []}
+      aliases={aliases.status === 'fulfilled' ? aliases.value.data : []}
     />
   );
 }
