@@ -13,6 +13,12 @@ import {
   type TransferAliasRecord,
   type TransferExecutionRecord,
 } from './financial-repository.js';
+import { handleAllocationRoute } from './allocation-routes.js';
+import {
+  MemoryAllocationRepository,
+  SupabaseAllocationRepository,
+  type AllocationRepository,
+} from './allocation-repository.js';
 
 type FinancialContext = {
   method: string;
@@ -31,6 +37,17 @@ export type FinancialCapability = {
   state: CapabilityState;
   reason?: string;
 };
+
+const allocationRepositories = new WeakMap<Config, AllocationRepository>();
+function allocationRepositoryFor(config: Config): AllocationRepository {
+  const existing = allocationRepositories.get(config);
+  if (existing) return existing;
+  const repository = config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
+    ? new SupabaseAllocationRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
+    : new MemoryAllocationRepository();
+  allocationRepositories.set(config, repository);
+  return repository;
+}
 
 function assertObject(value: unknown): asserts value is Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -132,6 +149,15 @@ export async function handleFinancialRoute(
 ): Promise<RouteResult | undefined> {
   const { method, path } = context;
   const capability = (code: string) => deps.capabilityResolver?.(code) ?? capabilityByCode(deps.config, code);
+
+  if (path.startsWith('/v1/allocation/')) {
+    const allocation = await handleAllocationRoute(context, {
+      repository: allocationRepositoryFor(deps.config),
+      financialRepository: deps.repository,
+      principal: async () => ({ id: await deps.ownerId() }),
+    });
+    if (allocation) return allocation;
+  }
 
   if (method === 'POST' && path === '/v1/webhooks/stripe') {
     if (!deps.config.SUPABASE_URL || !deps.config.SUPABASE_SERVICE_ROLE_KEY)
