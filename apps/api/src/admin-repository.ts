@@ -158,17 +158,22 @@ export class SupabaseAdminRepository implements AdminRepository {
     if (status) filters.push(`status=eq.${encodeURIComponent(status)}`);
     const result = await this.page(`wallet_transactions?${filters.join('&')}`, page);
     const profiles = await this.profileMap([...new Set(result.rows.map((row) => String(row.profile_id)))]);
-    return { rows: result.rows.map((row) => { const profile = profiles.get(String(row.profile_id)); return { ...row, user_email: profile?.email ?? null, user_name: profile?.full_name ?? null }; }), total: result.total };
+    return {
+      rows: result.rows.map((row): Row => {
+        const profile = profiles.get(String(row.profile_id));
+        return { ...row, user_email: profile?.email ?? null, user_name: profile?.full_name ?? null };
+      }),
+      total: result.total,
+    };
   }
 
   async listDeposits(query: URLSearchParams) {
-    const result = await this.listLegacyTransactions(query, 'deposit');
-    return { rows: result.rows.map(({ counterparty: _counterparty, type: _type, ...row }) => row), total: result.total };
+    return this.listLegacyTransactions(query, 'deposit');
   }
 
   async listWithdrawals(query: URLSearchParams, pendingOnly = false) {
     const result = await this.listLegacyTransactions(query, 'withdrawal');
-    const rows = result.rows.map(({ type: _type, ...row }) => ({ ...row, governed: false }));
+    const rows: Row[] = result.rows.map((row) => ({ ...row, governed: false }));
     const pending = rows.filter((row) => ['pending','pending_review'].includes(String(row.status)));
     return pendingOnly
       ? { rows: pending, totalAmount: pending.reduce((sum, row) => sum + Number(row.amount ?? 0), 0) }
@@ -176,8 +181,7 @@ export class SupabaseAdminRepository implements AdminRepository {
   }
 
   async listTransactions(query: URLSearchParams) {
-    const result = await this.listLegacyTransactions(query, query.get('type') ?? undefined);
-    return { rows: result.rows.map(({ counterparty: _counterparty, ...row }) => row), total: result.total };
+    return this.listLegacyTransactions(query, query.get('type') ?? undefined);
   }
 
   async listAllocations(query: URLSearchParams, pendingOnly = false) {
