@@ -15,7 +15,6 @@ export interface AdminRepository {
   listWithdrawals(query: URLSearchParams, pendingOnly?: boolean): Promise<Record<string, unknown>>;
   listTransactions(query: URLSearchParams): Promise<Record<string, unknown>>;
   listAllocations(query: URLSearchParams, pendingOnly?: boolean): Promise<unknown>;
-  reviewAllocation(id: string, actorId: string, decision: 'approved' | 'rejected', reason?: string): Promise<void>;
   listLoginHistory(query: URLSearchParams): Promise<unknown[]>;
   listTrustedDevices(): Promise<unknown[]>;
   audit(actorId: string, operation: string, resourceType: string, resourceId: string | null, requestId: string, metadata?: Record<string, unknown>): Promise<void>;
@@ -34,7 +33,6 @@ export class DisabledAdminRepository implements AdminRepository {
   async listWithdrawals(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async listTransactions(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async listAllocations(): Promise<unknown> { return this.unavailable(); }
-  async reviewAllocation(): Promise<void> { return this.unavailable(); }
   async listLoginHistory(): Promise<unknown[]> { return this.unavailable(); }
   async listTrustedDevices(): Promise<unknown[]> { return this.unavailable(); }
   async audit(): Promise<void> { return this.unavailable(); }
@@ -169,8 +167,7 @@ export class SupabaseAdminRepository implements AdminRepository {
   }
 
   async listWithdrawals(query: URLSearchParams, pendingOnly = false) {
-    const copy = new URLSearchParams(query);
-    const result = await this.listLegacyTransactions(copy, 'withdrawal');
+    const result = await this.listLegacyTransactions(query, 'withdrawal');
     const rows = result.rows.map(({ type: _type, ...row }) => ({ ...row, governed: false }));
     const pending = rows.filter((row) => ['pending','pending_review'].includes(String(row.status)));
     return pendingOnly
@@ -192,14 +189,6 @@ export class SupabaseAdminRepository implements AdminRepository {
     const profiles = await this.profileMap([...new Set(result.rows.map((row) => String(row.profile_id)))]);
     const rows = result.rows.map((row) => { const profile = profiles.get(String(row.profile_id)); return { ...row, user_email: profile?.email ?? null, user_name: profile?.full_name ?? null }; });
     return pendingOnly ? rows : { rows, total: result.total };
-  }
-
-  async reviewAllocation(id: string, actorId: string, decision: 'approved' | 'rejected', reason?: string) {
-    const body: Row = { status: decision, reviewed_by: actorId, reviewed_at: new Date().toISOString() };
-    if (decision === 'rejected') body.notes = reason ?? 'Rejected by General Platform Administrator';
-    const response = await this.rest(`capital_allocation_requests?id=eq.${encodeURIComponent(id)}&status=eq.pending_review`, { method: 'PATCH', headers: { prefer: 'return=representation' }, body: JSON.stringify(body) });
-    if (!response.ok) throw new ApiError(503, 'allocation_review_failed', 'Allocation review could not be recorded');
-    if (!((await response.json()) as Row[]).length) throw new ApiError(409, 'allocation_state_conflict', 'Allocation is not pending review');
   }
 
   async listLoginHistory(query: URLSearchParams) {
