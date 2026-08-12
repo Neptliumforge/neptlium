@@ -1,75 +1,25 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
-import { requireAdminUser } from "@/lib/auth";
-import { getCurrentAdminUser } from "@/lib/auth/session";
+import { adminApiRequest, AdminApiError } from "@/lib/api";
 
 export type ActionResult = { readonly ok: true } | { readonly ok: false; readonly error: string };
 
-export async function approveAllocation(id: string): Promise<ActionResult> {
-  const adminUser = await getCurrentAdminUser();
-  await requireAdminUser();
-  const db = createSupabaseAdminClient();
-
-  const { error } = await db
-    .from("capital_allocation_requests")
-    .update({
-      status: "approved",
-      reviewed_by: adminUser?.id,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", id)
-    .eq("status", "pending_review");
-
-  if (error) return { ok: false, error: "Failed to approve allocation." };
-
-  revalidatePath("/dashboard/allocations");
-  revalidatePath("/dashboard");
-  return { ok: true };
+async function decision(id: string, action: "approve" | "reject", reason?: string): Promise<ActionResult> {
+  try {
+    await adminApiRequest(`/v1/admin/allocations/${encodeURIComponent(id)}/${action}`, {
+      method: "POST",
+      headers: { "idempotency-key": `allocation-${action}-${id}` },
+      body: JSON.stringify(reason ? { reason } : {}),
+    });
+    revalidatePath("/dashboard/allocations"); revalidatePath("/dashboard");
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: error instanceof AdminApiError ? error.message : `Failed to ${action} allocation.` };
+  }
 }
-
-export async function rejectAllocation(id: string, reason: string): Promise<ActionResult> {
-  const adminUser = await getCurrentAdminUser();
-  await requireAdminUser();
-  const db = createSupabaseAdminClient();
-
-  const { error } = await db
-    .from("capital_allocation_requests")
-    .update({
-      status: "rejected",
-      notes: reason,
-      reviewed_by: adminUser?.id,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", id)
-    .eq("status", "pending_review");
-
-  if (error) return { ok: false, error: "Failed to reject allocation." };
-
-  revalidatePath("/dashboard/allocations");
-  revalidatePath("/dashboard");
-  return { ok: true };
-}
-
-export async function executeAllocation(id: string): Promise<ActionResult> {
-  const adminUser = await getCurrentAdminUser();
-  await requireAdminUser();
-  const db = createSupabaseAdminClient();
-
-  const { error } = await db
-    .from("capital_allocation_requests")
-    .update({
-      status: "executed",
-      reviewed_by: adminUser?.id,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", id)
-    .eq("status", "approved");
-
-  if (error) return { ok: false, error: "Failed to execute allocation." };
-
-  revalidatePath("/dashboard/allocations");
-  revalidatePath("/dashboard");
-  return { ok: true };
+export const approveAllocation = (id: string) => decision(id, "approve");
+export const rejectAllocation = (id: string, reason: string) => decision(id, "reject", reason);
+export async function executeAllocation(_id: string): Promise<ActionResult> {
+  return { ok: false, error: "Allocation execution remains unavailable until governed execution capability is active." };
 }
