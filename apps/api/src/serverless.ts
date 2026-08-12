@@ -3,6 +3,7 @@ import { buildApp, type InjectionResponse } from './app.js';
 import { loadConfig } from './config.js';
 import { SupabaseRepository } from './supabase-repository.js';
 import { MemoryRateLimiter } from './security.js';
+import { executeAdminHttp } from './admin-http.js';
 
 type CanonicalApplication = {
   inject(input: {
@@ -23,26 +24,39 @@ export function createServerlessHandler(application: Promise<CanonicalApplicatio
       size += buffer.length;
       if (size > 1_048_576) {
         res.writeHead(413, { 'content-type': 'application/json; charset=utf-8' });
-        res.end(
-          JSON.stringify({
-            error: { code: 'payload_too_large', message: 'Request body exceeds 1 MiB' },
-          }),
-        );
+        res.end(JSON.stringify({ error: { code: 'payload_too_large', message: 'Request body exceeds 1 MiB' } }));
         return;
       }
       chunks.push(buffer);
     }
+
+    const url = req.url ?? '/';
+    const headers = Object.fromEntries(
+      Object.entries(req.headers).flatMap(([key, value]) => typeof value === 'string' ? [[key, value]] : []),
+    );
+    const payload = chunks.length ? Buffer.concat(chunks).toString('utf8') : undefined;
+    const clientAddress = req.socket?.remoteAddress ?? 'serverless';
+
+    if (new URL(url, 'http://localhost').pathname.startsWith('/v1/admin')) {
+      const response = await executeAdminHttp(loadConfig(), {
+        method: req.method ?? 'GET',
+        url,
+        headers,
+        ...(payload ? { payload } : {}),
+        clientAddress,
+      });
+      res.writeHead(response.statusCode, response.headers);
+      res.end(response.body);
+      return;
+    }
+
     const app = await application;
     const response = await app.inject({
       method: req.method ?? 'GET',
-      url: req.url ?? '/',
-      headers: Object.fromEntries(
-        Object.entries(req.headers).flatMap(([key, value]) =>
-          typeof value === 'string' ? [[key, value]] : [],
-        ),
-      ),
-      ...(chunks.length ? { payload: Buffer.concat(chunks).toString('utf8') } : {}),
-      clientAddress: req.socket?.remoteAddress ?? 'serverless',
+      url,
+      headers,
+      ...(payload ? { payload } : {}),
+      clientAddress,
     });
     res.writeHead(response.statusCode, response.headers);
     res.end(response.body);

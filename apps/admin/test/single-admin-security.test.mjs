@@ -37,15 +37,18 @@ test("unauthenticated users are redirected before role authorization", () => {
   assert.match(guards, /redirect\("\/unauthorized"\)/);
 });
 
-test("successful Supabase authentication does not imply admin authorization", () => {
+test("successful Supabase authentication still requires API-backed admin authorization", () => {
   assert.match(login, /signInWithPassword/);
-  assert.match(login, /isGeneralPlatformAdminRole\(roleRow\?\.role\)/);
+  assert.match(login, /adminApiRequestWithToken/);
+  assert.match(login, /"\/v1\/admin\/session"/);
   assert.match(login, /await supabase\.auth\.signOut\(\)/);
+  assert.doesNotMatch(login, /createSupabaseAdminClient/);
 });
 
 test("admin delegation is disabled in server actions and UI", () => {
-  assert.match(roleActions, /if \(!isDelegableRole\(newRole\)\)/);
-  assert.match(roleActions, /existingRole\?\.role === "super_admin"/);
+  assert.match(roleActions, /DELEGABLE_ROLES\.includes\(newRole\)/);
+  assert.match(roleActions, /adminApiRequest\(/);
+  assert.doesNotMatch(roleActions, /createSupabaseAdminClient/);
   assert.match(picker, /DELEGABLE_ROLES\.map/);
   assert.match(picker, /currentRole === "super_admin"/);
   assert.doesNotMatch(picker, /\["user", "operator", "analyst", "manager", "admin", "super_admin"\]/);

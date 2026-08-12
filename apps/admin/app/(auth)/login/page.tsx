@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
-import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
-import { hasRole, type Role } from "@neptlium/lib";
+import { adminApiRequest } from "@/lib/api";
 import { AdminLoginForm } from "./AdminLoginForm";
 
 function safeInternalPath(value: string | undefined, fallback = "/dashboard"): string {
@@ -27,17 +26,12 @@ export default async function AdminLoginPage({
   const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
-    const db = createSupabaseAdminClient();
-    const { data: roleRow } = await db
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (roleRow && hasRole(roleRow.role as Role, "admin")) {
+    try {
+      await adminApiRequest<{ role: "super_admin" }>("/v1/admin/session");
       redirect("/dashboard");
+    } catch {
+      redirect("/unauthorized");
     }
-    redirect("/unauthorized");
   }
 
   const params = await searchParams;

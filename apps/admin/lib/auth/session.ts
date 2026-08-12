@@ -1,15 +1,16 @@
 import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
-import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
 import { type Role } from "@neptlium/lib";
+import { adminApiRequest } from "@/lib/api";
 
-const KNOWN_ROLES: readonly Role[] = [
-  "user",
-  "operator",
-  "analyst",
-  "manager",
-  "admin",
-  "super_admin"
-];
+const KNOWN_ROLES: readonly Role[] = ["user", "operator", "analyst", "manager", "admin", "super_admin"];
+
+export interface AdminSessionContext {
+  id: string;
+  email: string | null;
+  fullName: string | null;
+  displayName: string | null;
+  role: Role;
+}
 
 export async function getCurrentAdminUser() {
   const supabase = await createSupabaseServerClient();
@@ -17,16 +18,17 @@ export async function getCurrentAdminUser() {
   return user;
 }
 
-export async function getCurrentAdminRole(userId: string): Promise<Role | null> {
-  const db = createSupabaseAdminClient();
-  const { data } = await db
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .maybeSingle();
+export async function getCurrentAdminContext(): Promise<AdminSessionContext | null> {
+  try {
+    const context = await adminApiRequest<AdminSessionContext>("/v1/admin/session");
+    return typeof context.role === "string" && (KNOWN_ROLES as readonly string[]).includes(context.role)
+      ? context
+      : null;
+  } catch {
+    return null;
+  }
+}
 
-  const role = data?.role;
-  return typeof role === "string" && (KNOWN_ROLES as readonly string[]).includes(role)
-    ? (role as Role)
-    : null;
+export async function getCurrentAdminRole(_userId?: string): Promise<Role | null> {
+  return (await getCurrentAdminContext())?.role ?? null;
 }
