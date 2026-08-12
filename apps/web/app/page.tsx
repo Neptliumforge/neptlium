@@ -1,146 +1,199 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import {
-  AllocationVisual,
-  CapitalAccountVisual,
-  CapitalSystemVisual,
-  CapitalUniverseVisual,
-  ExecutionLifecycleVisual,
-  OperatingEnvironmentVisual,
-  PortfolioVisual,
-  SecurityFlowVisual,
-  TransferVisual,
-  TreasuryVisual,
-} from '@/components/product-visuals';
 import { Reveal } from '@/components/reveal';
 import { SITE } from '@/lib/content/site';
 
 export const metadata: Metadata = {
-  title: 'Capital, operated as one system.',
+  title: 'Capital, organized around you.',
   description: SITE.description,
   alternates: { canonical: '/' },
 };
 
+const heroStages = ['Capital', 'Structure', 'Policy', 'Control', 'Operation'] as const;
+const operatingFlow = [
+  'Capital sources',
+  'Connectivity',
+  'Portfolio',
+  'Treasury',
+  'Policy',
+  'Allocation',
+  'Authorization',
+  'Operational record',
+] as const;
+
+function HeroCapitalSystem() {
+  return (
+    <figure className="hero-capital-system" aria-label="Capital organized from source through controlled operation">
+      <div className="hero-capital-core" aria-hidden="true">
+        <span className="hero-crystal hero-crystal-a" />
+        <span className="hero-crystal hero-crystal-b" />
+        <span className="hero-crystal hero-crystal-c" />
+        <i className="hero-trace hero-trace-a" />
+        <i className="hero-trace hero-trace-b" />
+      </div>
+      <ol>
+        {heroStages.map((stage, index) => (
+          <li key={stage}>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <strong>{stage}</strong>
+          </li>
+        ))}
+      </ol>
+    </figure>
+  );
+}
+
+function SystemFlow() {
+  return (
+    <ol className="marketing-system-flow" aria-label="Capital operating sequence">
+      {operatingFlow.map((stage, index) => (
+        <li key={stage}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <strong>{stage}</strong>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function ProductOperatingSystem() {
+  return (
+    <div className="marketing-product-system" aria-label="Overview, Portfolio and Capital Account as one connected product environment">
+      <section className="product-system-primary">
+        <span>Overview</span>
+        <h3>Capital state, organized for decision.</h3>
+        <p>One operating view for capital position, activity, policy context and the next governed action.</p>
+        <div className="product-system-lines" aria-hidden="true"><i /><i /><i /></div>
+      </section>
+      <section className="product-system-plane product-system-portfolio">
+        <span>Portfolio</span>
+        <strong>Exposure · concentration · liquidity · classification</strong>
+        <p>Portfolio intelligence without fabricated balances, returns or live positions.</p>
+      </section>
+      <section className="product-system-plane product-system-account">
+        <span>Capital Account</span>
+        <strong>Readiness · activity · controlled capital movement</strong>
+        <p>Capability remains explicit and never presented as available before it is verified.</p>
+      </section>
+    </div>
+  );
+}
+
+function TreasuryAllocationConnectivity() {
+  return (
+    <div className="marketing-capital-stack" aria-label="Treasury to Allocation to Connectivity">
+      <section>
+        <span>01 · Treasury</span>
+        <h3>Organize liquidity and operating capacity.</h3>
+        <p>Structure reserves, obligations and capital readiness around explicit operating controls.</p>
+      </section>
+      <section className="capital-stack-focus">
+        <span>02 · Allocation</span>
+        <h3>Model policy before authorization.</h3>
+        <ol aria-label="Allocation lifecycle">
+          <li>Observe</li><li>Model</li><li>Authorize</li>
+        </ol>
+        <p>Authorization does not imply autonomous execution or active rebalancing.</p>
+      </section>
+      <section>
+        <span>03 · Connectivity</span>
+        <h3>Connect infrastructure beneath the operating layer.</h3>
+        <p>Neptlium Link supports provider and network connectivity while remaining one infrastructure layer within Neptlium.</p>
+      </section>
+    </div>
+  );
+}
+
+function GovernanceFoundation() {
+  const foundations = [
+    ['Authorization', 'Identity and permission boundaries remain explicit before privileged capital operations.'],
+    ['Ledger', 'Canonical financial state is separated from provider evidence and interface representation.'],
+    ['Reconciliation', 'Provider evidence and canonical records are compared before capital becomes operationally available.'],
+  ] as const;
+
+  return (
+    <div className="marketing-governance-foundation">
+      <div className="governance-rail" aria-hidden="true"><i /><i /><i /></div>
+      {foundations.map(([title, copy], index) => (
+        <section key={title}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <h3>{title}</h3>
+          <p>{copy}</p>
+        </section>
+      ))}
+    </div>
+  );
+}
+
 export default function HomePage() {
   return (
-    <div className="production-home">
-      <section className="production-hero" aria-labelledby="home-hero-title">
+    <div className="production-home marketing-six-compositions">
+      <section className="production-hero marketing-composition marketing-composition-hero" aria-labelledby="home-hero-title" data-composition="1">
         <div className="production-shell production-hero-grid">
           <div className="production-hero-copy">
-            <h1 id="home-hero-title">Capital, operated as one system.</h1>
-            <p>
-              Neptlium brings accounts, portfolios, treasury, transfers and allocation into one
-              governed environment for understanding and directing modern capital.
-            </p>
+            <span className="production-hero-eyebrow">DIGITAL CAPITAL OPERATING INFRASTRUCTURE</span>
+            <h1 id="home-hero-title">Capital, organized around you.</h1>
+            <p>Neptlium brings digital assets, capital policy, portfolio visibility, treasury structure and connectivity into one controlled operating environment.</p>
             <div className="production-hero-actions">
-              <a className="button production-primary" href={SITE.accessUrl}>
-                Access Neptlium <ArrowRight aria-hidden="true" />
-              </a>
-              <Link className="production-secondary" href="/platform">
-                Explore the platform
-              </Link>
+              <Link className="button production-primary" href="/platform">Explore Neptlium <ArrowRight aria-hidden="true" /></Link>
+              <a className="production-secondary" href={SITE.signInUrl}>Enter the App</a>
             </div>
           </div>
-          <Reveal className="production-hero-proof">
-            <OperatingEnvironmentVisual />
-          </Reveal>
+          <Reveal className="production-hero-proof"><HeroCapitalSystem /></Reveal>
         </div>
       </section>
 
-      <section className="production-section operating-environment" aria-labelledby="environment-title">
-        <div className="production-shell split-heading">
-          <Reveal><h2 id="environment-title">One environment for capital operations.</h2></Reveal>
-          <Reveal><p>Understand capital, govern liquidity, direct transfers and manage allocation without fragmenting the operating model across disconnected systems.</p></Reveal>
-        </div>
-        <Reveal className="production-shell"><CapitalSystemVisual /></Reveal>
-      </section>
-
-      <section className="production-section product-story" aria-labelledby="capital-account-title">
-        <div className="production-shell product-story-grid">
-          <Reveal className="product-story-copy">
-            <span>Capital Account</span>
-            <h2 id="capital-account-title">A governed account for modern capital.</h2>
-            <p>Capital Account brings balances, availability, reservations and capital activity into a controlled operating view.</p>
-            <Link href="/capital-account">Explore Capital Account <ArrowRight aria-hidden="true" /></Link>
-          </Reveal>
-          <Reveal className="product-story-plane"><CapitalAccountVisual /></Reveal>
-        </div>
-      </section>
-
-      <section className="production-section product-story soft" aria-labelledby="portfolio-title">
-        <div className="production-shell product-story-grid reversed">
-          <Reveal className="product-story-copy">
-            <span>Portfolio</span>
-            <h2 id="portfolio-title">Your capital, understood as a whole.</h2>
-            <p>Portfolio brings positions and capital exposure into one coherent view across the assets and accounts Neptlium can truthfully recognize.</p>
-            <Link href="/portfolio-intelligence">Explore Portfolio <ArrowRight aria-hidden="true" /></Link>
-          </Reveal>
-          <Reveal className="product-story-plane"><PortfolioVisual /></Reveal>
-        </div>
-      </section>
-
-      <section className="production-section treasury-story" aria-labelledby="treasury-title">
-        <div className="production-shell split-heading">
-          <Reveal><span>Treasury + Transfers</span><h2 id="treasury-title">Liquidity, governed.</h2></Reveal>
-          <Reveal><p>Treasury organizes funding, reserves and capital movement around explicit controls. Transfers are designed around authorization, capital availability, execution state and reconciliation.</p></Reveal>
-        </div>
-        <div className="production-shell dual-plane">
-          <Reveal><TreasuryVisual /></Reveal>
-          <Reveal><TransferVisual /></Reveal>
-        </div>
-      </section>
-
-      <section className="production-section product-story soft" aria-labelledby="allocation-title">
-        <div className="production-shell product-story-grid">
-          <Reveal className="product-story-copy">
-            <span>Allocation</span>
-            <h2 id="allocation-title">Allocation with policy behind it.</h2>
-            <p>Model how capital should be distributed, compare it with current exposure and move toward execution through governed decisions.</p>
-            <Link href="/allocation">Explore Allocation <ArrowRight aria-hidden="true" /></Link>
-          </Reveal>
-          <Reveal className="product-story-plane"><AllocationVisual /></Reveal>
-        </div>
-      </section>
-
-      <section className="production-section universe-story" aria-labelledby="universe-title">
-        <div className="production-shell product-story-grid reversed">
-          <Reveal className="product-story-copy">
-            <span>Capital Universe</span>
-            <h2 id="universe-title">A broader view of capital.</h2>
-            <p>Neptlium is designed to bring supported digital assets and future listed-market exposure into a unified capital model without representing future brokerage capability as current.</p>
-            <Link href="/capital-universe">Explore Capital Universe <ArrowRight aria-hidden="true" /></Link>
-          </Reveal>
-          <Reveal className="product-story-plane"><CapitalUniverseVisual /></Reveal>
-        </div>
-      </section>
-
-      <section className="production-section execution-story" aria-labelledby="execution-title">
-        <div className="production-shell split-heading">
-          <Reveal><span>Execution + reconciliation</span><h2 id="execution-title">Execution is a process, not a status.</h2></Reveal>
-          <Reveal><p>Neptlium separates intent, authorization, submission, settlement and reconciliation so capital state remains explicit throughout its lifecycle.</p></Reveal>
-        </div>
-        <Reveal className="production-shell"><ExecutionLifecycleVisual /></Reveal>
-      </section>
-
-      <section className="production-section governance-story soft" aria-labelledby="governance-title">
-        <div className="production-shell product-story-grid">
-          <Reveal className="product-story-copy">
-            <span>Security + governance</span>
-            <h2 id="governance-title">Control is part of the architecture.</h2>
-            <p>Identity, authorization, ownership, policy, auditability and reconciliation belong inside the capital operating model—not around it.</p>
-            <Link href="/security">Explore security <ArrowRight aria-hidden="true" /></Link>
-          </Reveal>
-          <Reveal className="product-story-plane"><SecurityFlowVisual /></Reveal>
-        </div>
-      </section>
-
-      <section className="production-resolution" aria-labelledby="resolution-title">
+      <section className="marketing-composition marketing-thesis" aria-labelledby="thesis-title" data-composition="2">
         <div className="production-shell">
+          <div className="marketing-editorial-heading">
+            <Reveal><span>Capital operating thesis</span><h2 id="thesis-title">Digital capital is fragmented by default.</h2></Reveal>
+            <Reveal><p>Wallets, exchanges, custodians, networks and treasury systems often operate as separate financial surfaces. Neptlium creates one governed operating layer across them.</p></Reveal>
+          </div>
+          <Reveal><SystemFlow /></Reveal>
+        </div>
+      </section>
+
+      <section className="marketing-composition marketing-product" aria-labelledby="product-system-title" data-composition="3">
+        <div className="production-shell">
+          <div className="marketing-editorial-heading">
+            <Reveal><span>Product operating system</span><h2 id="product-system-title">One system for understanding and operating capital.</h2></Reveal>
+            <Reveal><p>Overview, Portfolio and Capital Account work together to make capital state visible, structured and operationally controlled.</p></Reveal>
+          </div>
+          <Reveal><ProductOperatingSystem /></Reveal>
+        </div>
+      </section>
+
+      <section className="marketing-composition marketing-capital-operations" aria-labelledby="capital-operations-title" data-composition="4">
+        <div className="production-shell">
+          <div className="marketing-editorial-heading light-on-dark">
+            <Reveal><span>Treasury · Allocation · Connectivity</span><h2 id="capital-operations-title">Structure capital. Govern policy. Connect infrastructure.</h2></Reveal>
+            <Reveal><p>Treasury organizes liquidity and operating capacity. Allocation models policy and drift. Neptlium Link provides the connectivity layer beneath capital operations.</p></Reveal>
+          </div>
+          <Reveal><TreasuryAllocationConnectivity /></Reveal>
+        </div>
+      </section>
+
+      <section className="marketing-composition marketing-governance" aria-labelledby="governance-title" data-composition="5">
+        <div className="production-shell">
+          <div className="marketing-editorial-heading">
+            <Reveal><span>Governance + technical foundation</span><h2 id="governance-title">Control is part of the architecture.</h2></Reveal>
+            <Reveal><p>Identity, authorization, policy boundaries, provider isolation, canonical ledger state and reconciliation remain explicit throughout the capital lifecycle.</p></Reveal>
+          </div>
+          <Reveal><GovernanceFoundation /></Reveal>
+        </div>
+      </section>
+
+      <section className="marketing-composition marketing-conversion" aria-labelledby="conversion-title" data-composition="6">
+        <div className="production-shell marketing-conversion-inner">
           <Reveal>
-            <h2 id="resolution-title">Capital operations, made explicit.</h2>
-            <p>One governed environment for understanding capital state and directing what comes next.</p>
-            <a className="button production-primary" href={SITE.accessUrl}>Access Neptlium <ArrowRight aria-hidden="true" /></a>
+            <span>Neptlium</span>
+            <h2 id="conversion-title">Operate digital capital with greater control.</h2>
+            <p>Move from fragmented capital surfaces into one governed operating environment.</p>
+            <div className="production-hero-actions conversion-actions">
+              <a className="button production-primary" href={SITE.signInUrl}>Enter the App <ArrowRight aria-hidden="true" /></a>
+              <Link className="production-secondary" href="/platform">Explore the Platform</Link>
+            </div>
           </Reveal>
         </div>
       </section>

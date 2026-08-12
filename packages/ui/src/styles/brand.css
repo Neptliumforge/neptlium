@@ -1,0 +1,36 @@
+/* Canonical Neptlium brand-semantic tokens.
+ * These tokens define brand identity and may be consumed by marketing and shared
+ * brand primitives. They intentionally do not replace operational product-state
+ * tokens unless a separate product migration authorizes that change.
+ */
+:root {
+  --n-brand-midnight: #011255;
+  --n-brand-cobalt-deep: #011d85;
+  --n-brand-cobalt-core: #012abd;
+  --n-brand-blue: #0141f3;
+  --n-brand-blue-bright: #026ffa;
+  --n-brand-azure: #11a3f9;
+  --n-brand-cyan: #53d1f8;
+  --n-brand-ice: #c0f5fc;
+
+  --n-brand-canvas: #ffffff;
+  --n-brand-canvas-soft: #f7f9fc;
+  --n-brand-surface-cool: #f1f5fa;
+  --n-brand-surface-blue-soft: #edf4ff;
+
+  --n-brand-ink: #08111f;
+  --n-brand-ink-secondary: #39475a;
+  --n-brand-ink-muted: #68758a;
+
+  --n-brand-border: #dce4ef;
+  --n-brand-border-blue: #c8d9ff;
+
+  --n-brand-gradient-signature: linear-gradient(
+    112deg,
+    var(--n-brand-midnight) 0%,
+    var(--n-brand-cobalt-deep) 24%,
+    var(--n-brand-blue) 52%,
+    var(--n-brand-azure) 78%,
+    var(--n-brand-cyan) 100%
+  );
+}

@@ -15,7 +15,7 @@ type NavLink = {
 };
 
 type NavSection = {
-  label: 'Platform' | 'Solutions' | 'Infrastructure' | 'Company';
+  label: 'Platform' | 'Capital' | 'Connectivity' | 'Governance' | 'Company';
   eyebrow: string;
   description: string;
   links: readonly NavLink[];
@@ -25,37 +25,47 @@ type NavSection = {
 const navigation: readonly NavSection[] = [
   {
     label: 'Platform',
-    eyebrow: 'Capital operations',
-    description: 'The operating surfaces that organize capital position, liquidity and governed decisions.',
+    eyebrow: 'Capital operating system',
+    description: 'One controlled environment for understanding capital state and directing what comes next.',
     links: [
-      { label: 'Capital Account', href: '/capital-account', description: 'Controlled capital state, availability and activity.' },
-      { label: 'Portfolio', href: '/portfolio-intelligence', description: 'Positions and exposure in one coherent view.' },
-      { label: 'Treasury', href: '/treasury', description: 'Liquidity, reserves and governed capital movement.' },
+      { label: 'Platform overview', href: '/platform', description: 'How Neptlium organizes digital capital as one operating system.' },
+      { label: 'Portfolio', href: '/portfolio-intelligence', description: 'Ownership, exposure, concentration and liquidity in one coherent view.' },
+      { label: 'Capital Account', href: '/capital-account', description: 'The governed operating boundary for capital movement.' },
+      { label: 'Treasury', href: '/treasury', description: 'Liquidity, reserves and capital readiness under explicit controls.' },
       { label: 'Allocation', href: '/allocation', description: 'Observe, model and authorize capital distribution.' },
+    ],
+    lifecycle: ['Observe', 'Model', 'Authorize'],
+  },
+  {
+    label: 'Capital',
+    eyebrow: 'Capital structure',
+    description: 'The public model for capital position, operating activity and policy-backed decisions.',
+    links: [
+      { label: 'Capital Universe', href: '/capital-universe', description: 'The supported and directional capital model without fabricated capability.' },
       { label: 'Capital Activity', href: '/capital-activity', description: 'A truthful record of capital operations as they become available.' },
-    ],
-    lifecycle: ['Observe', 'Model', 'Authorize', 'Execute', 'Reconcile'],
-  },
-  {
-    label: 'Solutions',
-    eyebrow: 'Operating outcomes',
-    description: 'Capital infrastructure organized around the work it is designed to support.',
-    links: [
-      { label: 'Capital Management', href: '/platform', description: 'Bring capital position and operating context into one system.' },
-      { label: 'Treasury Operations', href: '/treasury', description: 'Govern liquidity, funding state and capital movement.' },
-      { label: 'Allocation Governance', href: '/allocation', description: 'Move from observed exposure to policy-backed decisions.' },
-      { label: 'Digital Asset Infrastructure', href: '/capital-account', description: 'Operate supported digital-capital workflows behind explicit controls.' },
+      { label: 'Treasury', href: '/treasury', description: 'Reserve structure, liquidity and operating capacity.' },
+      { label: 'Allocation', href: '/allocation', description: 'Policy, classification and governed authorization.' },
     ],
   },
   {
-    label: 'Infrastructure',
-    eyebrow: 'Control plane',
-    description: 'Provider evidence, ledger architecture and reconciliation remain separated from customer interaction.',
+    label: 'Connectivity',
+    eyebrow: 'Neptlium Link',
+    description: 'Connectivity architecture for external digital-capital infrastructure.',
     links: [
-      { label: 'API Infrastructure', href: '/platform', description: 'The privileged boundary for capital operations and provider orchestration.' },
-      { label: 'Provider Connectivity', href: '/neptlium-link', description: 'Connectivity architecture for external capital infrastructure.' },
-      { label: 'Ledger & Reconciliation', description: 'Canonical financial-history and discrepancy-resolution architecture.', status: 'Architecture' },
-      { label: 'Security & Governance', href: '/security', description: 'Identity, authorization, ownership and operational controls.' },
+      { label: 'Neptlium Link', href: '/neptlium-link', description: 'Institutional connectivity infrastructure for digital capital.' },
+      { label: 'Provider connectivity', description: 'Provider isolation and orchestration architecture.', status: 'Architecture' },
+      { label: 'Network connectivity', description: 'Network-facing infrastructure governed behind the API boundary.', status: 'Architecture' },
+      { label: 'API infrastructure', href: '/platform', description: 'The privileged boundary for governed capital operations.' },
+    ],
+  },
+  {
+    label: 'Governance',
+    eyebrow: 'Control architecture',
+    description: 'Identity, authorization, policy and operational state remain explicit throughout the system.',
+    links: [
+      { label: 'Security', href: '/security', description: 'Identity, permission boundaries and operational controls.' },
+      { label: 'Trust', href: '/trust', description: 'How Neptlium communicates system truth and operating boundaries.' },
+      { label: 'Risk disclosure', href: '/risk-disclosure', description: 'Public risk and availability disclosures.' },
     ],
   },
   {
@@ -65,7 +75,6 @@ const navigation: readonly NavSection[] = [
     links: [
       { label: 'About', href: '/about', description: 'The mission and operating thesis behind Neptlium.' },
       { label: 'Principles', href: '/company#principles', description: 'The principles governing capital operations and product truth.' },
-      { label: 'Security', href: '/security', description: 'How access, authorization and operational control are approached.' },
       { label: 'Contact', href: '/contact', description: 'Company, product and general inquiries.' },
     ],
   },
@@ -176,8 +185,8 @@ function DesktopCommandMenu({ item, path }: { item: NavSection; path: string }) 
           <aside className="command-system-panel">
             {item.lifecycle ? (
               <>
-                <span>Capital operations</span>
-                <strong>One system. Explicit state.</strong>
+                <span>Allocation lifecycle</span>
+                <strong>Observed before modeled. Authorized before operation.</strong>
                 <ol>
                   {item.lifecycle.map((state, index) => (
                     <li key={state}>
@@ -192,8 +201,8 @@ function DesktopCommandMenu({ item, path }: { item: NavSection; path: string }) 
                 <span>{item.eyebrow}</span>
                 <strong>Capability follows verified architecture.</strong>
                 <p>
-                  Neptlium distinguishes current product capability from architectural direction
-                  and unavailable execution.
+                  Neptlium distinguishes current capability from architectural direction and
+                  unavailable execution.
                 </p>
               </>
             )}
@@ -261,9 +270,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="command-actions">
-          <a href={SITE.signInUrl}>Sign in</a>
-          <a className="button command-primary-action" href={SITE.accessUrl}>
-            Access Neptlium <ArrowRight aria-hidden="true" />
+          <Link href="/platform">Explore</Link>
+          <a className="button command-primary-action" href={SITE.signInUrl}>
+            Enter App <ArrowRight aria-hidden="true" />
           </a>
         </div>
 
@@ -315,9 +324,9 @@ export function SiteHeader() {
             </nav>
 
             <div className="mobile-command-actions">
-              <a href={SITE.signInUrl}>Sign in</a>
-              <a className="button" href={SITE.accessUrl}>
-                Access Neptlium <ArrowRight aria-hidden="true" />
+              <Link href="/platform">Explore</Link>
+              <a className="button" href={SITE.signInUrl}>
+                Enter App <ArrowRight aria-hidden="true" />
               </a>
             </div>
           </div>

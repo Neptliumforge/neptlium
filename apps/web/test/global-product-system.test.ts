@@ -5,25 +5,31 @@ import { readFile } from 'node:fs/promises';
 const webFile = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('public site consumes shared tokens and the production marketing authority', async () => {
-  const [globals, production] = await Promise.all([
+  const [globals, production, brand] = await Promise.all([
     webFile('app/globals.css'),
     webFile('app/marketing-production.css'),
+    readFile(new URL('../../../packages/ui/src/styles/brand.css', import.meta.url), 'utf8'),
   ]);
   assert.equal(globals.includes('packages/ui/src/styles/tokens.css'), true);
-  assert.equal(production.includes('#2764ff'), true);
-  assert.equal(production.includes('#090b0f'), true);
-  assert.equal(production.includes('--np-paper: #fff'), true);
+  assert.equal(production.includes("@import '../../../packages/ui/src/styles/brand.css';"), true);
+  assert.equal(production.includes('--np-paper: var(--n-brand-canvas)'), true);
+  assert.equal(production.includes('--np-ink: var(--n-brand-ink)'), true);
+  assert.equal(production.includes('--np-blue: var(--n-brand-blue)'), true);
+  assert.equal(brand.includes('--n-brand-blue: #0141f3'), true);
+  assert.equal(production.includes('#2764ff'), false);
+  assert.equal(production.includes('#147dff'), false);
   assert.equal(production.includes('radial-gradient'), false);
 });
 
-test('public brand consumes the shared production mark', async () => {
+test('public brand consumes the shared production mark and canonical marketing blue', async () => {
   const [brand, icon] = await Promise.all([
     webFile('components/brand.tsx'),
     readFile(new URL('../public/icon.svg', import.meta.url), 'utf8'),
   ]);
   assert.equal(brand.includes('NeptliumMark'), true);
   assert.equal(brand.includes('next/image'), false);
-  assert.equal(icon.includes('#2764FF'), true);
+  assert.equal(icon.includes('#0141F3'), true);
+  assert.equal(icon.includes('#2764FF'), false);
   assert.equal(icon.includes('linearGradient'), false);
 });
 

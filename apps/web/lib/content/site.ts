@@ -2,9 +2,9 @@ export const SITE = {
   name: 'Neptlium',
   url: 'https://neptlium.com',
   domain: 'neptlium.com',
-  positioning: 'Capital operations, governed as one system.',
+  positioning: 'Digital capital, organized with institutional intelligence.',
   description:
-    'Neptlium brings accounts, portfolios, treasury, transfers and allocation into one governed environment for understanding and directing modern capital.',
+    'Neptlium helps users understand, organize, govern and operate digital capital through one controlled capital environment.',
   supportEmail: 'support@neptlium.com',
   accessUrl: 'https://app.neptlium.com/auth/sign-up',
   signInUrl: 'https://app.neptlium.com/auth/sign-in',

@@ -13,6 +13,7 @@ import './route-product-consolidation.css';
 import './detail-product-consolidation.css';
 import './home-composition.css';
 import './marketing-production.css';
+import './marketing-home.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';

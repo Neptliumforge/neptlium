@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint app components lib --ext .ts,.tsx",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --test test/*.test.ts"
+    "test": "node --test test/*.test.ts test/*.test.mjs"
   },
   "dependencies": {
     "clsx": "2.1.1",

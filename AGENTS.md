@@ -1,7 +1,9 @@
 # Repository Guidance
 
 - Inspect live code, migrations, tests, and configuration before describing or changing behavior.
-- The numbered documents `docs/00_*` through `docs/14_*` are authoritative when present. `docs/03_DESIGN_SYSTEM.md` is the current Capital Precision visual authority and remains subject to its own stated reconstruction status.
+- The numbered documents `docs/00_*` through `docs/14_*` are authoritative when present.
+- `docs/03_DESIGN_SYSTEM.md` remains the shared/product typography and Capital Precision authority.
+- `docs/03_MARKETING_DESIGN_DOCTRINE.md` is the authoritative visual, color, composition, motion, editorial and marketing-system doctrine for `apps/web`. Where older marketing-specific Capital Precision assumptions conflict with it, the marketing doctrine wins for `apps/web` only.
 - `docs/archive` is historical context only, never current architecture.
 
 ## Application boundaries
