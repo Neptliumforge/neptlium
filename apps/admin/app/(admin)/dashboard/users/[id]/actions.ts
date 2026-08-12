@@ -2,20 +2,40 @@
 
 import { revalidatePath } from "next/cache";
 import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
-import { hasRole, type Role } from "@neptlium/lib";
+import { type Role } from "@neptlium/lib";
 import { requireAdminUser } from "@/lib/auth";
+import { isDelegableRole } from "@/lib/auth/authorization";
 
 export type ActionResult = { readonly ok: true } | { readonly ok: false; readonly error: string };
 
 export async function updateUserRole(userId: string, newRole: Role): Promise<ActionResult> {
-  const { role: adminRole } = await requireAdminUser();
+  await requireAdminUser();
 
-  // Only super_admin can grant admin or super_admin roles
-  if ((newRole === "admin" || newRole === "super_admin") && !hasRole(adminRole, "super_admin")) {
-    return { ok: false, error: "Only super administrators can grant admin roles." };
+  if (!isDelegableRole(newRole)) {
+    return {
+      ok: false,
+      error: "Administrative roles are not assignable from the admin console."
+    };
   }
 
   const db = createSupabaseAdminClient();
+  const { data: existingRole, error: existingRoleError } = await db
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existingRoleError) {
+    return { ok: false, error: "Failed to verify current role." };
+  }
+
+  if (existingRole?.role === "super_admin") {
+    return {
+      ok: false,
+      error: "The General Platform Administrator role cannot be changed from this console."
+    };
+  }
+
   const { error } = await db
     .from("user_roles")
     .upsert({ user_id: userId, role: newRole }, { onConflict: "user_id" });

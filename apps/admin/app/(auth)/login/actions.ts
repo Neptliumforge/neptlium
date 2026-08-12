@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
 import { createSupabaseAdminClient } from "@neptlium/lib/supabase/admin";
-import { hasRole, type Role } from "@neptlium/lib";
+import { isGeneralPlatformAdminRole } from "@/lib/auth/authorization";
 
 export interface AdminLoginState {
   readonly error: string | null;
@@ -51,7 +51,8 @@ export async function adminLogin(
     return { error: "The email or password is incorrect.", success: false };
   }
 
-  // Verify admin role — use admin client to bypass any RLS on user_roles
+  // Authentication establishes identity only. Administrative authorization
+  // requires the exact General Platform Administrator role on the server.
   const db = createSupabaseAdminClient();
   const { data: roleRow } = await db
     .from("user_roles")
@@ -59,11 +60,10 @@ export async function adminLogin(
     .eq("user_id", data.user.id)
     .maybeSingle();
 
-  if (!roleRow || !hasRole(roleRow.role as Role, "admin")) {
-    // Sign them out immediately — non-admin accounts have no place here
+  if (!isGeneralPlatformAdminRole(roleRow?.role)) {
     await supabase.auth.signOut();
     return {
-      error: "Your account does not have admin access to this console.",
+      error: "Your account does not have General Platform Administrator access.",
       success: false
     };
   }
