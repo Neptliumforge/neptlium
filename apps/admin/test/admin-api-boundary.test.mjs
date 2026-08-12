@@ -4,8 +4,10 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 
 const root = new URL("../", import.meta.url).pathname;
+const EXCLUDED_DIRS = new Set(["node_modules", ".next", "test"]);
 function sourceFiles(dir) {
   return readdirSync(dir).flatMap((name) => {
+    if (EXCLUDED_DIRS.has(name)) return [];
     const path = join(dir, name);
     return statSync(path).isDirectory()
       ? sourceFiles(path)
@@ -61,6 +63,7 @@ test("all privileged data modules call apps/api rather than governed Supabase ta
 test("all privileged operator writes call apps/api rather than Supabase", () => {
   for (const path of [
     "app/(admin)/dashboard/users/[id]/actions.ts",
+    "app/(admin)/dashboard/deposits/actions.ts",
     "app/(admin)/dashboard/withdrawals/actions.ts",
     "app/(admin)/dashboard/allocations/actions.ts",
   ]) {
