@@ -104,15 +104,16 @@ export async function handleAdminRoute(
   const allocationDecision = path.match(/^\/v1\/admin\/allocations\/([^/]+)\/(approve|reject)$/);
   if (method === 'POST' && allocationDecision?.[1] && allocationDecision[2]) {
     requireIdempotencyKey(context);
-    assertObject(context.body);
     const allocationId = decodeURIComponent(allocationDecision[1]);
     const action = allocationDecision[2];
-    const reason = typeof context.body.reason === 'string' ? context.body.reason : undefined;
-    await deps.repository.reviewAllocation(
-      allocationId, actor.id, action === 'approve' ? 'approved' : 'rejected', reason,
+    await audit(`admin.allocation.${action}.blocked`, 'allocation_request', allocationId, {
+      reason: 'legacy_allocation_request_not_mapped_to_governed_allocation_domain',
+    });
+    throw new ApiError(
+      409,
+      'allocation_authorization_unavailable',
+      'This legacy allocation request cannot be authorized until it is mapped to the governed Allocation policy/plan lifecycle.',
     );
-    await audit(`admin.allocation.${action}`, 'allocation_request', allocationId);
-    return { data: { status: action === 'approve' ? 'approved' : 'rejected', execution: 'not_started' } };
   }
 
   if (method === 'GET' && path === '/v1/admin/security/login-history')
