@@ -13,6 +13,7 @@ export type ErrorCode =
   | 'role_update_failed'
   | 'compliance_update_failed'
   | 'audit_unavailable'
+  | 'deposit_completion_unavailable'
   | 'withdrawal_approval_unavailable'
   | 'allocation_authorization_unavailable'
   | 'validation_failed'
