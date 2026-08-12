@@ -8,7 +8,6 @@ export interface AdminLoginState {
   readonly error: string | null;
   readonly success: boolean;
 }
-export const initialAdminLoginState: AdminLoginState = { error: null, success: false };
 
 function safeInternalPath(value: string | null | undefined, fallback = "/dashboard"): string {
   if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return fallback;

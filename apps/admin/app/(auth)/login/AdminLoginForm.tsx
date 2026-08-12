@@ -4,7 +4,9 @@ import { useActionState, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { Lock, Mail } from "lucide-react";
 import { Button, Field, FieldError, FieldHint, Input, Label } from "@neptlium/ui";
-import { adminLogin, initialAdminLoginState } from "./actions";
+import { adminLogin, type AdminLoginState } from "./actions";
+
+const initialAdminLoginState: AdminLoginState = { error: null, success: false };
 
 export function AdminLoginForm({ next }: { readonly next: string }) {
   const [state, formAction, isPending] = useActionState(adminLogin, initialAdminLoginState);
@@ -16,7 +18,6 @@ export function AdminLoginForm({ next }: { readonly next: string }) {
 
   return (
     <div className="w-full max-w-[400px]">
-      {/* Logo + title */}
       <div className="mb-8 flex flex-col items-center gap-4 text-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border-default bg-surface-1">
           <Lock className="size-5 text-accent-primary" />
