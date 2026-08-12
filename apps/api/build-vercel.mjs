@@ -19,7 +19,7 @@ const requiredRuntimeModules = [
   'admin-routes.js',
   'admin-repository.js',
 ];
-if (requiredRuntimeModules.some((module) => !existsSync(join(root, 'dist', module))) {
+if (requiredRuntimeModules.some((module) => !existsSync(join(root, 'dist', module)))) {
   throw new Error('Neptlium API production build did not emit required runtime modules');
 }
 console.log('Neptlium API runtime bundle emitted successfully.');
