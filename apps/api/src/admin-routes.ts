@@ -74,6 +74,21 @@ export async function handleAdminRoute(
 
   if (method === 'GET' && path === '/v1/admin/deposits')
     return { data: await deps.repository.listDeposits(query) };
+
+  const depositCompletion = path.match(/^\/v1\/admin\/deposits\/([^/]+)\/complete$/);
+  if (method === 'POST' && depositCompletion?.[1]) {
+    requireIdempotencyKey(context);
+    const depositId = decodeURIComponent(depositCompletion[1]);
+    await audit('admin.deposit.complete.blocked', 'deposit', depositId, {
+      reason: 'legacy_deposit_not_mapped_to_governed_funding_reconciliation_lifecycle',
+    });
+    throw new ApiError(
+      409,
+      'deposit_completion_unavailable',
+      'This deposit cannot be completed manually until it is mapped to the governed funding and reconciliation lifecycle.',
+    );
+  }
+
   if (method === 'GET' && path === '/v1/admin/withdrawals/pending')
     return { data: await deps.repository.listWithdrawals(query, true) };
   if (method === 'GET' && path === '/v1/admin/withdrawals')
