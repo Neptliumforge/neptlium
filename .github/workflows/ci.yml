@@ -19,6 +19,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git diff --check
+      - run: git diff --check "$(git merge-base HEAD origin/main)" HEAD
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
