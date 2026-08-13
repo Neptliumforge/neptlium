@@ -41,7 +41,7 @@ Those unsupported operations must be implemented as atomic database transactions
 
 ## Circle adapter
 
-The provider-neutral `CapitalProvider` selects the Circle adapter only when complete testnet configuration is present. Circle supports USDC on Base Sepolia wallet/address/balance observation. Transfer execution is disabled. Responses expose Neptlium domain models and provider-observed state, not raw SDK objects or canonical balances.
+The provider-neutral `CapitalProvider` is designed to select Circle for complete testnet or production configuration. The adapter implements existing-wallet/address/balance/transaction observation for USDC on Base Sepolia or Base. Automatic provisioning is disabled and transfer submission is unimplemented. The runtime composition passes the environment, wallet-set reference, and live-execution gate explicitly; build and provider tests lock the contract. Responses expose Neptlium domain models and provider-observed state, not raw SDK objects or canonical balances.
 
 ## Webhooks
 
@@ -57,7 +57,7 @@ Circle currently returns a disabled error before ingestion. Credentials or a con
 - `observability.ts` emits safe structured request/operation signals.
 - Migration tables support durable jobs, treasury policy, approvals, reconciliation resolution, audit, and idempotency.
 
-Memory job/rate-limit implementations are local/test only. Production requires durable jobs and a **distributed rate limiter** shared across instances. The runtime already refuses production startup without an injected rate limiter.
+Memory job/rate-limit implementations are local/test only. Production requires durable jobs and a **distributed rate limiter** shared across instances. `buildApp` rejects `MemoryRateLimiter` in production. Standalone and serverless production composition uses `SupabaseRateLimiter`, backed by the service-role-only atomic `consume_api_rate_limit` RPC. The forward migration must be applied before deploying this runtime; storage failure fails closed.
 
 ## TRANSITION
 
@@ -84,7 +84,7 @@ Read-only canonical liquidity projections, reserve requirement/coverage, restric
 
 ### Stripe APIs
 
-Provider-neutral fiat funding and Onramp intents, verified webhook ingestion, settlement/refund/dispute state, ledger posting, and reconciliation. Stripe is TARGET only.
+The current Stripe Treasury adapter supports eligibility- and execution-gated USD ACH inbound-transfer submission. Stripe Onramp is not implemented. Provider submission does not establish availability; verified webhook ingestion, attribution, ledger posting, return/failure handling, and reconciliation remain required.
 
 ## API invariants
 

@@ -32,7 +32,7 @@ Applied migrations are append-only evidence. Never rewrite or delete them; corre
 - API keys, service-role keys, Circle entity secret, signing keys, and future Clerk/Stripe secrets are server-only.
 - Validate environment, origin, URL, and capability configuration at startup.
 - Never log authorization headers, cookies, tokens, secrets, private/recovery material, or raw sensitive payloads.
-- Remote environment changes require explicit instruction and review; Phase 0 makes none.
+- Remote environment changes require explicit instruction and review.
 
 ## Webhook security
 
@@ -65,7 +65,7 @@ Unavailable security dependencies must not degrade into anonymous access, simula
 
 Clerk is the target authentication/session/MFA provider. Migration requires provider-independent principals, subject mappings, preserved audit attribution, verified app/API/admin token handling, role/ownership separation, session revocation, recovery, MFA policy, and controlled overlap with Supabase Auth.
 
-No Clerk SDK, middleware, database migration, or environment configuration is authorized in Phase 0.
+No Clerk SDK, middleware, database migration, or environment configuration exists in the audited baseline.
 
 ## Security review minimum
 

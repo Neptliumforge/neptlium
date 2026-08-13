@@ -6,14 +6,16 @@ Providers are replaceable capability adapters. Neptlium owns principal identity,
 
 ### Circle
 
-Circle Developer-Controlled Wallets is the verified capital-provider implementation in `apps/api/src/circle.ts`.
+Circle Developer-Controlled Wallets is the capital-provider adapter in `apps/api/src/circle.ts`.
 
-- Environment: testnet only; configuration rejects mainnet or ambiguous Circle environment values.
-- Enabled capability: EOA wallet provisioning/linkage, address lookup, USDC balance observation, and transaction observation on `BASE-SEPOLIA`.
+- Environment model: configured testnet (`BASE-SEPOLIA`) or production (`BASE`). Production configuration also requires `ENABLE_MAINNET=true`.
+- Implemented adapter capability: existing EOA wallet lookup, existing address retrieval, USDC balance observation, and transaction observation.
 - Persistence: safe Circle wallet identifiers, wallet-set reference, address, environment, status, observation time, and reconciliation state.
-- Disabled capability: `createTransfer` fails with `provider_execution_disabled`.
+- Disabled/unimplemented capability: automatic wallet provisioning is disabled; transfer submission remains unimplemented even when its live execution flag is enabled.
 - Webhooks: `/v1/webhooks/circle` fails closed because official-contract signature verification has not been implemented.
 - Provider balances are returned as `provider_observed`, not canonical.
+
+The runtime passes the configured environment, wallet-set reference, and live-execution gate explicitly. Build and provider-runtime tests lock that composition. This does not make provisioning or transfers operational.
 
 Circle credentials and entity secret are server-only. Private keys/recovery material are never stored in the provider-link table.
 
@@ -25,13 +27,14 @@ Supabase Auth is CURRENT. It is not the permanent provider-independent principal
 
 ### Alchemy
 
-Alchemy is represented only by verified groundwork:
+Alchemy is observation-only groundwork:
 
-- API configuration fields for API/RPC values;
-- health reporting that calls it configured only when implementation inputs and an injected webhook verifier are present;
+- testnet/production API and Base RPC configuration validation;
+- a production-capability verification flag that does not authorize execution;
+- normalization of chain observations into non-canonical settlement evidence;
 - a generic `/v1/webhooks/alchemy` ingestion boundary that fails closed without verification.
 
-No current code proves a complete Alchemy custody, balance, transfer, or production webhook capability. Do not claim one.
+No current code proves a complete Alchemy custody, balance, transfer, or production webhook capability. Alchemy cannot authorize, execute, post ledger entries, or establish availability.
 
 ### Coinbase legacy configuration
 
@@ -39,9 +42,9 @@ Some configuration names and a generic webhook route remain from earlier groundw
 
 ## TARGET
 
-### Stripe fiat funding
+### Stripe Treasury funding — current gated code
 
-Stripe is the intended target for supported fiat funding. Implementation requires provider-neutral funding intents, idempotent Stripe operations, official webhook verification, settlement/failure/refund/dispute handling, balanced ledger posting, and reconciliation. It is not installed or live.
+A server-side Stripe Treasury adapter exists for gated USD ACH inbound-transfer submission. It requires complete configuration, verified Treasury eligibility, and explicit live execution enablement. Provider submission is evidence only; durable attribution, official webhook verification, settlement/failure/return handling, balanced ledger posting, and reconciliation remain separate requirements. Repository presence does not prove live eligibility or execution.
 
 ### Stripe Onramp
 
@@ -53,7 +56,7 @@ An equities provider may supply brokerage/custody, market data, order, execution
 
 ### Clerk
 
-Clerk is the target authentication/session/MFA provider. Clerk will map provider subjects to provider-independent Neptlium principals and will not own financial authorization or ledger identity. No Clerk implementation exists in Phase 0.
+Clerk is the target authentication/session/MFA provider. Clerk will map provider subjects to provider-independent Neptlium principals and will not own financial authorization or ledger identity. No Clerk implementation exists in the audited baseline.
 
 ## Adapter rules
 

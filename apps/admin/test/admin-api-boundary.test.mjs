@@ -22,6 +22,8 @@ test("apps/admin uses Supabase only for identity/session, never service-role tab
     assert.equal(source.includes("SUPABASE_SERVICE_ROLE_KEY"), false, path);
     assert.equal(source.includes("service_role"), false, path);
     assert.equal(source.includes("ADMIN_ALLOCATOR_TOKEN"), false, path);
+    assert.doesNotMatch(source, /\.from\s*\(/, path);
+    assert.doesNotMatch(source, /\.rpc\s*\(/, path);
   }
   const login = readFileSync(join(root, "app/(auth)/login/actions.ts"), "utf8");
   assert.match(login, /signInWithPassword/);

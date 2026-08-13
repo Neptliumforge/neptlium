@@ -339,9 +339,9 @@ Circle data remains provider evidence until reconciled into Neptlium financial t
 
 Current implementation and environment determine whether any specific operation is actually available.
 
-### Stripe — TARGET
+### Stripe Treasury — CURRENT GATED CODE; Stripe Onramp — TARGET
 
-Stripe is the intended architecture for supported fiat funding and Onramp capabilities.
+The repository contains a server-side Stripe Treasury adapter for eligibility- and execution-gated USD ACH inbound-transfer submission. Stripe Onramp remains target architecture.
 
 Potential responsibilities include:
 
@@ -353,7 +353,7 @@ Potential responsibilities include:
 - provider evidence
 - reconciliation
 
-Stripe must not be documented as implemented until repository evidence proves it.
+Adapter presence does not prove live Treasury eligibility, deployed configuration, provider execution, canonical availability, ledger posting, or reconciliation.
 
 ### Alchemy — NOT CANONICAL AUTHORITY
 

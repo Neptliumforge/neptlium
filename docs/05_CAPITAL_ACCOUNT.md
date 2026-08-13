@@ -14,7 +14,7 @@ The repository contains two generations of groundwork:
 
 ### Circle foundation
 
-Circle Developer-Controlled Wallets is implemented behind the provider-neutral `CapitalProvider` interface for test USDC on Base Sepolia only.
+Circle Developer-Controlled Wallets contains provider-neutral code for existing-wallet/address/balance/transaction observation for USDC on configured Base Sepolia or Base environments. The runtime composes the adapter with its explicit environment and live-execution gates; automatic wallet provisioning is disabled and transfer submission remains unimplemented.
 
 - An authenticated owner can idempotently provision/link a Circle EOA through `/v1/capital-account/provider-wallet` when reviewed server credentials and a wallet-set reference are configured.
 - The API can return the linked deposit address and provider-observed USDC balance.

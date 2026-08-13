@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { buildApp, type InjectionResponse } from './app.js';
 import { loadConfig } from './config.js';
 import { SupabaseRepository } from './supabase-repository.js';
-import { MemoryRateLimiter } from './security.js';
+import { SupabaseRateLimiter } from './security.js';
 import { executeAdminHttp } from './admin-http.js';
 
 type CanonicalApplication = {
@@ -70,7 +70,7 @@ async function buildProductionApplication() {
   return buildApp({
     config,
     repository: new SupabaseRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY),
-    rateLimiter: new MemoryRateLimiter(),
+    rateLimiter: new SupabaseRateLimiter(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY),
   });
 }
 

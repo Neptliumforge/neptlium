@@ -46,7 +46,7 @@ No destructive rewrite of applied migrations is allowed. New migrations must pre
 
 ## TARGET
 
-Clerk is the target authentication, session, and MFA provider. **Clerk is not live and no Clerk SDK, middleware, schema migration, or environment change is part of Phase 0.**
+Clerk is the target authentication, session, and MFA provider. **Clerk is not live; no Clerk SDK, middleware, schema migration, or environment configuration exists in the audited baseline.**
 
 The target identity model separates four concerns:
 

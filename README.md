@@ -17,8 +17,8 @@ Shared packages live under `packages/*`; append-only Supabase migration history 
 
 - Supabase provides the current Auth, Postgres, RLS, and server-data foundation.
 - Clerk authentication/session/MFA with provider-independent Neptlium principals is TARGET architecture only; it is not installed or live.
-- Circle Developer-Controlled Wallets is implemented for test USDC on Base Sepolia wallet/address/balance observation. Transfer execution and Circle webhook ingestion remain disabled.
-- Stripe fiat funding and Stripe Onramp are TARGET only; neither is installed or live.
+- Circle Developer-Controlled Wallets contains existing-wallet/address/balance/transaction observation code for configured Base Sepolia or Base environments. The Circle runtime is composed with explicit environment and live-execution gates; wallet provisioning is disabled and transfer submission remains unimplemented.
+- A gated Stripe Treasury USD ACH inbound-transfer adapter exists. Repository presence does not prove eligibility, deployed configuration, live execution, canonical availability, or reconciliation. Stripe Onramp is not implemented.
 - Ledger, webhook inbox, idempotency, treasury policy, worker, audit, and reconciliation groundwork exists, but unsupported durable repository operations fail closed.
 
 ## Authoritative documentation
@@ -39,17 +39,17 @@ Start with:
 - [`docs/12_ADMIN_OPERATIONS.md`](docs/12_ADMIN_OPERATIONS.md)
 - [`docs/13_SECURITY.md`](docs/13_SECURITY.md)
 - [`docs/14_DEPLOYMENT.md`](docs/14_DEPLOYMENT.md)
+- [`docs/15_PRODUCTION_READINESS_AUDIT.md`](docs/15_PRODUCTION_READINESS_AUDIT.md)
 
 Files under `docs/archive` are historical only. Implementation-specific references that remain outside the numbered set are subordinate to it.
 
 ## Roadmap
 
-1. Phase 0 — documentation and design-authority normalization.
-2. Authenticated-shell alignment without changing financial behavior.
-3. Durable Capital Account repository, ledger, webhook, and reconciliation completion.
-4. Governed Treasury, Allocation, Transfer, and admin control workflows.
-5. Separately reviewed identity migration from Supabase Auth to Clerk.
-6. Separately reviewed Stripe fiat funding/Onramp and future provider expansion.
+1. Apply and verify the reviewed distributed rate-limit migration before the API release.
+2. Complete durable Capital Account, provider-webhook, and reconciliation operations.
+3. Validate governed Treasury, Allocation, Transfer, and admin control workflows.
+4. Close the documented theme-runtime gaps without changing financial behavior.
+5. Review identity migration, Stripe Onramp, and future provider expansion separately.
 
 TARGET items are not promises of current availability.
 

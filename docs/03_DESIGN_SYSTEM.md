@@ -105,6 +105,8 @@ Precision Blue remains `#258BE5` in both themes.
 
 Authenticated Neptlium supports **System · Light · Dark**. Default is System. A manual preference overrides system state and persists. Resolve the theme before hydration to avoid an obvious flash. Browser color metadata should reflect light/dark mode where technically appropriate. Logo geometry never changes between themes.
 
+This is the canonical target behavior, not a claim that both clients currently conform. At the audited baseline, `apps/web` is fixed dark and `apps/app` does not subscribe to operating-system appearance changes after initial System resolution. See `docs/15_PRODUCTION_READINESS_AUDIT.md`.
+
 Marketing remains intentionally composed rather than mechanically theme-inverted; selective light/dark sections are part of its editorial architecture.
 
 ## 5. Motion

@@ -37,9 +37,9 @@ Browser-safe Supabase URL/publishable key and site URL are separate from the ser
 
 ### API
 
-Server-only configuration covers runtime/build identity, allowed origins, Supabase Auth/data access, Circle, legacy Alchemy/Coinbase webhook groundwork, and provider verification. Mainnet is disabled by code. Circle requires complete testnet configuration and fails closed otherwise.
+Server-only configuration covers runtime/build identity, allowed origins, Supabase Auth/data access, Circle, legacy Alchemy/Coinbase webhook groundwork, and provider verification. Production Circle or Alchemy configuration requires `ENABLE_MAINNET=true`. This permits production provider initialization only; capability verification, execution enablement, implemented code, authorization, posting, and reconciliation remain separate gates.
 
-Future Clerk and Stripe variables are TARGET only and must not be added until their reviewed implementation phase.
+Clerk and Stripe Onramp are not implemented. Stripe Treasury variables are present for a gated server-side adapter and remain server-only; their presence does not prove eligibility or live capability.
 
 ## Environment principles
 
@@ -81,6 +81,6 @@ Code rollback must remain compatible with the deployed schema. Financial events 
 
 The containment rollback reference under `docs/security` must not be executed automatically.
 
-## TARGET changes
+## Separately reviewed changes
 
-Clerk identity and Stripe funding/Onramp will require separately reviewed variables, callback/webhook origins, secrets, deployment sequencing, and rollback plans. Their mention here is architectural direction, not current configuration.
+Clerk identity and Stripe Onramp will require separately reviewed variables, callback/webhook origins, secrets, deployment sequencing, and rollback plans. Stripe Treasury code already exists, but live eligibility, configuration, execution, posting, and reconciliation require separate operational evidence and authorization.

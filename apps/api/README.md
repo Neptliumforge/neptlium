@@ -7,16 +7,16 @@ Node.js/TypeScript API for `api.neptlium.com`. Versioned routes live under `/v1`
 - Health, status, version, account provisioning/onboarding, Capital Account, wallet, and provider-webhook routes.
 - Supabase bearer-token validation and owner-scoped repository boundary.
 - Supabase durable adapter for readiness, account RPCs, Circle wallet linkage, and audit writes.
-- Circle Developer-Controlled Wallets testnet adapter for USDC on Base Sepolia wallet/address/balance observation.
+- Circle Developer-Controlled Wallets code for existing-wallet/address/balance/transaction observation on configured Base Sepolia or Base environments, with explicit runtime environment and live-execution gates.
 - Ledger, idempotency, webhook inbox, treasury policy, reconciliation, worker, observability, and rate-limit contracts.
 
-Production rejects memory persistence and requires an injected distributed rate limiter. Durable deposit, withdrawal, transaction, and webhook operations remain unsupported and fail closed. Circle transfer execution and Circle webhook verification are disabled. Alchemy/Coinbase webhook routes require injected reviewed verification.
+Production rejects memory persistence and process-local rate limiting. Standalone and serverless runtimes use the service-role-only Supabase distributed limiter RPC. Durable deposit, withdrawal, transaction, and webhook operations remain unsupported and fail closed. Circle transfer execution and Circle webhook verification are disabled. Alchemy/Coinbase webhook routes require injected reviewed verification.
 
-Stripe and Clerk are TARGET only.
+A gated Stripe Treasury inbound-transfer adapter exists; Stripe Onramp and Clerk are not implemented.
 
 ## Environment
 
-Copy `.env.example` to an untracked local file. Supabase service-role values, Circle credentials/entity secret, and webhook/provider secrets are server-only. Mainnet is disabled by runtime validation.
+Copy `.env.example` to an untracked local file. Supabase service-role values, Circle credentials/entity secret, and webhook/provider secrets are server-only. Production provider configuration requires `ENABLE_MAINNET=true`; configuration is not execution authorization.
 
 ## Commands
 

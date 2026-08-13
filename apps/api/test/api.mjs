@@ -40,12 +40,25 @@ test('production readiness fails closed when durable persistence is unavailable'
     config: production,
     authenticate,
     repository,
-    rateLimiter: new MemoryRateLimiter(),
+    rateLimiter: { consume: async () => ({ remaining: 1, resetAt: Date.now() + 1_000 }) },
     observer: new MemoryObserver(),
   });
   const status = await app.inject({ method: 'GET', url: '/v1/status' });
   assert.equal(status.statusCode, 503);
   assert.equal(status.json().status, 'not_ready');
+});
+test('production rejects process-local rate limiting', async () => {
+  const production = loadConfig({ NODE_ENV: 'production' });
+  await assert.rejects(
+    () =>
+      buildApp({
+        config: production,
+        repository: { ready: async () => true },
+        financialRepository: { ready: async () => true },
+        rateLimiter: new MemoryRateLimiter(),
+      }),
+    /MemoryRateLimiter cannot be used in production/,
+  );
 });
 test('production rejects MemoryRepository construction', async () => {
   const production = loadConfig({ NODE_ENV: 'production' });

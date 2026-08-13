@@ -97,6 +97,8 @@ export async function buildApp(deps: Dependencies = {}) {
     throw new Error('MemoryRepository cannot be used in production');
   if (config.NODE_ENV === 'production' && !deps.rateLimiter)
     throw new Error('A distributed rate limiter must be injected in production');
+  if (config.NODE_ENV === 'production' && deps.rateLimiter instanceof MemoryRateLimiter)
+    throw new Error('MemoryRateLimiter cannot be used in production');
   const repository = deps.repository ?? new MemoryRepository();
   const financialRepository =
     deps.financialRepository ??
@@ -113,7 +115,9 @@ export async function buildApp(deps: Dependencies = {}) {
     (config.circleConfigured
       ? new CircleCapitalProvider(
           initializeCircleSdk(config.CIRCLE_API_KEY, config.CIRCLE_ENTITY_SECRET),
+          config.CIRCLE_ENVIRONMENT!,
           config.CIRCLE_WALLET_SET_ID,
+          config.CIRCLE_LIVE_EXECUTION_ENABLED,
         )
       : new DisabledCapitalProvider());
   const authenticate =

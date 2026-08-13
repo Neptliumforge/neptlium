@@ -18,6 +18,17 @@ const requiredRuntimeModules = [
   'admin-http.js',
   'admin-routes.js',
   'admin-repository.js',
+  'financial-repository.js',
+  'financial-routes.js',
+  'funding-domain.js',
+  'allocation-domain.js',
+  'allocation-repository.js',
+  'allocation-routes.js',
+  'asset-registry.js',
+  'stripe-treasury.js',
+  'stripe-webhook.js',
+  'security.js',
+  'reconciliation.js',
 ];
 if (requiredRuntimeModules.some((module) => !existsSync(join(root, 'dist', module)))) {
   throw new Error('Neptlium API production build did not emit required runtime modules');

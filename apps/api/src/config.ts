@@ -20,11 +20,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   const CIRCLE_ENVIRONMENT = providerEnvironment(env.CIRCLE_ENVIRONMENT, 'CIRCLE_ENVIRONMENT');
   const ALCHEMY_ENVIRONMENT = providerEnvironment(env.ALCHEMY_ENVIRONMENT, 'ALCHEMY_ENVIRONMENT');
   if ((CIRCLE_ENVIRONMENT === 'production' || ALCHEMY_ENVIRONMENT === 'production') && !mainnetPermitted)
-    throw new Error('Production provider environments require ENABLE_MAINNET=true');
+    throw new Error('Production provider environments require ENABLE_MAINNET=true for mainnet');
 
   const circleCredentialsPresent = Boolean(env.CIRCLE_API_KEY || env.CIRCLE_ENTITY_SECRET);
   if (circleCredentialsPresent && (!env.CIRCLE_API_KEY || !env.CIRCLE_ENTITY_SECRET || !CIRCLE_ENVIRONMENT))
-    throw new Error('Circle requires CIRCLE_API_KEY, CIRCLE_ENTITY_SECRET, and CIRCLE_ENVIRONMENT');
+    throw new Error(
+      'Circle requires both credentials (CIRCLE_API_KEY and CIRCLE_ENTITY_SECRET) plus CIRCLE_ENVIRONMENT',
+    );
   if (env.CIRCLE_WALLET_SET_ID && !circleCredentialsPresent)
     throw new Error('Circle wallet set configuration requires Circle credentials');
 
@@ -79,7 +81,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     CIRCLE_LIVE_CAPABILITY_VERIFIED: circleLiveCapabilityVerified,
     CIRCLE_LIVE_EXECUTION_ENABLED: circleLiveExecutionEnabled,
     WEBHOOK_TOLERANCE_SECONDS: webhookToleranceSeconds,
-    allowedOrigins: (env.API_ALLOWED_ORIGINS ?? 'http://localhost:3000').split(',').map((v) => v.trim()),
+    allowedOrigins: (
+      env.API_ALLOWED_ORIGINS ??
+      (environment === 'production'
+        ? 'https://app.neptlium.com,https://admin.neptlium.com'
+        : 'http://localhost:3000,http://localhost:3002')
+    ).split(',').map((v) => v.trim()).filter(Boolean),
     databaseConfigured: Boolean(SUPABASE_URL && env.SUPABASE_ANON_KEY && env.SUPABASE_SERVICE_ROLE_KEY),
     alchemyConfigured: Boolean(env.ALCHEMY_API_KEY && ALCHEMY_RPC_URL && ALCHEMY_ENVIRONMENT),
     circleConfigured: Boolean(circleCredentialsPresent && CIRCLE_ENVIRONMENT),

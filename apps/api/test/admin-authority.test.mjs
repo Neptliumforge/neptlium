@@ -56,6 +56,69 @@ test('unauthenticated caller cannot reach privileged admin API', async () => {
     { repository: fakeRepository(), authenticate },
   );
   assert.equal(response.statusCode, 401);
+  assert.equal(JSON.parse(response.body).error.code, 'authentication_required');
+});
+
+test('admin preflight allows only configured production origin without authentication', async () => {
+  const productionCors = loadConfig({
+    NODE_ENV: 'production',
+    API_ALLOWED_ORIGINS: 'https://app.neptlium.com,https://admin.neptlium.com',
+  });
+  const response = await executeAdminHttp(productionCors, {
+    method: 'OPTIONS',
+    url: '/v1/admin/session',
+    headers: {
+      origin: 'https://admin.neptlium.com',
+      'access-control-request-method': 'GET',
+    },
+    clientAddress: '127.0.0.1',
+  });
+  assert.equal(response.statusCode, 204);
+  assert.equal(response.headers['access-control-allow-origin'], 'https://admin.neptlium.com');
+  assert.match(response.headers['access-control-allow-methods'], /GET/);
+  assert.equal(response.headers.vary, 'Origin');
+});
+
+test('admin CORS also permits the configured authenticated app origin', async () => {
+  const productionCors = loadConfig({ NODE_ENV: 'production' });
+  const response = await executeAdminHttp(productionCors, {
+    method: 'OPTIONS',
+    url: '/v1/admin/session',
+    headers: { origin: 'https://app.neptlium.com' },
+    clientAddress: '127.0.0.1',
+  });
+  assert.equal(response.statusCode, 204);
+  assert.equal(response.headers['access-control-allow-origin'], 'https://app.neptlium.com');
+});
+
+test('admin route rejects disallowed browser origin and never emits wildcard CORS', async () => {
+  const response = await executeAdminHttp(
+    config,
+    {
+      ...base,
+      method: 'GET',
+      url: '/v1/admin/session',
+      headers: { ...base.headers, origin: 'https://attacker.example' },
+    },
+    { repository: fakeRepository(), authenticate },
+  );
+  assert.equal(response.statusCode, 403);
+  assert.equal(response.headers['access-control-allow-origin'], undefined);
+  assert.equal(JSON.parse(response.body).error.code, 'forbidden');
+});
+
+test('legacy deposit completion remains fail closed and audited', async () => {
+  const repository = fakeRepository();
+  const response = await executeAdminHttp(config, {
+    ...base,
+    method: 'POST',
+    url: '/v1/admin/deposits/deposit-1/complete',
+    headers: { ...base.headers, 'idempotency-key': 'deposit-completion-1' },
+    payload: '{}',
+  }, { repository, authenticate });
+  assert.equal(response.statusCode, 409);
+  assert.equal(JSON.parse(response.body).error.code, 'deposit_completion_unavailable');
+  assert.ok(repository.auditEntries.some((entry) => String(entry[1]).includes('deposit.complete.blocked')));
 });
 
 test('canonical email identity alone is insufficient without persisted super_admin role', async () => {

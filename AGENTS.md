@@ -1,7 +1,7 @@
 # Repository Guidance
 
 - Inspect live code, migrations, tests, and configuration before describing or changing behavior.
-- The numbered documents `docs/00_*` through `docs/14_*` are authoritative when present.
+- The numbered documents `docs/00_*` through `docs/15_*` are authoritative when present.
 - `docs/03_DESIGN_SYSTEM.md` is the authoritative unified Neptlium design direction for marketing and authenticated product.
 - `docs/03_MARKETING_DESIGN_DOCTRINE.md` is retained as implementation history and marketing composition reference only. Where it conflicts with `docs/03_DESIGN_SYSTEM.md` on palette, typography, motion, surface behavior or cross-product identity, `docs/03_DESIGN_SYSTEM.md` wins.
 - `docs/archive` is historical context only, never current architecture.
