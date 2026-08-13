@@ -1,10 +1,10 @@
 # Neptlium Marketing Design Doctrine
 
-**Status:** Authoritative  
-**Primary implementation:** `apps/web` → `https://neptlium.com`  
-**Doctrine:** Dark-First Institutional Capital Infrastructure
+- **Status:** Historical implementation reference (non-authoritative)
+- **Primary implementation:** `apps/web` → `https://neptlium.com`
+- **Historical doctrine:** Dark-First Institutional Capital Infrastructure
 
-This document is the marketing design authority for `apps/web`. It supersedes the previous Premium White / Cobalt / Crystalline marketing direction. `docs/03_DESIGN_SYSTEM.md` continues to govern shared/product typography, accessibility, operational restraint and the authenticated product. This doctrine must not be used to recolor or restyle `apps/app`, `apps/admin` or `apps/api`.
+This document is retained only as implementation history and a reference for the existing six-composition marketing structure. `docs/03_DESIGN_SYSTEM.md` is the single authoritative Neptlium design doctrine and supersedes this document on identity, palette, typography, motion, surface behavior, product alignment, and cross-product governance. This historical reference must not be used to create a competing marketing doctrine or to restyle `apps/app`, `apps/admin`, or `apps/api`.
 
 ## Scope
 

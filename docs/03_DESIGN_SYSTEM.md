@@ -1,201 +1,207 @@
-# Neptlium — Unified Design Direction
+# Neptlium — Capital Operating Platform Design Doctrine
 
-**Status:** Authoritative  
-**Scope:** `neptlium.com`, `app.neptlium.com`, shared UI  
-**Category:** Digital Capital Operating Infrastructure  
+**Status:** Authoritative
+**Scope:** `neptlium.com`, `app.neptlium.com`, `admin.neptlium.com`, and shared product expression
+**Category:** Capital Operating Platform
 **Primary expression:** Capital, organized around you.
 
-> Marketing establishes authority and meaning. The application establishes control and operation.
+This document is the single design authority for Neptlium. It replaces the previous design doctrine rather than adding another visual or product layer. Historical design documents may explain implementation lineage, but they do not override this doctrine.
 
-This document supersedes the previous Capital Precision visual doctrine wherever it conflicts with this direction. Marketing and product are one institution at two levels of intensity, not separate brands.
+## 1. Identity and position
 
-## 1. Surface relationship
+Neptlium is a **governance-first digital capital operating platform**: institutional, controlled, and policy-driven. Its category is **Capital Operating Platform**.
 
-### Marketing
-Editorial · Institutional · Dimensional · Composed · Memorable.
+The platform organizes capital around the operator without presenting itself as a retail exchange, speculative trading venue, or generic software dashboard. Marketing establishes the institution and its operating thesis. The authenticated product turns that thesis into a precise operating environment.
 
-Marketing may use larger typography, broader negative space, controlled optical depth, restrained brand motion, selective dark authority sections, larger system diagrams and stronger compositional transitions. Expression must communicate architecture or meaning; decoration alone is not a reason.
+## 2. Marketing experience
 
-### Authenticated product
-Operational · Precise · Quiet · Dense · Controlled.
+The homepage uses exactly six major compositions:
 
-The application uses tighter rhythm, fewer effects, stronger information density, immediate financial readability, explicit state hierarchy and disciplined action placement. It is the same institution after the ceremony ends and the work begins.
+1. **Hero — Capital, organized around you.** The category statement is **Digital Capital Operating Infrastructure**.
+2. **Capital Operating Thesis**
+3. **Product Operating System**
+4. **Treasury · Allocation · Connectivity**
+5. **Governance + Technical Foundation**
+6. **Conversion**
 
-### Shared DNA
-Both surfaces share mark geometry, proportions, Precision Blue, dark-foundation family, spacing semantics, border/radius philosophy, accessibility, writing tone and motion principles.
+The hero carries the canonical expression **“Capital, organized around you.”** The page explains a controlled operating system for capital; it must not imitate an authenticated dashboard or manufacture product, customer, provider, or financial evidence.
 
-## 2. Typography
+## 3. Visual system
 
-Marketing display family: **Universal Sans**. Use for homepage H1, major page titles, high-level section statements and closing institutional propositions.
+Neptlium uses a calm institutional design defined by precision and restraint. The quality bar is the clarity, hierarchy, and finish associated with leading platform companies such as Apple, Stripe, and NVIDIA—not imitation of their components or brand assets.
 
-| Role | Size | Weight | Line height | Tracking |
-| --- | --- | --- | --- | --- |
-| Hero | 64–72px | 500–600 | .98–1.04 | -.035em |
-| Major display | 52–64px | 500–600 | 1.00–1.06 | -.030em |
-| Page title | 44–52px | 500–600 | 1.04–1.10 | -.025em |
-| Section title | 30–38px | 500–600 | 1.10–1.18 | -.018em |
-| Editorial lead | 20–24px | 400 | 1.45–1.60 | normal |
+- Use a white-first, light architectural foundation with controlled dark sections for authority, contrast, and technical depth.
+- Establish hierarchy primarily through typography, scale, rhythm, alignment, and negative space.
+- Keep compositions information-rich but visually minimal.
+- Prefer sections, structured rows, system diagrams, hairline separators, and compositional planes over collections of cards.
+- Use color as a controlled signal for action, focus, selection, and meaningful system paths rather than decoration.
+- Avoid crypto-exchange aesthetics: no candlesticks, token-logo walls, neon, speculative tickers, glowing geometry, or fabricated live-market cues.
+- Avoid generic SaaS card-heavy layouts, excessive rounded containers, ornamental gradients, glass tiles, and repeated feature grids.
+- Motion must explain hierarchy or system relationships. Scrolling remains native, reduced-motion preferences are respected, and financial values never animate in a way that implies progress or execution.
 
-Product family: **Geist**. Use for navigation, balances, account values, tables, forms, labels, history, allocation controls, status, metadata, settings and authentication.
+Marketing may use broader grids, larger typography, greater negative space, restrained editorial motion, and deliberately placed dark sections. Authenticated surfaces are quieter, denser, faster, and more operational. Both remain one institutional identity.
 
-| Role | Size | Weight |
-| --- | --- | --- |
-| Page title | 28–32px | 550–600 |
-| Section title | 20–24px | 550–600 |
-| Financial primary value | 28–40px | 500–600 |
-| Component title | 16–18px | 550 |
-| Body | 14–16px | 400 |
-| Label | 13–14px | 500 |
-| Metadata | 11–13px | 400–500 |
+## 4. Authenticated product alignment
 
-Financial values use tabular numerals. Monospace is reserved for hashes, addresses, request IDs and genuinely technical identifiers. Universal Sans is not used for dense financial operation.
+Canonical primary navigation is:
 
-Font binaries are not committed merely to imitate the target family. Until approved assets are available, runtime stacks must degrade safely without changing hierarchy.
+1. **Overview**
+2. **Portfolio**
+3. **Capital Account**
+4. **Treasury**
+5. **Allocation**
 
-## 3. Color architecture
+Each area has a distinct operating responsibility:
 
-### Dark foundation
+- **Overview** — verified capital state, truthful activity visibility, and current operational context.
+- **Portfolio** — holdings structure, exposure, concentration, and classification, shown only where canonical data and required valuation evidence exist.
+- **Capital Account** — canonical balances, verified funding capability, deposits, withdrawals, and activity history.
+- **Treasury** — liquidity organization, operating capacity, and reserve structure.
+- **Allocation** — observed state, modeled policy, and authorized decisions. Execution remains explicitly closed.
 
-```text
-Absolute Black       #000000
-Obsidian             #05060B
-Blue Black           #050B15
-Ink Black            #0A111F
-Midnight Surface     #0C1324
-Deep Navy            #0D162A
-Structural Navy      #151F3D
+Product UI must be information-first, mobile-excellent, and operationally quiet. Use strong numeric alignment, explicit state hierarchy, concise copy, restrained surfaces, and clear action placement. Unknown values remain unknown; a confirmed zero may render as zero, but absence of evidence must never be rendered as `$0.00`.
 
-Primary text         #F8F9FC
-Secondary text       #E7EAF0
-Supporting text      #B7BBC6
-Muted metadata       #9297A4
-```
+## 5. Core product principles
 
-### Precision Blue
+- **No fabricated balances.** Canonical balances derive from governed ledger state, not placeholder values or provider observations.
+- **No fake provider capability.** Show a rail, action, or provider-backed function only when its capability is verified and available for the relevant user and environment.
+- **No fake activity.** Empty, loading, unavailable, and error states remain truthful; they never invent transactions, holdings, events, or operational history.
+- **No fake execution state.** Modeling, authorization, submission, provider confirmation, settlement, and reconciliation are distinct and must never be collapsed into a successful outcome.
+- **Capability shown only when verified.** Missing configuration, eligibility, durable storage, verification, or policy fails closed.
 
-```text
-Primary interaction  #258BE5
-Hover                 #319EED
-Structural accent     #16A8E8   rare
-Optical highlight     #12C6E3   rare
-```
+A visible control without a functioning, authorized backend must remain financially inert. Consequential forms preserve the sequence **input → review → authorization → outcome**; a click or status mutation does not prove execution.
 
-Blue indicates primary action, current navigation, selection, keyboard focus, active system path, limited visualization emphasis and meaningful links. It must not become the canvas, every border, every heading, every icon, every metric or a generic decorative effect.
+## 6. Capital operating model
 
-### Light foundation
+The product explains how capital is organized across its operating surfaces:
 
 ```text
-Canvas                #FFFFFF
-Secondary canvas      #F8F9FC
-Cool canvas           #F3F5F8
-Recessed surface      #EEF2F7
-Primary text          #05060B
-Strong secondary      #0A111F
-Body text             #273247
-Muted text            #596579
-Quiet metadata        #778296
-Quiet border          #E5E9F0
-Standard border       #D8DEE8
-Elevated border       #C8D1DF
+Source
+  ↓
+Connectivity
+  ↓
+Portfolio
+  ↓
+Treasury
+  ↓
+Policy
+  ↓
+Allocation
+  ↓
+Authorization
+  ↓
+Operational Record
 ```
 
-Precision Blue remains `#258BE5` in both themes.
+Each stage must preserve provenance and state boundaries. Connectivity and provider observation supply evidence. They do not replace authorization, canonical posting, or reconciliation.
 
-## 4. Theme behavior
+## 7. Capital lifecycle governance
 
-Authenticated Neptlium supports **System · Light · Dark**. Default is System. A manual preference overrides system state and persists. Resolve the theme before hydration to avoid an obvious flash. Browser color metadata should reflect light/dark mode where technically appropriate. Logo geometry never changes between themes.
+Financial state advances through an evidence-bearing governance sequence:
 
-This is the canonical target behavior, not a claim that both clients currently conform. At the audited baseline, `apps/web` is fixed dark and `apps/app` does not subscribe to operating-system appearance changes after initial System resolution. See `docs/15_PRODUCTION_READINESS_AUDIT.md`.
+```text
+Provider Evidence
+→ Validation
+→ Canonical Ledger
+→ Reconciliation
+→ Available Capital
+→ Governed Operations
+```
 
-Marketing remains intentionally composed rather than mechanically theme-inverted; selective light/dark sections are part of its editorial architecture.
+- **Provider Evidence** is an external observation or execution artifact, never canonical financial truth by itself.
+- **Validation** verifies authenticity, integrity, ownership, asset, network, environment, amount, destination, and replay/idempotency conditions as applicable.
+- **Canonical Ledger** records the balanced, append-only financial effect only after the required authority and evidence gates are satisfied.
+- **Reconciliation** compares expected state, provider evidence, settlement evidence, and ledger effect; disagreement remains an explicit discrepancy.
+- **Available Capital** exists only after the lifecycle's posting and reconciliation requirements have been satisfied.
+- **Governed Operations** consume canonical available capital through authorization, policy, reservation, audit, execution, and reconciliation controls as applicable.
 
-## 5. Motion
+No stage may be inferred from the existence of a previous stage. Provider observation is not validation, validation is not posting, posting is not reconciliation, and availability is not execution authority.
 
-Marketing motion: 320–500ms editorial transitions, controlled fade/translate entrances, slow system-line illumination, restrained path progression and rare one-time reveal moments. No continuous floating, scroll hijacking or motion that competes with reading.
+## 8. Governance architecture
 
-Product motion: instant 80–120ms, interface 140–200ms, panel 180–240ms, drawer 220–300ms. Animate navigation, accordions, state changes, hover/focus and panel transitions. Never theatrically animate balances, transaction amounts, reconciliation, deposits or withdrawals.
+Governance is part of the operating architecture, not a decorative badge or marketing claim:
 
-Typing is a brand primitive only. It may type a proposition once at 30–40ms per character with a thin cursor that disappears. Never use typing to imply financial progress. Reduced-motion users receive complete text immediately.
+1. **Identity** — establish the authenticated actor.
+2. **Authorization** — enforce ownership, role, policy, and action authority server-side.
+3. **Canonical Ledger** — record balanced, append-only financial truth.
+4. **Provider Evidence** — retain external observations and execution evidence without promoting them to ledger truth.
+5. **Reconciliation** — compare expected state, provider evidence, settlement, and ledger effect; preserve discrepancies for review.
 
-## 6. Scroll behavior
+Corrections use reversals or compensating entries. Neither database status changes nor provider responses alone prove financial execution.
 
-Marketing earns cinematic feel through composition and spacing, never altered browser physics. Sticky architecture is allowed only when genuinely useful. Product scrolling remains native, immediate and non-narrative.
+## 9. Allocation doctrine
 
-## 7. Operational Overview
+The locked allocation model exposed by the product is:
 
-Hierarchy: **capital position → account state → activity → operating surfaces**.
+```text
+Observed
+   ↓
+Modeled
+   ↓
+Authorized
+   ↓
+Execution CLOSED
+```
 
-A confirmed zero may render `$0.00`. Unknown state must never render as zero. Infrastructure explanations do not replace genuine zero balances.
+Authorization approves a governed plan; it does not reserve capital, call a provider, move assets, post a ledger entry, or prove settlement. Allocation execution remains unavailable until the full governed domain, verified provider eligibility, durable reservation, explicit execution enablement, ledger effects, and reconciliation controls are intentionally opened and proven.
 
-Primary financial values are high-contrast, medium-weight, tabular and unadorned. No gradients, blue-number styling, ticker behavior or decorative LIVE labels.
+There is no implied execution step after authorization. Plans must remain visibly authorized—not pending, executing, executed, or completed—until a future verified operational capability is intentionally designed, implemented, authorized, and proven.
 
-## 8. Surfaces and cards
+## 10. Financial safety
 
-Neptlium is not a card collection. Prefer sections, rows, grouped surfaces, hairline separators and compositional planes. Marketing cards may be larger/editorial. Product cards are flatter, tighter, lower-radius, quieter and denser. No floating glass tiles or giant rounded rectangles.
+### Funding
 
-## 9. Buttons
+```text
+CREATED
+→ AUTHORIZED
+→ PROVIDER_SUBMITTED
+→ PENDING
+→ PROVIDER_CONFIRMED
+→ LEDGER_POSTED
+→ RECONCILED
+→ AVAILABLE
+```
 
-Primary controls use solid `#258BE5`, white text and `#319EED` hover. No gradient and no glow. Secondary controls use a quiet structural border appropriate to the active theme.
+Provider confirmation cannot credit available capital. Availability requires canonical ledger posting followed by matched reconciliation.
 
-A visible control without a functional backend must remain financially inert and must never create fake state.
+### Withdrawal
 
-## 10. Navigation
+```text
+REQUESTED
+→ AUTHORIZED
+→ RESERVED
+→ SUBMITTED
+→ SETTLED
+→ RECONCILED
+```
 
-Marketing navigation is editorial and spacious. Product navigation is compact and permanent where useful.
+Authorization does not prove submission, submission does not prove settlement, and settlement does not prove reconciliation. Durable reservation must precede provider submission. Terminal failure, cancellation, return, reversal, and discrepancy paths must preserve their evidence and history.
 
-Canonical product primary navigation:
+## 11. Administrative authority boundary
 
-1. Overview
-2. Portfolio
-3. Capital Account
-4. Treasury
-5. Allocation
+`apps/admin` is an identity and session interface only. It may authenticate the operator and call authenticated administrative endpoints, but it must not hold canonical financial authority, access governed tables directly, or contain a Supabase service-role credential.
 
-Blue indicates active location without turning navigation into a blue interface.
+`apps/api` is the privileged authority boundary for server authentication, authorization, ownership, idempotency, policy enforcement, provider isolation, audit, ledger operations, and reconciliation. Supabase service-role authority belongs only behind this controlled server boundary and is never exposed to `apps/admin` or the browser.
 
-## 11. Forms
+An administrative approval or database status mutation does not prove provider execution, settlement, ledger posting, or reconciliation.
 
-Financial forms use descriptive labels, persistent errors, inline validation and explicit review before consequential actions. Preserve the sequence **input → review → authorization → outcome**. A button click must never visually imply settlement.
+## 12. Truthful states and interaction
 
-## 12. Tables and mobile activity
+- Unknown is not zero; unavailable is not empty; pending is not settled.
+- Unavailable balances must never appear available, unsupported providers must never appear enabled, simulated activity must never appear real, authorization must never appear as execution, and a plan must never appear as a completed operation.
+- Loading states reserve space without inventing values.
+- Empty states communicate what is verified and what the user can safely do next.
+- Errors are concise and actionable in customer interfaces; sensitive provider and reconciliation details remain in controlled diagnostics.
+- Status, capability, and action labels must reflect the actual server-authoritative state.
+- Accessibility, visible focus, semantic structure, sufficient contrast, keyboard operation, and mobile touch targets are mandatory.
 
-Desktop comparison uses compact rows, aligned numerics, muted metadata and restrained status. Mobile transforms tables into structured records rather than squeezing desktop columns.
+## 13. Governing expression
 
-## 13. Empty, loading and error states
-
-Empty states communicate readiness: `No holdings yet.` / `Deposit` rather than exposing provider plumbing.
-
-Loading reserves space with subtle skeletons and minimal shimmer. Never invent a number while loading and never show `$0.00` until zero is confirmed.
-
-Errors are concise and user-facing, for example: `Balance unavailable. We couldn't load your latest account state. Retry.` Internal provider/storage/reconciliation detail belongs in logs, admin or diagnostics.
-
-## 14. Marketing character
-
-Marketing uses Universal Sans, broader grids, architectural diagrams, larger whitespace, midnight authority transitions, limited optical blue/cyan and an expressive brand mark. Restraint remains mandatory.
-
-## 15. Product character
-
-Product uses Geist, tighter spacing, smaller radii, fewer effects, stronger data alignment, less copy, immediate action structure and consistent state presentation. The intended feeling is: **I am now operating the system.**
-
-## 16. Experience transition
-
-On `neptlium.com`: **This is a serious capital infrastructure company.**  
-On `app.neptlium.com`: **I am inside the capital operating environment.**
-
-Moving into the app increases density, quiets motion, removes decoration, makes actions explicit and puts capital state at the center without changing institutional identity.
-
-## 17. Governing expression
-
-> Black and midnight establish authority.  
-> White establishes clarity.  
-> Precision Blue establishes direction.  
+> White establishes clarity.
+> Controlled dark sections establish authority.
 > Typography establishes hierarchy.
+> Verified state establishes trust.
 
-> Marketing explains the institution.  
-> The application operates it.
-
-## 18. Runtime authority
-
-Shared brand semantics live in `packages/ui/src/styles/brand.css`. Operational semantic compatibility remains in `packages/ui/src/styles/tokens.css`. `apps/web` may add marketing-only composition layers; `apps/app` may add product-only operational mappings. Neither surface may invent a competing palette.
-
-Older cobalt/electric-blue, Paper-only, Capital Precision, gradient-button, glow-heavy or single-font assumptions are non-authoritative where they conflict with this document.
+> Marketing explains the capital operating institution.
+> The authenticated product operates it.
+> The API preserves its authority.
