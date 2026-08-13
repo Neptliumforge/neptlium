@@ -277,12 +277,12 @@ test('provider wallet access is authenticated, owner-scoped and capability gated
 test('Circle configuration is explicit and rejects mainnet or partial credentials', () => {
   assert.throws(
     () => loadConfig({ NODE_ENV: 'test', CIRCLE_ENVIRONMENT: 'production' }),
-    /mainnet/,
+    /ENABLE_MAINNET=true/,
   );
   assert.throws(
     () =>
       loadConfig({ NODE_ENV: 'test', CIRCLE_API_KEY: 'only-one', CIRCLE_ENVIRONMENT: 'testnet' }),
-    /both credentials/,
+    /CIRCLE_API_KEY.*CIRCLE_ENTITY_SECRET.*CIRCLE_ENVIRONMENT/,
   );
   assert.equal(loadConfig({ NODE_ENV: 'test' }).circleConfigured, false);
 });
