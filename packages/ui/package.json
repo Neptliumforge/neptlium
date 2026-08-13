@@ -8,6 +8,7 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./styles/brand.css": "./src/styles/brand.css",
     "./styles/tokens.css": "./src/styles/tokens.css"
   },
   "files": [

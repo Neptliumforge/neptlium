@@ -10,8 +10,8 @@ export interface NeptliumMarkProps {
 }
 
 const toneColor: Record<NeptliumMarkTone, string> = {
-  blue: "#2764FF",
-  ink: "#090B0F",
+  blue: "#0141F3",
+  ink: "#08111F",
   paper: "#FFFFFF",
   current: "currentColor",
 };

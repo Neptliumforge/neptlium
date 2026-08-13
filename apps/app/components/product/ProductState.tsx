@@ -2,42 +2,54 @@ import type { ReactNode } from 'react';
 import { Badge } from '@neptlium/ui';
 
 export type ProductStateName =
+  | 'LOADING'
   | 'AVAILABLE'
   | 'READY'
   | 'PENDING'
+  | 'AWAITING_PROVISIONING'
+  | 'CAPABILITY_DISABLED'
   | 'RESERVED'
   | 'RESTRICTED'
   | 'NOT_CONFIGURED'
   | 'INELIGIBLE'
   | 'UNAVAILABLE'
   | 'NO_ACTIVITY'
+  | 'NO_POSITION'
   | 'REQUIRES_APPROVAL'
   | 'ERROR';
 
 const labels: Record<ProductStateName, string> = {
+  LOADING: 'Loading',
   AVAILABLE: 'Available',
   READY: 'Ready',
   PENDING: 'Pending',
+  AWAITING_PROVISIONING: 'Awaiting provisioning',
+  CAPABILITY_DISABLED: 'Capability disabled',
   RESERVED: 'Reserved',
   RESTRICTED: 'Restricted',
   NOT_CONFIGURED: 'Not configured',
   INELIGIBLE: 'Ineligible',
   UNAVAILABLE: 'Unavailable',
   NO_ACTIVITY: 'No activity',
+  NO_POSITION: 'No position',
   REQUIRES_APPROVAL: 'Approval required',
   ERROR: 'Error',
 };
 
 const tones: Record<ProductStateName, 'success' | 'warning' | 'danger' | 'neutral'> = {
+  LOADING: 'neutral',
   AVAILABLE: 'success',
   READY: 'success',
   PENDING: 'warning',
+  AWAITING_PROVISIONING: 'neutral',
+  CAPABILITY_DISABLED: 'neutral',
   RESERVED: 'warning',
   RESTRICTED: 'warning',
   NOT_CONFIGURED: 'neutral',
   INELIGIBLE: 'warning',
   UNAVAILABLE: 'neutral',
   NO_ACTIVITY: 'neutral',
+  NO_POSITION: 'neutral',
   REQUIRES_APPROVAL: 'warning',
   ERROR: 'danger',
 };
@@ -58,7 +70,7 @@ export function ProductStateMessage({
   readonly compact?: boolean;
 }) {
   return (
-    <div className={compact ? 'py-3' : 'py-5'} role={state === 'ERROR' ? 'alert' : undefined}>
+    <div className={compact ? 'py-3' : 'py-5'} role={state === 'ERROR' ? 'alert' : state === 'LOADING' ? 'status' : undefined} aria-live={state === 'LOADING' ? 'polite' : undefined}>
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-sm font-medium text-text-primary">{title ?? labels[state]}</p>
         <ProductStateBadge state={state} />
