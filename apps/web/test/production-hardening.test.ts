@@ -36,32 +36,29 @@ test('homepage carries canonical positioning through exactly six truthful compos
   assert.equal(page.includes('One system for understanding and operating capital.'), true);
   assert.equal(page.includes('Structure capital. Govern policy. Connect infrastructure.'), true);
   assert.equal(page.includes('Control is part of the architecture.'), true);
-  assert.equal(page.includes('Operate digital capital with greater control.'), true);
+  assert.equal(page.includes('Capital, made operational.'), true);
   for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD']) assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
 });
 
-test('footer remains minimal and uses only verified destinations', () => {
+test('footer is corporate closure using only verified destinations', () => {
   const footer = read('components/site-footer.tsx');
-  assert.equal(footer.includes("label: 'Privacy'"), true);
+  for (const label of ["label: 'Legal'", "label: 'Corporate'", "label: 'Social'", "label: 'Privacy'", "label: 'About'", "label: 'Contact'", "label: 'GitHub'"]) assert.equal(footer.includes(label), true);
   assert.equal(footer.includes('https://github.com/Neptliumlabs'), true);
-  assert.equal(footer.includes('Instagram'), false);
-  assert.equal(footer.includes("label: 'X'"), false);
-  assert.equal(footer.includes('Careers'), false);
+  for (const forbidden of ['Instagram', "label: 'X'", 'Careers', 'Portfolio', 'Capital Account', 'Treasury', 'Allocation', 'Wallet']) assert.equal(footer.includes(forbidden), false);
 });
 
-test('production marketing consumes shared canonical brand authority', () => {
+test('production marketing uses its own dark semantic layer without mutating shared brand authority', () => {
   const productionCss = read('app/marketing-production.css');
   const homeCss = read('app/marketing-home.css');
   assert.equal(productionCss.includes("@import '../../../packages/ui/src/styles/brand.css';"), true);
-  assert.equal(productionCss.includes('--np-paper: var(--n-brand-canvas)'), true);
-  assert.equal(productionCss.includes('--np-ink: var(--n-brand-ink)'), true);
-  assert.equal(productionCss.includes('--np-blue: var(--n-brand-blue)'), true);
-  assert.equal(`${productionCss}\n${homeCss}`.includes('#2764ff'), false);
-  assert.equal(`${productionCss}\n${homeCss}`.includes('#147dff'), false);
+  assert.equal(homeCss.includes('--marketing-black: #000000'), true);
+  assert.equal(homeCss.toLowerCase().includes('--marketing-blue: #258be5'), true);
+  assert.equal(homeCss.toLowerCase().includes('--marketing-blue-hover: #319eed'), true);
+  assert.equal(homeCss.toLowerCase().includes('#0141f3'), false);
   assert.equal(homeCss.includes('@media (prefers-reduced-motion: reduce)'), true);
 });
 
-test('canonical public metadata stays wired to the production domain', () => {
+test('canonical public metadata stays wired to the production domain and dark browser chrome', () => {
   const layout = read('app/layout.tsx');
   const site = read('lib/content/site.ts');
   const robots = read('app/robots.ts');
@@ -69,5 +66,8 @@ test('canonical public metadata stays wired to the production domain', () => {
   assert.equal(site.includes('Digital capital, organized with institutional intelligence.'), true);
   assert.equal(layout.includes("metadataBase: new URL(SITE.url)"), true);
   assert.equal(layout.includes("import './marketing-home.css';"), true);
+  assert.equal(layout.includes("colorScheme: 'dark light'"), true);
+  assert.equal(layout.includes('data-theme="dark"'), true);
+  assert.equal(layout.includes("themeColor: '#FFFFFF'"), false);
   assert.equal(robots.includes("sitemap: 'https://neptlium.com/sitemap.xml'"), true);
 });

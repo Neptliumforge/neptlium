@@ -11,24 +11,16 @@ export const metadata: Metadata = {
 };
 
 const heroStages = ['Capital', 'Structure', 'Policy', 'Control', 'Operation'] as const;
-const operatingFlow = [
-  'Capital sources',
-  'Connectivity',
-  'Portfolio',
-  'Treasury',
-  'Policy',
-  'Allocation',
-  'Authorization',
-  'Operational record',
-] as const;
+const sourceSurfaces = ['Wallets', 'Exchanges', 'Custody', 'Networks', 'Treasury systems'] as const;
+const operatingSurfaces = ['Portfolio', 'Treasury', 'Policy', 'Allocation', 'Authorization', 'Operational record'] as const;
 
 function HeroCapitalSystem() {
   return (
     <figure className="hero-capital-system" aria-label="Capital organized from source through controlled operation">
       <div className="hero-capital-core" aria-hidden="true">
-        <span className="hero-crystal hero-crystal-a" />
-        <span className="hero-crystal hero-crystal-b" />
-        <span className="hero-crystal hero-crystal-c" />
+        <span className="hero-structure-plane hero-structure-plane-a" />
+        <span className="hero-structure-plane hero-structure-plane-b" />
+        <span className="hero-structure-axis" />
         <i className="hero-trace hero-trace-a" />
         <i className="hero-trace hero-trace-b" />
       </div>
@@ -46,14 +38,21 @@ function HeroCapitalSystem() {
 
 function SystemFlow() {
   return (
-    <ol className="marketing-system-flow" aria-label="Capital operating sequence">
-      {operatingFlow.map((stage, index) => (
-        <li key={stage}>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-          <strong>{stage}</strong>
-        </li>
-      ))}
-    </ol>
+    <div className="marketing-system-flow" aria-label="Fragmented capital surfaces organized through the Neptlium operating layer">
+      <div className="system-flow-sources">
+        <span>Fragmented surfaces</span>
+        <ul>{sourceSurfaces.map((surface) => <li key={surface}>{surface}</li>)}</ul>
+      </div>
+      <div className="system-flow-core" aria-label="Neptlium operating layer">
+        <span>Operating layer</span>
+        <strong>Neptlium</strong>
+        <i aria-hidden="true" />
+      </div>
+      <div className="system-flow-outcomes">
+        <span>Governed operation</span>
+        <ol>{operatingSurfaces.map((surface, index) => <li key={surface}><b>{String(index + 1).padStart(2, '0')}</b>{surface}</li>)}</ol>
+      </div>
+    </div>
   );
 }
 
@@ -83,22 +82,20 @@ function ProductOperatingSystem() {
 function TreasuryAllocationConnectivity() {
   return (
     <div className="marketing-capital-stack" aria-label="Treasury to Allocation to Connectivity">
-      <section>
+      <section className="capital-stack-treasury">
         <span>01 · Treasury</span>
-        <h3>Organize liquidity and operating capacity.</h3>
+        <h3>Liquidity and operating capacity.</h3>
         <p>Structure reserves, obligations and capital readiness around explicit operating controls.</p>
       </section>
       <section className="capital-stack-focus">
         <span>02 · Allocation</span>
-        <h3>Model policy before authorization.</h3>
-        <ol aria-label="Allocation lifecycle">
-          <li>Observe</li><li>Model</li><li>Authorize</li>
-        </ol>
+        <h3>Policy before authorization.</h3>
+        <ol aria-label="Allocation lifecycle"><li>Observe</li><li>Model</li><li>Authorize</li></ol>
         <p>Authorization does not imply autonomous execution or active rebalancing.</p>
       </section>
-      <section>
+      <section className="capital-stack-connectivity">
         <span>03 · Connectivity</span>
-        <h3>Connect infrastructure beneath the operating layer.</h3>
+        <h3>Infrastructure beneath operation.</h3>
         <p>Neptlium Link supports provider and network connectivity while remaining one infrastructure layer within Neptlium.</p>
       </section>
     </div>
@@ -113,13 +110,12 @@ function GovernanceFoundation() {
   ] as const;
 
   return (
-    <div className="marketing-governance-foundation">
-      <div className="governance-rail" aria-hidden="true"><i /><i /><i /></div>
+    <div className="marketing-governance-foundation" aria-label="Authorization to ledger to reconciliation">
       {foundations.map(([title, copy], index) => (
         <section key={title}>
           <span>{String(index + 1).padStart(2, '0')}</span>
-          <h3>{title}</h3>
-          <p>{copy}</p>
+          <div><h3>{title}</h3><p>{copy}</p></div>
+          {index < foundations.length - 1 ? <i aria-hidden="true">→</i> : null}
         </section>
       ))}
     </div>
@@ -136,8 +132,8 @@ export default function HomePage() {
             <h1 id="home-hero-title">Capital, organized around you.</h1>
             <p>Neptlium brings digital assets, capital policy, portfolio visibility, treasury structure and connectivity into one controlled operating environment.</p>
             <div className="production-hero-actions">
-              <Link className="button production-primary" href="/platform">Explore Neptlium <ArrowRight aria-hidden="true" /></Link>
-              <a className="production-secondary" href={SITE.signInUrl}>Enter the App</a>
+              <a className="button production-primary" href={SITE.signInUrl}>Enter the App <ArrowRight aria-hidden="true" /></a>
+              <Link className="production-secondary" href="/platform">Explore Neptlium</Link>
             </div>
           </div>
           <Reveal className="production-hero-proof"><HeroCapitalSystem /></Reveal>
@@ -188,11 +184,11 @@ export default function HomePage() {
         <div className="production-shell marketing-conversion-inner">
           <Reveal>
             <span>Neptlium</span>
-            <h2 id="conversion-title">Operate digital capital with greater control.</h2>
+            <h2 id="conversion-title">Capital, made operational.</h2>
             <p>Move from fragmented capital surfaces into one governed operating environment.</p>
             <div className="production-hero-actions conversion-actions">
               <a className="button production-primary" href={SITE.signInUrl}>Enter the App <ArrowRight aria-hidden="true" /></a>
-              <Link className="production-secondary" href="/platform">Explore the Platform</Link>
+              <Link className="production-secondary" href="/platform">Explore Neptlium</Link>
             </div>
           </Reveal>
         </div>
