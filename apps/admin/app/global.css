@@ -1,6 +1,6 @@
 @import "tailwindcss";
+@import "@neptlium/ui/styles/brand.css";
 @import "@neptlium/ui/styles/tokens.css";
-
 @import "@neptlium/design-system/utilities.css";
 
 @source "../../../packages/design-system/src";
@@ -8,18 +8,109 @@
 
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
+    --color-canvas: var(--n-brand-canvas);
+    --color-surface-1: var(--n-brand-canvas);
+    --color-surface-2: var(--n-brand-canvas-soft);
+    --color-surface-3: var(--n-brand-surface-cool);
+    --color-surface-inset: var(--n-brand-surface-blue-soft);
+    --color-text-primary: var(--n-brand-ink);
+    --color-text-secondary: var(--n-brand-ink-secondary);
+    --color-text-muted: var(--n-brand-ink-muted);
+    --color-text-disabled: var(--n-brand-ink-quiet);
+    --color-border-hairline: var(--n-brand-border);
+    --color-border-default: var(--n-brand-border-standard);
+    --color-border-strong: var(--n-brand-border-strong);
+    --color-accent-primary: var(--n-brand-blue);
+    --color-accent-primary-hover: var(--n-brand-blue-bright);
+    --color-primary: var(--n-brand-blue);
+    --color-border-interactive: var(--n-brand-blue);
+    --color-border-focus: var(--n-brand-blue);
+    --color-border-selected: var(--n-brand-blue);
+    --color-info: var(--n-brand-blue);
+    --color-topnav: var(--n-brand-canvas);
+    --color-sidebar: var(--n-brand-canvas);
+    --color-sidebar-surface-secondary: var(--n-brand-canvas-soft);
+    --color-sidebar-surface-raised: var(--n-brand-surface-cool);
+    --color-sidebar-text-primary: var(--n-brand-ink);
+    --color-sidebar-text-secondary: var(--n-brand-ink-secondary);
+    --color-sidebar-text-muted: var(--n-brand-ink-muted);
+    --color-sidebar-border-hairline: var(--n-brand-border);
+    --color-sidebar-border-default: var(--n-brand-border-standard);
+    --color-sidebar-border-strong: var(--n-brand-border-strong);
+    --font-sans: var(--n-font-product);
+    --font-numeric: var(--n-font-product);
+    --shadow-focus-ring: 0 0 0 3px color-mix(in srgb, var(--n-brand-blue) 22%, transparent);
   }
 
   body {
-    background-color: var(--color-canvas);
+    margin: 0;
+    background: var(--color-canvas);
     color: var(--color-text-primary);
-    font-family: var(--font-sans);
+    font-family: var(--n-font-product);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    color: var(--color-text-primary);
+    font-family: var(--n-font-product);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 2.2vw, 2rem);
+    font-weight: 600;
+    line-height: 1.14;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.018em;
+  }
+
+  h3 {
+    font-size: clamp(1rem, 1.2vw, 1.125rem);
+    font-weight: 550;
+    line-height: 1.4;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :where(button, input, select, textarea) {
+    font: inherit;
+  }
+
+  :where(button, [role="button"]) {
+    font-weight: 500;
+  }
+
+  :where(.tabular-nums, [data-financial-value], [data-numeric]) {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  :where(code, pre, kbd, samp) {
+    font-family: var(--font-mono);
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus-ring);
   }
 
   ::selection {
-    background-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
-    color: var(--color-text-primary);
+    background: color-mix(in srgb, var(--n-brand-blue) 18%, transparent);
+    color: var(--n-brand-ink);
   }
 
   * {
@@ -34,13 +125,43 @@
 
   *::-webkit-scrollbar-thumb {
     background-color: var(--color-border-strong);
-    border-radius: var(--radius-full);
     border: 2px solid transparent;
+    border-radius: var(--radius-full);
     background-clip: content-box;
   }
 
   *::-webkit-scrollbar-track {
     background-color: transparent;
+  }
+}
+
+main :where([class*="bg-surface-1"], [class*="bg-card"]) {
+  box-shadow: none;
+}
+
+main :where([class*="border-border"]) {
+  border-color: var(--color-border-hairline);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition-duration: 180ms;
+  transition-timing-function: cubic-bezier(.16, 1, .3, 1);
+}
+
+button[class*="primary"],
+a[class*="primary"],
+[class*="bg-primary"] {
+  background-image: none !important;
+  box-shadow: none;
+}
+
+@media (max-width: 479px) {
+  h1 {
+    font-size: 1.75rem;
   }
 }
 
