@@ -12,9 +12,10 @@ import type {
 } from '@/lib/api/financial';
 import { createFundingIntentAction } from './actions';
 import { FinancialValue, ProductStateBadge, ProductStateMessage } from '@/components/product/ProductState';
+import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 
-type Tab = 'Balances' | 'Deposit' | 'Withdraw' | 'Activity';
-const tabs: readonly Tab[] = ['Balances', 'Deposit', 'Withdraw', 'Activity'];
+type Tab = 'Balances' | 'Deposit' | 'Withdraw' | 'Transfer' | 'Activity';
+const tabs: readonly Tab[] = ['Balances', 'Deposit', 'Withdraw', 'Transfer', 'Activity'];
 
 function capabilityState(state: FundingCapability['state']) {
   if (state === 'ENABLED') return 'READY' as const;
@@ -31,6 +32,10 @@ function lifecycleState(state: string) {
   return 'PENDING' as const;
 }
 
+function normalizedNetwork(value: string | null | undefined) {
+  return (value ?? '').replaceAll('-', '_').toUpperCase();
+}
+
 export function WalletView({
   capabilities,
   capabilityError,
@@ -39,8 +44,11 @@ export function WalletView({
   fundingActivity,
   fundingActivityError,
   transferCapabilities,
+  transferCapabilityError,
   transferActivity,
+  transferActivityError,
   aliases,
+  aliasError,
 }: {
   readonly capabilities: readonly FundingCapability[];
   readonly capabilityError: boolean;
@@ -49,8 +57,11 @@ export function WalletView({
   readonly fundingActivity: readonly FundingActivity[];
   readonly fundingActivityError: boolean;
   readonly transferCapabilities: readonly FundingCapability[];
+  readonly transferCapabilityError: boolean;
   readonly transferActivity: readonly TransferActivity[];
+  readonly transferActivityError: boolean;
   readonly aliases: readonly TransferAlias[];
+  readonly aliasError: boolean;
 }) {
   const [active, setActive] = useState<Tab>('Balances');
   const [selectedCapability, setSelectedCapability] = useState(capabilities[0]?.code ?? '');
@@ -58,10 +69,17 @@ export function WalletView({
   const [fundingResult, setFundingResult] = useState<DepositInstruction | null>(null);
   const [fundingError, setFundingError] = useState<string | null>(null);
   const [isFundingPending, startFunding] = useTransition();
+  const [selectedTransferCapability, setSelectedTransferCapability] = useState(transferCapabilities[0]?.code ?? '');
+  const [selectedAliasId, setSelectedAliasId] = useState('');
+  const [transferAmount, setTransferAmount] = useState('');
 
   const selected = capabilities.find((item) => item.code === selectedCapability);
+  const selectedTransfer = transferCapabilities.find((item) => item.code === selectedTransferCapability);
   const outboundEnabled = transferCapabilities.some((item) => item.state === 'ENABLED');
   const verifiedAliases = aliases.filter((item) => item.verification_state === 'verified' && item.activation_state === 'active');
+  const selectedTransferBalance = selectedTransfer
+    ? balances.find((item) => item.asset === selectedTransfer.asset && (selectedTransfer.network === 'ACH' || normalizedNetwork(item.network) === normalizedNetwork(selectedTransfer.network)))
+    : undefined;
   const activity = useMemo(
     () => [
       ...fundingActivity.map((item) => ({ ...item, kind: 'Deposit' as const })),
@@ -86,12 +104,11 @@ export function WalletView({
 
   return (
     <Stack>
-      <header>
-        <h1>Capital Account</h1>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
-          Canonical balances, governed funding, manual-approval withdrawals, and account activity.
-        </p>
-      </header>
+      <WorkspaceHeader
+        title="Capital Account"
+        description="Capital available for funding, governed movement, reservations, and approved operations."
+        meta="Source of truth · Neptlium canonical ledger"
+      />
 
       <div className="flex overflow-x-auto border-b border-border-hairline" role="tablist" aria-label="Capital Account sections">
         {tabs.map((tab) => (
@@ -101,7 +118,7 @@ export function WalletView({
             role="tab"
             aria-selected={active === tab}
             onClick={() => setActive(tab)}
-            className={`min-h-11 shrink-0 px-4 text-sm font-medium ${active === tab ? '-mb-px border-b-2 border-accent-primary text-text-primary' : 'text-text-muted hover:text-text-secondary'}`}
+            className={`min-h-11 shrink-0 px-4 text-sm font-medium ${active === tab ? '-mb-px border-b-2 border-accent-primary text-text-primary' : 'border-b-2 border-transparent text-text-muted hover:text-text-secondary'}`}
           >
             {tab}
           </button>
@@ -109,12 +126,12 @@ export function WalletView({
       </div>
 
       {active === 'Balances' && (
-        <Section title="Canonical balances">
+        <Section title="Balances">
           <div className="border-y border-border-hairline">
             {balanceError ? (
               <ProductStateMessage state="ERROR" title="Balances unavailable">Canonical ledger balances could not be loaded from api.neptlium.com.</ProductStateMessage>
             ) : balances.length === 0 ? (
-              <ProductStateMessage state="UNAVAILABLE" title="No canonical capital yet">Capital appears only after verified evidence, balanced ledger posting, and reconciliation.</ProductStateMessage>
+              <ProductStateMessage state="NO_POSITION" title="No canonical capital yet">The canonical ledger currently has no customer balance positions. Capital appears only after verified evidence, balanced posting, and reconciliation.</ProductStateMessage>
             ) : (
               <>
                 <div className="hidden grid-cols-[minmax(7rem,1fr)_repeat(4,minmax(7rem,auto))] gap-5 border-b border-border-hairline py-3 text-xs font-medium text-text-muted md:grid">
@@ -122,10 +139,7 @@ export function WalletView({
                 </div>
                 {balances.map((balance) => (
                   <div key={`${balance.asset}:${balance.network ?? ''}`} className="grid gap-3 border-b border-border-hairline py-4 last:border-0 md:grid-cols-[minmax(7rem,1fr)_repeat(4,minmax(7rem,auto))] md:items-center md:gap-5">
-                    <div>
-                      <p className="text-sm font-medium text-text-primary">{balance.asset}</p>
-                      <p className="mt-1 text-xs text-text-muted">{balance.network ?? 'Denomination'}</p>
-                    </div>
+                    <div><p className="text-sm font-medium text-text-primary">{balance.asset}</p><p className="mt-1 text-xs text-text-muted">{balance.network ?? 'Denomination'}</p></div>
                     <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:contents">
                       <div><dt className="text-[11px] text-text-muted md:hidden">Available</dt><dd className="mt-1 text-sm font-medium md:mt-0"><FinancialValue valueAtomic={balance.available_atomic} asset={balance.asset} /></dd></div>
                       <div><dt className="text-[11px] text-text-muted md:hidden">Pending</dt><dd className="mt-1 text-sm font-medium md:mt-0"><FinancialValue valueAtomic={balance.pending_atomic} asset={balance.asset} /></dd></div>
@@ -142,7 +156,7 @@ export function WalletView({
       )}
 
       {active === 'Deposit' && (
-        <Section title="Deposit capital">
+        <Section title="Deposit">
           {capabilityError ? (
             <ProductStateMessage state="ERROR" title="Deposit capability unavailable">The API could not establish the current governed funding set.</ProductStateMessage>
           ) : capabilities.length === 0 ? (
@@ -150,64 +164,28 @@ export function WalletView({
           ) : (
             <div className="grid gap-7 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
               <div>
-                <Label htmlFor="deposit-asset">Choose asset</Label>
-                <select
-                  id="deposit-asset"
-                  value={selectedCapability}
-                  onChange={(event) => {
-                    setSelectedCapability(event.target.value);
-                    setFundingResult(null);
-                    setFundingError(null);
-                  }}
-                  className="mt-2 h-11 w-full rounded-md border border-border-default bg-surface-1 px-3 text-sm text-text-primary focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]"
-                >
+                <Label htmlFor="deposit-asset">Asset and network</Label>
+                <select id="deposit-asset" value={selectedCapability} onChange={(event) => { setSelectedCapability(event.target.value); setFundingResult(null); setFundingError(null); }} className="mt-2 h-11 w-full rounded-md border border-border-default bg-surface-1 px-3 text-sm text-text-primary focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]">
                   {capabilities.map((item) => <option key={item.code} value={item.code}>{item.asset} · {item.network}</option>)}
                 </select>
-                {selected ? (
-                  <div className="mt-4 border-y border-border-hairline py-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <div><p className="text-sm font-medium">{selected.asset} deposits</p><p className="mt-1 text-xs text-text-muted">{selected.network}</p></div>
-                      <ProductStateBadge state={capabilityState(selected.state)} />
-                    </div>
-                  </div>
-                ) : null}
+                {selected ? <div className="mt-4 flex items-center justify-between gap-4 border-y border-border-hairline py-4"><div><p className="text-sm font-medium">{selected.asset} deposits</p><p className="mt-1 text-xs text-text-muted">{selected.network}</p></div><ProductStateBadge state={capabilityState(selected.state)} /></div> : null}
               </div>
-
               <div className="min-w-0">
                 {!selected || selected.state !== 'ENABLED' ? (
-                  <ProductStateMessage state={selected ? capabilityState(selected.state) : 'UNAVAILABLE'} title={selected ? `${selected.asset} deposits` : 'Deposit unavailable'}>
-                    Deposit infrastructure for this asset is not currently available. Neptlium will not display an address, memo, tag, or bank instruction until the API enables the rail and assigns a governed user-specific route.
-                  </ProductStateMessage>
+                  <ProductStateMessage state={selected ? capabilityState(selected.state) : 'UNAVAILABLE'} title={selected ? `${selected.asset} deposits` : 'Deposit unavailable'}>Deposit instructions are not available for this asset yet. Neptlium will not display an address, memo, tag, or bank instruction until the API enables the rail and assigns a governed user-specific route.</ProductStateMessage>
                 ) : fundingResult ? (
                   <div className="border-y border-border-hairline py-5">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <p className="text-sm font-medium">Deposit instructions</p>
-                      <ProductStateBadge state={fundingResult.state === 'ENABLED' ? 'READY' : 'PENDING'}>{fundingResult.state.replaceAll('_', ' ')}</ProductStateBadge>
-                    </div>
-                    {fundingResult.deposit_address ? (
-                      <div className="mt-5">
-                        <p className="text-xs text-text-muted">Address</p>
-                        <p className="mt-1 break-all font-mono text-xs leading-5 text-text-primary" aria-label={`Deposit address ${fundingResult.deposit_address}`}>{fundingResult.deposit_address}</p>
-                      </div>
-                    ) : null}
-                    {fundingResult.memo_or_tag ? (
-                      <div className="mt-4"><p className="text-xs text-text-muted">Memo / tag</p><p className="mt-1 font-mono text-sm text-text-primary">{fundingResult.memo_or_tag}</p></div>
-                    ) : null}
+                    <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm font-medium">Deposit destination</p><ProductStateBadge state={fundingResult.state === 'ENABLED' ? 'READY' : 'PENDING'}>{fundingResult.state.replaceAll('_', ' ')}</ProductStateBadge></div>
+                    {fundingResult.deposit_address ? <div className="mt-5"><p className="text-xs text-text-muted">Address</p><p className="mt-1 break-all font-mono text-xs leading-5 text-text-primary" aria-label={`Deposit address ${fundingResult.deposit_address}`}>{fundingResult.deposit_address}</p></div> : null}
+                    {fundingResult.memo_or_tag ? <div className="mt-4"><p className="text-xs text-text-muted">Memo / tag</p><p className="mt-1 font-mono text-sm text-text-primary">{fundingResult.memo_or_tag}</p></div> : null}
                     {!fundingResult.deposit_address ? <p className="mt-4 text-sm text-text-muted">A user-specific route is being established. No treasury destination is exposed before the backend assigns it.</p> : null}
                   </div>
                 ) : (
                   <div className="border-y border-border-hairline py-5">
-                    {selected.code === 'USD_ACH' ? (
-                      <div className="mb-4">
-                        <Label htmlFor="funding-amount">Amount in cents</Label>
-                        <Input id="funding-amount" inputMode="numeric" value={amountAtomic} onChange={(event) => setAmountAtomic(event.target.value.replace(/\D/g, ''))} placeholder="50000" className="mt-2" />
-                      </div>
-                    ) : null}
+                    {selected.code === 'USD_ACH' ? <div className="mb-4"><Label htmlFor="funding-amount">Amount in cents</Label><Input id="funding-amount" inputMode="numeric" value={amountAtomic} onChange={(event) => setAmountAtomic(event.target.value.replace(/\D/g, ''))} placeholder="50000" className="mt-2" /></div> : null}
                     <p className="text-sm text-text-muted">Creating a funding intent does not credit capital. Availability still requires provider evidence, canonical posting, and reconciliation.</p>
                     {fundingError ? <p className="mt-3 text-sm text-status-danger" role="alert">{fundingError}</p> : null}
-                    <Button className="mt-4" onClick={beginFunding} disabled={isFundingPending || (selected.code === 'USD_ACH' && !amountAtomic)}>
-                      {isFundingPending ? 'Creating intent…' : 'Continue to deposit instructions'}
-                    </Button>
+                    <Button className="mt-4" onClick={beginFunding} disabled={isFundingPending || (selected.code === 'USD_ACH' && !amountAtomic)}>{isFundingPending ? 'Creating intent…' : 'Continue to deposit instructions'}</Button>
                   </div>
                 )}
               </div>
@@ -217,50 +195,70 @@ export function WalletView({
       )}
 
       {active === 'Withdraw' && (
-        <Section title="Request withdrawal">
+        <Section title="Withdraw">
           <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.8fr)]">
             <div className="border-y border-border-hairline py-5">
               <p className="text-sm font-medium text-text-primary">Manual approval governs outbound movement</p>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
-                A withdrawal request must reserve canonical available capital before operator approval. Approval authorizes execution only; provider submission, settlement, and reconciliation remain later states.
-              </p>
-              {!outboundEnabled ? (
-                <ProductStateMessage state="UNAVAILABLE" title="Withdrawal requests are not active" compact>
-                  No production outbound rail is enabled. The product will not accept a request that cannot enter the governed reservation and approval lifecycle.
-                </ProductStateMessage>
-              ) : verifiedAliases.length === 0 ? (
-                <ProductStateMessage state="REQUIRES_APPROVAL" title="Verified destination required" compact>
-                  Add or verify a governed Treasury destination before requesting movement.
-                </ProductStateMessage>
-              ) : null}
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">A withdrawal request must reserve canonical available capital before operator approval. Approval authorizes execution only; provider submission, settlement, and reconciliation remain later states.</p>
+              {transferCapabilityError ? <ProductStateMessage state="ERROR" title="Withdrawal capability unavailable" compact /> : !outboundEnabled ? <ProductStateMessage state="UNAVAILABLE" title="Withdrawal requests are not active" compact>No production outbound rail is enabled. The product will not accept a request that cannot enter the governed reservation and approval lifecycle.</ProductStateMessage> : verifiedAliases.length === 0 ? <ProductStateMessage state="REQUIRES_APPROVAL" title="Verified destination required" compact>Add or verify a governed Treasury destination before requesting movement.</ProductStateMessage> : <ProductStateMessage state="REQUIRES_APPROVAL" title="Approval workflow ready" compact>Verified destinations and an outbound capability exist. Submission remains intentionally unavailable here until the governed request mutation is exposed to the customer application.</ProductStateMessage>}
             </div>
             <ol className="border-y border-border-hairline py-4" aria-label="Withdrawal lifecycle">
-              {['Requested', 'Reserved', 'Pending approval', 'Approved', 'Submitted', 'Settled', 'Reconciled'].map((stage, index) => (
-                <li key={stage} className="flex items-center gap-3 border-b border-border-hairline py-2.5 last:border-0">
-                  <span className="w-6 text-[11px] tabular-nums text-accent-primary">0{index + 1}</span>
-                  <span className="text-sm text-text-primary">{stage}</span>
-                </li>
-              ))}
+              {['Requested', 'Reserved', 'Pending approval', 'Approved', 'Submitted', 'Settled', 'Reconciled'].map((stage, index) => <li key={stage} className="flex items-center gap-3 border-b border-border-hairline py-2.5 last:border-0"><span className="w-6 text-[11px] tabular-nums text-accent-primary">0{index + 1}</span><span className="text-sm text-text-primary">{stage}</span></li>)}
             </ol>
           </div>
         </Section>
       )}
 
+      {active === 'Transfer' && (
+        <Section title="Transfer">
+          {transferCapabilityError || aliasError ? (
+            <ProductStateMessage state="ERROR" title="Transfer workspace unavailable">The API could not establish current outbound capability or verified destination state.</ProductStateMessage>
+          ) : transferCapabilities.length === 0 ? (
+            <ProductStateMessage state="NOT_CONFIGURED" title="No transfer rails exposed">No governed customer transfer capability is exposed by the backend.</ProductStateMessage>
+          ) : (
+            <div className="grid gap-7 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+              <div className="space-y-5">
+                <div>
+                  <Label htmlFor="transfer-asset">Asset and network</Label>
+                  <select id="transfer-asset" value={selectedTransferCapability} onChange={(event) => setSelectedTransferCapability(event.target.value)} className="mt-2 h-11 w-full rounded-md border border-border-default bg-surface-1 px-3 text-sm text-text-primary focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]">
+                    {transferCapabilities.map((item) => <option key={item.code} value={item.code}>{item.asset} · {item.network}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="transfer-destination">Destination</Label>
+                  <select id="transfer-destination" value={selectedAliasId} onChange={(event) => setSelectedAliasId(event.target.value)} disabled={verifiedAliases.length === 0} className="mt-2 h-11 w-full rounded-md border border-border-default bg-surface-1 px-3 text-sm text-text-primary disabled:opacity-60">
+                    <option value="">Select verified destination</option>
+                    {verifiedAliases.map((alias) => <option key={alias.id} value={alias.id}>{alias.alias}</option>)}
+                  </select>
+                  <p className="mt-2 text-xs text-text-muted">Destinations are governed in Treasury and must be verified and active.</p>
+                </div>
+                <div>
+                  <Label htmlFor="transfer-amount">Amount</Label>
+                  <Input id="transfer-amount" inputMode="decimal" value={transferAmount} onChange={(event) => setTransferAmount(event.target.value.replace(/[^0-9.]/g, ''))} placeholder="0.00" className="mt-2" />
+                </div>
+              </div>
+
+              <div className="border-y border-border-hairline py-5">
+                {selectedTransfer ? <div className="flex items-center justify-between gap-4"><div><p className="text-sm font-medium text-text-primary">{selectedTransfer.asset} · {selectedTransfer.network}</p><p className="mt-1 text-xs text-text-muted">Available {selectedTransferBalance ? <FinancialValue valueAtomic={selectedTransferBalance.available_atomic} asset={selectedTransfer.asset} /> : '0'}</p></div><ProductStateBadge state={capabilityState(selectedTransfer.state)} /></div> : null}
+                <div className="mt-5 border-t border-border-hairline pt-4">
+                  {!selectedTransfer || selectedTransfer.state !== 'ENABLED' ? <ProductStateMessage state={selectedTransfer ? capabilityState(selectedTransfer.state) : 'UNAVAILABLE'} title="Transfer unavailable" compact /> : verifiedAliases.length === 0 ? <ProductStateMessage state="REQUIRES_APPROVAL" title="Verified destination required" compact /> : <ProductStateMessage state="REQUIRES_APPROVAL" title="Governed request boundary" compact>Transfer preparation is available, but customer submission remains closed until the API exposes the reservation and manual-approval mutation to apps/app. No capital will move from this surface.</ProductStateMessage>}
+                </div>
+                <Button className="mt-4" disabled>Request transfer</Button>
+              </div>
+            </div>
+          )}
+        </Section>
+      )}
+
       {active === 'Activity' && (
-        <Section title="Capital activity">
+        <Section title="Activity">
           <div className="border-y border-border-hairline">
-            {fundingActivityError ? (
-              <ProductStateMessage state="ERROR" title="Activity unavailable">The canonical funding activity feed could not be loaded.</ProductStateMessage>
+            {fundingActivityError && transferActivityError ? (
+              <ProductStateMessage state="ERROR" title="Activity unavailable">The canonical funding and transfer activity feeds could not be loaded.</ProductStateMessage>
             ) : activity.length === 0 ? (
               <ProductStateMessage state="NO_ACTIVITY" title="No capital activity yet">Funding and governed movement will appear here when canonical intents exist.</ProductStateMessage>
             ) : (
-              activity.map((item) => (
-                <div key={`${item.kind}:${item.id}`} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-5">
-                  <div className="min-w-0"><p className="text-sm font-medium">{item.kind} · {item.asset}</p><p className="mt-1 truncate text-xs text-text-muted">{item.network ?? item.rail} · {new Date(item.created_at).toLocaleString()}</p></div>
-                  <div className="text-sm font-medium">{item.amount_atomic ? <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} /> : <span className="text-text-muted">Amount unavailable</span>}</div>
-                  <ProductStateBadge state={lifecycleState(item.state)}>{item.state.replaceAll('_', ' ')}</ProductStateBadge>
-                </div>
-              ))
+              activity.map((item) => <div key={`${item.kind}:${item.id}`} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-5"><div className="min-w-0"><p className="text-sm font-medium">{item.kind} · {item.asset}</p><p className="mt-1 truncate text-xs text-text-muted">{item.network ?? item.rail} · {new Date(item.created_at).toLocaleString()}</p></div><div className="text-sm font-medium">{item.amount_atomic ? <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} /> : <span className="text-text-muted">Amount unavailable</span>}</div><ProductStateBadge state={lifecycleState(item.state)}>{item.state.replaceAll('_', ' ')}</ProductStateBadge></div>)
             )}
           </div>
         </Section>
