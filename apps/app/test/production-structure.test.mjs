@@ -17,7 +17,8 @@ test('authenticated application consumes canonical shared brand identity', () =>
   assert.equal(global.includes('--color-text-primary: var(--n-brand-ink)'), true);
   assert.equal(global.includes('--color-sidebar: var(--n-brand-canvas)'), true);
   assert.equal(global.includes('--color-topnav: var(--n-brand-canvas)'), true);
-  assert.equal(uiPackage.includes('"./styles/brand.css": "./src/styles/brand.css"'), true);
+  assert.equal(uiPackage.includes('"./styles/brand.css"'), true);
+  assert.equal(uiPackage.includes('"style": "./src/styles/brand.css"'), true);
   assert.equal(mark.includes('blue: "#0141F3"'), true);
   assert.equal(mark.includes('ink: "#08111F"'), true);
   assert.equal(icon.includes('#0141F3'), true);
