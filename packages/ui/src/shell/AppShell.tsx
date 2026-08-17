@@ -16,6 +16,7 @@ export function AppShell({
   sidebarFooter,
   mobileNav,
   utility,
+  header,
 }: AppShellProps): ReactElement {
   return (
     <div className="min-h-screen overflow-x-hidden bg-canvas text-text-primary">
@@ -42,8 +43,9 @@ export function AppShell({
             </div>
           )}
         </header>
-        <header className="hidden h-16 shrink-0 items-center justify-end border-b border-border-hairline bg-topnav px-6 lg:flex xl:px-8">
-          {utility}
+        <header className="hidden h-16 shrink-0 items-center justify-between gap-6 border-b border-border-hairline bg-topnav px-6 lg:flex xl:px-8">
+          <div className="min-w-0">{header}</div>
+          <div className="shrink-0">{utility}</div>
         </header>
 
         <main className="min-w-0 flex-1 px-3 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-5 sm:px-4 sm:pt-6 md:px-6 lg:px-8 lg:py-7">
