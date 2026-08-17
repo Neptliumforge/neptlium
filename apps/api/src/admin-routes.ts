@@ -20,6 +20,7 @@ function requireIdempotencyKey(context: AdminContext) {
   const value = context.headers['idempotency-key'];
   if (!value || value.length < 8 || value.length > 128)
     throw new ApiError(400, 'idempotency_key_required', 'A valid Idempotency-Key header is required');
+  return value;
 }
 
 export async function handleAdminRoute(
@@ -98,16 +99,27 @@ export async function handleAdminRoute(
 
   const withdrawalDecision = path.match(/^\/v1\/admin\/withdrawals\/([^/]+)\/(approve|reject)$/);
   if (method === 'POST' && withdrawalDecision?.[1] && withdrawalDecision[2]) {
-    requireIdempotencyKey(context);
+    const idempotencyKey = requireIdempotencyKey(context);
     const withdrawalId = decodeURIComponent(withdrawalDecision[1]);
     const decision = withdrawalDecision[2];
-    await audit(`admin.withdrawal.${decision}.blocked`, 'withdrawal', withdrawalId, {
-      reason: 'governed_manual_approval_persistence_not_available',
+
+    if (decision === 'approve') {
+      await deps.repository.approveWithdrawal(withdrawalId, actor.id, context.requestId, idempotencyKey);
+      await audit('admin.withdrawal.approve', 'transfer_execution', withdrawalId, {
+        result: 'approved_only',
+        provider_submission: false,
+        settlement: false,
+      });
+      return { data: { status: 'approved', transfer_id: withdrawalId, provider_submission: 'not_performed' } };
+    }
+
+    await audit('admin.withdrawal.reject.blocked', 'withdrawal', withdrawalId, {
+      reason: 'governed_rejection_and_reservation_release_policy_not_available',
     });
     throw new ApiError(
       409,
-      'withdrawal_approval_unavailable',
-      'This withdrawal cannot be authorized until it is represented by the governed reservation and approval lifecycle.',
+      'withdrawal_rejection_unavailable',
+      'This withdrawal cannot be rejected until governed rejection and reservation-release policy is available.',
     );
   }
 

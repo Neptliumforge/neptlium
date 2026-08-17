@@ -5,8 +5,10 @@ import { executeAdminHttp } from '../dist/admin-http.js';
 
 function fakeRepository(role = 'super_admin', sessionEmail = null) {
   const auditEntries = [];
+  const approvals = [];
   return {
     auditEntries,
+    approvals,
     getRole: async () => role,
     getSession: async (id) => ({ id, email: sessionEmail, fullName: null, displayName: null, role: 'super_admin' }),
     getDashboard: async () => ({}),
@@ -16,6 +18,7 @@ function fakeRepository(role = 'super_admin', sessionEmail = null) {
     setCompliance: async () => {},
     listDeposits: async () => ({ rows: [], total: 0 }),
     listWithdrawals: async () => ({ rows: [], total: 0, totalAmount: 0 }),
+    approveWithdrawal: async (...args) => { approvals.push(args); },
     listTransactions: async () => ({ rows: [], total: 0 }),
     listAllocations: async (_query, pending) => pending ? [] : ({ rows: [], total: 0 }),
     listLoginHistory: async () => [],
@@ -131,18 +134,36 @@ test('canonical email identity alone is insufficient without persisted super_adm
   assert.equal(JSON.parse(response.body).error.code, 'admin_forbidden');
 });
 
-test('withdrawal approval remains fail closed, audited, and cannot mark settlement', async () => {
+test('governed withdrawal approval persists approval only and cannot manufacture submission or settlement', async () => {
   const repository = fakeRepository();
   const response = await executeAdminHttp(config, {
     ...base,
     method: 'POST',
-    url: '/v1/admin/withdrawals/withdrawal-1/approve',
-    headers: { ...base.headers, 'idempotency-key': 'approval-withdrawal-1' },
+    url: '/v1/admin/withdrawals/transfer-1/approve',
+    headers: { ...base.headers, 'idempotency-key': 'approval-transfer-1' },
+    payload: '{}',
+  }, { repository, authenticate });
+  assert.equal(response.statusCode, 200);
+  assert.deepEqual(repository.approvals[0], ['transfer-1', 'user-1', response.headers['x-request-id'], 'approval-transfer-1']);
+  const body = JSON.parse(response.body);
+  assert.equal(body.status, 'approved');
+  assert.equal(body.provider_submission, 'not_performed');
+  assert.ok(repository.auditEntries.some((entry) => entry[1] === 'admin.withdrawal.approve'));
+  assert.ok(repository.auditEntries.some((entry) => entry[5]?.provider_submission === false && entry[5]?.settlement === false));
+});
+
+test('withdrawal rejection remains fail closed until governed release policy is implemented', async () => {
+  const repository = fakeRepository();
+  const response = await executeAdminHttp(config, {
+    ...base,
+    method: 'POST',
+    url: '/v1/admin/withdrawals/transfer-1/reject',
+    headers: { ...base.headers, 'idempotency-key': 'rejection-transfer-1' },
     payload: '{}',
   }, { repository, authenticate });
   assert.equal(response.statusCode, 409);
-  assert.equal(JSON.parse(response.body).error.code, 'withdrawal_approval_unavailable');
-  assert.ok(repository.auditEntries.some((entry) => String(entry[1]).includes('withdrawal.approve.blocked')));
+  assert.equal(JSON.parse(response.body).error.code, 'withdrawal_rejection_unavailable');
+  assert.ok(repository.auditEntries.some((entry) => String(entry[1]).includes('withdrawal.reject.blocked')));
 });
 
 test('legacy allocation authorization remains fail closed and audited', async () => {

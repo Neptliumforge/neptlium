@@ -1,6 +1,6 @@
 # Transfer Architecture
 
-Transfers are governed movements between Neptlium principals/accounts or to verified external destinations. A recipient lookup, database status, or provider response is not itself a completed transfer.
+Transfers are governed movements between Neptlium principals/accounts or to verified external destinations. A recipient lookup, database status, approval, or provider response is not itself a completed transfer.
 
 ## CURRENT groundwork
 
@@ -8,27 +8,42 @@ Transfers are governed movements between Neptlium principals/accounts or to veri
 - The migration explicitly requires server-validated alias-to-destination resolution. Verified aliases are readable under RLS; ownership controls mutation.
 - `wallet_transactions` recognizes transfer records, and ledger/account primitives can represent internal movements.
 - `withdrawal_addresses` and treasury allowlist groundwork represent known external destinations.
-- `apps/app` defines a provider-neutral alias transfer service contract and an unavailable-state UI. Its own comment correctly states that no usable backend alias-transfer service exists yet.
-- There is no complete versioned Transfer API, atomic reservation flow, or provider execution path. No transfer should be represented as available or settled from this groundwork.
+- `apps/app` defines a provider-neutral alias transfer service contract and an unavailable-state UI.
+- The governed API foundation now models durable transfer intents, reservations, explicit approval states, settlement evidence, canonical ledger posting, and reconciliation primitives. Live outbound execution remains disabled.
 
 The original `aliases` policy allows broad read access and is legacy. Target resolution must expose only the minimum verified recipient confirmation needed for a transfer and must not reveal raw destinations or personal data to clients.
 
-## TARGET flow
+## Governed flow
 
 1. **Alias resolution** — normalize the alias server-side, look up the active verified mapping, and bind it to asset/network/account scope.
 2. **Recipient verification** — return a safe recipient confirmation and verification state; never return private destination details unnecessarily.
 3. **Validation** — verify sender ownership, recipient eligibility, self-transfer policy, asset/network, amount, restrictions, limits, sanctions/compliance state, and available canonical balance.
-4. **Transfer intent** — create an immutable, idempotent intent with sender, recipient, amount, purpose, request digest, and lifecycle state.
-5. **Authorization** — evaluate policy and collect required step-up authentication or approvals against the exact intent version.
-6. **Reservation** — atomically reserve canonical available capital before any submission.
-7. **Internal ledger movement** — when both sides are internal and eligible, post a balanced entry between controlled accounts without fabricating an external provider transaction.
-8. **Provider execution** — when external movement is required, submit an idempotent instruction through the reviewed provider adapter only after authorization and reservation.
-9. **Reconciliation** — compare provider/internal evidence, fees, settlement, and ledger postings; classify and surface mismatches.
-10. **Activity history** — expose an immutable customer-readable timeline including intent, approvals, reservation, submission, settlement, failure, reversal, and reconciliation state.
+4. **Transfer request** — create an immutable, idempotent request with sender, destination reference, amount, rail, request digest, and lifecycle state.
+5. **Reservation** — atomically move canonical capital from available to reserved before manual approval can occur.
+6. **Pending approval** — place the exact reserved transfer into an explicit review state. The reservation, request version, owner, amount, asset, network, and destination context remain fixed.
+7. **Approval** — an authorized administrator approves the exact pending transfer. Approval is persisted and audited but does not create a provider instruction, settlement, or completed withdrawal.
+8. **Provider execution** — when external movement is required, submit an idempotent instruction through the reviewed provider adapter only after the transfer is explicitly approved and the reservation remains active.
+9. **Settlement evidence** — provider or chain evidence may move a submitted transfer to settled only when matching evidence is verified. Observation alone is not canonical reconciliation.
+10. **Canonical settlement and reconciliation** — consume the durable reservation through balanced ledger posting, compare provider/internal evidence, classify mismatches, and mark reconciled only after a matched reconciliation item exists.
+11. **Activity history** — expose an immutable customer-readable timeline including request, reservation, pending approval, approval, submission, settlement, failure, reversal, and reconciliation state.
 
-## TARGET lifecycle
+## Governed lifecycle
 
-Suggested domain states are `created`, `validating`, `awaiting_authorization`, `authorized`, `reserved`, `submitted`, `settling`, `settled`, `cancelled`, `failed`, and `reversed`. Internal transfers may omit provider submission but never authorization, reservation, balanced posting, and reconciliation controls.
+The production target lifecycle for new external transfers is:
+
+`REQUESTED -> RESERVED -> PENDING_APPROVAL -> APPROVED -> SUBMITTED -> SETTLED -> RECONCILED`
+
+`AUTHORIZED` remains a compatibility-only enum state for already-persisted historical transfer rows. A legacy `AUTHORIZED` row may converge into `RESERVED`, but new transfers do not enter `AUTHORIZED` before reservation.
+
+Important invariants:
+
+- `REQUESTED` cannot jump directly to approval.
+- `RESERVED` cannot jump directly to provider submission.
+- `PENDING_APPROVAL` cannot submit.
+- `APPROVED` does not imply submission or settlement.
+- `SUBMITTED` does not imply settlement.
+- `SETTLED` does not imply reconciliation.
+- Settlement requires matching provider evidence; reconciliation requires a distinct matched reconciliation record.
 
 ## Alias architecture
 
@@ -41,22 +56,35 @@ The target alias is a routing identifier, not an authentication credential and n
 - Version or audit destination changes and support revocation/expiry.
 - Resolve on the server and return minimum disclosure.
 - Prevent enumeration with authorization, response shaping, monitoring, and distributed rate limits.
-- Revalidate the mapping at intent authorization; do not trust a stale client lookup.
+- Revalidate the mapping before reservation and approval; do not trust a stale client lookup.
+
+## Approval and audit evidence
+
+Transfer approval is a privileged API operation, not a client-side status update.
+
+- `apps/admin` may authenticate the operator and call `apps/api`; it does not receive service-role financial authority.
+- The API resolves the persisted `super_admin` role before privileged approval.
+- The transfer owner cannot self-approve a governed external transfer.
+- Approval uses an idempotency key and request correlation ID.
+- Lifecycle changes are written to append-only transfer execution history.
+- Broad service-role updates to canonical transfer state remain revoked; reviewed security-definer operations own state transitions.
 
 ## Failure and reversal
 
 - Validation failure creates no reservation or financial posting.
-- Authorization rejection preserves the intent and decision evidence.
+- Failure or cancellation before provider submission releases a durable reservation exactly once through a governed operation.
+- A submitted transfer cannot be locally cancelled as though provider execution never happened; provider failure/reversal evidence and reconciliation must resolve the outcome.
 - Submission timeout remains unknown/pending until provider lookup and reconciliation resolve it; never retry blindly.
-- Failed execution releases the reservation exactly once when policy permits.
 - Posted mistakes are corrected with reversal or compensating entries, never edited/deleted postings.
+- Append-only transfer history remains preserved even when a reservation is released or a later reversal is required.
 
 ## TRANSITION
 
-1. Treat existing alias tables as groundwork and audit their access policies and data quality.
-2. Introduce principal-bound verified mappings without breaking historical references.
-3. Implement a server-only resolution API with minimum disclosure and distributed rate limiting.
-4. Add transfer intents, authorization evidence, durable reservations, balanced internal posting, and provider-neutral external execution.
-5. Add reconciliation and activity projections before enabling the customer action.
+1. Keep existing alias tables as groundwork while auditing access policies and data quality.
+2. Apply the forward-only transfer approval migrations only through an explicit production migration gate.
+3. Keep live transfer request and provider execution capabilities disabled until provider eligibility, custody, signing, webhook verification, settlement evidence, and reconciliation are separately proven.
+4. Add the operational processor that moves a validated request through reservation and `PENDING_APPROVAL` without exposing provider execution to the client.
+5. Surface governed pending transfers in admin operational views without reintroducing direct Supabase authority.
+6. Enable a provider execution path only after explicit production approval and end-to-end reconciliation proof.
 
-No current Circle transfer capability may be inferred: Circle `createTransfer` is explicitly disabled in the foundation adapter.
+No current Circle transfer capability may be inferred from configuration alone. Credentials, a Wallet Set, or provider observation do not enable outbound execution.

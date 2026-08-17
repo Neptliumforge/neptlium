@@ -16,9 +16,20 @@ test('provider confirmation cannot skip ledger and reconciliation', () => {
   assert.equal(canCreditAvailable('RECONCILED', 'MATCHED'), true);
 });
 
-test('transfer cannot submit before durable reservation', () => {
+test('governed transfer reserves before approval and approval does not submit', () => {
+  assert.equal(transitionTransfer('REQUESTED', 'RESERVED'), 'RESERVED');
+  assert.equal(transitionTransfer('RESERVED', 'PENDING_APPROVAL'), 'PENDING_APPROVAL');
+  assert.equal(transitionTransfer('PENDING_APPROVAL', 'APPROVED'), 'APPROVED');
+  assert.equal(transitionTransfer('APPROVED', 'SUBMITTED'), 'SUBMITTED');
+  assert.throws(() => transitionTransfer('REQUESTED', 'APPROVED'));
+  assert.throws(() => transitionTransfer('RESERVED', 'SUBMITTED'));
+  assert.throws(() => transitionTransfer('PENDING_APPROVAL', 'SUBMITTED'));
+});
+
+test('legacy authorized transfer state can only converge through reservation', () => {
   assert.equal(transitionTransfer('AUTHORIZED', 'RESERVED'), 'RESERVED');
   assert.throws(() => transitionTransfer('AUTHORIZED', 'SUBMITTED'));
+  assert.throws(() => transitionTransfer('REQUESTED', 'AUTHORIZED'));
 });
 
 test('one omnibus treasury asset position can back multiple customer claims', () => {

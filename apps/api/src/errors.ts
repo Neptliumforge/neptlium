@@ -15,6 +15,7 @@ export type ErrorCode =
   | 'audit_unavailable'
   | 'deposit_completion_unavailable'
   | 'withdrawal_approval_unavailable'
+  | 'withdrawal_rejection_unavailable'
   | 'allocation_authorization_unavailable'
   | 'validation_failed'
   | 'payload_too_large'

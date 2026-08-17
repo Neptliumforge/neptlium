@@ -7,8 +7,8 @@ export type FundingState =
   | 'LEDGER_POSTED' | 'RECONCILED' | 'AVAILABLE'
   | 'FAILED' | 'RETURNED' | 'REVERSED' | 'CANCELLED';
 export type TransferExecutionState =
-  | 'REQUESTED' | 'AUTHORIZED' | 'RESERVED' | 'SUBMITTED' | 'SETTLED'
-  | 'RECONCILED' | 'FAILED' | 'REVERSED' | 'CANCELLED';
+  | 'REQUESTED' | 'AUTHORIZED' | 'RESERVED' | 'PENDING_APPROVAL' | 'APPROVED'
+  | 'SUBMITTED' | 'SETTLED' | 'RECONCILED' | 'FAILED' | 'REVERSED' | 'CANCELLED';
 export type CapabilityState = 'ENABLED' | 'DISABLED' | 'NOT_CONFIGURED' | 'INELIGIBLE';
 
 export interface FundingIntent {
@@ -46,10 +46,14 @@ const fundingTransitions: Readonly<Record<FundingState, readonly FundingState[]>
   FAILED: [], RETURNED: ['REVERSED'], REVERSED: [], CANCELLED: [],
 };
 
+// AUTHORIZED is retained only for compatibility with already-persisted transfer rows.
+// New governed transfers reserve capital before entering the explicit approval workflow.
 const transferTransitions: Readonly<Record<TransferExecutionState, readonly TransferExecutionState[]>> = {
-  REQUESTED: ['AUTHORIZED', 'CANCELLED'],
+  REQUESTED: ['RESERVED', 'CANCELLED'],
   AUTHORIZED: ['RESERVED', 'CANCELLED', 'FAILED'],
-  RESERVED: ['SUBMITTED', 'CANCELLED', 'FAILED'],
+  RESERVED: ['PENDING_APPROVAL', 'CANCELLED', 'FAILED'],
+  PENDING_APPROVAL: ['APPROVED', 'CANCELLED', 'FAILED'],
+  APPROVED: ['SUBMITTED', 'CANCELLED', 'FAILED'],
   SUBMITTED: ['SETTLED', 'FAILED', 'REVERSED'],
   SETTLED: ['RECONCILED', 'REVERSED'],
   RECONCILED: ['REVERSED'],

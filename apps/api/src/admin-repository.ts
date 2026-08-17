@@ -13,6 +13,7 @@ export interface AdminRepository {
   setCompliance(userId: string, status: 'active' | 'suspended'): Promise<void>;
   listDeposits(query: URLSearchParams): Promise<Record<string, unknown>>;
   listWithdrawals(query: URLSearchParams, pendingOnly?: boolean): Promise<Record<string, unknown>>;
+  approveWithdrawal(transferExecutionId: string, actorId: string, requestId: string, idempotencyKey: string): Promise<void>;
   listTransactions(query: URLSearchParams): Promise<Record<string, unknown>>;
   listAllocations(query: URLSearchParams, pendingOnly?: boolean): Promise<unknown>;
   listLoginHistory(query: URLSearchParams): Promise<unknown[]>;
@@ -31,6 +32,7 @@ export class DisabledAdminRepository implements AdminRepository {
   async setCompliance(): Promise<void> { return this.unavailable(); }
   async listDeposits(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async listWithdrawals(): Promise<Record<string, unknown>> { return this.unavailable(); }
+  async approveWithdrawal(): Promise<void> { return this.unavailable(); }
   async listTransactions(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async listAllocations(): Promise<unknown> { return this.unavailable(); }
   async listLoginHistory(): Promise<unknown[]> { return this.unavailable(); }
@@ -178,6 +180,24 @@ export class SupabaseAdminRepository implements AdminRepository {
     return pendingOnly
       ? { rows: pending, totalAmount: pending.reduce((sum, row) => sum + Number(row.amount ?? 0), 0) }
       : { rows, total: result.total };
+  }
+
+  async approveWithdrawal(transferExecutionId: string, actorId: string, requestId: string, idempotencyKey: string) {
+    const response = await this.rest('rpc/approve_transfer_execution', {
+      method: 'POST',
+      body: JSON.stringify({
+        p_transfer_execution_id: transferExecutionId,
+        p_actor_id: actorId,
+        p_request_id: requestId,
+        p_idempotency_key: idempotencyKey,
+      }),
+    });
+    if (response.ok) return;
+    const payload = (await response.json().catch(() => ({}))) as { message?: string };
+    const message = payload.message ?? '';
+    if (/governed transfer not found|pending approval|active reservation|already approved|idempotency|super_admin|self-approve/i.test(message))
+      throw new ApiError(409, 'withdrawal_approval_unavailable', 'This withdrawal is not in an approvable governed state');
+    throw new ApiError(503, 'withdrawal_approval_unavailable', 'Governed withdrawal approval is unavailable');
   }
 
   async listTransactions(query: URLSearchParams) {

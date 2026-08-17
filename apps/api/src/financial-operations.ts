@@ -291,6 +291,20 @@ export class SupabaseFinancialOperations {
       p_idempotency_key: idempotencyKey,
     });
   }
+  markTransferPendingApproval(transferExecutionId: string, requestId: string) {
+    return this.rpc<null>('mark_transfer_pending_approval', {
+      p_transfer_execution_id: transferExecutionId,
+      p_request_id: requestId,
+    });
+  }
+  approveTransfer(transferExecutionId: string, actorId: string, requestId: string, idempotencyKey: string) {
+    return this.rpc<null>('approve_transfer_execution', {
+      p_transfer_execution_id: transferExecutionId,
+      p_actor_id: actorId,
+      p_request_id: requestId,
+      p_idempotency_key: idempotencyKey,
+    });
+  }
   markTransferSubmitted(transferExecutionId: string, providerReferenceId: string) {
     return this.rpc<null>('mark_transfer_submitted', {
       p_transfer_execution_id: transferExecutionId,
