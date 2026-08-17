@@ -9,16 +9,15 @@ import { SITE } from '@/lib/content/site';
 
 type NavLink = {
   label: string;
-  href?: string;
+  href: string;
   description: string;
-  status?: 'Architecture' | 'In development';
 };
 
 type NavSection = {
-  label: 'Platform' | 'Capital' | 'Connectivity' | 'Governance' | 'Company';
+  label: 'Platform' | 'Solutions' | 'Company';
   eyebrow: string;
   description: string;
-  links: readonly NavLink[];
+  links: readonly [NavLink, NavLink];
   lifecycle?: readonly string[];
 };
 
@@ -26,81 +25,44 @@ const navigation: readonly NavSection[] = [
   {
     label: 'Platform',
     eyebrow: 'Capital operating system',
-    description: 'One controlled environment for understanding capital state and directing what comes next.',
+    description: 'One controlled environment for understanding, organizing and operating digital capital.',
     links: [
-      { label: 'Platform overview', href: '/platform', description: 'How Neptlium organizes digital capital as one operating system.' },
-      { label: 'Portfolio', href: '/portfolio-intelligence', description: 'Ownership, exposure, concentration and liquidity in one coherent view.' },
-      { label: 'Capital Account', href: '/capital-account', description: 'The governed operating boundary for capital movement.' },
-      { label: 'Treasury', href: '/treasury', description: 'Liquidity, reserves and capital readiness under explicit controls.' },
-      { label: 'Allocation', href: '/allocation', description: 'Observe, model and authorize capital distribution.' },
+      { label: 'Platform overview', href: '/platform', description: 'How Neptlium turns fragmented capital surfaces into one governed operating system.' },
+      { label: 'Neptlium Link', href: '/neptlium-link', description: 'Connectivity infrastructure beneath governed capital operations.' },
     ],
-    lifecycle: ['Observe', 'Model', 'Authorize'],
+    lifecycle: ['Understand', 'Organize', 'Operate'],
   },
   {
-    label: 'Capital',
-    eyebrow: 'Capital structure',
-    description: 'The public model for capital position, operating activity and policy-backed decisions.',
+    label: 'Solutions',
+    eyebrow: 'Capital operating solutions',
+    description: 'Focused operating surfaces for capital structure, policy and controlled decision-making.',
     links: [
-      { label: 'Capital Universe', href: '/capital-universe', description: 'The supported and directional capital model without fabricated capability.' },
-      { label: 'Capital Activity', href: '/capital-activity', description: 'A truthful record of capital operations as they become available.' },
-      { label: 'Treasury', href: '/treasury', description: 'Reserve structure, liquidity and operating capacity.' },
-      { label: 'Allocation', href: '/allocation', description: 'Policy, classification and governed authorization.' },
-    ],
-  },
-  {
-    label: 'Connectivity',
-    eyebrow: 'Neptlium Link',
-    description: 'Connectivity architecture for external digital-capital infrastructure.',
-    links: [
-      { label: 'Neptlium Link', href: '/neptlium-link', description: 'Institutional connectivity infrastructure for digital capital.' },
-      { label: 'Provider connectivity', description: 'Provider isolation and orchestration architecture.', status: 'Architecture' },
-      { label: 'Network connectivity', description: 'Network-facing infrastructure governed behind the API boundary.', status: 'Architecture' },
-      { label: 'API infrastructure', href: '/platform', description: 'The privileged boundary for governed capital operations.' },
-    ],
-  },
-  {
-    label: 'Governance',
-    eyebrow: 'Control architecture',
-    description: 'Identity, authorization, policy and operational state remain explicit throughout the system.',
-    links: [
-      { label: 'Security', href: '/security', description: 'Identity, permission boundaries and operational controls.' },
-      { label: 'Trust', href: '/trust', description: 'How Neptlium communicates system truth and operating boundaries.' },
-      { label: 'Risk disclosure', href: '/risk-disclosure', description: 'Public risk and availability disclosures.' },
+      { label: 'Capital operations', href: '/capital-account', description: 'Canonical capital state, activity and governed movement boundaries.' },
+      { label: 'Policy & allocation', href: '/allocation', description: 'Observe, model and authorize capital distribution without implying execution.' },
     ],
   },
   {
     label: 'Company',
     eyebrow: 'Neptlium',
-    description: 'Purpose, principles and company information.',
+    description: 'Purpose, principles and a direct path to the Neptlium team.',
     links: [
-      { label: 'About', href: '/about', description: 'The mission and operating thesis behind Neptlium.' },
-      { label: 'Principles', href: '/company#principles', description: 'The principles governing capital operations and product truth.' },
-      { label: 'Contact', href: '/contact', description: 'Company, product and general inquiries.' },
+      { label: 'About Neptlium', href: '/about', description: 'The mission and operating thesis behind the capital operating platform.' },
+      { label: 'Talk to Neptlium', href: '/contact', description: 'Company, product and partnership conversations.' },
     ],
   },
 ] as const;
 
-const routeIsCurrent = (path: string, href?: string) => href?.split('#')[0] === path;
+const routeIsCurrent = (path: string, href: string) => href.split('#')[0] === path;
 
 function MenuLink({ link, path }: { link: NavLink; path: string }) {
-  const content = (
-    <>
+  return (
+    <Link className="command-link" href={link.href} aria-current={routeIsCurrent(path, link.href) ? 'page' : undefined}>
       <span className="command-link-copy">
         <strong>{link.label}</strong>
         <small>{link.description}</small>
       </span>
-      {link.status ? <span className="command-status">{link.status}</span> : <ArrowRight aria-hidden="true" />}
-    </>
-  );
-
-  return link.href ? (
-    <Link className="command-link" href={link.href} aria-current={routeIsCurrent(path, link.href) ? 'page' : undefined}>
-      {content}
+      <ArrowRight aria-hidden="true" />
     </Link>
-  ) : (
-    <span className="command-link is-architectural" aria-disabled="true">
-      {content}
-    </span>
   );
 }
 
@@ -185,8 +147,8 @@ function DesktopCommandMenu({ item, path }: { item: NavSection; path: string }) 
           <aside className="command-system-panel">
             {item.lifecycle ? (
               <>
-                <span>Allocation lifecycle</span>
-                <strong>Observed before modeled. Authorized before operation.</strong>
+                <span>Operating progression</span>
+                <strong>Understanding precedes organization. Policy precedes operation.</strong>
                 <ol>
                   {item.lifecycle.map((state, index) => (
                     <li key={state}>
@@ -200,10 +162,7 @@ function DesktopCommandMenu({ item, path }: { item: NavSection; path: string }) 
               <>
                 <span>{item.eyebrow}</span>
                 <strong>Capability follows verified architecture.</strong>
-                <p>
-                  Neptlium distinguishes current capability from architectural direction and
-                  unavailable execution.
-                </p>
+                <p>Neptlium keeps current capability, governed authority and future infrastructure clearly separated.</p>
               </>
             )}
           </aside>
@@ -270,9 +229,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="command-actions">
-          <Link href="/platform">Explore</Link>
+          <Link href="/platform">Explore the platform</Link>
           <a className="button command-primary-action" href={SITE.signInUrl}>
-            Enter App <ArrowRight aria-hidden="true" />
+            Enter Neptlium <ArrowRight aria-hidden="true" />
           </a>
         </div>
 
@@ -324,9 +283,9 @@ export function SiteHeader() {
             </nav>
 
             <div className="mobile-command-actions">
-              <Link href="/platform">Explore</Link>
+              <Link href="/platform">Explore the platform</Link>
               <a className="button" href={SITE.signInUrl}>
-                Enter App <ArrowRight aria-hidden="true" />
+                Enter Neptlium <ArrowRight aria-hidden="true" />
               </a>
             </div>
           </div>

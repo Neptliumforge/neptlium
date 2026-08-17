@@ -15,7 +15,7 @@ test('public site consumes shared tokens and the production marketing authority'
   assert.equal(production.includes('--np-paper: var(--n-brand-canvas)'), true);
   assert.equal(production.includes('--np-ink: var(--n-brand-ink)'), true);
   assert.equal(production.includes('--np-blue: var(--n-brand-blue)'), true);
-  assert.equal(brand.includes('--n-brand-blue: #0141f3'), true);
+  assert.equal(brand.includes('--n-brand-blue: #258be5'), true);
   assert.equal(production.includes('#2764ff'), false);
   assert.equal(production.includes('#147dff'), false);
   assert.equal(production.includes('radial-gradient'), false);

@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "ignoreCommand": "[ -n \"$VERCEL_GIT_PREVIOUS_SHA\" ] && turbo query affected --base=$VERCEL_GIT_PREVIOUS_SHA --packages @neptlium/web --exit-code",
+  "buildCommand": "cd ../.. && pnpm --filter @neptlium/ui typecheck && pnpm --filter @neptlium/ui lint && pnpm --filter @neptlium/web typecheck && pnpm --filter @neptlium/web lint && pnpm --filter @neptlium/web test && pnpm --filter @neptlium/web build",
   "headers": [
     {
       "source": "/(.*)",
