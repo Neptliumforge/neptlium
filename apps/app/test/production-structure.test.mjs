@@ -17,7 +17,8 @@ test('authenticated application consumes canonical shared brand identity', () =>
   assert.equal(global.includes('--color-text-primary: var(--n-brand-ink)'), true);
   assert.equal(global.includes('--color-sidebar: var(--n-brand-canvas)'), true);
   assert.equal(global.includes('--color-topnav: var(--n-brand-canvas)'), true);
-  assert.equal(uiPackage.includes('"./styles/brand.css": "./src/styles/brand.css"'), true);
+  assert.equal(uiPackage.includes('"./styles/brand.css"'), true);
+  assert.equal(uiPackage.includes('"style": "./src/styles/brand.css"'), true);
   assert.equal(mark.includes('blue: "#0141F3"'), true);
   assert.equal(mark.includes('ink: "#08111F"'), true);
   assert.equal(icon.includes('#0141F3'), true);
@@ -35,6 +36,17 @@ test('primary authenticated navigation stays intentionally constrained', () => {
   }
 });
 
+test('authenticated shell exposes settings separately and renders operational header content', () => {
+  const layout = read('app/dashboard/layout.tsx');
+  const shell = read('../../packages/ui/src/shell/AppShell.tsx');
+  assert.equal(layout.includes("item.label === 'Settings'"), true);
+  assert.equal(layout.includes('sidebarFooter='), true);
+  assert.equal(layout.includes('/dashboard/transactions'), true);
+  assert.equal(layout.includes('/dashboard/settings#support'), true);
+  assert.equal(shell.includes('header,'), true);
+  assert.equal(shell.includes('{header}'), true);
+});
+
 test('mobile shell preserves safe areas, drawer focus governance, and four primary destinations', () => {
   const mobile = read('../../packages/ui/src/shell/MobileNavigation.tsx');
   const shell = read('../../packages/ui/src/shell/AppShell.tsx');
@@ -47,6 +59,17 @@ test('mobile shell preserves safe areas, drawer focus governance, and four prima
   assert.equal(shell.includes('xl:w-[248px]'), true);
   assert.equal(shell.includes('h-16'), true);
   assert.equal(shell.includes('overflow-x-hidden'), true);
+});
+
+test('System theme persists and follows operating-system changes', () => {
+  const layout = read('app/layout.tsx');
+  const profile = read('components/navigation/ProfileMenu.tsx');
+  assert.equal(layout.includes("localStorage.getItem('neptlium-theme')"), true);
+  assert.equal(layout.includes("preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system'"), true);
+  assert.equal(profile.includes("localStorage.setItem('neptlium-theme', next)"), true);
+  assert.equal(profile.includes("document.documentElement.dataset.themePreference = theme"), true);
+  assert.equal(profile.includes("media.addEventListener('change', synchronize)"), true);
+  assert.equal(profile.includes("media.removeEventListener('change', synchronize)"), true);
 });
 
 test('product-wide state vocabulary is governed and non-color-only', () => {
@@ -74,11 +97,33 @@ test('product-wide state vocabulary is governed and non-color-only', () => {
   assert.equal(productState.includes("state === 'LOADING' ? 'status'"), true);
 });
 
+test('workspace headings use one information-first product primitive', () => {
+  const header = read('components/product/WorkspaceHeader.tsx');
+  const overview = read('app/dashboard/page.tsx');
+  const portfolio = read('app/dashboard/portfolio/page.tsx');
+  const capital = read('app/dashboard/wallet/WalletView.tsx');
+  const treasury = read('app/dashboard/treasury/TreasuryView.tsx');
+  assert.equal(header.includes('border-b border-border-hairline'), true);
+  assert.equal(overview.includes('WorkspaceHeader'), true);
+  assert.equal(portfolio.includes('WorkspaceHeader'), true);
+  assert.equal(capital.includes('WorkspaceHeader'), true);
+  assert.equal(treasury.includes('WorkspaceHeader'), true);
+});
+
+test('Overview is attention-first and never invents cross-asset valuation', () => {
+  const overview = read('app/dashboard/page.tsx');
+  assert.equal(overview.includes('You&apos;re all caught up.'), true);
+  assert.equal(overview.includes('awaiting approval'), true);
+  assert.equal(overview.includes('getFundingCapabilities'), true);
+  assert.equal(overview.includes('FinancialValue valueAtomic={balance?.total_atomic ?? \'0\'}'), true);
+  assert.equal(overview.includes('Capital structure'), true);
+});
+
 test('Capital Account exposes canonical ledger source and governed production states', () => {
   const view = read('app/dashboard/wallet/WalletView.tsx');
   assert.equal(view.includes('Source: Neptlium canonical ledger'), true);
   assert.equal(view.includes('Provider aggregate balances are not shown as customer capital'), true);
-  assert.equal(view.includes("['Balances', 'Deposit', 'Withdraw', 'Activity']"), true);
+  assert.equal(view.includes("['Balances', 'Deposit', 'Withdraw', 'Transfer', 'Activity']"), true);
   assert.equal(view.includes('Manual approval governs outbound movement'), true);
   assert.equal(view.includes('Pending approval'), true);
   assert.equal(view.includes('Approved'), true);
@@ -102,6 +147,17 @@ test('Deposit UX is capability-driven and never hardcodes a treasury destination
   assert.equal(/['"`]r[A-HJ-NP-Za-km-z1-9]{24,34}['"`]/.test(view), false);
 });
 
+test('Transfer UX is complete but financially inert until governed mutation exists', () => {
+  const view = read('app/dashboard/wallet/WalletView.tsx');
+  const actions = read('app/dashboard/wallet/actions.ts');
+  assert.equal(view.includes("active === 'Transfer'"), true);
+  assert.equal(view.includes('Select verified destination'), true);
+  assert.equal(view.includes('Governed request boundary'), true);
+  assert.equal(view.includes('<Button className="mt-4" disabled>Request transfer</Button>'), true);
+  assert.equal(actions.includes('/v1/treasury/transfers'), false);
+  assert.equal(actions.includes('transfer_executions'), false);
+});
+
 test('legacy deposit, withdrawal, and transfer routes converge on governed workspaces', () => {
   assert.equal(read('app/dashboard/deposit/page.tsx').includes("redirect('/dashboard/wallet')"), true);
   assert.equal(read('app/dashboard/withdrawals/page.tsx').includes("redirect('/dashboard/wallet')"), true);
@@ -113,6 +169,8 @@ test('Portfolio uses governed capabilities and canonical balances rather than tr
   assert.equal(portfolio.includes('getFundingCapabilities'), true);
   assert.equal(portfolio.includes('getCanonicalBalances'), true);
   assert.equal(portfolio.includes('No cross-asset total or performance value is fabricated'), true);
+  assert.equal(portfolio.includes('Portfolio intelligence'), true);
+  assert.equal(portfolio.includes("['Holdings', '#holdings']"), true);
   for (const forbidden of ['Buy', 'Sell', 'Trade', 'Swap', 'candlestick', 'market ticker']) {
     assert.equal(portfolio.includes(forbidden), false, `portfolio contains ${forbidden}`);
   }
@@ -120,7 +178,8 @@ test('Portfolio uses governed capabilities and canonical balances rather than tr
 
 test('Treasury is operational and transfer lifecycle remains governed', () => {
   const treasury = read('app/dashboard/treasury/TreasuryView.tsx');
-  assert.equal(treasury.includes('Canonical liquidity'), true);
+  assert.equal(treasury.includes('Control liquidity'), true);
+  assert.equal(treasury.includes('Movement control'), true);
   assert.equal(treasury.includes('Outbound execution remains closed.'), true);
   assert.equal(treasury.includes('Verified destination references'), true);
   assert.equal(treasury.includes('Provider aggregate balances are not substituted'), true);

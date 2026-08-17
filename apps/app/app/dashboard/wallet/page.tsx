@@ -30,8 +30,11 @@ export default async function WalletPage() {
       fundingActivity={funding.status === 'fulfilled' ? funding.value.data : []}
       fundingActivityError={funding.status === 'rejected'}
       transferCapabilities={transferCapabilities.status === 'fulfilled' ? transferCapabilities.value.capabilities : []}
+      transferCapabilityError={transferCapabilities.status === 'rejected'}
       transferActivity={transfers.status === 'fulfilled' ? transfers.value.data : []}
+      transferActivityError={transfers.status === 'rejected'}
       aliases={aliases.status === 'fulfilled' ? aliases.value.data : []}
+      aliasError={aliases.status === 'rejected'}
     />
   );
 }

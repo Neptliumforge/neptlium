@@ -1,17 +1,19 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Row, Section, Stack } from '@neptlium/ui';
+import { Section, Stack } from '@neptlium/ui';
 import { requireProvisionedUser } from '@/lib/auth';
 import { getOverviewState } from '@/lib/api/client';
 import {
   getCanonicalBalances,
   getFundingActivity,
+  getFundingCapabilities,
   getTransferActivity,
   type FundingActivity,
   type TransferActivity,
 } from '@/lib/api/financial';
 import { CapitalPosition } from '@/components/product/CapitalPosition';
 import { FinancialValue, ProductStateBadge } from '@/components/product/ProductState';
+import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 
 function activityState(state: string) {
   if (['AVAILABLE', 'RECONCILED', 'SETTLED'].includes(state)) return 'AVAILABLE' as const;
@@ -21,6 +23,23 @@ function activityState(state: string) {
   return 'PENDING' as const;
 }
 
+function normalizedNetwork(value: string | null | undefined) {
+  return (value ?? '').replaceAll('-', '_').toUpperCase();
+}
+
+function balanceState(balance: {
+  readonly available_atomic: string;
+  readonly pending_atomic: string;
+  readonly reserved_atomic: string;
+  readonly restricted_atomic: string;
+} | undefined) {
+  if (!balance) return 'No position';
+  if (BigInt(balance.restricted_atomic) > 0n) return 'Restricted';
+  if (BigInt(balance.pending_atomic) > 0n) return 'Pending';
+  if (BigInt(balance.reserved_atomic) > 0n) return 'Reserved';
+  return 'Available';
+}
+
 type RecentActivity =
   | ({ readonly kind: 'Deposit' } & FundingActivity)
   | ({ readonly kind: 'Transfer' } & TransferActivity);
@@ -28,15 +47,17 @@ type RecentActivity =
 export default async function DashboardPage() {
   await requireProvisionedUser();
 
-  const [overviewResult, balancesResult, fundingResult, transferResult] = await Promise.allSettled([
+  const [overviewResult, balancesResult, capabilitiesResult, fundingResult, transferResult] = await Promise.allSettled([
     getOverviewState(),
     getCanonicalBalances(),
+    getFundingCapabilities(),
     getFundingActivity(),
     getTransferActivity(),
   ]);
 
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
   const balances = balancesResult.status === 'fulfilled' ? balancesResult.value.balances : [];
+  const capabilities = capabilitiesResult.status === 'fulfilled' ? capabilitiesResult.value.capabilities : [];
   const balanceError = balancesResult.status === 'rejected';
   const funding = fundingResult.status === 'fulfilled' ? fundingResult.value.data : [];
   const transfers = transferResult.status === 'fulfilled' ? transferResult.value.data : [];
@@ -48,64 +69,105 @@ export default async function DashboardPage() {
     .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
     .slice(0, 5);
 
+  const pendingApprovals = transfers.filter((item) => item.state === 'PENDING_APPROVAL');
+  const attention = [
+    ...(balanceError ? [{ title: 'Capital state could not be loaded', href: '/dashboard/wallet', label: 'Review Capital Account' }] : []),
+    ...(activityError ? [{ title: 'Capital activity could not be loaded', href: '/dashboard/transactions', label: 'Review activity' }] : []),
+    ...(pendingApprovals.length
+      ? [{
+          title: `${pendingApprovals.length} transfer${pendingApprovals.length === 1 ? '' : 's'} awaiting approval`,
+          href: '/dashboard/treasury',
+          label: 'Review Treasury',
+        }]
+      : []),
+  ];
+
   return (
     <Stack>
-      <header>
-        <h1>Overview</h1>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
-          Canonical capital state, current operating readiness, and the items that need attention.
-        </p>
-      </header>
+      <WorkspaceHeader
+        eyebrow="Capital operating environment"
+        title="Overview"
+        description="What matters across your capital, operating readiness, and governed activity right now."
+        meta={<>Canonical state · refreshed {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</>}
+      />
 
-      <CapitalPosition balances={balances} loadError={balanceError} />
+      <CapitalPosition balances={balances} loadError={balanceError} title="Capital at a glance" />
 
-      <div className="grid gap-x-10 gap-y-2 lg:grid-cols-3">
-        <Section title="Portfolio">
-          <Link
-            href="/dashboard/portfolio"
-            className="group block border-b border-border-hairline py-5 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]"
-          >
-            <Row>
-              <div>
-                <p className="text-sm font-medium text-text-primary">Capital visibility</p>
-                <p className="mt-1 text-sm text-text-muted">
-                  {balances.length ? `${balances.length} canonical asset balance${balances.length === 1 ? '' : 's'}` : 'No portfolio positions yet.'}
-                </p>
+      <Section title="Attention">
+        <div className="border-y border-border-hairline">
+          {attention.length === 0 ? (
+            <div className="py-5">
+              <p className="text-sm font-medium text-text-primary">You&apos;re all caught up.</p>
+              <p className="mt-1 text-sm text-text-muted">Nothing currently exposed by the governed product state requires your review.</p>
+            </div>
+          ) : (
+            attention.map((item) => (
+              <Link key={item.title} href={item.href} className="group flex min-h-14 items-center justify-between gap-5 border-b border-border-hairline py-4 last:border-0">
+                <span className="text-sm font-medium text-text-primary">{item.title}</span>
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-accent-primary">
+                  {item.label}<ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                </span>
+              </Link>
+            ))
+          )}
+        </div>
+      </Section>
+
+      <Section
+        title="Capital position"
+        action={<Link href="/dashboard/portfolio" className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-primary">View portfolio <ArrowRight className="size-4" aria-hidden="true" /></Link>}
+      >
+        <div className="border-y border-border-hairline">
+          {balanceError || capabilitiesResult.status === 'rejected' ? (
+            <div className="py-5">
+              <p className="text-sm font-medium text-text-primary">Capital position unavailable</p>
+              <p className="mt-1 text-sm text-text-muted">Canonical balances or the governed asset set could not be loaded.</p>
+            </div>
+          ) : capabilities.length === 0 ? (
+            <div className="py-5">
+              <p className="text-sm font-medium text-text-primary">No governed assets exposed</p>
+              <p className="mt-1 text-sm text-text-muted">The API has not exposed a customer asset set for this environment.</p>
+            </div>
+          ) : (
+            <>
+              <div className="hidden grid-cols-[minmax(8rem,1fr)_minmax(9rem,auto)_minmax(8rem,auto)] gap-5 border-b border-border-hairline py-3 text-xs font-medium text-text-muted sm:grid">
+                <span>Asset</span><span>Balance</span><span>State</span>
               </div>
-              <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Row>
+              {capabilities.map((capability) => {
+                const balance = balances.find((item) =>
+                  item.asset === capability.asset &&
+                  (capability.network === 'ACH' || normalizedNetwork(item.network) === normalizedNetwork(capability.network)),
+                );
+                return (
+                  <div key={capability.code} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[minmax(8rem,1fr)_minmax(9rem,auto)_minmax(8rem,auto)] sm:items-center sm:gap-5">
+                    <div><p className="text-sm font-medium text-text-primary">{capability.asset}</p><p className="mt-1 text-xs text-text-muted">{capability.network}</p></div>
+                    <div className="text-sm font-medium"><FinancialValue valueAtomic={balance?.total_atomic ?? '0'} asset={capability.asset} /></div>
+                    <span className="text-xs text-text-muted">{balanceState(balance)}</span>
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </div>
+      </Section>
+
+      <div className="grid gap-x-10 gap-y-2 lg:grid-cols-2">
+        <Section title="Capital structure">
+          <Link href="/dashboard/wallet" className="group block border-b border-border-hairline py-5">
+            <p className="text-sm font-medium text-text-primary">Available · Reserved · Pending · Restricted</p>
+            <div className="mt-2 flex items-center justify-between gap-4">
+              <p className="text-sm text-text-muted">Open the canonical ledger view and governed capital workflows.</p>
+              <ArrowRight className="size-4 shrink-0 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </div>
           </Link>
         </Section>
-
-        <Section title="Treasury">
-          <Link
-            href="/dashboard/treasury"
-            className="group block border-b border-border-hairline py-5 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]"
-          >
-            <Row>
-              <div>
-                <p className="text-sm font-medium text-text-primary">Liquidity and movement</p>
-                <p className="mt-1 text-sm text-text-muted">
-                  {overview?.treasury.state === 'VALUE' ? 'Canonical treasury state available' : 'Governed by canonical balances and capability state'}
-                </p>
-              </div>
-              <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Row>
-          </Link>
-        </Section>
-
         <Section title="Allocation">
-          <Link
-            href="/dashboard/allocations"
-            className="group block border-b border-border-hairline py-5 focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]"
-          >
-            <Row>
-              <div>
-                <p className="text-sm font-medium text-text-primary">Policy workspace</p>
-                <p className="mt-1 text-sm text-text-muted">Execution remains unavailable until governed execution is production-proven.</p>
-              </div>
-              <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Row>
+          <Link href="/dashboard/allocations" className="group block border-b border-border-hairline py-5">
+            <p className="text-sm font-medium text-text-primary">Policy, drift, and authorization</p>
+            <div className="mt-2 flex items-center justify-between gap-4">
+              <p className="text-sm text-text-muted">{overview?.allocation.state === 'VALUE' ? 'Allocation state is available for review.' : 'Build or review governed allocation policy.'}</p>
+              <ArrowRight className="size-4 shrink-0 text-text-muted transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </div>
           </Link>
         </Section>
       </div>
