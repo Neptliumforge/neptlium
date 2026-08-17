@@ -60,6 +60,17 @@ test('mobile shell preserves safe areas, drawer focus governance, and four prima
   assert.equal(shell.includes('overflow-x-hidden'), true);
 });
 
+test('System theme persists and follows operating-system changes', () => {
+  const layout = read('app/layout.tsx');
+  const profile = read('components/navigation/ProfileMenu.tsx');
+  assert.equal(layout.includes("localStorage.getItem('neptlium-theme')"), true);
+  assert.equal(layout.includes("preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system'"), true);
+  assert.equal(profile.includes("localStorage.setItem('neptlium-theme', next)"), true);
+  assert.equal(profile.includes("document.documentElement.dataset.themePreference = theme"), true);
+  assert.equal(profile.includes("media.addEventListener('change', synchronize)"), true);
+  assert.equal(profile.includes("media.removeEventListener('change', synchronize)"), true);
+});
+
 test('product-wide state vocabulary is governed and non-color-only', () => {
   const productState = read('components/product/ProductState.tsx');
   for (const state of [
