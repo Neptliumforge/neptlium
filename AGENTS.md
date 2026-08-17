@@ -31,7 +31,17 @@
 - Merging a pull request always requires explicit user instruction for that merge. Environment identity is not merge authorization.
 - Repository branch protections, required checks, review requirements, and ownership/authorization controls remain authoritative and must not be bypassed merely because an environment is authorized to perform Git operations.
 - Never force-push protected history, bypass required reviews/checks, or use an alternate environment to evade repository governance unless the user explicitly changes that governance and doing so remains safe.
+## Production provider activation
 
+- Production providers and real-money capabilities may be activated only when the current task explicitly authorizes activation and the required provider capability has been independently verified.
+- Provider credentials being present does not prove that a capability is approved, enabled, supported, or safe for production use.
+- Distinguish provider connectivity, capability verification, execution enablement, settlement, and reconciliation as separate states.
+- Never set an eligibility, capability, or live-execution flag to true merely to bypass an unavailable provider feature or failed readiness check.
+- Before enabling a real-money rail, verify the provider account/environment, required capabilities, webhook authenticity, idempotency behavior, authorization path, durable event persistence, ledger treatment, failure handling, and reconciliation path.
+- Activate capabilities independently. Approval of one provider feature does not authorize another.
+- Production activation must use the smallest justified scope. Do not globally enable unrelated financial capabilities.
+- A successful API request proves only what that provider response establishes; it does not by itself establish canonical Neptlium settlement or reconciliation.
+- Where production execution is intentionally enabled, agents may exercise that capability only when the user's current task explicitly authorizes the financial action itself. Configuration authorization is not transaction authorization.
 ## Safety
 
 - Never expose tokens, cookies, service-role keys, provider secrets, private keys, recovery material, or sensitive webhook payloads.
