@@ -1,6 +1,6 @@
-/* Final marketing expression of docs/03_DESIGN_SYSTEM.md.
- * Shared identity comes from packages/ui. Marketing may compose it more broadly,
- * but it does not own a competing palette or impersonate the authenticated app.
+/* Authoritative marketing expression of docs/03_DESIGN_SYSTEM.md.
+ * Shared identity comes from packages/ui. This layer resolves legacy marketing
+ * composition styles into the current white-first institutional system.
  */
 :root {
   --np-paper: var(--n-brand-canvas);
@@ -50,9 +50,14 @@ body {
 
 .production-hero-copy h1 {
   max-width: 48rem;
+  color: var(--np-ink);
   font-size: clamp(2.5rem, 5.5vw, 4rem);
   line-height: 1.02;
   letter-spacing: -.03em;
+}
+
+.production-hero-eyebrow {
+  color: var(--np-action);
 }
 
 .marketing-composition h2 {
@@ -62,6 +67,7 @@ body {
 }
 
 .production-hero-copy p,
+.production-hero-copy > p,
 .marketing-editorial-heading p,
 .marketing-composition p {
   color: var(--np-secondary);
@@ -76,6 +82,21 @@ body {
 .marketing-governance {
   background: var(--np-paper) !important;
   color: var(--np-ink);
+}
+
+.marketing-thesis :where(h2, h3),
+.marketing-product :where(h2, h3),
+.marketing-governance :where(h2, h3),
+.marketing-thesis :where(strong, li),
+.marketing-product :where(strong, li),
+.marketing-governance :where(strong, li) {
+  color: var(--np-ink);
+}
+
+.marketing-thesis :where(p, small),
+.marketing-product :where(p, small),
+.marketing-governance :where(p, small) {
+  color: var(--np-secondary);
 }
 
 .product-system-primary,
@@ -107,6 +128,32 @@ body {
 .marketing-capital-operations :where(h2, h3),
 .marketing-conversion h2 {
   color: var(--n-brand-text-on-dark);
+}
+
+/* Header and hero explicitly consume the authoritative light tokens. Legacy
+ * dark-first marketing selectors are composition history, not theme authority. */
+.site-header.capital-command-bar,
+.site-header.capital-command-bar .nav-shell {
+  color: var(--np-ink);
+}
+
+.capital-command-bar .brand,
+.command-menu-root > button,
+.command-actions > a:first-child,
+.command-mobile-trigger {
+  color: var(--np-ink);
+}
+
+.capital-command-bar .brand {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.command-mobile-trigger {
+  background: transparent;
+  border-color: var(--np-line);
 }
 
 /* Color signals direction and action; it is not the page atmosphere. */
@@ -178,12 +225,64 @@ a[aria-current='page'] {
 }
 
 @media (max-width: 767px) {
+  .capital-command-bar .nav-shell {
+    min-height: 4rem;
+  }
+
+  .marketing-composition-hero.production-hero {
+    padding-top: 3.75rem;
+    padding-bottom: 4.5rem;
+  }
+
+  .production-hero-grid {
+    gap: 2.25rem;
+  }
+
   .production-hero-copy h1 {
-    font-size: clamp(2.35rem, 10vw, 2.875rem);
+    max-width: 11ch;
+    font-size: clamp(3.1rem, 13vw, 4rem);
+    line-height: .96;
+    letter-spacing: -.045em;
+  }
+
+  .production-hero-copy > p {
+    max-width: 34rem;
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+
+  .production-hero-actions {
+    margin-top: 1.75rem;
+  }
+
+  .hero-capital-system {
+    min-height: 22rem;
   }
 
   .marketing-composition h2 {
     font-size: clamp(1.75rem, 8vw, 2.125rem);
+  }
+}
+
+@media (max-width: 430px) {
+  .production-hero-actions {
+    gap: .75rem;
+  }
+
+  .production-primary,
+  .production-secondary {
+    min-height: 2.75rem;
+    border-radius: .25rem;
+  }
+
+  .production-secondary {
+    border: 0;
+    border-bottom: 1px solid var(--np-line-strong);
+    background: transparent;
+  }
+
+  .hero-capital-system {
+    min-height: 20rem;
   }
 }
 

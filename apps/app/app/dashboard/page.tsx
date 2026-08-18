@@ -9,6 +9,7 @@ import {
   getFundingCapabilities,
   getTransferActivity,
   type FundingActivity,
+  type FundingCapability,
   type TransferActivity,
 } from '@/lib/api/financial';
 import { CapitalPosition } from '@/components/product/CapitalPosition';
@@ -33,11 +34,71 @@ function balanceState(balance: {
   readonly reserved_atomic: string;
   readonly restricted_atomic: string;
 } | undefined) {
-  if (!balance) return 'No position';
+  if (!balance) return 'No canonical position';
   if (BigInt(balance.restricted_atomic) > 0n) return 'Restricted';
   if (BigInt(balance.pending_atomic) > 0n) return 'Pending';
   if (BigInt(balance.reserved_atomic) > 0n) return 'Reserved';
   return 'Available';
+}
+
+function fundingLabel(state: FundingCapability['state']) {
+  if (state === 'ENABLED') return 'Enabled';
+  if (state === 'INELIGIBLE') return 'Ineligible';
+  if (state === 'NOT_CONFIGURED') return 'Not configured';
+  return 'Disabled';
+}
+
+function capitalEmptyAction(
+  capabilities: readonly FundingCapability[],
+  capabilityError: boolean,
+) {
+  if (capabilityError) {
+    return {
+      href: '/dashboard/wallet',
+      label: 'View Capital Account',
+      detail: 'Funding status could not be confirmed from the governed capability API. Overview will not enable a funding action while that state is unknown.',
+    };
+  }
+
+  const enabled = capabilities.filter((capability) => capability.state === 'ENABLED');
+  if (enabled.length > 0) {
+    const rails = enabled.map((capability) => `${capability.asset} · ${capability.network}`).join(', ');
+    return {
+      href: '/dashboard/wallet',
+      label: 'Review funding options',
+      detail: `${rails} ${enabled.length === 1 ? 'is' : 'are'} currently exposed as enabled for funding. A funding intent does not become canonical capital until required posting and reconciliation complete.`,
+    };
+  }
+
+  if (capabilities.length === 0) {
+    return {
+      href: '/dashboard/wallet',
+      label: 'View Capital Account',
+      detail: 'No governed customer funding capability is currently exposed by the backend. No funding action is enabled from Overview.',
+    };
+  }
+
+  if (capabilities.some((capability) => capability.state === 'INELIGIBLE')) {
+    return {
+      href: '/dashboard/wallet',
+      label: 'Review funding status',
+      detail: 'Funding rails are exposed, but no rail is currently enabled and at least one is ineligible for this account. The Capital Account shows the authoritative capability state.',
+    };
+  }
+
+  if (capabilities.some((capability) => capability.state === 'NOT_CONFIGURED')) {
+    return {
+      href: '/dashboard/wallet',
+      label: 'Review funding status',
+      detail: 'No funding rail is currently enabled. One or more governed funding capabilities are not configured for this environment.',
+    };
+  }
+
+  return {
+    href: '/dashboard/wallet',
+    label: 'Review funding status',
+    detail: 'Governed funding capabilities are currently disabled. Overview does not expose an action that cannot enter the live funding lifecycle.',
+  };
 }
 
 type RecentActivity =
@@ -58,6 +119,7 @@ export default async function DashboardPage() {
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
   const balances = balancesResult.status === 'fulfilled' ? balancesResult.value.balances : [];
   const capabilities = capabilitiesResult.status === 'fulfilled' ? capabilitiesResult.value.capabilities : [];
+  const capabilityError = capabilitiesResult.status === 'rejected';
   const balanceError = balancesResult.status === 'rejected';
   const funding = fundingResult.status === 'fulfilled' ? fundingResult.value.data : [];
   const transfers = transferResult.status === 'fulfilled' ? transferResult.value.data : [];
@@ -91,7 +153,12 @@ export default async function DashboardPage() {
         meta={<>Canonical state · refreshed {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</>}
       />
 
-      <CapitalPosition balances={balances} loadError={balanceError} title="Capital at a glance" />
+      <CapitalPosition
+        balances={balances}
+        loadError={balanceError}
+        title="Capital at a glance"
+        emptyAction={capitalEmptyAction(capabilities, capabilityError)}
+      />
 
       <Section title="Attention">
         <div className="border-y border-border-hairline">
@@ -118,20 +185,20 @@ export default async function DashboardPage() {
         action={<Link href="/dashboard/portfolio" className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-primary">View portfolio <ArrowRight className="size-4" aria-hidden="true" /></Link>}
       >
         <div className="border-y border-border-hairline">
-          {balanceError || capabilitiesResult.status === 'rejected' ? (
+          {balanceError || capabilityError ? (
             <div className="py-5">
               <p className="text-sm font-medium text-text-primary">Capital position unavailable</p>
-              <p className="mt-1 text-sm text-text-muted">Canonical balances or the governed asset set could not be loaded.</p>
+              <p className="mt-1 text-sm text-text-muted">Canonical balances or the governed funding set could not be loaded.</p>
             </div>
           ) : capabilities.length === 0 ? (
             <div className="py-5">
-              <p className="text-sm font-medium text-text-primary">No governed assets exposed</p>
-              <p className="mt-1 text-sm text-text-muted">The API has not exposed a customer asset set for this environment.</p>
+              <p className="text-sm font-medium text-text-primary">No governed funding assets exposed</p>
+              <p className="mt-1 text-sm text-text-muted">The API has not exposed a customer funding set for this environment.</p>
             </div>
           ) : (
             <>
               <div className="hidden grid-cols-[minmax(8rem,1fr)_minmax(9rem,auto)_minmax(8rem,auto)] gap-5 border-b border-border-hairline py-3 text-xs font-medium text-text-muted sm:grid">
-                <span>Asset</span><span>Balance</span><span>State</span>
+                <span>Asset</span><span>Canonical balance</span><span>Funding</span>
               </div>
               {capabilities.map((capability) => {
                 const balance = balances.find((item) =>
@@ -139,10 +206,23 @@ export default async function DashboardPage() {
                   (capability.network === 'ACH' || normalizedNetwork(item.network) === normalizedNetwork(capability.network)),
                 );
                 return (
-                  <div key={capability.code} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[minmax(8rem,1fr)_minmax(9rem,auto)_minmax(8rem,auto)] sm:items-center sm:gap-5">
-                    <div><p className="text-sm font-medium text-text-primary">{capability.asset}</p><p className="mt-1 text-xs text-text-muted">{capability.network}</p></div>
-                    <div className="text-sm font-medium"><FinancialValue valueAtomic={balance?.total_atomic ?? '0'} asset={capability.asset} /></div>
-                    <span className="text-xs text-text-muted">{balanceState(balance)}</span>
+                  <div key={capability.code} className="grid gap-3 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[minmax(8rem,1fr)_minmax(9rem,auto)_minmax(8rem,auto)] sm:items-center sm:gap-5">
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">{capability.asset}</p>
+                      <p className="mt-1 text-xs text-text-muted">{capability.network}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-text-muted sm:hidden">Canonical balance</p>
+                      <div className="mt-1 text-sm font-medium sm:mt-0">
+                        {balance ? <FinancialValue valueAtomic={balance.total_atomic} asset={capability.asset} /> : <span className="text-text-muted">Not established</span>}
+                      </div>
+                      <p className="mt-1 text-[11px] text-text-muted">{balanceState(balance)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-text-muted sm:hidden">Funding</p>
+                      <p className="mt-1 text-sm font-medium text-text-primary sm:mt-0">{fundingLabel(capability.state)}</p>
+                      {capability.reason ? <p className="mt-1 max-w-[26rem] text-[11px] leading-4 text-text-muted">{capability.reason}</p> : null}
+                    </div>
                   </div>
                 );
               })}

@@ -23,3 +23,11 @@ test('marketing uses shared identity semantics and restrained interaction', () =
   assert.doesNotMatch(css, /--np-precision-blue:/);
   assert.doesNotMatch(css, /--np-absolute-black:/);
 });
+
+test('mobile light header and hero resolve to authoritative ink tokens', () => {
+  assert.match(css, /\.production-hero-copy h1\s*\{[\s\S]*?color:\s*var\(--np-ink\)/);
+  assert.match(css, /\.capital-command-bar \.brand,[\s\S]*?\.command-mobile-trigger\s*\{[\s\S]*?color:\s*var\(--np-ink\)/);
+  assert.match(css, /\.capital-command-bar \.brand\s*\{[\s\S]*?background:\s*transparent/);
+  assert.match(css, /@media \(max-width:\s*767px\)[\s\S]*?font-size:\s*clamp\(3\.1rem,\s*13vw,\s*4rem\)/);
+  assert.match(css, /\.marketing-composition-hero\.production-hero\s*\{[\s\S]*?padding-top:\s*3\.75rem/);
+});
