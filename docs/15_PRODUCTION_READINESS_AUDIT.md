@@ -1,11 +1,17 @@
 # Production Readiness Audit
 
-**Repository baseline:** `e2876d437e24e17dc735656ba920e175cc7c057a`
-**Local API remediation:** this production-readiness pass
-**API source/artifact disposition:** **LOCALLY DEPLOYMENT-READY AFTER FORWARD MIGRATION**
-**Real-money execution:** **CLOSED**
+**Status:** POINT-IN-TIME / NON-EVERGREEN RUNTIME EVIDENCE  
+**Audit record reviewed:** 2026-08-17  
+**Repository baseline audited:** `e2876d437e24e17dc735656ba920e175cc7c057a`  
+**Remediation tree containing the locally closed blockers:** `e0ed09d2164592e91a5ebe02ff7331f7775af45e`  
+**Current hygiene baseline at review:** `fd497c80080c73fa53a89da344d82ba7676e8b84`  
+**Scope:** repository-verifiable API source, artifact, authority, provider-gating, and readiness evidence from the baseline audit plus the identified remediation tree  
+**Live deployment/provider/database state:** **UNVERIFIED**  
+**Real-money execution:** no live-readiness claim is made by this document
 
-This audit records repository-verifiable evidence only. It does not authorize deployment, migration application, provider enablement, or movement of funds. Validate the exact pushed SHA and apply the reviewed forward migration before deployment.
+This document preserves a production-readiness audit as point-in-time evidence. It is not evergreen architecture and must not be used to infer current deployment SHA, applied migrations, provider eligibility, live balances, customers, production capability, or financial execution. Reverify current source and authorized runtime evidence before acting on any conclusion below.
+
+The audit began from repository baseline `e2876d437e24e17dc735656ba920e175cc7c057a`. The source remediations described as locally closed below were introduced in its child remediation commit `e0ed09d2164592e91a5ebe02ff7331f7775af45e`; they must not be attributed to the baseline SHA alone. Unless a finding explicitly says otherwise, implementation findings below refer to that remediation tree.
 
 ## Readiness invariants
 
@@ -14,54 +20,51 @@ This audit records repository-verifiable evidence only. It does not authorize de
 - A route, adapter, credential, migration, or provider response does not prove live capability.
 - Posted financial history remains append-only and is corrected only by reversal or compensation.
 
-## Locally closed API blockers
+## Point-in-time remediation findings
 
-### Build and Circle runtime contract
+At remediation tree `e0ed09d2164592e91a5ebe02ff7331f7775af45e`, repository evidence recorded the following:
 
-The Circle adapter now receives its configured environment, wallet-set reference, and live-execution gate in the intended constructor positions. `provider_execution_unimplemented` is part of the typed API error contract. Typecheck, build, and provider tests prove this composition. Automatic wallet provisioning stays disabled and transfer submission stays unimplemented.
+- The Circle adapter received configured environment, wallet-set reference, and live-execution gates; automatic wallet provisioning stayed disabled and transfer submission remained unimplemented.
+- Production rate limiting rejected `MemoryRateLimiter` and source composed a Supabase-backed distributed limiter. The remediation introduced a forward migration required before deployment; whether that migration is currently applied is **UNVERIFIED** here.
+- The serverless administrative routing/CORS path had regression coverage for authenticated routing and configured origins.
+- `build-vercel.mjs` asserted required runtime artifacts; artifact generation did not constitute deployment.
+- `apps/admin` used Supabase for authentication/session while privileged reads/writes used the API boundary.
+- Legacy deposit, withdrawal, and allocation administrative paths were recorded as fail-closed rather than proof of provider execution.
 
-### Distributed production rate limiting
+These are historical repository findings for the identified remediation tree, not claims about current production runtime.
 
-Production rejects `MemoryRateLimiter`. Standalone and serverless runtimes compose `SupabaseRateLimiter`, which hashes the request bucket key and invokes the atomic, service-role-only `consume_api_rate_limit` RPC. Missing, malformed, timed-out, or unavailable rate-limit storage fails closed. The new forward migration must be applied before this runtime is deployed.
+## Point-in-time funding, withdrawal, and allocation findings
 
-### Serverless administrative routing and CORS
+The remediation source recorded owner-authenticated funding/capital-account routes, durable/idempotent funding intent creation, ledger-derived canonical balances, and explicit posting/reconciliation gates before availability. Unsupported rails were expected to remain unavailable.
 
-The production chain `api/index.js → dist/serverless.js → executeAdminHttp → handleAdminRoute → /v1/admin/session` is regression-tested. An unauthenticated request returns `401 authentication_required`, never `404`. Admin preflight supports only configured origins, including `https://admin.neptlium.com`; disallowed origins receive `403` and no wildcard header.
+The transfer lifecycle was recorded as `REQUESTED → AUTHORIZED → RESERVED → SUBMITTED → SETTLED → RECONCILED`, with terminal failure/reversal/cancellation paths. Provider execution remained closed in the reviewed source.
 
-### Runtime artifact
+Allocation supported observed evidence, modeling, and governed authorization. Authorization did not itself call providers, reserve capital, mutate the ledger, or prove execution.
 
-`build-vercel.mjs` asserts the emitted serverless, application, admin, financial repository/routes, funding, allocation, registry, provider, security, Stripe, and reconciliation modules that the runtime requires. It does not deploy.
+Current runtime truth for these capabilities must be reverified from current source plus authorized deployment/provider/database evidence.
 
-## Authority and financial findings
+## Point-in-time provider conclusion
 
-- `apps/admin` uses Supabase for authentication/session only. Privileged reads and writes use its server-side bearer-token API client.
-- Only persisted `super_admin` satisfies general platform administrator authorization. Email alone is insufficient. No administrator identity is created, demoted, or revoked by this pass.
-- Legacy deposit completion audits and returns `409 deposit_completion_unavailable`.
-- Legacy withdrawal approval/rejection audits and returns `409 withdrawal_approval_unavailable`; it cannot manufacture approval, submission, settlement, or reconciliation.
-- Legacy allocation approval/rejection audits and returns `409 allocation_authorization_unavailable`; it cannot reserve, call a provider, mutate a ledger, or fabricate execution.
+At the remediation tree, Stripe Treasury was gated code rather than proven live eligibility; Circle had observation capability with provisioning/transfer execution inert; Alchemy was observation-only; Coinbase was legacy route/configuration groundwork without an active capital adapter; Fireblocks was not configured. No first live rail was established by that audit/remediation pass.
 
-## Funding readiness
+**Current provider eligibility, configuration, approval, and availability are UNVERIFIED by this document.** Source support and credential presence are not live capability evidence.
 
-Owner-authenticated routes exist for capabilities, intents, activity, canonical balances, and persisted deposit instructions. Funding intent creation is durable and idempotent. Canonical balances derive from ledger postings. Provider confirmation cannot transition directly to `AVAILABLE`; ledger posting and matched reconciliation remain explicit gates. Unsupported rails remain unavailable and no address is invented.
+## External/operational evidence required for a current readiness claim
 
-## Withdrawal and allocation readiness
+A new readiness decision must independently establish, without exposing secrets:
 
-The current transfer execution lifecycle is `REQUESTED → AUTHORIZED → RESERVED → SUBMITTED → SETTLED → RECONCILED`, with terminal failure/reversal/cancellation paths. The separate withdrawal-control model and schema contain approval evidence, but explicit `PENDING_APPROVAL` and `APPROVED` states are not integrated into the canonical transfer enum. Provider execution remains closed.
+1. the exact candidate/deployed SHA and required CI results;
+2. authorized migration application state;
+3. deployment environment configuration state;
+4. authenticated administrative authority behavior;
+5. provider eligibility and capability for each proposed rail;
+6. webhook authenticity and durable event handling;
+7. canonical ledger treatment and reconciliation behavior;
+8. failure, return, reversal, and withdrawal controls;
+9. explicit execution authorization where real-money execution is proposed.
 
-Allocation supports observed evidence, modeling, and governed authorization. Capabilities keep reservation, execution, and reconciliation unavailable. Authorization does not call providers, reserve capital, mutate the ledger, or fabricate execution.
-
-## Provider and first-rail conclusion
-
-Stripe Treasury is gated code, not proven live eligibility. Circle is observation-capable but provisioning and transfer execution are inert. Alchemy is observation-only. Coinbase is legacy route/configuration groundwork without an active capital adapter. Fireblocks is not configured. No USD/ACH, USDC/Base, or BTC/Bitcoin rail has every custody, attribution, verified webhook, eligibility, settlement, ledger, reconciliation, return/reversal, and withdrawal control proven; no first live rail is selected.
-
-## Remaining external/operational evidence
-
-1. Review and apply `20260813090000_distributed_api_rate_limiting.sql` through the authorized forward-only migration workflow.
-2. Push and validate the exact candidate SHA in required CI.
-3. Confirm deployment environment variables without exposing their values.
-4. Perform the remaining canonical authenticated `super_admin` token/login proof after deployment.
-5. Verify provider eligibility and official webhook/reconciliation operations separately before opening any execution gate.
+Until those are reverified, runtime conclusions remain **UNVERIFIED / POINT-IN-TIME**.
 
 ## Audit conclusion
 
-Every locally provable API source, artifact, admin routing, CORS, authority, and fail-closed gate covered by this pass is implemented and tested. The API code requires no release-only source change to deploy after the forward migration is applied. This is not a declaration of real-money readiness: all provider execution remains closed.
+This record is useful as historical readiness evidence for baseline `e2876d437e24e17dc735656ba920e175cc7c057a` together with remediation tree `e0ed09d2164592e91a5ebe02ff7331f7775af45e`. It does not declare current production readiness, current migration state, provider approval, or real-money capability. Current readiness requires a new evidence-based audit of the exact candidate and authorized runtime state.

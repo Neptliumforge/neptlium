@@ -3,8 +3,7 @@
 - Inspect live code, migrations, tests, and configuration before describing or changing behavior.
 - The numbered documents `docs/00_*` through `docs/15_*` are authoritative when present.
 - `docs/03_DESIGN_SYSTEM.md` is the authoritative unified Neptlium design direction for marketing and authenticated product.
-- `docs/03_MARKETING_DESIGN_DOCTRINE.md` is retained as implementation history and marketing composition reference only. Where it conflicts with `docs/03_DESIGN_SYSTEM.md` on palette, typography, motion, surface behavior or cross-product identity, `docs/03_DESIGN_SYSTEM.md` wins.
-- `docs/archive` is historical context only, never current architecture.
+- `docs/archive` is historical context only, never current architecture. The archived marketing doctrine is non-authoritative implementation history.
 
 ## Application boundaries
 
@@ -31,6 +30,7 @@
 - Merging a pull request always requires explicit user instruction for that merge. Environment identity is not merge authorization.
 - Repository branch protections, required checks, review requirements, and ownership/authorization controls remain authoritative and must not be bypassed merely because an environment is authorized to perform Git operations.
 - Never force-push protected history, bypass required reviews/checks, or use an alternate environment to evade repository governance unless the user explicitly changes that governance and doing so remains safe.
+
 ## Production provider activation
 
 - Production providers and real-money capabilities may be activated only when the current task explicitly authorizes activation and the required provider capability has been independently verified.
@@ -42,6 +42,7 @@
 - Production activation must use the smallest justified scope. Do not globally enable unrelated financial capabilities.
 - A successful API request proves only what that provider response establishes; it does not by itself establish canonical Neptlium settlement or reconciliation.
 - Where production execution is intentionally enabled, agents may exercise that capability only when the user's current task explicitly authorizes the financial action itself. Configuration authorization is not transaction authorization.
+
 ## Safety
 
 - Never expose tokens, cookies, service-role keys, provider secrets, private keys, recovery material, or sensitive webhook payloads.

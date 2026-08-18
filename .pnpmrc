@@ -1,7 +1,0 @@
-# pnpm configuration file
-
-# Allow specific build scripts
-allow-scripts=true
-
-# Enable auto-install of peer dependencies
-auto-install-peers=true
