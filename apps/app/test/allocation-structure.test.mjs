@@ -32,6 +32,7 @@ test('Allocation UI never renders fabricated unknown-value money placeholders', 
 test('Allocation review language separates authorization from execution', () => {
   const workspace = read('app/dashboard/allocations/AllocationWorkspace.tsx');
   assert.equal(workspace.includes('Authorize plan'), true);
-  assert.equal(workspace.includes('Capital movement will remain unavailable'), true);
+  assert.equal(workspace.includes('Authorization can establish a governed decision'), true);
+  assert.equal(workspace.includes('Execution unavailable'), true);
   for (const forbidden of ['Invest now', 'Auto rebalance', '>Buy<', '>Sell<', 'Optimize portfolio']) assert.equal(workspace.includes(forbidden), false);
 });

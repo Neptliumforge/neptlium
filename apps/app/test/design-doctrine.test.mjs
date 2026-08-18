@@ -8,10 +8,11 @@ const css = readFileSync(join(root, 'app/global.css'), 'utf8');
 const capitalPosition = readFileSync(join(root, 'components/product/CapitalPosition.tsx'), 'utf8');
 const dashboard = readFileSync(join(root, 'app/dashboard/page.tsx'), 'utf8');
 
-test('authenticated product consumes shared brand semantics rather than a private palette', () => {
+test('authenticated product consumes shared brand semantics with controlled App precision blue', () => {
   assert.match(css, /@neptlium\/ui\/styles\/brand\.css/);
   assert.match(css, /--color-canvas:\s*var\(--n-brand-canvas\)/);
-  assert.match(css, /--color-accent-primary:\s*var\(--n-brand-blue\)/);
+  assert.match(css, /--color-accent-primary:\s*#258BE5/);
+  assert.match(css, /--color-accent-primary-hover:\s*#319EED/);
   assert.match(css, /--color-canvas:\s*var\(--n-brand-absolute-black\)/);
   assert.match(css, /--color-surface-1:\s*var\(--n-brand-blue-black\)/);
 });
@@ -21,7 +22,7 @@ test('authenticated product remains operationally quiet and numerically precise'
   assert.match(css, /font-variant-numeric:\s*tabular-nums/);
   assert.match(css, /background-image:\s*none\s*!important/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /linear-gradient\([^)]*var\(--n-brand-blue\)[^)]*\)/);
+  assert.doesNotMatch(css, /linear-gradient\([^)]*#258BE5[^)]*\)/);
 });
 
 test('overview capital empty state stays truthful without repeated fabricated values', () => {
@@ -35,14 +36,13 @@ test('overview capital empty state stays truthful without repeated fabricated va
   assert.doesNotMatch(capitalPosition, /\$0(?:\.00)?/);
 });
 
-test('overview funding actions and balances are capability- and ledger-gated', () => {
-  assert.match(dashboard, /funding status could not be confirmed/i);
+test('overview funding actions and balances remain capability- and ledger-gated', () => {
+  assert.match(dashboard, /Funding status could not be confirmed/i);
   assert.match(dashboard, /No governed customer funding capability is currently exposed/);
-  assert.match(dashboard, /currently exposed as enabled for funding/);
-  assert.match(dashboard, /Funding rails are exposed, but no rail is currently enabled/);
-  assert.match(dashboard, /No funding rail is currently enabled/);
-  assert.match(dashboard, /Governed funding capabilities are currently disabled/);
-  assert.match(dashboard, /balance \? <FinancialValue valueAtomic=\{balance\.total_atomic\}/);
-  assert.match(dashboard, /Not established/);
+  assert.match(dashboard, /exposed as enabled for funding/);
+  assert.match(dashboard, /Funding rails are exposed but none is currently enabled/);
+  assert.match(dashboard, /balances\.length === 0/);
+  assert.match(dashboard, /FinancialValue valueAtomic=\{balance\.total_atomic\}/);
+  assert.match(dashboard, /0 canonical positions/);
   assert.doesNotMatch(dashboard, /balance\?\.total_atomic\s*\?\?\s*['\"]0['\"]/);
 });

@@ -8,17 +8,17 @@
 @layer base {
   html {
     color-scheme: light dark;
-    --color-accent-primary: var(--n-brand-blue);
-    --color-accent-primary-hover: var(--n-brand-blue-bright);
-    --color-accent-primary-pressed: color-mix(in srgb, var(--n-brand-blue) 86%, #05060b);
-    --color-primary: var(--n-brand-blue);
-    --color-border-interactive: var(--n-brand-blue);
-    --color-border-focus: var(--n-brand-blue);
-    --color-border-selected: var(--n-brand-blue);
-    --color-info: var(--n-brand-blue);
+    --color-accent-primary: #258BE5;
+    --color-accent-primary-hover: #319EED;
+    --color-accent-primary-pressed: color-mix(in srgb, #258BE5 86%, #05060b);
+    --color-primary: #258BE5;
+    --color-border-interactive: #258BE5;
+    --color-border-focus: #258BE5;
+    --color-border-selected: #258BE5;
+    --color-info: #258BE5;
     --font-sans: var(--n-font-product);
     --font-numeric: var(--n-font-product);
-    --shadow-focus-ring: 0 0 0 3px color-mix(in srgb, var(--n-brand-blue) 22%, transparent);
+    --shadow-focus-ring: 0 0 0 3px color-mix(in srgb, #258BE5 22%, transparent);
   }
 
   html[data-theme='light'] {
@@ -92,7 +92,7 @@
   :where(code, pre, kbd, samp) { font-family: var(--font-mono); }
   :focus-visible { outline: none; box-shadow: var(--shadow-focus-ring); }
 
-  ::selection { background: color-mix(in srgb, var(--n-brand-blue) 20%, transparent); color: var(--color-text-primary); }
+  ::selection { background: color-mix(in srgb, #258BE5 20%, transparent); color: var(--color-text-primary); }
   * { scrollbar-color: var(--color-border-strong) transparent; scrollbar-width: thin; }
   *::-webkit-scrollbar { width: 10px; height: 10px; }
   *::-webkit-scrollbar-thumb { background-color: var(--color-border-strong); border: 2px solid transparent; border-radius: var(--radius-full); background-clip: content-box; }
