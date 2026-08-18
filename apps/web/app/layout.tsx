@@ -15,10 +15,19 @@ import './home-composition.css';
 import './marketing-production.css';
 import './marketing-home.css';
 import './unified-design.css';
+import './production-experience.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
 import { SITE } from '@/lib/content/site';
+
+const socialDestinations = [
+  'https://bsky.app/profile/neptlium.bsky.social',
+  'https://x.com/Neptlium',
+  'https://youtube.com/@neptlium',
+  'https://www.tiktok.com/@neptlium',
+  'https://github.com/Neptliumlabs',
+] as const;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -61,7 +70,7 @@ const jsonLd = {
   logo: SITE.url + '/icon.svg',
   description: SITE.description,
   email: SITE.supportEmail,
-  sameAs: [],
+  sameAs: socialDestinations,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

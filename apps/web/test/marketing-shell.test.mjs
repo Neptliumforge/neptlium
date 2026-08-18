@@ -7,9 +7,11 @@ const page = read('app/page.tsx');
 const layout = read('app/layout.tsx');
 const header = read('components/site-header.tsx');
 const footer = read('components/site-footer.tsx');
+const reveal = read('components/reveal.tsx');
 const site = read('lib/content/site.ts');
 const unifiedCss = read('app/unified-design.css');
-const shell = `${page}\n${layout}\n${header}\n${footer}\n${site}\n${unifiedCss}`;
+const productionExperienceCss = read('app/production-experience.css');
+const shell = `${page}\n${layout}\n${header}\n${footer}\n${reveal}\n${site}\n${unifiedCss}\n${productionExperienceCss}`;
 
 test('hero preserves canonical proposition and exactly one H1', () => {
   assert.match(page, /DIGITAL CAPITAL OPERATING INFRASTRUCTURE/);
@@ -77,15 +79,53 @@ test('root follows the authoritative light-first shared design system', () => {
   assert.match(layout, /themeColor:\s*'#FFFFFF'/);
   assert.match(layout, /data-theme="light"/);
   assert.match(layout, /import '\.\/unified-design\.css';/);
+  assert.match(layout, /import '\.\/production-experience\.css';/);
   assert.match(unifiedCss, /--np-paper:\s*var\(--n-brand-canvas\)/);
   assert.match(unifiedCss, /--np-authority:\s*var\(--n-brand-obsidian\)/);
 });
 
-test('footer remains corporate closure and does not duplicate product navigation', () => {
-  for (const label of ['Legal','Corporate','Social','Privacy','About','Contact','GitHub']) assert.match(footer, new RegExp(label));
-  assert.match(footer, /Capital, made operational\./);
-  assert.doesNotMatch(footer, /Portfolio|Capital Account|Treasury|Allocation|Wallet|Deposit|Withdraw/);
-  assert.doesNotMatch(footer, /Instagram|Twitter|linkedin\.com|x\.com/);
+test('semantic homepage content remains visible without client hydration or motion', () => {
+  assert.doesNotMatch(reveal, /['"]use client['"]|IntersectionObserver|useEffect|useState/);
+  assert.match(reveal, /reveal is-visible/);
+  assert.match(productionExperienceCss, /\.reveal,\s*\n\.reveal\.is-visible\s*\{[\s\S]*?opacity:\s*1;/);
+  assert.match(productionExperienceCss, /capital-stack-focus::after[\s\S]*?z-index:\s*0;/);
+  assert.match(productionExperienceCss, /capital-stack-focus > \*[\s\S]*?z-index:\s*1;/);
+});
+
+test('footer closes the institutional shell with real internal destinations', () => {
+  for (const label of ['Platform', 'Resources', 'Company', 'Legal', 'Connect']) assert.match(footer, new RegExp(`label: '${label}'`));
+  for (const destination of [
+    '/platform',
+    '/portfolio-intelligence',
+    '/capital-account',
+    '/treasury',
+    '/allocation',
+    '/research',
+    '/learn',
+    '/security',
+    '/about',
+    '/contact',
+    '/privacy',
+    '/terms',
+    '/risk-disclosure',
+  ]) assert.match(footer, new RegExp(destination.replaceAll('/', '\\/')));
+  assert.doesNotMatch(footer, /href=["']#["']/);
+});
+
+test('footer exposes only approved or repository-authoritative connect destinations', () => {
+  for (const destination of [
+    'https://bsky.app/profile/neptlium.bsky.social',
+    'https://x.com/Neptlium',
+    'https://youtube.com/@neptlium',
+    'https://www.tiktok.com/@neptlium',
+    'https://github.com/Neptliumlabs',
+  ]) {
+    assert.match(footer, new RegExp(destination.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(layout, new RegExp(destination.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+  assert.doesNotMatch(footer, /\?si=|\?_r=|&_t=|linkedin\.com|instagram\.com|threads\.net|facebook\.com|discord|t\.me/);
+  assert.match(footer, /rel="noopener noreferrer"/);
+  assert.match(footer, /opens in a new tab/);
 });
 
 test('marketing remains non-financial authority', () => {

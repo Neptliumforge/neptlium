@@ -46,11 +46,54 @@ test('homepage carries canonical positioning through exactly six truthful compos
   for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD']) assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
 });
 
-test('footer is corporate closure using only verified destinations', () => {
+test('footer is institutional closure using only approved destinations', () => {
   const footer = read('components/site-footer.tsx');
-  for (const label of ["label: 'Legal'", "label: 'Corporate'", "label: 'Social'", "label: 'Privacy'", "label: 'About'", "label: 'Contact'", "label: 'GitHub'"]) assert.equal(footer.includes(label), true);
-  assert.equal(footer.includes('https://github.com/Neptliumlabs'), true);
-  for (const forbidden of ['Instagram', "label: 'X'", 'Careers', 'Portfolio', 'Capital Account', 'Treasury', 'Allocation', 'Wallet']) assert.equal(footer.includes(forbidden), false);
+
+  for (const label of [
+    "label: 'Platform'",
+    "label: 'Resources'",
+    "label: 'Company'",
+    "label: 'Legal'",
+    "label: 'Connect'",
+    "label: 'Privacy'",
+    "label: 'Contact'",
+    "label: 'Bluesky'",
+    "label: 'X'",
+    "label: 'YouTube'",
+    "label: 'TikTok'",
+    "label: 'GitHub'",
+  ]) {
+    assert.equal(footer.includes(label), true, `Missing footer label: ${label}`);
+  }
+
+  for (const destination of [
+    'https://bsky.app/profile/neptlium.bsky.social',
+    'https://x.com/Neptlium',
+    'https://youtube.com/@neptlium',
+    'https://www.tiktok.com/@neptlium',
+    'https://github.com/Neptliumlabs',
+  ]) {
+    assert.equal(footer.includes(destination), true, `Missing approved destination: ${destination}`);
+  }
+
+  for (const forbidden of [
+    'Instagram',
+    'LinkedIn',
+    'Threads',
+    'Facebook',
+    'Discord',
+    'Telegram',
+    'href="#"',
+  ]) {
+    assert.equal(
+      footer.toLowerCase().includes(forbidden.toLowerCase()),
+      false,
+      `Unapproved or placeholder footer destination found: ${forbidden}`,
+    );
+  }
+
+  assert.equal(footer.includes('rel="noopener noreferrer"'), true);
+  assert.equal(footer.includes('opens in a new tab'), true);
 });
 
 test('production marketing resolves through shared brand authority and the unified design layer', () => {
