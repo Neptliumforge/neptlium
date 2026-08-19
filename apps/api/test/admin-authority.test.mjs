@@ -10,7 +10,13 @@ function fakeRepository(role = 'super_admin', sessionEmail = null) {
     auditEntries,
     approvals,
     getRole: async () => role,
-    getSession: async (id) => ({ id, email: sessionEmail, fullName: null, displayName: null, role: 'super_admin' }),
+    getSession: async (id) => ({
+      id,
+      email: sessionEmail,
+      fullName: null,
+      displayName: null,
+      role: 'super_admin',
+    }),
     getDashboard: async () => ({}),
     listUsers: async () => ({ rows: [], total: 0 }),
     getUser: async () => null,
@@ -18,17 +24,24 @@ function fakeRepository(role = 'super_admin', sessionEmail = null) {
     setCompliance: async () => {},
     listDeposits: async () => ({ rows: [], total: 0 }),
     listWithdrawals: async () => ({ rows: [], total: 0, totalAmount: 0 }),
-    approveWithdrawal: async (...args) => { approvals.push(args); },
+    approveWithdrawal: async (...args) => {
+      approvals.push(args);
+    },
     listTransactions: async () => ({ rows: [], total: 0 }),
-    listAllocations: async (_query, pending) => pending ? [] : ({ rows: [], total: 0 }),
+    listAllocations: async (_query, pending) => (pending ? [] : { rows: [], total: 0 }),
     listLoginHistory: async () => [],
     listTrustedDevices: async () => [],
-    audit: async (...args) => { auditEntries.push(args); },
+    audit: async (...args) => {
+      auditEntries.push(args);
+    },
   };
 }
 const config = loadConfig({ NODE_ENV: 'test', API_ALLOWED_ORIGINS: 'http://localhost:3002' });
 const base = { headers: { authorization: 'Bearer valid-token' }, clientAddress: '127.0.0.1' };
-const authenticate = async (token) => token === 'valid-token' ? { id: 'user-1' } : null;
+const authenticate = async (token) => (token === 'valid-token' ? { id: 'user-1' } : null);
+const treasuryRepository = {
+  list: async () => [{ id: 'destination-1', status: 'inactive' }],
+};
 
 for (const role of ['admin', 'manager', 'analyst', 'operator', 'user']) {
   test(`${role} role is rejected by General Platform Administrator authority`, async () => {
@@ -60,6 +73,35 @@ test('unauthenticated caller cannot reach privileged admin API', async () => {
   );
   assert.equal(response.statusCode, 401);
   assert.equal(JSON.parse(response.body).error.code, 'authentication_required');
+});
+
+test('treasury control plane enforces 401, 403, then permits platform admin domain access', async () => {
+  const unauthenticated = await executeAdminHttp(
+    config,
+    {
+      method: 'GET',
+      url: '/v1/admin/treasury-destinations',
+      headers: {},
+      clientAddress: '127.0.0.1',
+    },
+    { repository: fakeRepository(), treasuryRepository, authenticate },
+  );
+  assert.equal(unauthenticated.statusCode, 401);
+
+  const customer = await executeAdminHttp(
+    config,
+    { ...base, method: 'GET', url: '/v1/admin/treasury-destinations' },
+    { repository: fakeRepository('user'), treasuryRepository, authenticate },
+  );
+  assert.equal(customer.statusCode, 403);
+
+  const platformAdmin = await executeAdminHttp(
+    config,
+    { ...base, method: 'GET', url: '/v1/admin/treasury-destinations' },
+    { repository: fakeRepository('super_admin'), treasuryRepository, authenticate },
+  );
+  assert.equal(platformAdmin.statusCode, 200);
+  assert.equal(JSON.parse(platformAdmin.body)[0].id, 'destination-1');
 });
 
 test('admin preflight allows only configured production origin without authentication', async () => {
@@ -112,16 +154,22 @@ test('admin route rejects disallowed browser origin and never emits wildcard COR
 
 test('legacy deposit completion remains fail closed and audited', async () => {
   const repository = fakeRepository();
-  const response = await executeAdminHttp(config, {
-    ...base,
-    method: 'POST',
-    url: '/v1/admin/deposits/deposit-1/complete',
-    headers: { ...base.headers, 'idempotency-key': 'deposit-completion-1' },
-    payload: '{}',
-  }, { repository, authenticate });
+  const response = await executeAdminHttp(
+    config,
+    {
+      ...base,
+      method: 'POST',
+      url: '/v1/admin/deposits/deposit-1/complete',
+      headers: { ...base.headers, 'idempotency-key': 'deposit-completion-1' },
+      payload: '{}',
+    },
+    { repository, authenticate },
+  );
   assert.equal(response.statusCode, 409);
   assert.equal(JSON.parse(response.body).error.code, 'deposit_completion_unavailable');
-  assert.ok(repository.auditEntries.some((entry) => String(entry[1]).includes('deposit.complete.blocked')));
+  assert.ok(
+    repository.auditEntries.some((entry) => String(entry[1]).includes('deposit.complete.blocked')),
+  );
 });
 
 test('canonical email identity alone is insufficient without persisted super_admin role', async () => {
@@ -136,46 +184,73 @@ test('canonical email identity alone is insufficient without persisted super_adm
 
 test('governed withdrawal approval persists approval only and cannot manufacture submission or settlement', async () => {
   const repository = fakeRepository();
-  const response = await executeAdminHttp(config, {
-    ...base,
-    method: 'POST',
-    url: '/v1/admin/withdrawals/transfer-1/approve',
-    headers: { ...base.headers, 'idempotency-key': 'approval-transfer-1' },
-    payload: '{}',
-  }, { repository, authenticate });
+  const response = await executeAdminHttp(
+    config,
+    {
+      ...base,
+      method: 'POST',
+      url: '/v1/admin/withdrawals/transfer-1/approve',
+      headers: { ...base.headers, 'idempotency-key': 'approval-transfer-1' },
+      payload: '{}',
+    },
+    { repository, authenticate },
+  );
   assert.equal(response.statusCode, 200);
-  assert.deepEqual(repository.approvals[0], ['transfer-1', 'user-1', response.headers['x-request-id'], 'approval-transfer-1']);
+  assert.deepEqual(repository.approvals[0], [
+    'transfer-1',
+    'user-1',
+    response.headers['x-request-id'],
+    'approval-transfer-1',
+  ]);
   const body = JSON.parse(response.body);
   assert.equal(body.status, 'approved');
   assert.equal(body.provider_submission, 'not_performed');
   assert.ok(repository.auditEntries.some((entry) => entry[1] === 'admin.withdrawal.approve'));
-  assert.ok(repository.auditEntries.some((entry) => entry[5]?.provider_submission === false && entry[5]?.settlement === false));
+  assert.ok(
+    repository.auditEntries.some(
+      (entry) => entry[5]?.provider_submission === false && entry[5]?.settlement === false,
+    ),
+  );
 });
 
 test('withdrawal rejection remains fail closed until governed release policy is implemented', async () => {
   const repository = fakeRepository();
-  const response = await executeAdminHttp(config, {
-    ...base,
-    method: 'POST',
-    url: '/v1/admin/withdrawals/transfer-1/reject',
-    headers: { ...base.headers, 'idempotency-key': 'rejection-transfer-1' },
-    payload: '{}',
-  }, { repository, authenticate });
+  const response = await executeAdminHttp(
+    config,
+    {
+      ...base,
+      method: 'POST',
+      url: '/v1/admin/withdrawals/transfer-1/reject',
+      headers: { ...base.headers, 'idempotency-key': 'rejection-transfer-1' },
+      payload: '{}',
+    },
+    { repository, authenticate },
+  );
   assert.equal(response.statusCode, 409);
   assert.equal(JSON.parse(response.body).error.code, 'withdrawal_rejection_unavailable');
-  assert.ok(repository.auditEntries.some((entry) => String(entry[1]).includes('withdrawal.reject.blocked')));
+  assert.ok(
+    repository.auditEntries.some((entry) => String(entry[1]).includes('withdrawal.reject.blocked')),
+  );
 });
 
 test('legacy allocation authorization remains fail closed and audited', async () => {
   const repository = fakeRepository();
-  const response = await executeAdminHttp(config, {
-    ...base,
-    method: 'POST',
-    url: '/v1/admin/allocations/allocation-1/approve',
-    headers: { ...base.headers, 'idempotency-key': 'allocation-approval-1' },
-    payload: '{}',
-  }, { repository, authenticate });
+  const response = await executeAdminHttp(
+    config,
+    {
+      ...base,
+      method: 'POST',
+      url: '/v1/admin/allocations/allocation-1/approve',
+      headers: { ...base.headers, 'idempotency-key': 'allocation-approval-1' },
+      payload: '{}',
+    },
+    { repository, authenticate },
+  );
   assert.equal(response.statusCode, 409);
   assert.equal(JSON.parse(response.body).error.code, 'allocation_authorization_unavailable');
-  assert.ok(repository.auditEntries.some((entry) => String(entry[1]).includes('allocation.approve.blocked')));
+  assert.ok(
+    repository.auditEntries.some((entry) =>
+      String(entry[1]).includes('allocation.approve.blocked'),
+    ),
+  );
 });

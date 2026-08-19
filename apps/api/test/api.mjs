@@ -47,6 +47,21 @@ test('production readiness fails closed when durable persistence is unavailable'
   assert.equal(status.statusCode, 503);
   assert.equal(status.json().status, 'not_ready');
 });
+test('general repository readiness probes authoritative profile persistence', async () => {
+  const calls = [];
+  const repository = new SupabaseRepository(
+    'https://example.supabase.co',
+    'service',
+    async (url) => {
+      calls.push(url);
+      return new Response('[]', { status: 200 });
+    },
+  );
+  assert.equal(await repository.ready(), true);
+  assert.equal(calls.length, 1);
+  assert.match(calls[0], /\/profiles\?select=id&limit=1$/);
+  assert.doesNotMatch(calls[0], /wallet_accounts/);
+});
 test('production rejects process-local rate limiting', async () => {
   const production = loadConfig({ NODE_ENV: 'production' });
   await assert.rejects(

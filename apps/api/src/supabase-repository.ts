@@ -127,7 +127,7 @@ export class SupabaseRepository implements ApiRepository {
 
   async ready() {
     try {
-      return (await this.rest('wallet_accounts?select=id&limit=1')).ok;
+      return (await this.rest('profiles?select=id&limit=1')).ok;
     } catch {
       return false;
     }
@@ -175,7 +175,8 @@ export class SupabaseRepository implements ApiRepository {
       ),
     ]);
     const profile = profiles[0];
-    if (!profile) throw new ApiError(404, 'account_not_provisioned', 'Account profile is not provisioned');
+    if (!profile)
+      throw new ApiError(404, 'account_not_provisioned', 'Account profile is not provisioned');
     return {
       id: profile.id,
       email: profile.email,
@@ -290,14 +291,12 @@ export class SupabaseRepository implements ApiRepository {
             aumRange: organization.aum_range,
           }
         : null,
-      securityActivity: securityRows.map(
-        (row): SecurityActivityRecord => ({
-          id: row.id,
-          eventType: row.event_type,
-          userAgent: row.user_agent,
-          createdAt: row.created_at,
-        }),
-      ),
+      securityActivity: securityRows.map((row): SecurityActivityRecord => ({
+        id: row.id,
+        eventType: row.event_type,
+        userAgent: row.user_agent,
+        createdAt: row.created_at,
+      })),
     };
   }
 

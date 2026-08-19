@@ -18,6 +18,7 @@ import {
   type FinancialRepository,
 } from './financial-repository.js';
 import { handleFinancialRoute } from './financial-routes.js';
+import { publicFundingDefinitions } from './asset-registry.js';
 
 export interface Dependencies {
   config?: Config;
@@ -199,7 +200,9 @@ export async function buildApp(deps: Dependencies = {}) {
                 ? 'configured'
                 : 'not_configured',
             circle: capitalProvider.readiness(),
-            stripe_treasury: config.stripeTreasuryConfigured ? 'configured_gated' : 'not_configured',
+            stripe_treasury: config.stripeTreasuryConfigured
+              ? 'configured_gated'
+              : 'not_configured',
           },
         },
       };
@@ -209,24 +212,29 @@ export async function buildApp(deps: Dependencies = {}) {
         data: { service: 'neptlium-api', api_version: 'v1', build_id: config.API_BUILD_ID },
       };
     if (method === 'GET' && path === '/v1/status') {
+      const [generalReady, financialReady] = await Promise.all([
+        repository.ready(),
+        financialRepository.ready(),
+      ]);
       const ready =
         config.NODE_ENV !== 'production' ||
-        (config.databaseConfigured && (await repository.ready()));
+        (config.databaseConfigured && generalReady && financialReady);
       return {
         status: ready ? 200 : 503,
         data: {
           status: ready ? 'ready' : 'not_ready',
-          mainnet: false,
-          supported_assets: ['USDC'],
-          networks: ['BASE-SEPOLIA'],
-          capabilities: [
-            {
-              asset: 'USDC',
-              network: 'BASE-SEPOLIA',
-              environment: 'testnet',
-              state: 'testnet-enabled',
-            },
-          ],
+          mainnet: config.ENABLE_MAINNET,
+          database: generalReady ? 'ready' : 'not_ready',
+          governed_financial_storage: financialReady ? 'ready' : 'not_ready',
+          capabilities: publicFundingDefinitions().map((definition) => ({
+            asset: definition.asset,
+            network: definition.network,
+            environment: definition.environment.toLowerCase(),
+            deposit: definition.depositCapability,
+            custody: definition.custodyCapability,
+            reconciliation: definition.reconciliationCapability,
+            production_enabled: definition.productionEnabled,
+          })),
         },
       };
     }
@@ -285,7 +293,9 @@ export async function buildApp(deps: Dependencies = {}) {
           treasury: unavailable('canonical_treasury_state_unavailable'),
           allocation: notConfigured('allocation_policy_not_configured'),
           activity: activity.data.length
-            ? ({ state: 'VALUE', value: activity.data } satisfies ResourceState<typeof activity.data>)
+            ? ({ state: 'VALUE', value: activity.data } satisfies ResourceState<
+                typeof activity.data
+              >)
             : ({ state: 'EMPTY' } satisfies ResourceState<typeof activity.data>),
         },
       };
@@ -308,15 +318,46 @@ export async function buildApp(deps: Dependencies = {}) {
       return {
         data: {
           available_liquidity: balances.length
-            ? { state: 'VALUE', value: balances.map((item) => ({ asset: item.asset, network: item.network, available_atomic: item.availableAtomic })) }
+            ? {
+                state: 'VALUE',
+                value: balances.map((item) => ({
+                  asset: item.asset,
+                  network: item.network,
+                  available_atomic: item.availableAtomic,
+                })),
+              }
             : unavailable('canonical_liquidity_unavailable'),
           reserved: balances.length
-            ? { state: 'VALUE', value: balances.map((item) => ({ asset: item.asset, network: item.network, reserved_atomic: item.reservedAtomic })) }
+            ? {
+                state: 'VALUE',
+                value: balances.map((item) => ({
+                  asset: item.asset,
+                  network: item.network,
+                  reserved_atomic: item.reservedAtomic,
+                })),
+              }
             : unavailable('reservation_balance_unavailable'),
           committed: unavailable('canonical_commitment_balance_unavailable'),
           funding: { state: 'VALUE', value: { capabilities_endpoint: '/v1/funding/capabilities' } },
-          transfers: { state: transfers.length ? 'VALUE' : 'EMPTY', value: transfers.map((item) => ({ id: item.id, state: item.state, asset: item.asset, network: item.network, amount_atomic: item.amountAtomic })) },
-          aliases: { state: aliases.length ? 'VALUE' : 'EMPTY', value: aliases.map((item) => ({ id: item.id, alias: item.alias, verification_state: item.verificationState, activation_state: item.activationState })) },
+          transfers: {
+            state: transfers.length ? 'VALUE' : 'EMPTY',
+            value: transfers.map((item) => ({
+              id: item.id,
+              state: item.state,
+              asset: item.asset,
+              network: item.network,
+              amount_atomic: item.amountAtomic,
+            })),
+          },
+          aliases: {
+            state: aliases.length ? 'VALUE' : 'EMPTY',
+            value: aliases.map((item) => ({
+              id: item.id,
+              alias: item.alias,
+              verification_state: item.verificationState,
+              activation_state: item.activationState,
+            })),
+          },
         },
       };
     }
@@ -395,13 +436,43 @@ export async function buildApp(deps: Dependencies = {}) {
 
     if (method === 'GET' && path === '/v1/capital-account/state') {
       const user = await owner(context);
-      const canonicalBalances = await financialRepository.getCanonicalBalances(user.id).catch(() => []);
+      const canonicalBalances = await financialRepository
+        .getCanonicalBalances(user.id)
+        .catch(() => []);
       const canonical = canonicalBalances.length
         ? {
-            total: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.totalAtomic })) },
-            available: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.availableAtomic })) },
-            reserved: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.reservedAtomic })) },
-            pending: { state: 'VALUE', value: canonicalBalances.map((item) => ({ asset: item.asset, network: item.network, amount_atomic: item.pendingAtomic })) },
+            total: {
+              state: 'VALUE',
+              value: canonicalBalances.map((item) => ({
+                asset: item.asset,
+                network: item.network,
+                amount_atomic: item.totalAtomic,
+              })),
+            },
+            available: {
+              state: 'VALUE',
+              value: canonicalBalances.map((item) => ({
+                asset: item.asset,
+                network: item.network,
+                amount_atomic: item.availableAtomic,
+              })),
+            },
+            reserved: {
+              state: 'VALUE',
+              value: canonicalBalances.map((item) => ({
+                asset: item.asset,
+                network: item.network,
+                amount_atomic: item.reservedAtomic,
+              })),
+            },
+            pending: {
+              state: 'VALUE',
+              value: canonicalBalances.map((item) => ({
+                asset: item.asset,
+                network: item.network,
+                amount_atomic: item.pendingAtomic,
+              })),
+            },
           }
         : {
             total: unavailable('canonical_capital_balance_unavailable'),
@@ -415,7 +486,10 @@ export async function buildApp(deps: Dependencies = {}) {
           data: {
             canonical,
             provider_observation: notConfigured('provider_wallet_not_linked'),
-            funding: { state: 'VALUE', value: { capabilities_endpoint: '/v1/funding/capabilities' } },
+            funding: {
+              state: 'VALUE',
+              value: { capabilities_endpoint: '/v1/funding/capabilities' },
+            },
           },
         };
       }
