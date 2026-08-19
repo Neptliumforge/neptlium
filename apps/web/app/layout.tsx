@@ -16,6 +16,7 @@ import './marketing-production.css';
 import './marketing-home.css';
 import './unified-design.css';
 import './production-experience.css';
+import './neptlium-visual-direction.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
@@ -77,7 +78,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-theme="light">
       <body>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <SkipLink />
         <SiteHeader />
         <main id="main-content">{children}</main>

@@ -6,7 +6,23 @@ const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.ur
 
 test('sitemap contains the complete indexable public product surface', () => {
   const sitemap = read('app/sitemap.ts');
-  for (const route of ['/platform','/portfolio-intelligence','/capital-account','/capital-activity','/neptlium-link','/allocation','/treasury','/capital-universe','/research','/learn','/company','/about','/security','/trust','/contact']) {
+  for (const route of [
+    '/platform',
+    '/portfolio-intelligence',
+    '/capital-account',
+    '/capital-activity',
+    '/neptlium-link',
+    '/allocation',
+    '/treasury',
+    '/capital-universe',
+    '/research',
+    '/learn',
+    '/company',
+    '/about',
+    '/security',
+    '/trust',
+    '/contact',
+  ]) {
     assert.equal(sitemap.includes(`'${route}'`), true, `Missing sitemap route: ${route}`);
   }
   assert.equal(sitemap.includes("'/pricing'"), false);
@@ -14,36 +30,45 @@ test('sitemap contains the complete indexable public product surface', () => {
 
 test('navigation exposes only the locked public categories and preserves accessibility controls', () => {
   const header = read('components/site-header.tsx');
-  for (const section of ['Platform', 'Solutions', 'Company']) assert.equal(header.includes(`label: '${section}'`), true);
-  for (const removed of ['Capital', 'Connectivity', 'Governance']) assert.equal(header.includes(`label: '${removed}'`), false);
-  assert.equal(header.includes('links: readonly [NavLink, NavLink]'), true);
-  assert.equal(header.includes('Explore the platform'), true);
-  assert.equal(header.includes('Enter Neptlium'), true);
-  assert.equal(header.includes('Talk to Neptlium'), true);
+  for (const section of ['Platform', 'Solutions', 'Resources', 'Company'])
+    assert.equal(header.includes(`label: '${section}'`), true);
+  for (const removed of ['Capital', 'Connectivity', 'Governance'])
+    assert.equal(header.includes(`label: '${removed}'`), false);
+  assert.equal(header.includes('Operating progression'), false);
+  assert.equal(header.includes('Capability follows verified architecture'), false);
+  assert.equal(header.includes('Sign in'), true);
+  assert.equal(header.includes('Open Neptlium'), true);
   assert.equal(header.includes('aria-expanded={open}'), true);
   assert.equal(header.includes('aria-controls={id}'), true);
   assert.equal(header.includes('aria-haspopup="true"'), true);
   assert.equal(header.includes("event.key === 'Escape'"), true);
   assert.equal(header.includes("event.key !== 'ArrowDown'"), true);
-  assert.equal(header.includes("document.addEventListener('pointerdown', dismiss)"), true);
+  assert.equal(header.includes("document.addEventListener('pointerdown', outside)"), true);
 });
 
-test('homepage carries canonical positioning through exactly six truthful compositions', () => {
+test('homepage carries canonical positioning through the simplified truthful narrative', () => {
   const page = read('app/page.tsx');
-  assert.equal(page.includes('Capital, organized around you.'), true);
-  assert.equal(page.includes('DIGITAL CAPITAL OPERATING INFRASTRUCTURE'), true);
-  assert.equal(page.includes('Explore the platform'), true);
-  assert.equal(page.includes('Enter Neptlium'), true);
+  assert.equal(page.includes('Digital capital,'), true);
+  assert.equal(page.includes('Digital capital operating infrastructure'), true);
+  assert.equal(page.includes('Explore platform'), true);
+  assert.equal(page.includes('Open Neptlium'), true);
   assert.equal(page.includes('Talk to Neptlium'), true);
-  assert.equal(page.includes('HeroCapitalSystem'), true);
-  assert.equal((page.match(/data-composition="[1-6]"/g) ?? []).length, 6);
-  for (const stage of ['Fragmentation', 'Understanding', 'Organization', 'Intelligence', 'Policy', 'Control', 'Operation']) assert.equal(page.includes(`'${stage}'`), true, `Missing narrative stage: ${stage}`);
-  assert.equal(page.includes('Digital capital is fragmented by default.'), true);
-  assert.equal(page.includes('Understand capital. Then organize it.'), true);
-  assert.equal(page.includes('Turn structure into governed decisions.'), true);
-  assert.equal(page.includes('Control is part of the architecture.'), true);
-  assert.equal(page.includes('Capital, made operational.'), true);
-  for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD']) assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
+  assert.equal(page.includes('CapitalArchitecture'), true);
+  for (const stage of [
+    'One operating environment',
+    'Portfolio visibility',
+    'Capital Account',
+    'Treasury',
+    'Allocation',
+    'Institutional control',
+  ])
+    assert.equal(page.includes(stage), true, `Missing narrative stage: ${stage}`);
+  for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD'])
+    assert.equal(
+      page.includes(fabricatedValue),
+      false,
+      `Fabricated value found: ${fabricatedValue}`,
+    );
 });
 
 test('footer is institutional closure using only approved destinations', () => {
@@ -51,6 +76,7 @@ test('footer is institutional closure using only approved destinations', () => {
 
   for (const label of [
     "label: 'Platform'",
+    "label: 'Solutions'",
     "label: 'Resources'",
     "label: 'Company'",
     "label: 'Legal'",
@@ -73,7 +99,11 @@ test('footer is institutional closure using only approved destinations', () => {
     'https://www.tiktok.com/@neptlium',
     'https://github.com/Neptliumlabs',
   ]) {
-    assert.equal(footer.includes(destination), true, `Missing approved destination: ${destination}`);
+    assert.equal(
+      footer.includes(destination),
+      true,
+      `Missing approved destination: ${destination}`,
+    );
   }
 
   for (const forbidden of [
@@ -99,7 +129,10 @@ test('footer is institutional closure using only approved destinations', () => {
 test('production marketing resolves through shared brand authority and the unified design layer', () => {
   const productionCss = read('app/marketing-production.css');
   const unifiedCss = read('app/unified-design.css');
-  assert.equal(productionCss.includes("@import '../../../packages/ui/src/styles/brand.css';"), true);
+  assert.equal(
+    productionCss.includes("@import '../../../packages/ui/src/styles/brand.css';"),
+    true,
+  );
   assert.equal(unifiedCss.includes('--np-paper: var(--n-brand-canvas)'), true);
   assert.equal(unifiedCss.includes('--np-ink: var(--n-brand-ink)'), true);
   assert.equal(unifiedCss.includes('--np-action: var(--n-brand-blue)'), true);
@@ -114,7 +147,7 @@ test('canonical public metadata stays wired to production domain and light-first
   const robots = read('app/robots.ts');
   assert.equal(site.includes("url: 'https://neptlium.com'"), true);
   assert.equal(site.includes('Digital capital, organized with institutional intelligence.'), true);
-  assert.equal(layout.includes("metadataBase: new URL(SITE.url)"), true);
+  assert.equal(layout.includes('metadataBase: new URL(SITE.url)'), true);
   assert.equal(layout.includes("import './unified-design.css';"), true);
   assert.equal(layout.includes("colorScheme: 'light'"), true);
   assert.equal(layout.includes('data-theme="light"'), true);

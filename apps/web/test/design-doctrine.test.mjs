@@ -5,29 +5,28 @@ import { join } from 'node:path';
 
 const root = new URL('../', import.meta.url).pathname;
 const layout = readFileSync(join(root, 'app/layout.tsx'), 'utf8');
-const css = readFileSync(join(root, 'app/unified-design.css'), 'utf8');
+const css = readFileSync(join(root, 'app/neptlium-visual-direction.css'), 'utf8');
 
-test('marketing root is light-first while preserving controlled authority sections', () => {
+test('marketing root loads the canonical visual-direction layer', () => {
   assert.match(layout, /data-theme="light"/);
   assert.match(layout, /colorScheme:\s*'light'/);
-  assert.match(css, /--np-paper:\s*var\(--n-brand-canvas\)/);
-  assert.match(css, /--np-authority:\s*var\(--n-brand-obsidian\)/);
-  assert.match(css, /\.marketing-capital-operations,[\s\S]*\.marketing-conversion/);
+  assert.match(layout, /import '\.\/neptlium-visual-direction\.css';/);
+  assert.match(css, /--web-ivory:\s*#f5f3ee/i);
+  assert.match(css, /--web-carbon:\s*#101214/i);
+  assert.match(css, /--web-teal:\s*#0f8f86/i);
 });
 
-test('marketing uses shared identity semantics and restrained interaction', () => {
-  assert.match(css, /--np-action:\s*var\(--n-brand-blue\)/);
-  assert.match(css, /background-image:\s*none\s*!important/);
-  assert.match(css, /box-shadow:\s*none\s*!important/);
+test('marketing uses teal as a precision instrument', () => {
+  assert.match(css, /--web-teal-interaction:\s*#20afa3/i);
+  assert.match(css, /--web-graphite:\s*#343a3f/i);
+  assert.match(css, /--web-stone:\s*#d8d5ce/i);
+  assert.match(css, /--web-mist:\s*#eceae5/i);
+  assert.doesNotMatch(css, /#258be5|#0141f3|#2764ff|#147dff/i);
+});
+
+test('responsive and reduced-motion behavior are first-class', () => {
+  assert.match(css, /@media\s*\(max-width:\s*900px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*600px\)/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /--np-precision-blue:/);
-  assert.doesNotMatch(css, /--np-absolute-black:/);
-});
-
-test('mobile light header and hero resolve to authoritative ink tokens', () => {
-  assert.match(css, /\.production-hero-copy h1\s*\{[\s\S]*?color:\s*var\(--np-ink\)/);
-  assert.match(css, /\.capital-command-bar \.brand,[\s\S]*?\.command-mobile-trigger\s*\{[\s\S]*?color:\s*var\(--np-ink\)/);
-  assert.match(css, /\.capital-command-bar \.brand\s*\{[\s\S]*?background:\s*transparent/);
-  assert.match(css, /@media \(max-width:\s*767px\)[\s\S]*?font-size:\s*clamp\(3\.1rem,\s*13vw,\s*4rem\)/);
-  assert.match(css, /\.marketing-composition-hero\.production-hero\s*\{[\s\S]*?padding-top:\s*3\.75rem/);
+  assert.match(css, /\.authority-actions\s*\{[^}]*align-items:\s*stretch;[^}]*flex-direction:\s*column/s);
 });

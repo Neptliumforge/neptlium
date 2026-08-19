@@ -22,6 +22,14 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
     ],
   },
   {
+    label: 'Solutions',
+    links: [
+      { label: 'Capital Account', href: '/capital-account' },
+      { label: 'Treasury', href: '/treasury' },
+      { label: 'Allocation', href: '/allocation' },
+    ],
+  },
+  {
     label: 'Resources',
     links: [
       { label: 'Research & Perspectives', href: '/research' },
@@ -106,9 +114,12 @@ export function SiteFooter() {
         <div className="footer-primary">
           <div className="footer-brand-column">
             <Brand />
-            <p className="footer-brand-statement">Capital operating infrastructure for modern digital capital.</p>
+            <p className="footer-brand-statement">
+              Capital operating infrastructure for modern digital capital.
+            </p>
             <p className="footer-brand-copy">
-              Explore Neptlium’s public platform, research and operating principles without treating the public website as financial authority.
+              Explore Neptlium’s public platform, research and operating principles without treating
+              the public website as financial authority.
             </p>
             <a className="footer-platform-link" href={SITE.signInUrl}>
               Open Neptlium <ArrowUpRight aria-hidden="true" />
@@ -135,7 +146,8 @@ export function SiteFooter() {
             <h2>Capital, organized with precision.</h2>
           </div>
           <p>
-            Understand the system, its operating boundaries and the principles that govern how Neptlium presents capital state.
+            Understand the system, its operating boundaries and the principles that govern how
+            Neptlium presents capital state.
           </p>
         </div>
 
