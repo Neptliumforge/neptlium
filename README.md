@@ -2,7 +2,7 @@
 
 Production monorepo for the Neptlium Capital Operating Platform.
 
-**Repository:** `Neptliumlabs/neptlium`
+**Repository:** `Neptlium-Labs/neptlium`
 
 ## Applications
 
@@ -32,7 +32,7 @@ Repository environment examples keep sensitive/provider values as empty placehol
 
 ## Authority
 
-Read `AGENTS.md` before changing the repository. Nested `AGENTS.md` files specialize application-local work without overriding repository-wide financial, security, migration, or Git rules.
+Read `AGENTS.md` before changing the repository. Nested `AGENTS.md` files specialize application-local work without overriding repository-wide financial, security, migration, or Git rules. For public Web work, `apps/web/AGENTS.md` is the implementation contract beneath root authority.
 
 Current numbered documentation authority:
 
