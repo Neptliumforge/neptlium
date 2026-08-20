@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { SignOutButton } from '@clerk/nextjs';
 import { ChevronDown, LogOut, X } from 'lucide-react';
-import { signOutAction } from '@/components/security/actions';
 
 type Theme = 'light' | 'dark' | 'system';
 interface ProfileMenuProps {
@@ -28,7 +28,6 @@ function applyTheme(theme: Theme) {
 export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>('system');
-  const [pending, startTransition] = useTransition();
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const initials =
@@ -136,10 +135,12 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
             </div>
           </fieldset>
           <Link href="/dashboard/settings#support" onClick={() => setOpen(false)} className="flex min-h-11 items-center rounded-md px-2 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">Help and support</Link>
-          <button type="button" disabled={pending} onClick={() => startTransition(() => signOutAction())} className="flex min-h-11 w-full items-center gap-3 px-2 pt-2 text-sm text-text-secondary hover:text-text-primary disabled:opacity-60">
-            <LogOut className="size-4" />
-            {pending ? 'Signing out…' : 'Sign out'}
-          </button>
+          <SignOutButton redirectUrl="/auth/sign-in">
+            <button type="button" className="flex min-h-11 w-full items-center gap-3 px-2 pt-2 text-sm text-text-secondary hover:text-text-primary">
+              <LogOut className="size-4" />
+              Sign out
+            </button>
+          </SignOutButton>
         </div>
       )}
     </div>

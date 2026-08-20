@@ -9,7 +9,7 @@ import {
   onboardingPayloadSchema,
   type InvestorType,
   type ProvisioningPayload,
-} from '@neptlium/lib';
+} from '@neptlium/lib/validation';
 import { OnboardingShell } from './components/OnboardingShell';
 import { OnboardingPanel } from './components/OnboardingPanel';
 import { getOnboardingDraft, saveOnboardingDraft, submitProvisioning } from './actions';

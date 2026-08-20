@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { PaginationRow } from "@/components/admin/PaginationRow";
 import { Badge } from "@neptlium/ui";
-import { getRoleLabel, type Role } from "@neptlium/lib";
+import { getRoleLabel, type Role } from "@neptlium/lib/rbac";
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "—";

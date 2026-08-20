@@ -1,15 +1,7 @@
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
+import { auth } from '@clerk/nextjs/server';
 
 export default async function RootPage() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    redirect("/dashboard");
-  }
-
-  redirect("/auth/sign-in");
+  const { userId } = await auth();
+  redirect(userId ? "/auth/complete" : "/auth/sign-in");
 }

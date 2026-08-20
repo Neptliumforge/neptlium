@@ -1,4 +1,4 @@
-import { hasRole, type Role } from "@neptlium/lib";
+import { hasRole, type Role } from "@neptlium/lib/rbac";
 import type { RoleAwareNavItem } from "../navigation/dashboardNav";
 
 export function filterNavByRole(

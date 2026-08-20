@@ -1,4 +1,4 @@
-import { verifyToken } from '@clerk/backend';
+import { createClerkClient, verifyToken } from '@clerk/backend';
 import { ApiError } from './errors.js';
 import type { Config } from './config.js';
 import type { IdentityPrincipalResolver, IdentityProvider } from './identity-principal.js';
@@ -7,6 +7,11 @@ export type AuthenticatedPrincipal = {
   id: string;
   provider: IdentityProvider;
   providerSubject: string;
+};
+
+export type VerifiedClerkIdentity = {
+  subject: string;
+  primaryEmail: string;
 };
 
 type Fetch = typeof fetch;
@@ -43,6 +48,27 @@ export async function verifyClerkSubject(token: string, config: Config): Promise
     return typeof payload.sub === 'string' && payload.sub ? payload.sub : null;
   } catch {
     return null;
+  }
+}
+
+export async function verifyClerkIdentity(
+  token: string,
+  config: Config,
+): Promise<VerifiedClerkIdentity | null> {
+  const subject = await verifyClerkSubject(token, config);
+  if (!subject || !config.CLERK_SECRET_KEY) return null;
+  try {
+    const user = await createClerkClient({ secretKey: config.CLERK_SECRET_KEY }).users.getUser(
+      subject,
+    );
+    const primary = user.emailAddresses.find(
+      (email) =>
+        email.id === user.primaryEmailAddressId && email.verification?.status === 'verified',
+    );
+    if (!primary?.emailAddress) return null;
+    return { subject, primaryEmail: primary.emailAddress.trim().toLowerCase() };
+  } catch {
+    throw new ApiError(503, 'authentication_unavailable', 'Authentication service is unavailable');
   }
 }
 

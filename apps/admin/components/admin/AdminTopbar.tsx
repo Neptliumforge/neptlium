@@ -1,10 +1,9 @@
-import type { User } from "@supabase/supabase-js";
-import { getRoleLabel, type Role } from "@neptlium/lib";
+import { getRoleLabel, type Role } from "@neptlium/lib/rbac";
 import { Badge } from "@neptlium/ui";
 import { AdminSignOutButton } from "./AdminSignOutButton";
 
 interface AdminTopbarProps {
-  readonly user: User;
+  readonly user: { readonly id: string; readonly email: string | null };
   readonly role: Role;
   readonly displayName: string | null;
 }

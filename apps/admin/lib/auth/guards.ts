@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { type Role } from "@neptlium/lib";
+import { type Role } from "@neptlium/lib/rbac";
 import { getCurrentAdminUser, getCurrentAdminRole } from "./session";
 import { isGeneralPlatformAdminRole } from "./authorization";
 

@@ -1,5 +1,5 @@
 import { Button } from "@neptlium/ui";
-import { signOutAction } from "@/components/security/actions";
+import { SignOutButton } from "@clerk/nextjs";
 import { AuthShell } from "../components/AuthShell";
 
 export default function UnauthorizedPage() {
@@ -23,15 +23,14 @@ export default function UnauthorizedPage() {
         >
           Return to Dashboard
         </Button>
-        <form action={signOutAction}>
+        <SignOutButton redirectUrl="/auth/sign-in">
           <Button
-            type="submit"
             variant="outline"
             className="h-11 w-full rounded-md text-[14px]"
           >
             Sign Out
           </Button>
-        </form>
+        </SignOutButton>
       </div>
     </AuthShell>
   );

@@ -1,15 +1,16 @@
-import { createSupabaseServerClient } from "@neptlium/lib/supabase/server";
-import { hasRole, type Role } from "@neptlium/lib";
+import { auth, currentUser } from '@clerk/nextjs/server';
+import { hasRole, type Role } from "@neptlium/lib/rbac";
 import { resolveRole } from "@/components/security/resolveRole";
 import { ApiClientError, getAccountContext } from "@/lib/api/client";
 
 export async function getCurrentUser() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-
-  return user;
+  const session = await auth();
+  if (!session.userId) return null;
+  const user = await currentUser();
+  return {
+    id: session.userId,
+    email: user?.primaryEmailAddress?.emailAddress ?? null,
+  };
 }
 
 export interface SessionProfile {
@@ -25,7 +26,7 @@ export interface SessionProfile {
 
 /**
  * Account/profile business state is resolved through api.neptlium.com.
- * Supabase remains here only for the current authenticated session identity.
+ * Clerk is the application session authority. Financial ownership resolves in apps/api.
  */
 export async function getCurrentProfile(): Promise<SessionProfile | null> {
   const user = await getCurrentUser();

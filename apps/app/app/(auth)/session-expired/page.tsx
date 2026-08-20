@@ -24,7 +24,7 @@ export default async function SessionExpiredPage({
           </p>
         </div>
         <Button
-          href={`/login?next=${encodeURIComponent(destination)}`}
+          href={`/auth/sign-in?redirect_url=${encodeURIComponent(destination)}`}
           variant="cta"
           className="h-11 w-full rounded-md text-[14px] font-semibold"
         >

@@ -3,7 +3,6 @@ import { requireProvisionedUser } from '@/lib/auth';
 import { getAccountSettings } from '@/lib/api/client';
 import { ProductStateMessage } from '@/components/product/ProductState';
 import { MfaEnrollment } from './MfaEnrollment';
-import { RevokeSessionsButton } from './RevokeSessionsButton';
 
 const EVENT_LABELS: Record<string, string> = {
   login: 'Signed in',
@@ -66,13 +65,8 @@ export default async function SettingsPage() {
         <div className="divide-y divide-border-hairline border-y border-border-hairline">
           <div className="py-5">
             <p className="text-sm font-medium text-text-primary">Multi-factor authentication</p>
-            <p className="mt-1 mb-4 text-sm text-text-muted">Manage the currently supported Supabase Auth MFA controls.</p>
+            <p className="mt-1 mb-4 text-sm text-text-muted">Manage Clerk authentication, passkeys, multi-factor authentication, and active sessions.</p>
             <MfaEnrollment />
-          </div>
-          <div className="py-5">
-            <p className="text-sm font-medium text-text-primary">Sessions</p>
-            <p className="mt-1 mb-4 text-sm text-text-muted">Revoke other authenticated sessions without changing financial authorization state.</p>
-            <RevokeSessionsButton />
           </div>
         </div>
       </Section>

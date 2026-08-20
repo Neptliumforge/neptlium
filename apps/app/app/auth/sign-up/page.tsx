@@ -1,12 +1,5 @@
-import { redirect } from 'next/navigation';
-import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
-import { SignupForm } from '@/app/(auth)/signup/SignupForm';
+import { SignUp } from '@clerk/nextjs';
 
-export default async function SignUpPage() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) redirect('/dashboard');
-  return <SignupForm />;
+export default function SignUpPage() {
+  return <SignUp routing="hash" fallbackRedirectUrl="/auth/complete" signInUrl="/auth/sign-in" />;
 }

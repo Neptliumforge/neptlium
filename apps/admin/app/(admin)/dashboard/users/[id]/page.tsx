@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@neptlium/ui";
-import { getRoleLabel, hasRole, type Role } from "@neptlium/lib";
+import { getRoleLabel, hasRole, type Role } from "@neptlium/lib/rbac";
 import { requireAdminUser } from "@/lib/auth";
 import { getUserById } from "@/lib/data/users";
 import { PageHeader } from "@/components/layout/PageHeader";

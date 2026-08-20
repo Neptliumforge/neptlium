@@ -4,5 +4,5 @@ import { redirect } from "next/navigation";
 // the standard URL alias so both /forgot-password and /reset-password
 // reach the same destination.
 export default function ForgotPasswordRedirectPage() {
-  redirect("/reset-password");
+  redirect("/auth/sign-in");
 }

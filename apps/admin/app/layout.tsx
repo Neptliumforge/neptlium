@@ -1,5 +1,6 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
+import { ClerkProvider } from '@clerk/nextjs';
 import "./global.css";
 
 export const metadata: Metadata = {
@@ -20,8 +21,10 @@ export default function RootLayout({
   readonly children: React.ReactNode;
 }): React.ReactElement {
   return (
-    <html lang="en" data-theme="light">
-      <body>{children}</body>
-    </html>
+    <ClerkProvider signInUrl="/login">
+      <html lang="en" data-theme="light">
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

@@ -11,7 +11,8 @@ const read = (path) => readFileSync(resolve(adminRoot, path), "utf8");
 
 const authorization = read("lib/auth/authorization.ts");
 const guards = read("lib/auth/guards.ts");
-const login = read("app/(auth)/login/actions.ts");
+const login = read("app/(auth)/login/page.tsx");
+const session = read("lib/auth/session.ts");
 const roleActions = read("app/(admin)/dashboard/users/[id]/actions.ts");
 const picker = read("components/admin/UserRolePicker.tsx");
 const migration = readFileSync(
@@ -37,11 +38,11 @@ test("unauthenticated users are redirected before role authorization", () => {
   assert.match(guards, /redirect\("\/unauthorized"\)/);
 });
 
-test("successful Supabase authentication still requires API-backed admin authorization", () => {
-  assert.match(login, /signInWithPassword/);
-  assert.match(login, /adminApiRequestWithToken/);
-  assert.match(login, /"\/v1\/admin\/session"/);
-  assert.match(login, /await supabase\.auth\.signOut\(\)/);
+test("successful Clerk authentication still requires API-backed admin authorization", () => {
+  assert.match(login, /<SignIn/);
+  assert.doesNotMatch(login, /SignUp/);
+  assert.match(session, /adminApiRequest/);
+  assert.match(session, /"\/v1\/admin\/session"/);
   assert.doesNotMatch(login, /createSupabaseAdminClient/);
 });
 

@@ -176,6 +176,23 @@ export class SupabaseIdentityCommandRepository {
     );
   }
 
+  bootstrapClerkPrincipal(input: {
+    clerkSubject: string;
+    verifiedEmail: string;
+    requestId: string;
+  }) {
+    return this.rpc(
+      'bootstrap_clerk_identity_principal',
+      {
+        p_clerk_subject: input.clerkSubject,
+        p_verified_email: input.verifiedEmail,
+        p_request_id: input.requestId,
+      },
+      this.serviceRoleKey,
+      this.serviceRoleKey,
+    );
+  }
+
   syncClerkLifecycle(input: {
     clerkSubject: string;
     eventId: string;

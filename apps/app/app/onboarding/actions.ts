@@ -1,6 +1,6 @@
 'use server';
 
-import { onboardingPayloadSchema, type ProvisioningPayload } from '@neptlium/lib';
+import { onboardingPayloadSchema, type ProvisioningPayload } from '@neptlium/lib/validation';
 import { requireUser } from '@/lib/auth';
 import {
   completeAccountOnboarding,

@@ -1,12 +1,14 @@
-import { updateSession } from "@neptlium/lib/supabase/middleware";
-import type { NextRequest } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-// Session refresh only — auth/role guards are enforced in (admin)/layout.tsx
-// via requireAdminUser(), which calls redirect("/login") if unauthenticated.
-export async function proxy(request: NextRequest) {
-  return updateSession(request);
-}
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
+
+export default clerkMiddleware(async (auth, request) => {
+  if (isProtectedRoute(request)) await auth.protect();
+});
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"]
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
 };

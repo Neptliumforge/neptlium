@@ -20,7 +20,7 @@ import {
 import { handleFinancialRoute } from './financial-routes.js';
 import { publicFundingDefinitions } from './asset-registry.js';
 import { createPrincipalAuthenticator } from './authentication.js';
-import { verifyClerkSubject } from './authentication.js';
+import { verifyClerkIdentity, verifyClerkSubject, type VerifiedClerkIdentity } from './authentication.js';
 import {
   SupabaseIdentityCommandRepository,
   SupabaseIdentityPrincipalResolver,
@@ -35,10 +35,11 @@ export interface Dependencies {
   authenticate?: (token: string) => Promise<{ id: string; role?: string } | null>;
   identityCommands?: Pick<
     SupabaseIdentityCommandRepository,
-    'linkClerkSubject' | 'syncClerkLifecycle'
+    'linkClerkSubject' | 'bootstrapClerkPrincipal' | 'syncClerkLifecycle'
   >;
   verifyClerkWebhook?: (request: Request) => Promise<ClerkWebhookEvent>;
   verifyClerkSubject?: (token: string, config: Config) => Promise<string | null>;
+  verifyClerkIdentity?: (token: string, config: Config) => Promise<VerifiedClerkIdentity | null>;
   webhookVerifiers?: Partial<Record<'alchemy' | 'coinbase', WebhookVerifier>>;
   rateLimiter?: RateLimiter;
   observer?: Observer;
@@ -201,6 +202,26 @@ export async function buildApp(deps: Dependencies = {}) {
         requestId: context.requestId,
       });
       return { data: linked };
+    }
+
+    if (method === 'POST' && path === '/v1/auth/bootstrap') {
+      if (!identityCommands)
+        throw new ApiError(503, 'identity_bootstrap_unavailable', 'Identity bootstrap is unavailable');
+      const authorization = context.headers.authorization;
+      if (!authorization?.startsWith('Bearer '))
+        throw new ApiError(401, 'authentication_required', 'A valid bearer token is required');
+      const identity = await (deps.verifyClerkIdentity ?? verifyClerkIdentity)(
+        authorization.slice(7),
+        config,
+      );
+      if (!identity)
+        throw new ApiError(401, 'authentication_required', 'The Clerk session is invalid');
+      const result = await identityCommands.bootstrapClerkPrincipal({
+        clerkSubject: identity.subject,
+        verifiedEmail: identity.primaryEmail,
+        requestId: context.requestId,
+      });
+      return { status: 200, data: result };
     }
 
     if (method === 'POST' && path === '/v1/webhooks/clerk') {

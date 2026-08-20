@@ -9,7 +9,7 @@ import {
   SlidersHorizontal,
   Wallet,
 } from 'lucide-react';
-import type { Role } from '@neptlium/lib';
+import type { Role } from '@neptlium/lib/rbac';
 import type { NavItem } from '@neptlium/ui';
 export interface RoleAwareNavItem extends NavItem {
   readonly minRole: Role;

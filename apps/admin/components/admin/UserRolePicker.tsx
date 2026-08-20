@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { getRoleLabel, type Role } from "@neptlium/lib";
+import { getRoleLabel, type Role } from "@neptlium/lib/rbac";
 import { DELEGABLE_ROLES } from "@/lib/auth/authorization";
 
 interface UserRolePickerProps {

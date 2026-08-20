@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { hasRole, type Role } from "@neptlium/lib";
+import { hasRole, type Role } from "@neptlium/lib/rbac";
 import { resolveRole } from "@/components/security/resolveRole";
 import { getCurrentProfile, getCurrentUser } from "./session";
 

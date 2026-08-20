@@ -1,4 +1,4 @@
-import { type Role } from "@neptlium/lib";
+import { type Role } from "@neptlium/lib/rbac";
 import { getAccountContext } from "@/lib/api/client";
 
 const KNOWN_ROLES: readonly Role[] = ["user", "operator", "analyst", "manager", "admin", "super_admin"];

@@ -1,21 +1,12 @@
 "use client";
 
-import { useTransition } from "react";
+import { SignOutButton as ClerkSignOutButton } from '@clerk/nextjs';
 import { Button } from "@neptlium/ui";
-import { signOutAction } from "./actions";
 
 export function SignOutButton() {
-  const [isPending, startTransition] = useTransition();
-
-  function handleSignOut() {
-    startTransition(async () => {
-      await signOutAction();
-    });
-  }
-
   return (
-    <Button type="button" variant="outline" size="sm" onClick={handleSignOut} loading={isPending}>
-      Sign Out
-    </Button>
+    <ClerkSignOutButton redirectUrl="/auth/sign-in">
+      <Button type="button" variant="outline" size="sm">Sign Out</Button>
+    </ClerkSignOutButton>
   );
 }

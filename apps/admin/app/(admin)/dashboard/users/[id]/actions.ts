@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { type Role } from "@neptlium/lib";
+import { type Role } from "@neptlium/lib/rbac";
 import { adminApiRequest, AdminApiError } from "@/lib/api";
 
 export type ActionResult = { readonly ok: true } | { readonly ok: false; readonly error: string };
