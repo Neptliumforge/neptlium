@@ -223,7 +223,9 @@ export async function buildApp(deps: Dependencies = {}) {
         status: ready ? 200 : 503,
         data: {
           status: ready ? 'ready' : 'not_ready',
-          mainnet: config.ENABLE_MAINNET,
+          mainnet: publicFundingDefinitions().some(
+            (definition) => definition.environment === 'LIVE' && definition.productionEnabled,
+          ),
           database: generalReady ? 'ready' : 'not_ready',
           governed_financial_storage: financialReady ? 'ready' : 'not_ready',
           capabilities: publicFundingDefinitions().map((definition) => ({
@@ -480,143 +482,26 @@ export async function buildApp(deps: Dependencies = {}) {
             reserved: unavailable('reservation_balance_unavailable'),
             pending: unavailable('canonical_pending_balance_unavailable'),
           };
-      const link = await repository.getProviderWallet(user.id);
-      if (!link) {
-        return {
-          data: {
-            canonical,
-            provider_observation: notConfigured('provider_wallet_not_linked'),
-            funding: {
-              state: 'VALUE',
-              value: { capabilities_endpoint: '/v1/funding/capabilities' },
-            },
-          },
-        };
-      }
-      const balances = await capitalProvider.getBalances(link);
       return {
         data: {
           canonical,
-          provider_observation: {
-            state: 'VALUE',
-            value: {
-              balances,
-              reconciliation_state: 'unreconciled',
-              environment: link.environment,
-            },
-          },
+          provider_observation: notConfigured('legacy_provider_wallet_model_retired'),
           funding: { state: 'VALUE', value: { capabilities_endpoint: '/v1/funding/capabilities' } },
         },
       };
     }
 
-    if (method === 'POST' && path === '/v1/wallet/deposit-addresses') {
+    if (
+      path.startsWith('/v1/wallet/') ||
+      path === '/v1/capital-account/provider-wallet' ||
+      path === '/v1/capital-account/deposit-address'
+    ) {
       await owner(context);
-      const body = mutation(context.body);
-      validatePair(body.asset, body.network);
-      throw new ApiError(410, 'route_replaced', 'Use the Capital Account deposit-address route');
-    }
-    if (method === 'POST' && path === '/v1/capital-account/provider-wallet') {
-      const user = await owner(context);
-      const key = idempotencyKey(context);
-      const existing = await repository.getProviderWallet(user.id);
-      if (existing) return { data: { status: existing.status, environment: existing.environment } };
-      if (!capitalProvider.supports('USDC', 'BASE-SEPOLIA'))
-        throw new ApiError(503, 'provider_not_configured', 'Capital provider is not configured');
-      const link = await capitalProvider.provisionWallet({
-        refId: `neptlium:${user.id}`,
-        idempotencyKey: key,
-      });
-      await repository.linkProviderWallet(user.id, link);
-      await repository.audit({
-        actorId: user.id,
-        operation: 'provider_wallet.linked',
-        resourceId: link.providerWalletId,
-        newState: link.status,
-        requestId: context.requestId,
-      });
-      return { status: 201, data: { status: link.status, environment: link.environment } };
-    }
-    if (method === 'GET' && path === '/v1/capital-account/deposit-address') {
-      const user = await owner(context);
-      const asset = context.query.get('asset');
-      const network = context.query.get('network');
-      if (!capitalProvider.supports(asset ?? '', network ?? ''))
-        throw new ApiError(422, 'unsupported_capability', 'Asset or network is unavailable');
-      const link = await repository.getProviderWallet(user.id);
-      if (!link)
-        throw new ApiError(
-          404,
-          'provider_wallet_not_linked',
-          'Capital Account provider wallet is not linked',
-        );
-      const destination = await capitalProvider.getDepositAddress(link);
-      return {
-        data: {
-          asset: 'USDC',
-          network: 'BASE-SEPOLIA',
-          address: destination.address,
-          provider_state: destination.status,
-          environment: destination.environment,
-        },
-      };
-    }
-    if (method === 'GET' && path === '/v1/wallet/deposits') {
-      const user = await owner(context);
-      return {
-        data: {
-          data: await repository.listDeposits(user.id),
-          next_cursor: null,
-        },
-      };
-    }
-    if (method === 'POST' && path === '/v1/wallet/withdrawals') {
-      const user = await owner(context);
-      const key = idempotencyKey(context);
-      const pair = mutation(context.body);
-      assertObject(context.body);
-      const amount = context.body.amount;
-      const destination = context.body.destination;
-      if (
-        typeof amount !== 'string' ||
-        !/^\d+$/.test(amount) ||
-        BigInt(amount) <= 0n ||
-        typeof destination !== 'string' ||
-        destination.length < 14 ||
-        destination.length > 128
-      )
-        throw new ApiError(422, 'validation_failed', 'Invalid amount or destination');
-      validatePair(pair.asset, pair.network);
-      const requestDigest = digest(context.body);
-      const creation = await repository.createWithdrawalIdempotently({
-        ownerId: user.id,
-        operation: 'create_withdrawal',
-        key,
-        requestDigest,
-        requestId: context.requestId,
-        withdrawal: { ownerId: user.id, ...pair, amount, destination },
-      });
-      if (creation.replayed) return { data: creation.value };
-      return { status: 202, data: creation.value };
-    }
-    const match = path.match(/^\/v1\/wallet\/withdrawals\/([^/]+)(\/cancel)?$/);
-    if (match && match[1] && method === 'GET' && !match[2])
-      return { data: await repository.getWithdrawal((await owner(context)).id, match[1]) };
-    if (match && match[1] && method === 'POST' && match[2]) {
-      const user = await owner(context);
-      const cancellation = await repository.cancelWithdrawalIdempotently({
-        ownerId: user.id,
-        withdrawalId: match[1],
-        key: idempotencyKey(context),
-        requestId: context.requestId,
-      });
-      return { data: cancellation.value };
-    }
-    if (method === 'GET' && path === '/v1/wallet/transactions') {
-      const user = await owner(context);
-      const cursor = Math.max(0, Number(context.query.get('cursor') ?? 0) || 0);
-      const data = await repository.listTransactions(user.id, cursor, 50);
-      return { data: { data, next_cursor: data.length === 50 ? String(cursor + 50) : null } };
+      throw new ApiError(
+        410,
+        'route_replaced',
+        'Per-customer provider-wallet routes are superseded by funding_intent → deposit_route → treasury_destination',
+      );
     }
     if (
       method === 'POST' &&

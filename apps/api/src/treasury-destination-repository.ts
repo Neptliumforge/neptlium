@@ -77,9 +77,13 @@ export class SupabaseTreasuryDestinationRepository implements TreasuryDestinatio
     return (await response.json()) as TreasuryDestinationRow[];
   }
   private async rpc(name: string, input: Record<string, unknown>) {
+    const { __accessToken, ...body } = input;
+    if (typeof __accessToken !== 'string' || !__accessToken)
+      throw new ApiError(401, 'authentication_required', 'Treasury command identity is required');
     const response = await this.rest(`rpc/${name}`, {
       method: 'POST',
-      body: JSON.stringify(input),
+      headers: { authorization: `Bearer ${__accessToken}` },
+      body: JSON.stringify(body),
     });
     if (!response.ok) {
       const detail = await response.text().catch(() => '');

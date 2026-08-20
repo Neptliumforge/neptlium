@@ -59,7 +59,10 @@ export function normalizeTreasuryDestinationAddress(
   if (format === 'BITCOIN') {
     try {
       bitcoinAddress.toOutputScript(address, bitcoinNetworks.bitcoin);
-      return address.toLowerCase();
+      // Bech32/Bech32m may be canonicalized to lowercase after checksum and
+      // mixed-case validation. Base58Check is case-sensitive and must remain
+      // byte-for-byte stable.
+      return /^bc1/i.test(address) ? address.toLowerCase() : address;
     } catch {
       throw new ApiError(
         400,

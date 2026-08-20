@@ -4,8 +4,6 @@ import type { TreasuryDestinationRepository } from './treasury-destination-repos
 import { governedAssetDefinition } from './asset-registry.js';
 import {
   assertChallengeUsable,
-  assertTreasuryActivationReady,
-  issueTreasuryOwnershipChallenge,
   normalizeTreasuryDestinationAddress,
   sha256,
   verifyEvmTreasuryOwnership,
@@ -46,6 +44,7 @@ export async function handleAdminRoute(
     repository: AdminRepository;
     treasuryRepository: TreasuryDestinationRepository;
     principal: User;
+    accessToken: string;
     environment: ProviderEnvironment;
   },
 ): Promise<{ status?: number; data: unknown }> {
@@ -109,6 +108,7 @@ export async function handleAdminRoute(
       JSON.stringify([asset, network, deps.environment, normalizedAddress]),
     );
     const destination = await deps.treasuryRepository.create({
+      __accessToken: deps.accessToken,
       p_actor_id: actor.id,
       p_request_id: context.requestId,
       p_idempotency_key: idempotencyKey,
@@ -146,32 +146,25 @@ export async function handleAdminRoute(
         'treasury_environment_mismatch',
         'Destination environment does not match runtime',
       );
-    const challenge = issueTreasuryOwnershipChallenge({
-      destinationId: String(destination.id),
-      normalizedAddress: String(destination.normalized_address),
-      network: String(destination.network),
-      networkIdentifier: String(destination.network_identifier),
-      environment: deps.environment,
-    });
     const stored = await deps.treasuryRepository.issueChallenge({
+      __accessToken: deps.accessToken,
       p_destination_id: destination.id,
       p_actor_id: actor.id,
       p_request_id: context.requestId,
       p_idempotency_key: idempotencyKey,
-      p_nonce_digest: challenge.nonceDigest,
-      p_message_digest: challenge.messageDigest,
-      p_issued_at: challenge.binding.issuedAt,
-      p_expires_at: challenge.binding.expiresAt,
+      p_request_digest: sha256(
+        JSON.stringify([destination.id, 'NEPTLIUM_TREASURY_OWNERSHIP_VERIFICATION']),
+      ),
     });
     return {
       status: 201,
       data: {
         id: stored.id,
         purpose: stored.purpose,
-        message: challenge.message,
-        nonce: challenge.binding.nonce,
-        issued_at: challenge.binding.issuedAt,
-        expires_at: challenge.binding.expiresAt,
+        message: stored.message,
+        nonce: stored.nonce,
+        issued_at: stored.issued_at,
+        expires_at: stored.expires_at,
       },
     };
   }
@@ -194,11 +187,6 @@ export async function handleAdminRoute(
         'treasury_challenge_binding_mismatch',
         'Challenge is not bound to this destination',
       );
-    assertChallengeUsable({
-      consumedAt: challenge.consumed_at ? String(challenge.consumed_at) : null,
-      expiresAt: String(challenge.expires_at),
-      attempts: Number(challenge.verification_attempts),
-    });
     const message = String(context.body.message ?? '');
     const nonce = String(context.body.nonce ?? '');
     if (sha256(message) !== challenge.message_digest || sha256(nonce) !== challenge.nonce_digest)
@@ -208,7 +196,33 @@ export async function handleAdminRoute(
         'Challenge message or nonce does not match durable evidence',
       );
     const signature = String(context.body.signature ?? '');
+    const requestDigest = sha256(
+      JSON.stringify([destinationId, challengeId, sha256(message), sha256(nonce), sha256(signature)]),
+    );
+    const replay = Boolean(challenge.consumed_at);
+    if (!replay)
+      assertChallengeUsable({
+        consumedAt: null,
+        expiresAt: String(challenge.expires_at),
+        attempts: Number(challenge.verification_attempts),
+      });
     try {
+      if (replay) {
+        const result = await deps.treasuryRepository.verify({
+          __accessToken: deps.accessToken,
+          p_challenge_id: challengeId,
+          p_destination_id: destinationId,
+          p_actor_id: actor.id,
+          p_request_id: context.requestId,
+          p_idempotency_key: idempotencyKey,
+          p_request_digest: requestDigest,
+          p_nonce_digest: sha256(nonce),
+          p_message_digest: sha256(message),
+          p_verification_method: String(destination.verification_method ?? 'IDEMPOTENT_REPLAY'),
+          p_evidence_digest: sha256(signature),
+        });
+        return { data: result };
+      }
       if (destination.address_format === 'evm')
         await verifyEvmTreasuryOwnership({
           address: String(destination.normalized_address),
@@ -236,22 +250,26 @@ export async function handleAdminRoute(
     } catch (error) {
       if (error instanceof ApiError && error.status < 500) {
         await deps.treasuryRepository.recordVerificationFailure({
+          __accessToken: deps.accessToken,
           p_challenge_id: challengeId,
           p_destination_id: destinationId,
           p_actor_id: actor.id,
           p_request_id: context.requestId,
           p_idempotency_key: idempotencyKey,
+          p_request_digest: requestDigest,
           p_failure_code: error.code,
         });
       }
       throw error;
     }
     const result = await deps.treasuryRepository.verify({
+      __accessToken: deps.accessToken,
       p_challenge_id: challengeId,
       p_destination_id: destinationId,
       p_actor_id: actor.id,
       p_request_id: context.requestId,
       p_idempotency_key: idempotencyKey,
+      p_request_digest: requestDigest,
       p_nonce_digest: sha256(nonce),
       p_message_digest: sha256(message),
       p_verification_method:
@@ -271,19 +289,20 @@ export async function handleAdminRoute(
   if (method === 'POST' && transition?.[1] && transition[2]) {
     const idempotencyKey = requireIdempotencyKey(context);
     const destination = await deps.treasuryRepository.get(decodeURIComponent(transition[1]));
-    if (transition[2] === 'activate' && destination.status !== 'active')
-      assertTreasuryActivationReady({
-        asset: String(destination.asset),
-        network: String(destination.network),
-        environment: deps.environment,
-        verificationState: String(destination.verification_state).toUpperCase() as 'VERIFIED',
-        status: String(destination.status).toUpperCase() as 'INACTIVE',
-      });
+    if (transition[2] === 'activate')
+      throw new ApiError(
+        409,
+        'treasury_destination_operational_readiness_unavailable',
+        'Treasury destination activation is unavailable until durable product, observation, finality, and reconciliation readiness exists',
+      );
+    const requestDigest = sha256(JSON.stringify([destination.id, transition[2]]));
     const result = await deps.treasuryRepository.transition({
+      __accessToken: deps.accessToken,
       p_destination_id: destination.id,
       p_actor_id: actor.id,
       p_request_id: context.requestId,
       p_idempotency_key: idempotencyKey,
+      p_request_digest: requestDigest,
       p_operation: transition[2],
     });
     return { data: result };

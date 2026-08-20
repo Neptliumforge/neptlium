@@ -165,6 +165,7 @@ export async function executeAdminHttp(
         repository: injected?.repository ?? repositoryFor(config),
         treasuryRepository: injected?.treasuryRepository ?? treasuryRepositoryFor(config),
         principal,
+        accessToken: authorization.slice(7),
         environment: config.NODE_ENV === 'production' ? 'LIVE' : 'TEST',
       },
     );

@@ -47,7 +47,7 @@ test('production readiness fails closed when durable persistence is unavailable'
   assert.equal(status.statusCode, 503);
   assert.equal(status.json().status, 'not_ready');
 });
-test('general repository readiness probes authoritative profile persistence', async () => {
+test('general repository readiness probes supported account and role persistence only', async () => {
   const calls = [];
   const repository = new SupabaseRepository(
     'https://example.supabase.co',
@@ -58,9 +58,10 @@ test('general repository readiness probes authoritative profile persistence', as
     },
   );
   assert.equal(await repository.ready(), true);
-  assert.equal(calls.length, 1);
+  assert.equal(calls.length, 2);
   assert.match(calls[0], /\/profiles\?select=id&limit=1$/);
-  assert.doesNotMatch(calls[0], /wallet_accounts/);
+  assert.match(calls[1], /\/user_roles\?select=user_id&limit=1$/);
+  assert.doesNotMatch(calls.join('\n'), /wallet_accounts|capital_provider_wallets/);
 });
 test('production rejects process-local rate limiting', async () => {
   const production = loadConfig({ NODE_ENV: 'production' });
@@ -221,7 +222,7 @@ const circleProvider = {
   listTransactions: async () => [],
   reconciliationMetadata: () => ({}),
 };
-test('Capital Account keeps provider address observation separate from canonical customer balance', async () => {
+test('legacy provider address route is retired while canonical customer balance remains available', async () => {
   const repository = new MemoryRepository();
   repository.linkProviderWallet('user-1', circleWallet);
   const app = await buildApp({ config, authenticate, repository, capitalProvider: circleProvider });
@@ -231,13 +232,8 @@ test('Capital Account keeps provider address observation separate from canonical
     url: '/v1/capital-account/deposit-address?asset=USDC&network=BASE-SEPOLIA',
     headers,
   });
-  assert.deepEqual(address.json(), {
-    asset: 'USDC',
-    network: 'BASE-SEPOLIA',
-    address: circleWallet.address,
-    provider_state: 'live',
-    environment: 'testnet',
-  });
+  assert.equal(address.statusCode, 410);
+  assert.equal(address.json().error.code, 'route_replaced');
   const balance = await app.inject({ method: 'GET', url: '/v1/capital-account/balances', headers });
   assert.equal(balance.statusCode, 200);
   assert.equal(balance.json().source, 'NEPTLIUM_CANONICAL_LEDGER');
@@ -245,7 +241,7 @@ test('Capital Account keeps provider address observation separate from canonical
   assert.deepEqual(balance.json().balances, []);
   assert.equal(JSON.stringify(balance.json()).includes('12.5'), false);
 });
-test('provider wallet access is authenticated, owner-scoped and capability gated', async () => {
+test('retired provider-wallet routes remain authenticated and fail closed for every owner', async () => {
   const repository = new MemoryRepository();
   repository.linkProviderWallet('user-1', circleWallet);
   const app = await buildApp({ config, authenticate, repository, capitalProvider: circleProvider });
@@ -261,7 +257,7 @@ test('provider wallet access is authenticated, owner-scoped and capability gated
         headers: { authorization: 'Bearer valid' },
       })
     ).statusCode,
-    422,
+    410,
   );
   const otherApp = await buildApp({
     config,
@@ -286,7 +282,7 @@ test('provider wallet access is authenticated, owner-scoped and capability gated
         headers: { authorization: 'Bearer valid' },
       })
     ).statusCode,
-    404,
+    410,
   );
 });
 test('Circle configuration is explicit and rejects mainnet or partial credentials', () => {
@@ -301,7 +297,7 @@ test('Circle configuration is explicit and rejects mainnet or partial credential
   );
   assert.equal(loadConfig({ NODE_ENV: 'test' }).circleConfigured, false);
 });
-test('on-demand wallet provisioning is idempotent and returns no provider identifiers', async () => {
+test('on-demand per-customer wallet provisioning is retired without provider calls', async () => {
   let calls = 0;
   const provider = {
     ...circleProvider,
@@ -322,10 +318,10 @@ test('on-demand wallet provisioning is idempotent and returns no provider identi
     url: '/v1/capital-account/provider-wallet',
     headers,
   });
-  assert.equal(first.statusCode, 201);
-  assert.equal(second.statusCode, 200);
-  assert.equal(calls, 1);
-  assert.deepEqual(first.json(), { status: 'live', environment: 'testnet' });
+  assert.equal(first.statusCode, 410);
+  assert.equal(second.statusCode, 410);
+  assert.equal(calls, 0);
+  assert.equal(first.json().error.code, 'route_replaced');
 });
 test('malformed and oversized bodies return safe validation errors', async () => {
   const app = await buildApp({ config, authenticate });
@@ -357,7 +353,7 @@ test('ledger balances and state transitions enforce rules', () => {
   assert.equal(l.balance('user', 'USDC', 'base-sepolia'), 10n);
   assert.throws(() => transition('withdrawal', 'settled', 'requested'));
 });
-test('idempotency replay and conflict', async () => {
+test('legacy withdrawal creation is retired deterministically', async () => {
   const app = await buildApp({ config, authenticate });
   const headers = { authorization: 'Bearer valid', 'idempotency-key': 'request-123' },
     payload = {
@@ -368,7 +364,9 @@ test('idempotency replay and conflict', async () => {
     };
   const a = await app.inject({ method: 'POST', url: '/v1/wallet/withdrawals', headers, payload });
   const b = await app.inject({ method: 'POST', url: '/v1/wallet/withdrawals', headers, payload });
-  assert.equal(a.json().id, b.json().id);
+  assert.equal(a.statusCode, 410);
+  assert.equal(b.statusCode, 410);
+  assert.equal(a.json().error.code, 'route_replaced');
   assert.equal(
     (
       await app.inject({
@@ -378,10 +376,10 @@ test('idempotency replay and conflict', async () => {
         payload: { ...payload, amount: '11' },
       })
     ).statusCode,
-    409,
+    410,
   );
 });
-test('withdrawal cancellation is owner-scoped and idempotent', async () => {
+test('legacy withdrawal cancellation is retired and cannot mutate state', async () => {
   const app = await buildApp({ config, authenticate });
   const headers = { authorization: 'Bearer valid', 'idempotency-key': 'request-cancel' };
   const created = await app.inject({
@@ -395,9 +393,10 @@ test('withdrawal cancellation is owner-scoped and idempotent', async () => {
       destination: '0x1111111111111111111111111111111111111111',
     },
   });
-  const url = `/v1/wallet/withdrawals/${created.json().id}/cancel`;
-  assert.equal((await app.inject({ method: 'POST', url, headers })).json().state, 'cancelled');
-  assert.equal((await app.inject({ method: 'POST', url, headers })).json().state, 'cancelled');
+  assert.equal(created.statusCode, 410);
+  const url = '/v1/wallet/withdrawals/legacy-id/cancel';
+  assert.equal((await app.inject({ method: 'POST', url, headers })).statusCode, 410);
+  assert.equal((await app.inject({ method: 'POST', url, headers })).statusCode, 410);
   const createReplay = await app.inject({
     method: 'POST',
     url: '/v1/wallet/withdrawals',
@@ -409,7 +408,7 @@ test('withdrawal cancellation is owner-scoped and idempotent', async () => {
       destination: '0x1111111111111111111111111111111111111111',
     },
   });
-  assert.equal(createReplay.json().state, 'requested');
+  assert.equal(createReplay.statusCode, 410);
 });
 test('provider webhooks fail closed without a reviewed verifier', async () => {
   const app = await buildApp({ config, authenticate });
@@ -499,14 +498,14 @@ test('serverless boundary enforces exact CORS and bearer authentication', async 
     url: '/v1/capital-account/provider-wallet',
     headers: { authorization: 'Bearer valid', 'idempotency-key': 'serverless-wallet' },
   });
-  assert.equal(provision.statusCode, 201);
+  assert.equal(provision.statusCode, 410);
   const address = await invoke({
     method: 'GET',
     url: '/v1/capital-account/deposit-address?asset=USDC&network=BASE-SEPOLIA',
     headers: { authorization: 'Bearer valid' },
   });
-  assert.equal(address.statusCode, 200);
-  assert.equal(JSON.parse(address.body).network, 'BASE-SEPOLIA');
+  assert.equal(address.statusCode, 410);
+  assert.equal(JSON.parse(address.body).error.code, 'route_replaced');
 });
 
 function durableFixture({ owner = 'user-a', walletId = 'account-a', existing } = {}) {

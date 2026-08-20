@@ -127,7 +127,11 @@ export class SupabaseRepository implements ApiRepository {
 
   async ready() {
     try {
-      return (await this.rest('profiles?select=id&limit=1')).ok;
+      const probes = await Promise.all([
+        this.rest('profiles?select=id&limit=1'),
+        this.rest('user_roles?select=user_id&limit=1'),
+      ]);
+      return probes.every((response) => response.ok);
     } catch {
       return false;
     }

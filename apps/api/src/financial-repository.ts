@@ -39,7 +39,7 @@ export interface DepositRouteRecord {
   network: string | null;
   depositAddress: string;
   memoOrTag: string | null;
-  provider: 'stripe' | 'circle';
+  provider: 'stripe' | 'circle' | null;
   status: 'pending' | 'active' | 'suspended' | 'revoked';
   createdAt: string;
 }
@@ -129,7 +129,7 @@ type DepositRouteRow = {
   network: string | null;
   deposit_address: string;
   memo_or_tag: string | null;
-  provider: 'stripe' | 'circle';
+  provider: 'stripe' | 'circle' | null;
   status: DepositRouteRecord['status'];
   created_at: string;
 };
@@ -255,24 +255,30 @@ export class SupabaseFinancialRepository implements FinancialRepository {
     return (await response.json()) as T[];
   }
   async ready() {
-    const requiredPrimitives = [
-      'funding_intents',
-      'treasury_destinations',
-      'deposit_routes',
-      'provider_webhook_inbox',
-      'provider_references',
-      'settlement_evidence',
-      'ledger_accounts',
-      'ledger_journals',
-      'ledger_postings',
-      'reconciliation_runs',
-      'reconciliation_items',
-      'transfer_executions',
-      'capital_reservations',
+    const requiredPrimitives: Array<[string, string]> = [
+      ['funding_intents', 'id'],
+      // Migration-specific columns ensure readiness cannot report green before
+      // the self-custody control-plane schema is actually present.
+      ['treasury_destinations', 'id,controller_type,custody_model,verification_state'],
+      ['deposit_routes', 'id,treasury_destination_id'],
+      ['treasury_destination_challenges', 'id,request_digest'],
+      ['treasury_destination_events', 'id,operation'],
+      ['provider_webhook_inbox', 'id'],
+      ['provider_references', 'id'],
+      ['settlement_evidence', 'id,deposit_route_id,treasury_destination_id'],
+      ['ledger_accounts', 'id'],
+      ['ledger_journals', 'id'],
+      ['ledger_postings', 'id'],
+      ['reconciliation_runs', 'id'],
+      ['reconciliation_items', 'id'],
+      ['transfer_executions', 'id'],
+      ['capital_reservations', 'id'],
     ];
     try {
       const probes = await Promise.all(
-        requiredPrimitives.map((table) => this.rest(`${table}?select=id&limit=1`)),
+        requiredPrimitives.map(([table, columns]) =>
+          this.rest(`${table}?select=${columns}&limit=1`),
+        ),
       );
       return probes.every((response) => response.ok);
     } catch {

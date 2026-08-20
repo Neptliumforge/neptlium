@@ -114,6 +114,18 @@ export class SupabaseFinancialOperations {
     evidenceState: string;
     observedAt: string;
     rawReference?: Record<string, unknown>;
+    depositRouteId?: string;
+    treasuryDestinationId?: string;
+    chainId?: number;
+    sender?: string;
+    recipient?: string;
+    receiptStatus?: string;
+    blockHash?: string;
+    transferType?: 'NATIVE' | 'ERC20';
+    tokenContract?: string | null;
+    tokenDecimals?: number | null;
+    logIndex?: number | null;
+    finalityState?: string;
   }) {
     const response = await this.rest('settlement_evidence', {
       method: 'POST',
@@ -135,6 +147,18 @@ export class SupabaseFinancialOperations {
         evidence_state: input.evidenceState,
         observed_at: input.observedAt,
         raw_reference: input.rawReference ?? {},
+        deposit_route_id: input.depositRouteId ?? null,
+        treasury_destination_id: input.treasuryDestinationId ?? null,
+        chain_id: input.chainId ?? null,
+        sender: input.sender ?? null,
+        recipient: input.recipient ?? null,
+        receipt_status: input.receiptStatus ?? null,
+        block_hash: input.blockHash ?? null,
+        transfer_type: input.transferType ?? null,
+        token_contract: input.tokenContract ?? null,
+        token_decimals: input.tokenDecimals ?? null,
+        log_index: input.logIndex ?? null,
+        finality_state: input.finalityState ?? null,
       }),
     });
     if (response.status === 409) return { duplicate: true as const };
@@ -176,7 +200,7 @@ export class SupabaseFinancialOperations {
   }
 
   resolveDepositRoute(input: {
-    provider: 'circle';
+    provider: 'circle' | null;
     environment: Environment;
     asset: string;
     network: string;

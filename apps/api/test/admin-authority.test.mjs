@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { loadConfig } from '../dist/config.js';
 import { executeAdminHttp } from '../dist/admin-http.js';
+import { SupabaseTreasuryDestinationRepository } from '../dist/treasury-destination-repository.js';
 
 function fakeRepository(role = 'super_admin', sessionEmail = null) {
   const auditEntries = [];
@@ -102,6 +103,65 @@ test('treasury control plane enforces 401, 403, then permits platform admin doma
   );
   assert.equal(platformAdmin.statusCode, 200);
   assert.equal(JSON.parse(platformAdmin.body)[0].id, 'destination-1');
+});
+
+test('verified ownership cannot activate while durable operational readiness is unavailable', async () => {
+  let transitionCalls = 0;
+  const response = await executeAdminHttp(
+    config,
+    {
+      ...base,
+      method: 'POST',
+      url: '/v1/admin/treasury-destinations/destination-1/activate',
+      headers: { ...base.headers, 'idempotency-key': 'activate-command-1' },
+      payload: '{}',
+    },
+    {
+      repository: fakeRepository(),
+      authenticate,
+      treasuryRepository: {
+        get: async () => ({
+          id: 'destination-1',
+          asset: 'USDC',
+          network: 'BASE',
+          environment: 'test',
+          verification_state: 'verified',
+          status: 'inactive',
+        }),
+        transition: async () => {
+          transitionCalls += 1;
+        },
+      },
+    },
+  );
+  assert.equal(response.statusCode, 409);
+  assert.equal(
+    JSON.parse(response.body).error.code,
+    'treasury_destination_operational_readiness_unavailable',
+  );
+  assert.equal(transitionCalls, 0);
+});
+
+test('treasury RPC uses the authenticated admin JWT and never service-role identity as actor authority', async () => {
+  const calls = [];
+  const repository = new SupabaseTreasuryDestinationRepository(
+    'https://example.supabase.co',
+    'service-role-secret',
+    async (url, init) => {
+      calls.push({ url, init });
+      return new Response(JSON.stringify([{ id: 'destination-1' }]), { status: 200 });
+    },
+  );
+  await repository.create({
+    __accessToken: 'authenticated-admin-jwt',
+    p_actor_id: 'user-1',
+  });
+  assert.equal(calls[0].init.headers.authorization, 'Bearer authenticated-admin-jwt');
+  assert.equal(calls[0].init.headers.apikey, 'service-role-secret');
+  await assert.rejects(
+    () => repository.create({ p_actor_id: 'user-1' }),
+    /command identity is required/,
+  );
 });
 
 test('admin preflight allows only configured production origin without authentication', async () => {

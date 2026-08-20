@@ -158,6 +158,14 @@ test('migration enforces custody, verification, lifecycle, and immutable identit
   assert.match(migration, /treasury destination identity is immutable/);
   assert.match(migration, /treasury destination verification evidence is immutable/);
   assert.match(migration, /old\.status = 'retired'[\s\S]*new\.status <> 'retired'/);
+  assert.match(migration, /auth\.uid\(\) is distinct from p_actor_id/);
+  assert.match(migration, /r\.role = 'super_admin'/);
+  assert.match(migration, /pg_advisory_xact_lock/);
+  assert.match(migration, /operational readiness unavailable/);
+  assert.match(migration, /revoke all on function public\.transition_treasury_destination[\s\S]*service_role/);
+  assert.match(migration, /set status = case when v_next = 'retired' then 'revoked' else 'suspended' end/);
+  assert.match(migration, /r\.provider is not distinct from p_provider/);
+  assert.match(migration, /coalesce\(provider, 'neptlium_self_custody'\)/);
 });
 
 test('migration contains no seeded destination address and keeps destination events append-only', () => {

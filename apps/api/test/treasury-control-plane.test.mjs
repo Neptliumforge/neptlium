@@ -53,6 +53,24 @@ test('Bitcoin mainnet Bech32 checksum is validated and testnet is rejected for L
   );
 });
 
+test('Bitcoin normalization preserves Base58Check case and canonicalizes valid Bech32 safely', () => {
+  const base58 = '1BoatSLRHtKNngkdXEeobR76b53LETtpyT';
+  assert.equal(normalizeTreasuryDestinationAddress('BITCOIN', base58), base58);
+  assert.equal(
+    normalizeTreasuryDestinationAddress(
+      'BITCOIN',
+      'BC1QQJT26JG07YGRZHQG4FC7M0GP9M76EV4JFYP827',
+    ),
+    'bc1qqjt26jg07ygrzhqg4fc7m0gp9m76ev4jfyp827',
+  );
+  assert.throws(() =>
+    normalizeTreasuryDestinationAddress('BITCOIN', '1BoatSLRHtKNngkdXEeobR76b53LETtpyU'),
+  );
+  assert.throws(() =>
+    normalizeTreasuryDestinationAddress('BITCOIN', 'bc1qQJT26JG07YGRZHQG4FC7M0GP9M76EV4JFYP827'),
+  );
+});
+
 test('Solana address must decode to exactly 32 bytes and stays internal in registry policy', () => {
   assert.equal(
     normalizeTreasuryDestinationAddress('SOLANA', 'Hmmc5gGXd5Xb3yaj2RiWgY6uEiZRsxJHKZha2oEtWKxM'),
