@@ -10,3 +10,4 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - lucide-react@1.24.0
   - viem@2.55.19
+  - '@clerk/backend@3.16.9'

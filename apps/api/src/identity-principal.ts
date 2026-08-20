@@ -128,3 +128,70 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
     };
   }
 }
+
+export class SupabaseIdentityCommandRepository {
+  constructor(
+    private readonly url: string,
+    private readonly anonKey: string,
+    private readonly serviceRoleKey: string,
+    private readonly request: Fetch = fetch,
+  ) {}
+
+  private async rpc(
+    name: string,
+    body: Record<string, unknown>,
+    bearerToken: string,
+    apiKey: string,
+  ): Promise<Record<string, unknown>> {
+    const response = await this.request(`${this.url}/rest/v1/rpc/${name}`, {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${bearerToken}`,
+        apikey: apiKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!response.ok)
+      throw new ApiError(409, 'identity_link_unavailable', 'Identity linking is unavailable');
+    return (await response.json()) as Record<string, unknown>;
+  }
+
+  linkClerkSubject(input: {
+    supabaseAccessToken: string;
+    clerkSubject: string;
+    idempotencyKey: string;
+    requestId: string;
+  }) {
+    return this.rpc(
+      'link_clerk_identity_subject',
+      {
+        p_clerk_subject: input.clerkSubject,
+        p_idempotency_key: input.idempotencyKey,
+        p_request_id: input.requestId,
+      },
+      input.supabaseAccessToken,
+      this.anonKey,
+    );
+  }
+
+  syncClerkLifecycle(input: {
+    clerkSubject: string;
+    eventId: string;
+    eventType: string;
+    eventDigest: string;
+  }) {
+    return this.rpc(
+      'sync_clerk_identity_lifecycle',
+      {
+        p_clerk_subject: input.clerkSubject,
+        p_event_id: input.eventId,
+        p_event_type: input.eventType,
+        p_event_digest: input.eventDigest,
+      },
+      this.serviceRoleKey,
+      this.serviceRoleKey,
+    );
+  }
+}

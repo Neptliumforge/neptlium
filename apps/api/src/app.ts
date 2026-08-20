@@ -19,12 +19,26 @@ import {
 } from './financial-repository.js';
 import { handleFinancialRoute } from './financial-routes.js';
 import { publicFundingDefinitions } from './asset-registry.js';
+import { createPrincipalAuthenticator } from './authentication.js';
+import { verifyClerkSubject } from './authentication.js';
+import {
+  SupabaseIdentityCommandRepository,
+  SupabaseIdentityPrincipalResolver,
+} from './identity-principal.js';
+import { verifyWebhook as verifyClerkWebhook } from '@clerk/backend/webhooks';
+import type { WebhookEvent as ClerkWebhookEvent } from '@clerk/backend';
 
 export interface Dependencies {
   config?: Config;
   repository?: ApiRepository;
   financialRepository?: FinancialRepository;
   authenticate?: (token: string) => Promise<{ id: string; role?: string } | null>;
+  identityCommands?: Pick<
+    SupabaseIdentityCommandRepository,
+    'linkClerkSubject' | 'syncClerkLifecycle'
+  >;
+  verifyClerkWebhook?: (request: Request) => Promise<ClerkWebhookEvent>;
+  verifyClerkSubject?: (token: string, config: Config) => Promise<string | null>;
   webhookVerifiers?: Partial<Record<'alchemy' | 'coinbase', WebhookVerifier>>;
   rateLimiter?: RateLimiter;
   observer?: Observer;
@@ -121,27 +135,20 @@ export async function buildApp(deps: Dependencies = {}) {
           config.CIRCLE_LIVE_EXECUTION_ENABLED,
         )
       : new DisabledCapitalProvider());
-  const authenticate =
-    deps.authenticate ??
-    (async (token: string) => {
-      if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) return null;
-      let response: Response;
-      try {
-        response = await fetch(`${config.SUPABASE_URL}/auth/v1/user`, {
-          headers: { authorization: `Bearer ${token}`, apikey: config.SUPABASE_ANON_KEY },
-          signal: AbortSignal.timeout(5_000),
-        });
-      } catch {
-        throw new ApiError(
-          503,
-          'authentication_unavailable',
-          'Authentication service is unavailable',
-        );
-      }
-      if (!response.ok) return null;
-      const user = (await response.json()) as { id?: string; app_metadata?: { role?: string } };
-      return user.id ? { id: user.id, role: user.app_metadata?.role } : null;
-    });
+  const identityResolver =
+    config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
+      ? new SupabaseIdentityPrincipalResolver(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
+      : undefined;
+  const identityCommands =
+    deps.identityCommands ??
+    (config.SUPABASE_URL && config.SUPABASE_ANON_KEY && config.SUPABASE_SERVICE_ROLE_KEY
+      ? new SupabaseIdentityCommandRepository(
+          config.SUPABASE_URL,
+          config.SUPABASE_ANON_KEY,
+          config.SUPABASE_SERVICE_ROLE_KEY,
+        )
+      : undefined);
+  const authenticate = deps.authenticate ?? createPrincipalAuthenticator(config, identityResolver);
   async function owner(context: Context) {
     const header = context.headers.authorization;
     if (!header?.startsWith('Bearer '))
@@ -169,6 +176,73 @@ export async function buildApp(deps: Dependencies = {}) {
       isWrite ? 30 : 120,
       60_000,
     );
+
+    if (method === 'POST' && path === '/v1/auth/link-clerk') {
+      if (!identityCommands)
+        throw new ApiError(503, 'identity_link_unavailable', 'Identity linking is unavailable');
+      const authorization = context.headers.authorization;
+      const clerkToken = context.headers['x-clerk-session-token'];
+      if (!authorization?.startsWith('Bearer ') || !clerkToken)
+        throw new ApiError(
+          401,
+          'authentication_required',
+          'Both authenticated sessions are required',
+        );
+      const clerkSubject = await (deps.verifyClerkSubject ?? verifyClerkSubject)(
+        clerkToken,
+        config,
+      );
+      if (!clerkSubject)
+        throw new ApiError(401, 'authentication_required', 'The Clerk session is invalid');
+      const linked = await identityCommands.linkClerkSubject({
+        supabaseAccessToken: authorization.slice(7),
+        clerkSubject,
+        idempotencyKey: idempotencyKey(context),
+        requestId: context.requestId,
+      });
+      return { data: linked };
+    }
+
+    if (method === 'POST' && path === '/v1/webhooks/clerk') {
+      if (!config.CLERK_WEBHOOK_SIGNING_SECRET || !identityCommands)
+        throw new ApiError(
+          503,
+          'identity_link_unavailable',
+          'Clerk lifecycle synchronization is unavailable',
+        );
+      const request = new Request('https://api.neptlium.com/v1/webhooks/clerk', {
+        method: 'POST',
+        headers: Object.fromEntries(
+          Object.entries(context.headers).filter((entry): entry is [string, string] =>
+            Boolean(entry[1]),
+          ),
+        ),
+        body: new Uint8Array(context.rawBody),
+      });
+      let event: ClerkWebhookEvent;
+      try {
+        event = deps.verifyClerkWebhook
+          ? await deps.verifyClerkWebhook(request)
+          : await verifyClerkWebhook(request, {
+              signingSecret: config.CLERK_WEBHOOK_SIGNING_SECRET,
+            });
+      } catch {
+        throw new ApiError(401, 'invalid_webhook', 'Clerk webhook verification failed');
+      }
+      if (!['user.created', 'user.updated', 'user.deleted'].includes(event.type))
+        return { data: { accepted: true, action: 'ignored' } };
+      const subject = 'id' in event.data ? event.data.id : undefined;
+      const eventId = context.headers['svix-id'];
+      if (!subject || !eventId)
+        throw new ApiError(422, 'invalid_webhook', 'Clerk lifecycle event identity is incomplete');
+      const result = await identityCommands.syncClerkLifecycle({
+        clerkSubject: subject,
+        eventId,
+        eventType: event.type,
+        eventDigest: digest({ type: event.type, data: event.data }),
+      });
+      return { data: result };
+    }
 
     const financialResult = await handleFinancialRoute(context, {
       config,

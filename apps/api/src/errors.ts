@@ -47,6 +47,7 @@ export type ErrorCode =
   | 'financial_storage_unavailable'
   | 'identity_storage_unavailable'
   | 'identity_mapping_ambiguous'
+  | 'identity_link_unavailable'
   | 'invalid_identity_provider'
   | 'invalid_identity_subject'
   | 'allocation_storage_unavailable'

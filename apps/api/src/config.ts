@@ -1,5 +1,6 @@
 export type Environment = 'development' | 'test' | 'preview' | 'production';
 export type ProviderRuntimeEnvironment = 'testnet' | 'production';
+export type ApiAuthMode = 'SUPABASE' | 'DUAL' | 'CLERK';
 
 function providerEnvironment(value: string | undefined, name: string): ProviderRuntimeEnvironment | undefined {
   if (!value) return undefined;
@@ -37,6 +38,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     return value;
   };
   const SUPABASE_URL = validUrl(env.SUPABASE_URL, 'SUPABASE_URL');
+  const AUTH_MODE = (env.API_AUTH_MODE ?? 'SUPABASE').toUpperCase() as ApiAuthMode;
+  if (!['SUPABASE', 'DUAL', 'CLERK'].includes(AUTH_MODE))
+    throw new Error('Invalid API configuration: API_AUTH_MODE');
+  const clerkAuthorizedParties = (env.CLERK_AUTHORIZED_PARTIES ?? '').split(',').map((value) => value.trim()).filter(Boolean);
+  if (AUTH_MODE !== 'SUPABASE' && (!env.CLERK_SECRET_KEY || clerkAuthorizedParties.length === 0))
+    throw new Error('Clerk API authentication requires CLERK_SECRET_KEY and CLERK_AUTHORIZED_PARTIES');
   const ALCHEMY_RPC_URL = validUrl(env.ALCHEMY_RPC_URL, 'ALCHEMY_RPC_URL');
   if ((env.ALCHEMY_API_KEY || ALCHEMY_RPC_URL) && (!env.ALCHEMY_API_KEY || !ALCHEMY_RPC_URL || !ALCHEMY_ENVIRONMENT))
     throw new Error('Alchemy requires ALCHEMY_API_KEY, ALCHEMY_RPC_URL, and ALCHEMY_ENVIRONMENT');
@@ -69,6 +76,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     API_HOST: env.API_HOST ?? '0.0.0.0', API_PORT: port, API_LOG_LEVEL: env.API_LOG_LEVEL ?? 'info', API_BUILD_ID: env.API_BUILD_ID ?? 'local',
     ENABLE_MAINNET: mainnetPermitted,
     SUPABASE_URL, SUPABASE_ANON_KEY: env.SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
+    AUTH_MODE, CLERK_SECRET_KEY: env.CLERK_SECRET_KEY, CLERK_JWT_KEY: env.CLERK_JWT_KEY,
+    CLERK_WEBHOOK_SIGNING_SECRET: env.CLERK_WEBHOOK_SIGNING_SECRET,
+    CLERK_AUTHORIZED_PARTIES: clerkAuthorizedParties,
     ALCHEMY_RPC_URL, ALCHEMY_API_KEY: env.ALCHEMY_API_KEY, ALCHEMY_ENVIRONMENT,
     ALCHEMY_WEBHOOK_SIGNING_KEY: env.ALCHEMY_WEBHOOK_SIGNING_KEY,
     ALCHEMY_PRODUCTION_CAPABILITY_VERIFIED: alchemyProductionCapabilityVerified,
