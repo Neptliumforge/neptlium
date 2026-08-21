@@ -102,6 +102,11 @@ export default async function DashboardPage() {
 
   const pendingApprovals = transfers.filter((item) => item.state === 'PENDING_APPROVAL');
   const enabledFunding = capabilities.filter((item) => item.state === 'ENABLED');
+  const fundingActionLabel = capabilityError
+    ? 'Review funding'
+    : enabledFunding.length > 0
+      ? 'Fund capital'
+      : 'Review funding';
   const attention = [
     ...(balanceError ? [{ title: 'Capital state could not be loaded', href: '/dashboard/wallet', label: 'Review Capital Account' }] : []),
     ...(activityError ? [{ title: 'Capital activity could not be loaded', href: '/dashboard/transactions', label: 'Review activity' }] : []),
@@ -119,9 +124,9 @@ export default async function DashboardPage() {
         meta={<>Canonical state · refreshed {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</>}
         action={(
           <div className="flex flex-wrap gap-2">
-            <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-11 items-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Deposit</Link>
-            <Link href="/dashboard/wallet#withdraw" className="inline-flex min-h-11 items-center rounded-md border border-border-default px-4 text-sm font-medium text-text-primary hover:bg-surface-2">Withdraw</Link>
-            <Link href="/dashboard/allocations" className="inline-flex min-h-11 items-center rounded-md border border-border-default px-4 text-sm font-medium text-text-primary hover:bg-surface-2">Allocate</Link>
+            <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-11 items-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">{fundingActionLabel}</Link>
+            <Link href="/dashboard/wallet#withdraw" className="inline-flex min-h-11 items-center rounded-md border border-border-default px-4 text-sm font-medium text-text-primary hover:bg-surface-2">Review withdrawal</Link>
+            <Link href="/dashboard/allocations" className="inline-flex min-h-11 items-center rounded-md border border-border-default px-4 text-sm font-medium text-text-primary hover:bg-surface-2">Review allocation</Link>
           </div>
         )}
       />

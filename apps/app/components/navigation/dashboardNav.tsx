@@ -49,7 +49,7 @@ export const dashboardNavItems: readonly RoleAwareNavItem[] = [
 
 export const dashboardMobilePrimaryNavItems: readonly RoleAwareNavItem[] = [
   {
-    label: 'Home',
+    label: 'Overview',
     href: '/dashboard',
     minRole: 'user',
     icon: <LayoutDashboard className="size-4" />,
@@ -61,10 +61,16 @@ export const dashboardMobilePrimaryNavItems: readonly RoleAwareNavItem[] = [
     icon: <Briefcase className="size-4" />,
   },
   {
-    label: 'Capital',
+    label: 'Capital Account',
     href: '/dashboard/wallet',
     minRole: 'user',
     icon: <Wallet className="size-4" />,
+  },
+  {
+    label: 'Treasury',
+    href: '/dashboard/treasury',
+    minRole: 'user',
+    icon: <Landmark className="size-4" />,
   },
   {
     label: 'Allocation',
@@ -75,12 +81,6 @@ export const dashboardMobilePrimaryNavItems: readonly RoleAwareNavItem[] = [
 ];
 
 export const dashboardMobileSecondaryNavItems: readonly RoleAwareNavItem[] = [
-  {
-    label: 'Treasury',
-    href: '/dashboard/treasury',
-    minRole: 'user',
-    icon: <Landmark className="size-4" />,
-  },
   {
     label: 'Activity',
     href: '/dashboard/transactions',

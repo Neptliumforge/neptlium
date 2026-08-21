@@ -21,6 +21,8 @@ export default async function PortfolioPage() {
   const capabilities = capabilitiesResult.status === 'fulfilled' ? capabilitiesResult.value.capabilities : [];
   const balanceError = balancesResult.status === 'rejected';
   const capabilityError = capabilitiesResult.status === 'rejected';
+  const hasEnabledFunding = capabilities.some((capability) => capability.state === 'ENABLED');
+  const fundingActionLabel = capabilityError || !hasEnabledFunding ? 'Review funding' : 'Fund capital';
   const hasMultipleAssets = balances.length > 1;
   const singleBalance = balances.length === 1 ? balances[0] : undefined;
 
@@ -81,7 +83,7 @@ export default async function PortfolioPage() {
             ) : balances.length === 0 ? (
               <div className="grid gap-5 py-6 sm:grid-cols-[1fr_auto] sm:items-center">
                 <ProductStateMessage state="NO_POSITION" title="No canonical positions">Zero positions is an established empty collection, not a fabricated zero balance.</ProductStateMessage>
-                <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Fund capital</Link>
+                <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">{fundingActionLabel}</Link>
               </div>
             ) : (
               <>

@@ -28,25 +28,32 @@ export default async function DashboardLayout({ children }: { readonly children:
   );
 
   return (
-    <AppShell
-      sidebar={<Sidebar items={navItems} />}
-      sidebarFooter={settingsItems.length ? <Sidebar items={settingsItems} /> : undefined}
-      header={
-        <div className="flex items-center gap-5 text-sm">
-          <Link href="/dashboard/transactions" className="text-text-muted hover:text-text-primary">Activity</Link>
-          <Link href="/dashboard/settings#support" className="text-text-muted hover:text-text-primary">Help</Link>
+    <>
+      <Link href="#app-workspace" className="app-skip-link">
+        Skip to application workspace
+      </Link>
+      <AppShell
+        sidebar={<Sidebar items={navItems} />}
+        sidebarFooter={settingsItems.length ? <Sidebar items={settingsItems} /> : undefined}
+        header={
+          <div className="flex items-center gap-5 text-sm">
+            <Link href="/dashboard/transactions" className="text-text-muted hover:text-text-primary">Activity</Link>
+            <Link href="/dashboard/settings#support" className="text-text-muted hover:text-text-primary">Help</Link>
+          </div>
+        }
+        utility={profileMenu}
+        mobileNav={
+          <MobileNavigation
+            primaryItems={mobilePrimaryItems}
+            secondaryItems={mobileSecondaryItems}
+            profile={profileMenu}
+          />
+        }
+      >
+        <div id="app-workspace" tabIndex={-1}>
+          {children}
         </div>
-      }
-      utility={profileMenu}
-      mobileNav={
-        <MobileNavigation
-          primaryItems={mobilePrimaryItems}
-          secondaryItems={mobileSecondaryItems}
-          profile={profileMenu}
-        />
-      }
-    >
-      {children}
-    </AppShell>
+      </AppShell>
+    </>
   );
 }

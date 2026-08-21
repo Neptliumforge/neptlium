@@ -30,9 +30,14 @@ test('primary authenticated navigation stays intentionally constrained', () => {
   for (const label of ['Overview', 'Portfolio', 'Capital Account', 'Treasury', 'Allocation']) {
     assert.equal(nav.includes(`label: '${label}'`), true, `missing ${label}`);
   }
-  for (const mobile of ['Home', 'Portfolio', 'Capital', 'Allocation']) {
-    assert.equal(nav.includes(`label: '${mobile}'`), true, `missing mobile ${mobile}`);
+  const mobilePrimary = nav.slice(
+    nav.indexOf('dashboardMobilePrimaryNavItems'),
+    nav.indexOf('dashboardMobileSecondaryNavItems'),
+  );
+  for (const mobile of ['Overview', 'Portfolio', 'Capital Account', 'Treasury', 'Allocation']) {
+    assert.equal(mobilePrimary.includes(`label: '${mobile}'`), true, `missing mobile ${mobile}`);
   }
+  assert.equal((mobilePrimary.match(/href:/g) ?? []).length, 5);
 });
 
 test('authenticated shell preserves institutional desktop and mobile governance', () => {
@@ -41,7 +46,7 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   const shell = read('../../packages/ui/src/shell/AppShell.tsx');
   assert.equal(layout.includes("item.label === 'Settings'"), true);
   assert.equal(layout.includes('sidebarFooter='), true);
-  assert.equal(mobile.includes('grid-cols-4'), true);
+  assert.equal(read('app/global.css').includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), true);
   assert.equal(mobile.includes('env(safe-area-inset-bottom)'), true);
   assert.equal(mobile.includes('100dvh'), true);
   assert.equal(mobile.includes('document.body.style.overflow = "hidden"'), true);
@@ -50,6 +55,16 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   assert.equal(shell.includes('xl:w-[248px]'), true);
   assert.equal(shell.includes('h-16'), true);
   assert.equal(shell.includes('overflow-x-hidden'), true);
+});
+
+test('application shell exposes a keyboard skip target and institutional workspace width', () => {
+  const layout = read('app/dashboard/layout.tsx');
+  const global = read('app/global.css');
+  assert.equal(layout.includes('Skip to application workspace'), true);
+  assert.equal(layout.includes('id="app-workspace"'), true);
+  assert.equal(layout.includes('tabIndex={-1}'), true);
+  assert.equal(global.includes('main > div { max-width: 100rem; }'), true);
+  assert.equal(global.includes('.app-skip-link:focus-visible'), true);
 });
 
 test('System theme persists and follows operating-system changes', () => {
@@ -89,6 +104,9 @@ test('Overview is an action-oriented capital operating home without fabricated v
   assert.equal(overview.includes('0 canonical positions'), true);
   for (const href of ['/dashboard/wallet#deposit','/dashboard/wallet#withdraw','/dashboard/allocations']) assert.equal(overview.includes(href), true);
   assert.equal(overview.includes('Operating readiness'), true);
+  assert.equal(overview.includes("enabledFunding.length > 0"), true);
+  assert.equal(overview.includes('Review withdrawal'), true);
+  assert.equal(overview.includes('Review allocation'), true);
 });
 
 test('Capital Account exposes complete governed workflows and canonical balance semantics', () => {
