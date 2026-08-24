@@ -7,12 +7,10 @@ const routes = [
   '/capital-account',
   '/allocation',
   '/treasury',
-  '/research',
   '/learn',
   '/company',
   '/about',
   '/security',
-  '/trust',
   '/contact',
   '/accessibility',
 ] as const;
