@@ -11,11 +11,11 @@ const site = read('lib/content/site.ts');
 test('homepage implements the canonical editorial hero', () => {
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   for (const copy of [
-    'Institutional capital operating infrastructure',
+    'Capital operating infrastructure',
     'A capital operating',
     'platform for modern',
     'investment organizations.',
-    'Explore platform',
+    'Explore the platform',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
   assert.match(page, /SITE\.publicAccessLabel/);
