@@ -12,12 +12,10 @@ test('sitemap contains only authoritative indexable public landing pages', () =>
     '/capital-account',
     '/allocation',
     '/treasury',
-    '/research',
     '/learn',
     '/company',
     '/about',
     '/security',
-    '/trust',
     '/contact',
     '/accessibility',
   ]) {
@@ -28,6 +26,8 @@ test('sitemap contains only authoritative indexable public landing pages', () =>
     '/neptlium-link',
     '/performance',
     '/capital-universe',
+    '/research',
+    '/trust',
     '/press',
     '/privacy',
     '/terms',
@@ -45,6 +45,8 @@ test('supporting product routes explicitly opt out of indexing', () => {
     'app/neptlium-link/page.tsx',
     'app/performance/page.tsx',
     'app/capital-universe/page.tsx',
+    'app/research/page.tsx',
+    'app/trust/page.tsx',
     'app/press/page.tsx',
   ]) {
     const source = read(path);
@@ -58,6 +60,7 @@ test('navigation exposes only the locked public categories and preserves accessi
     assert.equal(header.includes(`label: '${section}'`), true);
   for (const removed of ['Capital', 'Connectivity', 'Governance'])
     assert.equal(header.includes(`label: '${removed}'`), false);
+  assert.equal(header.includes("href: '/research'"), false);
   assert.equal(header.includes('SITE.publicAccessLabel'), true);
   assert.equal(header.includes('SITE.publicAccessUrl'), true);
   assert.equal(header.includes('Open Neptlium'), false);
@@ -111,6 +114,7 @@ test('footer is institutional closure using only canonical destinations', () => 
   ]) {
     assert.equal(footer.includes(label), true, `Missing footer label: ${label}`);
   }
+  assert.equal(footer.includes("href: '/research'"), false);
   for (const destination of [
     'https://bsky.app/profile/neptlium.bsky.social',
     'https://x.com/Neptlium',
@@ -159,7 +163,7 @@ test('canonical public metadata stays wired to apex production domain and warm-i
   assert.equal(layout.includes('Neptliumlabs'), false);
   assert.equal(robots.includes("sitemap: 'https://neptlium.com/sitemap.xml'"), true);
   assert.equal(robots.includes("host: 'https://neptlium.com'"), true);
-  assert.equal(seo.includes("openGraph:"), true);
-  assert.equal(seo.includes("twitter:"), true);
-  assert.equal(seo.includes("alternates: { canonical: path }"), true);
+  assert.equal(seo.includes('openGraph:'), true);
+  assert.equal(seo.includes('twitter:'), true);
+  assert.equal(seo.includes('alternates: { canonical: path }'), true);
 });
