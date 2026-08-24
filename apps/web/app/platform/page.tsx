@@ -3,31 +3,54 @@ import { FoundationPage } from '@/components/foundation-page';
 import { CapitalSystemVisual, OperatingModelVisual } from '@/components/product-visuals';
 
 export const metadata: Metadata = {
-  title: 'Neptlium Platform | Capital Operating Infrastructure',
-  description: 'See how portfolio context, account infrastructure, treasury and allocation work as one capital system.',
+  title: 'Capital Operating Platform for Investment Organizations',
+  description:
+    'Explore how Neptlium brings portfolio context, capital operations, treasury and governed allocation into one institutional operating environment.',
   alternates: { canonical: '/platform' },
 };
 
 export default function Page() {
   return (
     <FoundationPage
+      eyebrow="Platform"
       title="One operating environment for modern capital."
-      intro="Portfolio context, account infrastructure, treasury and allocation work as one system—without collapsing analysis, authorization and execution into one action."
-      anchors={['Architecture', 'Platform systems', 'Operating model']}
+      intro="Neptlium brings portfolio context, capital operations, treasury and governed allocation into one environment while preserving the boundaries between visibility, authority and execution."
+      anchors={['Operating environment', 'Platform systems', 'Control model']}
       lead={[
-        'From visibility to controlled action.',
-        'Neptlium connects what capital is, where it sits and how a proposed change should be reviewed before anything moves.',
+        'From capital context to governed action.',
+        'Understand the operating picture, shape intent and move toward consequential action only through explicit authority and verified state.',
       ]}
-      visual={<><CapitalSystemVisual /><OperatingModelVisual /></>}
+      visual={
+        <>
+          <CapitalSystemVisual />
+          <OperatingModelVisual />
+        </>
+      }
       cards={[
-        ['Portfolio Intelligence', 'Composition, concentration, liquidity and structure in one capital view.'],
-        ['Capital Account', 'Supported assets and networks organized within explicit account boundaries.'],
-        ['Treasury', 'Liquidity, reserves and readiness connected to the wider portfolio.'],
-        ['Allocation', 'Observe, model, review and authorize without confusing intent with execution.'],
-      ].map(([title, body]) => ({ title, body }))}
-      principle="Observe · Understand · Model · Review · Authorize"
-      cta="Explore Neptlium"
-      ctaHref="/portfolio-intelligence"
+        {
+          title: 'Portfolio',
+          body: 'Bring composition and portfolio context into a coherent institutional operating view.',
+          href: '/portfolio-intelligence',
+        },
+        {
+          title: 'Capital Account',
+          body: 'Organize capital context and controlled movement without presenting configured infrastructure as guaranteed availability.',
+          href: '/capital-account',
+        },
+        {
+          title: 'Treasury',
+          body: 'Understand liquidity, reserves and operating readiness as distinct capital states.',
+          href: '/treasury',
+        },
+        {
+          title: 'Allocation',
+          body: 'Model and govern capital intent without confusing a plan, approval or request with execution.',
+          href: '/allocation',
+        },
+      ]}
+      principle="Visible does not mean authoritative. Modeled does not mean executed."
+      cta="Request access"
+      ctaHref="/contact"
     />
   );
 }
