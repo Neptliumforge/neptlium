@@ -2,7 +2,7 @@
 
 ## Repository authority
 
-Canonical repository: `Neptlium-Labs/neptlium`.
+Canonical repository: `Neptliumforge/neptlium`.
 
 | Boundary | Domain | Responsibility |
 | --- | --- | --- |
