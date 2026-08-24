@@ -50,6 +50,7 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
       { label: 'Privacy', href: '/privacy' },
       { label: 'Terms', href: '/terms' },
       { label: 'Risk Disclosure', href: '/risk-disclosure' },
+      { label: 'Accessibility', href: '/accessibility' },
     ],
   },
   {
@@ -81,9 +82,9 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
       },
       {
         label: 'GitHub',
-        href: 'https://github.com/Neptliumlabs',
+        href: 'https://github.com/Neptliumforge',
         external: true,
-        accessibleLabel: 'Neptlium Labs on GitHub (opens in a new tab)',
+        accessibleLabel: 'Neptliumforge on GitHub (opens in a new tab)',
       },
     ],
   },
@@ -115,15 +116,16 @@ export function SiteFooter() {
           <div className="footer-brand-column">
             <Brand />
             <p className="footer-brand-statement">
-              Capital operating infrastructure for modern digital capital.
+              A capital operating platform for modern investment organizations.
             </p>
             <p className="footer-brand-copy">
-              Explore Neptlium’s public platform, research and operating principles without treating
-              the public website as financial authority.
+              Explore Neptlium’s public platform, research, operating model and control principles.
+              Product availability is established by the authenticated operating environment, not by
+              marketing copy.
             </p>
-            <a className="footer-platform-link" href={SITE.signInUrl}>
-              Open Neptlium <ArrowUpRight aria-hidden="true" />
-            </a>
+            <Link className="footer-platform-link" href={SITE.publicAccessUrl}>
+              {SITE.publicAccessLabel} <ArrowUpRight aria-hidden="true" />
+            </Link>
           </div>
 
           <div className="footer-navigation-grid" aria-label="Footer navigation groups">
@@ -142,11 +144,11 @@ export function SiteFooter() {
 
         <div className="footer-closing">
           <div>
-            <span className="footer-kicker">Capital precision</span>
+            <span className="footer-kicker">Capital operating infrastructure</span>
             <h2>Capital, organized with precision.</h2>
           </div>
           <p>
-            Understand the system, its operating boundaries and the principles that govern how
+            Understand the platform, its operating boundaries and the principles that govern how
             Neptlium presents capital state.
           </p>
         </div>
@@ -157,6 +159,7 @@ export function SiteFooter() {
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
             <Link href="/risk-disclosure">Risk Disclosure</Link>
+            <Link href="/accessibility">Accessibility</Link>
           </nav>
         </div>
       </div>
