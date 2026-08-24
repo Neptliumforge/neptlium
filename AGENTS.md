@@ -110,13 +110,19 @@ Report every relevant check as exactly one of:
 
 No PASS may be inferred from source inspection, a prior commit, another branch, a PR description, or an expected CI/deployment result. Report the command, scope, and material limitations. Documentation-only changes still require diff/format/link/content consistency checks proportionate to the repository tooling.
 
+A build or execution is not complete merely because local validation passes. Completion also requires repository publication and canonical-main verification under the Git completion rule below.
+
 ## Git and remote actions
 
 - Preserve unrelated work and inspect repository status before editing.
-- Do not commit, push, open or update a pull request, merge, or deploy unless the current task expressly authorizes that remote action.
 - Use a focused branch and reviewable change set. Do not mix unrelated cleanup into the task.
-- Merging always requires explicit instruction for that merge.
-- Never force-push, bypass required checks/reviews, or evade repository protection unless explicitly authorized and repository policy permits it.
+- For the Neptlium production reconstruction program, the user has granted standing authorization to commit, push, open/update the necessary pull request, and merge a completed execution into `main` once its required validation gates pass.
+- A completed build/execution must not remain local-only or branch-only. Before reporting it complete: commit all intended changes, push them to GitHub, integrate them into canonical `main`, fetch/re-read GitHub `main`, and verify that the resulting `main` SHA contains the completed change set.
+- If required validation fails or is blocked, do not merge merely to clear the branch. Fix the failure or report the execution as `FAIL`/`BLOCKED`; completion remains open.
+- After merge, synchronize the working environment with canonical `origin/main` before beginning the next execution so subsequent work starts from the merged authority.
+- Local-only modifications, unpushed commits, unmerged completed branches, or a local `main` that diverges from GitHub `main` are incomplete repository state and must be reconciled before the execution closes.
+- Never force-push, bypass required checks/reviews, or evade repository protection. Resolve conflicts explicitly and preserve unrelated work.
+- This standing Git authorization does **not** authorize production deploys, database migrations, environment/provider mutations, production data changes, financial execution, or capability-flag enablement; those retain their separate authorization and safety gates.
 - Environment identity is not authorization. Git operations may be performed from any authorized environment, including connected GitHub tooling, Termux, Codespaces, CI, or another approved client.
 
 ## Scope discipline
