@@ -15,7 +15,7 @@ Shared packages may be changed only when genuine shared authority requires it. D
 
 The governing product distinction is:
 
-> Marketing establishes authority, category, narrative, and meaning.  
+> Marketing establishes authority, category, narrative, and meaning.
 > The application establishes control and operation.  
 > Admin establishes operator comprehension, risk visibility, and auditability.  
 > API establishes domain truth, authorization, durability, and financial state.

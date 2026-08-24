@@ -315,7 +315,7 @@ Report checks as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Never infer build, ren
 
 ## 27. Governing expression
 
-> Marketing establishes authority, category, narrative, and meaning.  
+> Marketing establishes authority, category, narrative, and meaning.
 > The application establishes control and operation.  
 > Admin establishes operator comprehension, risk visibility, and auditability.  
 > API establishes domain truth, authorization, durability, and financial state.
