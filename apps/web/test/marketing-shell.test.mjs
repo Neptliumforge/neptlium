@@ -10,7 +10,8 @@ const footer = read('components/site-footer.tsx');
 const brand = read('components/brand.tsx');
 const sitemap = read('app/sitemap.ts');
 const css = read('app/neptlium-visual-direction.css');
-const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}`;
+const site = read('lib/content/site.ts');
+const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${site}`;
 
 test('hero preserves canonical capital-operating proposition and exactly one H1', () => {
   for (const copy of [
@@ -45,8 +46,10 @@ test('homepage carries the institutional operating narrative', () => {
 });
 
 test('public CTAs stay within the certified marketing surface', () => {
-  for (const label of ['Explore platform', 'Request access', 'Contact'])
-    assert.match(shell, new RegExp(label));
+  assert.match(page, /Explore platform/);
+  assert.match(header, />\s*Contact\s*</);
+  assert.match(site, /publicAccessLabel:\s*'Request access'/);
+  assert.match(site, /publicAccessUrl:\s*'\/contact'/);
   assert.doesNotMatch(`${page}\n${header}\n${footer}`, /Open Neptlium|Sign in/);
   assert.match(header, /SITE\.publicAccessUrl/);
   assert.match(footer, /SITE\.publicAccessUrl/);
