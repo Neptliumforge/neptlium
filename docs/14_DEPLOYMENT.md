@@ -112,6 +112,22 @@ At minimum, run repository-supported formatting/diff checks, lint, typecheck, te
 
 No capability is advertised as live from a successful build alone.
 
+### Completion-to-main gate
+
+For each of the five production executions, local success is only an intermediate state. An execution may be reported **complete** only when all of the following are true:
+
+1. The execution's required source, UX, accessibility, SEO/security/domain, and production-readiness checks have passed or have an explicitly accepted non-applicable status.
+2. Every intended repository change is committed; no required change exists only as an uncommitted local modification.
+3. The completed change set is pushed to `Neptliumforge/neptlium` and is reviewable from GitHub.
+4. The completed change set is integrated into canonical `main` through the repository's normal merge path; validated execution work must not be left permanently on a feature branch.
+5. GitHub `main` is fetched/re-read after integration and its SHA is verified to contain the execution's completed changes.
+6. The working environment is synchronized back to `origin/main`, with unrelated local work preserved explicitly rather than silently discarded.
+7. The final report records the canonical `main` SHA and identifies any remaining `FAIL`, `BLOCKED`, or `NOT RUN` production checks separately from repository completion.
+
+If validation fails or an external prerequisite blocks the execution, do not merge merely to remove branch divergence. The execution remains open until the defect is fixed or the blocker is resolved. Conversely, once an execution satisfies its completion gates, leaving the validated result only local, only committed locally, only pushed to a feature branch, or otherwise absent from GitHub `main` is itself an incomplete release state.
+
+This completion-to-main authorization covers repository commit/push/PR/merge actions for the five-execution reconstruction program. It does not grant implicit authority for production deployments, database migration application, environment-variable mutation, provider configuration, production data mutation, payment/financial execution, or capability-flag enablement; those remain separate controlled actions.
+
 ## Release coherence
 
 A production release is coherent only when the following identify the same reviewed state:
