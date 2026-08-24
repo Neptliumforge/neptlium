@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
 import { TreasuryVisual } from '@/components/product-visuals';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Institutional Treasury Operating Platform',
   description:
     'Explore how Neptlium structures liquidity, reserves and operational readiness as distinct treasury states for institutional capital teams.',
-  alternates: { canonical: '/treasury' },
-};
+  path: '/treasury',
+});
 
 export default function Page() {
   return (
