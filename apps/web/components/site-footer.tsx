@@ -32,7 +32,6 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
   {
     label: 'Resources',
     links: [
-      { label: 'Research & Perspectives', href: '/research' },
       { label: 'Learn', href: '/learn' },
       { label: 'Security', href: '/security' },
     ],
@@ -119,9 +118,9 @@ export function SiteFooter() {
               A capital operating platform for modern investment organizations.
             </p>
             <p className="footer-brand-copy">
-              Explore Neptlium’s public platform, research, operating model and control principles.
-              Product availability is established by the authenticated operating environment, not by
-              marketing copy.
+              Explore Neptlium’s public platform, operating model and control principles. Product
+              availability is established by the authenticated operating environment, not by marketing
+              copy.
             </p>
             <Link className="footer-platform-link" href={SITE.publicAccessUrl}>
               {SITE.publicAccessLabel} <ArrowUpRight aria-hidden="true" />
