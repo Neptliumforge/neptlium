@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
 import { CapitalAccountVisual } from '@/components/product-visuals';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Institutional Capital Account',
   description:
     'Explore Neptlium’s capital-account operating model for capital context, funding intent and controlled movement within explicit authority boundaries.',
-  alternates: { canonical: '/capital-account' },
-};
+  path: '/capital-account',
+});
 
 export default function Page() {
   return (
