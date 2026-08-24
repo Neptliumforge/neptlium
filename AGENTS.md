@@ -6,7 +6,7 @@ Canonical repository: `Neptliumforge/neptlium`.
 
 | Boundary | Domain | Responsibility |
 | --- | --- | --- |
-| `apps/web` | `neptlium.com` | Public institutional marketing and information. |
+| `apps/web` | `neptlium.com` | Public institutional marketing, brand, editorial, SEO, and information. |
 | `apps/app` | `app.neptlium.com` | Authenticated customer operating application. |
 | `apps/admin` | `admin.neptlium.com` | Internal operator comprehension, risk visibility, control, and auditability. |
 | `apps/api` | `api.neptlium.com` | Domain truth, authentication enforcement, authorization, durability, provider isolation, ledger, and reconciliation. |
@@ -15,12 +15,20 @@ Shared packages may be changed only when genuine shared authority requires it. D
 
 The governing product distinction is:
 
-> Marketing establishes authority and meaning.  
+> Marketing establishes authority, category, narrative, and meaning.  
 > The application establishes control and operation.  
 > Admin establishes operator comprehension, risk visibility, and auditability.  
 > API establishes domain truth, authorization, durability, and financial state.
 
 These surfaces share one Neptlium identity. They must not be visually or operationally collapsed into one UI language.
+
+### Public Web independence
+
+`apps/web` is not an engineering-status surface. Ordinary public Marketing must not be forced to narrate repository progress, build completion, migration state, environment configuration, provider setup, capability flags, deployment health, App/Admin/API readiness, or implementation chronology.
+
+Marketing may independently choose its visual system, editorial structure, product narrative, category language, audience framing, information architecture, and strategic product expression. Domain truth constrains **factual claims**; it does not require Marketing to publish internal engineering state.
+
+This independence never authorizes fabrication. Customers, AUM, balances, performance, returns, testimonials, partnerships, licences, regulatory status, custody, provider relationships, live execution, settlement, and live availability must not be falsely represented as facts.
 
 ## Source-of-truth order
 
@@ -45,7 +53,7 @@ Never design or report repository behavior from historical chat context, screens
 - `docs/03_DESIGN_SYSTEM.md` is the central Neptlium design authority.
 - A nested `AGENTS.md` specializes local implementation but cannot weaken repository-wide security, financial, migration, validation, or Git rules.
 - Source, tests, configuration, and authorized runtime evidence determine what is actually implemented or live.
-- Documentation must distinguish **CURRENT**, **TRANSITION**, and **TARGET**. Target architecture is never current merely because it is documented.
+- Documentation must distinguish **CURRENT**, **TRANSITION**, and **TARGET** where engineering/product architecture state is being documented. This classification is not a required public-Marketing content model.
 
 ### Archive policy
 
@@ -58,7 +66,7 @@ Never design or report repository behavior from historical chat context, screens
 
 ## Financial and product truth
 
-Preserve these distinctions everywhere:
+Preserve these distinctions in operational/product systems:
 
 - `UNKNOWN != ZERO`
 - `PROVIDER OBSERVATION != CANONICAL LEDGER`
@@ -71,7 +79,7 @@ Preserve these distinctions everywhere:
 - `VISIBLE != AUTHORITATIVE`
 - `UI REPRESENTATION != DOMAIN TRUTH`
 
-Never fabricate or imply unverified:
+Never fabricate or imply unverified factual claims about:
 
 - balances, holdings, activity, customers, AUM, or transaction volume;
 - performance, returns, allocation outcomes, or liquidity;
@@ -83,11 +91,11 @@ Provider evidence remains evidence until the applicable validation, authorizatio
 
 ## Boundary rules
 
-- Public Web is not financial authority. Marketing may explain verified product meaning but cannot manufacture capability or state.
+- Public Web is not financial authority and is not a build-status surface. Marketing owns brand/category/editorial expression but cannot fabricate factual external claims.
 - App is an interaction surface. Browser checks, hidden controls, and UI state are not authorization.
 - Admin is a governed operator client. A status mutation does not prove external execution, settlement, ledger posting, or reconciliation.
 - API is the privileged domain boundary. Sensitive commands require authentication, authorization, ownership, policy, idempotency, audit, durable state, and reconciliation as applicable.
-- UI work must preserve domain-state distinctions and fail closed when required evidence is missing.
+- Operational UI work must preserve domain-state distinctions and fail closed when required evidence is missing.
 - Provider SDKs, secrets, and service-role credentials remain server-side and within their reviewed boundary.
 
 Do not modify migrations, provider configuration, remote environments, production data, financial systems, provider resources, or execution flags unless the current task explicitly authorizes that exact scope. Do not rewrite or delete applied migrations; use reviewed forward migrations when authorized.
