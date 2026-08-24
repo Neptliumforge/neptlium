@@ -47,7 +47,6 @@ const navigation: readonly NavSection[] = [
   {
     label: 'Resources',
     links: [
-      { label: 'Research', href: '/research', description: 'Perspectives on capital operations.' },
       { label: 'Learn', href: '/learn', description: 'Explore the Neptlium operating model.' },
       { label: 'Security', href: '/security', description: 'Security and control principles.' },
     ],
