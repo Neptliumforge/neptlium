@@ -27,7 +27,7 @@ const socialDestinations = [
   'https://x.com/Neptlium',
   'https://youtube.com/@neptlium',
   'https://www.tiktok.com/@neptlium',
-  'https://github.com/Neptliumlabs',
+  'https://github.com/Neptliumforge',
 ] as const;
 
 export const metadata: Metadata = {
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light',
-  themeColor: '#FFFFFF',
+  themeColor: '#F5F3EE',
   width: 'device-width',
   initialScale: 1,
 };
