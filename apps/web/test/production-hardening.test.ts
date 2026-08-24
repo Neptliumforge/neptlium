@@ -76,8 +76,9 @@ test('navigation exposes only the locked public categories and preserves accessi
 test('homepage carries canonical capital-operating positioning through a truthful narrative', () => {
   const page = read('app/page.tsx');
   assert.equal(page.includes('A capital operating'), true);
-  assert.equal(page.includes('Institutional capital operating infrastructure'), true);
-  assert.equal(page.includes('Explore platform'), true);
+  assert.equal(page.includes('Capital operating infrastructure'), true);
+  assert.equal(page.includes('Explore the platform'), true);
+  assert.equal(page.includes('Capital context, put into operation.'), true);
   assert.equal(page.includes('SITE.publicAccessLabel'), true);
   assert.equal(page.includes('SITE.publicAccessUrl'), true);
   assert.equal(page.includes('Open Neptlium'), false);
@@ -153,6 +154,9 @@ test('canonical public metadata stays wired to apex production domain and warm-i
   const site = read('lib/content/site.ts');
   const robots = read('app/robots.ts');
   const seo = read('lib/seo.ts');
+  const icon = read('public/icon.svg');
+  const og = read('app/opengraph-image.tsx');
+  const apple = read('app/apple-icon.tsx');
   assert.equal(site.includes("url: 'https://neptlium.com'"), true);
   assert.equal(site.includes('A capital operating platform for modern investment organizations.'), true);
   assert.equal(layout.includes('metadataBase: new URL(SITE.url)'), true);
@@ -161,6 +165,12 @@ test('canonical public metadata stays wired to apex production domain and warm-i
   assert.equal(layout.includes("themeColor: '#F5F3EE'"), true);
   assert.equal(layout.includes('https://github.com/Neptliumforge'), true);
   assert.equal(layout.includes('Neptliumlabs'), false);
+  assert.equal(layout.includes("url: '/apple-icon'"), true);
+  assert.equal(icon.includes('#0F8F86'), true);
+  assert.equal(og.includes('#F5F3EE'), true);
+  assert.equal(og.includes('#0F8F86'), true);
+  assert.equal(apple.includes('#F5F3EE'), true);
+  assert.equal(apple.includes('#0F8F86'), true);
   assert.equal(robots.includes("sitemap: 'https://neptlium.com/sitemap.xml'"), true);
   assert.equal(robots.includes("host: 'https://neptlium.com'"), true);
   assert.equal(seo.includes('openGraph:'), true);
