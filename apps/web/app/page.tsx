@@ -21,7 +21,7 @@ const capabilities = [
   ],
   [
     'Treasury',
-    'Coordinate liquidity and operating context without collapsing provider evidence into canonical financial truth.',
+    'Coordinate liquidity and operating context without treating external observations as canonical financial truth.',
   ],
   [
     'Allocation',
