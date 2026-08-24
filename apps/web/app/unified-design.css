@@ -1,22 +1,23 @@
-/* Authoritative marketing expression of docs/03_DESIGN_SYSTEM.md.
- * Shared identity comes from packages/ui. This layer resolves legacy marketing
- * composition styles into the current white-first institutional system.
+/* Transitional route-level authority while legacy route compositions are rewritten.
+ * Marketing color is fixed to the institutional Ivory / Carbon / Teal system.
  */
 :root {
-  --np-paper: var(--n-brand-canvas);
-  --np-paper-soft: var(--n-brand-canvas-soft);
-  --np-paper-cool: var(--n-brand-surface-cool);
-  --np-recessed: var(--n-brand-surface-blue-soft);
-  --np-ink: var(--n-brand-ink);
-  --np-secondary: var(--n-brand-ink-secondary);
-  --np-muted: var(--n-brand-ink-muted);
-  --np-line: var(--n-brand-border);
-  --np-line-strong: var(--n-brand-border-standard);
-  --np-action: var(--n-brand-blue);
-  --np-action-hover: var(--n-brand-blue-bright);
-  --np-authority: var(--n-brand-obsidian);
-  --np-authority-raised: var(--n-brand-blue-black);
-  --np-display: var(--n-font-display, 'Universal Sans', 'Helvetica Neue', Arial, sans-serif);
+  --np-paper: #f5f3ee;
+  --np-paper-soft: #eceae5;
+  --np-paper-cool: #eceae5;
+  --np-recessed: color-mix(in srgb, #0f8f86 6%, #f5f3ee);
+  --np-ink: #101214;
+  --np-secondary: #343a3f;
+  --np-muted: #62686c;
+  --np-line: #d8d5ce;
+  --np-line-strong: color-mix(in srgb, #0f8f86 36%, #d8d5ce);
+  --np-action: #0f8f86;
+  --np-action-hover: #20afa3;
+  --np-blue: var(--np-action);
+  --np-electric: var(--np-action-hover);
+  --np-authority: #101214;
+  --np-authority-raised: #343a3f;
+  --np-display: var(--n-font-display, 'Iowan Old Style', Baskerville, Georgia, serif);
   color-scheme: light;
 }
 
@@ -44,7 +45,7 @@ body {
 .marketing-page :where(h1, h2),
 .production-hero-copy h1 {
   font-family: var(--np-display);
-  font-weight: 550;
+  font-weight: 400;
   text-wrap: balance;
 }
 
@@ -75,7 +76,6 @@ body {
   text-wrap: pretty;
 }
 
-/* White establishes clarity. Surfaces remain flatter than generic SaaS cards. */
 .production-hero,
 .marketing-thesis,
 .marketing-product,
@@ -113,25 +113,22 @@ body {
   border-color: var(--np-line) !important;
 }
 
-/* Controlled dark sections establish authority and technical depth. */
 .marketing-capital-operations,
 .marketing-conversion {
   background: var(--np-authority) !important;
-  color: var(--n-brand-text-on-dark);
+  color: var(--np-paper);
 }
 
 .marketing-capital-operations :where(p, li),
 .marketing-conversion p {
-  color: var(--n-brand-text-on-dark-supporting);
+  color: color-mix(in srgb, var(--np-paper) 72%, transparent);
 }
 
 .marketing-capital-operations :where(h2, h3),
 .marketing-conversion h2 {
-  color: var(--n-brand-text-on-dark);
+  color: var(--np-paper);
 }
 
-/* Header and hero explicitly consume the authoritative light tokens. Legacy
- * dark-first marketing selectors are composition history, not theme authority. */
 .site-header.capital-command-bar,
 .site-header.capital-command-bar .nav-shell {
   color: var(--np-ink);
@@ -156,7 +153,6 @@ body {
   border-color: var(--np-line);
 }
 
-/* Color signals direction and action; it is not the page atmosphere. */
 .production-primary,
 .button-primary,
 .button {
@@ -186,11 +182,11 @@ a[aria-current='page'] {
 }
 
 :focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--np-action) 22%, transparent) !important;
+  outline: 2px solid var(--np-action-hover);
+  outline-offset: 3px;
+  box-shadow: none !important;
 }
 
-/* Hairlines and planes carry structure before rounded containers and shadow. */
 .site-header,
 .capital-command-bar,
 .production-section,
@@ -206,14 +202,12 @@ a[aria-current='page'] {
   color: var(--np-ink);
 }
 
-/* Numerics are financial, not developer-styled. */
 :where(.tabular-nums, [data-financial-value], [data-numeric]) {
   font-family: var(--n-font-product, Geist, 'Helvetica Neue', Arial, system-ui, sans-serif);
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
 }
 
-/* Motion explains hierarchy, never financial progress. */
 .production-home :where(a, button),
 .marketing-page :where(a, button) {
   transition-duration: 180ms;
