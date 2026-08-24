@@ -3,33 +3,50 @@ import { FoundationPage } from '@/components/foundation-page';
 import { AllocationVisual, OperatingModelVisual } from '@/components/product-visuals';
 
 export const metadata: Metadata = {
-  title: 'Allocation | Neptlium',
-  description: 'Model capital structure without confusing analysis with execution.',
+  title: 'Institutional Capital Allocation Platform',
+  description:
+    'Explore Neptlium’s governed allocation model for shaping capital intent while keeping modeling, approval and execution as distinct states.',
   alternates: { canonical: '/allocation' },
 };
 
 export default function Page() {
   return (
     <FoundationPage
+      eyebrow="Allocation"
       title="Capital structure before capital movement."
-      intro="Model how capital could be positioned without confusing analysis with execution."
+      intro="Model how capital could be positioned, review that intent against policy and preserve the distinction between a proposed structure and an executed financial outcome."
       anchors={['Decision pathway', 'Capital roles', 'Authorization']}
       lead={[
-        'Observe. Model. Review. Authorize.',
-        'Each stage protects the distinction between understanding a possible structure and approving a consequential action.',
+        'Model. Review. Authorize. Then establish execution truth.',
+        'Neptlium is designed to keep analytical context, allocation intent, approval and downstream execution evidence legible as different states.',
       ]}
-      visual={<><OperatingModelVisual /><AllocationVisual /></>}
+      visual={
+        <>
+          <OperatingModelVisual />
+          <AllocationVisual />
+        </>
+      }
       cards={[
-        ['Reserve', 'Capital intentionally preserved for liquidity and resilience.'],
-        ['Core', 'Capital aligned with the portfolio’s central long-term role.'],
-        ['Growth', 'Capital positioned for measured expansion.'],
-        ['Opportunity', 'Capital reserved for defined, selective opportunities.'],
-        ['Restricted', 'Capital held outside an active allocation mandate.'],
-        ['Analytical context', 'Concentration · Liquidity · Volatility · Reserve coverage · Network · Counterparty · Drift · Utilization'],
-      ].map(([title, body]) => ({ title, body }))}
-      principle="Modeling does not move capital."
-      cta="Explore the platform"
-      ctaHref="/platform"
+        {
+          title: 'Allocation intent',
+          body: 'Express a proposed capital structure without representing the proposal as actual movement.',
+        },
+        {
+          title: 'Policy context',
+          body: 'Evaluate allocation intent against the constraints and operating context that govern the decision.',
+        },
+        {
+          title: 'Review and approval',
+          body: 'Separate analysis from the authority required to approve a consequential action.',
+        },
+        {
+          title: 'Execution evidence',
+          body: 'Treat provider submission, settlement and reconciliation as downstream states requiring their own evidence.',
+        },
+      ]}
+      principle="Modeled does not mean executed. Approved does not mean submitted."
+      cta="Request access"
+      ctaHref="/contact"
     />
   );
 }
