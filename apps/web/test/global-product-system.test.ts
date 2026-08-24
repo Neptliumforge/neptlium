@@ -63,11 +63,13 @@ test('public product visuals never format unavailable state as money', async () 
   assert.equal(/\$[0-9]|\$—|0 USD|\+[0-9]+(?:\.[0-9]+)?%/.test(visuals), false);
 });
 
-test('capital universe distinguishes current digital assets from future listed markets', async () => {
+test('capital universe is strategic context and does not advertise asset availability', async () => {
   const universe = await webFile('app/capital-universe/page.tsx');
-  assert.equal(universe.includes('Digital assets'), true);
-  assert.equal(universe.includes('Listed markets'), true);
-  assert.equal(universe.includes('Future architecture'), true);
-  assert.equal(universe.includes('No brokerage, stock-trading'), true);
+  assert.equal(universe.includes('index: false'), true);
+  assert.equal(universe.includes('provider-independent model for capital'), true);
+  assert.equal(universe.includes('Future architecture is not current'), true);
+  assert.equal(universe.includes('USDC'), false);
+  assert.equal(universe.includes('BTC'), false);
+  assert.equal(universe.includes('ETH'), false);
   assert.equal(universe.includes('Neptlium is crypto-only'), false);
 });
