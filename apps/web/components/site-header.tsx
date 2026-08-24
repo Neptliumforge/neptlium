@@ -22,9 +22,9 @@ const navigation: readonly NavSection[] = [
         description: 'The coordinated capital operating environment.',
       },
       {
-        label: 'Neptlium Link',
-        href: '/neptlium-link',
-        description: 'Connectivity beneath governed operations.',
+        label: 'Portfolio Intelligence',
+        href: '/portfolio-intelligence',
+        description: 'Portfolio context for institutional oversight.',
       },
     ],
   },
@@ -189,10 +189,10 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="command-actions">
-          <a href={SITE.signInUrl}>Sign in</a>
-          <a className="button command-primary-action" href={SITE.signInUrl}>
-            Open Neptlium <ArrowRight aria-hidden="true" />
-          </a>
+          <Link href="/contact">Contact</Link>
+          <Link className="button command-primary-action" href={SITE.publicAccessUrl}>
+            {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
+          </Link>
         </div>
         <button
           ref={trigger}
@@ -251,10 +251,10 @@ export function SiteHeader() {
               })}
             </nav>
             <div className="mobile-command-actions">
-              <a href={SITE.signInUrl}>Sign in</a>
-              <a className="button" href={SITE.signInUrl}>
-                Open Neptlium <ArrowRight aria-hidden="true" />
-              </a>
+              <Link href="/contact">Contact</Link>
+              <Link className="button" href={SITE.publicAccessUrl}>
+                {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
