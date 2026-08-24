@@ -1,31 +1,34 @@
-import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Learn | Neptlium',
-  description: 'Clear explanations of the concepts behind capital accounts, portfolios, treasury and allocation.',
-  alternates: { canonical: '/learn' },
-};
+export const metadata = createPageMetadata({
+  title: 'Capital Operations Concepts and Definitions',
+  description:
+    'Learn the concepts behind capital accounts, portfolio context, treasury, allocation, authorization and financial state without confusing product direction with live availability.',
+  path: '/learn',
+});
 
 export default function Page() {
   return (
     <FoundationPage
-      title="Understand the system before using it."
-      intro="Clear definitions for the concepts that shape capital organization and control."
+      eyebrow="Learn"
+      title="Understand the operating model before the interface."
+      intro="A clear capital vocabulary helps distinguish what is observed, what is modeled, what is authorized and what has actually happened."
       anchors={['Foundations', 'Concepts', 'Platform']}
       lead={[
-        'A practical capital vocabulary.',
-        'Learn distinguishes what capital is, how it is positioned and when a decision becomes an action.',
+        'A practical vocabulary for capital operations.',
+        'Neptlium separates capital context, intent, authority and execution so that a useful interface does not erase the meaning of financial state.',
       ]}
       cards={[
-        ['Capital Account', 'Account infrastructure for supported assets and networks.'],
-        ['Portfolio Intelligence', 'A connected view of composition, concentration, liquidity and structure.'],
-        ['Treasury', 'The relationship between available capital, reserves and readiness.'],
-        ['Allocation', 'The deliberate assignment of capital to defined portfolio roles.'],
-        ['Reserve and liquidity', 'Capital preserved for resilience, and capital that can be acted on.'],
-        ['Modeling and execution', 'Modeling explores a possible structure. Execution changes capital.'],
-        ['Authorization', 'The explicit approval boundary before a consequential action.'],
+        ['Capital Account', 'The operating context in which capital, account state and controlled movement can be represented.'],
+        ['Portfolio', 'A connected view of composition and portfolio context without assuming every visible value is authoritative.'],
+        ['Treasury', 'The relationship between observed capital, reserves, availability and operational readiness.'],
+        ['Allocation', 'A governed process for expressing and reviewing how capital could be assigned to defined roles.'],
+        ['Modeling', 'A modeled result describes a possible structure. It does not move capital.'],
+        ['Authorization', 'The explicit policy and identity boundary required before a consequential action may proceed.'],
+        ['Settlement', 'Provider submission and processing do not become settled or reconciled state without the required evidence.'],
       ].map(([title, body]) => ({ title, body }))}
+      principle="Visible does not mean authoritative. Modeled does not mean executed."
       cta="Explore the platform"
       ctaHref="/platform"
     />
