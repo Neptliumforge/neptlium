@@ -1,65 +1,110 @@
 # Deployment
 
-Neptlium has four independently deployable application boundaries. This document records repository intent; it does not claim a particular remote deployment or environment variable is currently configured.
+Neptlium has four independently deployable application boundaries and one coordinated production-integration phase. This document records repository and release authority; it does not convert source configuration into verified production capability.
 
 ## Applications
 
 | Application  | Domain               | Boundary                                                                              |
 | ------------ | -------------------- | ------------------------------------------------------------------------------------- |
-| `apps/web`   | `neptlium.com`       | Public website; no privileged financial authority.                                    |
-| `apps/app`   | `app.neptlium.com`   | Authenticated customer application.                                                   |
-| `apps/admin` | `admin.neptlium.com` | Role-gated internal operations console.                                               |
-| `apps/api`   | `api.neptlium.com`   | Versioned API, provider, repository, webhook, worker, and financial-control boundary. |
+| `apps/web`   | `neptlium.com`       | Public institutional marketing and information; no privileged financial authority.   |
+| `apps/app`   | `app.neptlium.com`   | Authenticated customer capital operating application.                                |
+| `apps/admin` | `admin.neptlium.com` | Role-gated internal operations, risk, control, and audit console.                     |
+| `apps/api`   | `api.neptlium.com`   | API, authorization, provider, repository, webhook, financial-control, and audit boundary. |
 
 The API application exists now. Its Vercel configuration builds the TypeScript service and routes requests through `api/index.js`; it is not a future-only component.
 
+## Production execution program
+
+Production reconstruction proceeds in five explicit executions:
+
+1. **Web** — reconstruct and certify `apps/web` on `neptlium.com`, with `www.neptlium.com` converging on the canonical apex domain; complete institutional design, SEO, metadata, accessibility, performance, and claim truth.
+2. **App** — complete `apps/app` authentication, sign-up/sign-in, onboarding, dashboard, canonical customer navigation, state handling, and production build using the same Neptlium design identity with operational composition.
+3. **Admin** — complete `apps/admin` as the governed operator surface for users/principals, organizations, compliance, capital operations, transfers, treasury, allocation governance, reconciliation, provider evidence, and audit.
+4. **API** — complete `apps/api` as the shared application/domain authority for App and Admin, with compatible identity mode, durable Supabase persistence, authorization, idempotency, audit, provider isolation, webhooks, reconciliation, and fail-closed capability gates.
+5. **Production integration and certification** — coordinate Clerk, Supabase, provider credentials/capabilities, domains, environment variables, migrations, observability, security, controlled deployment, smoke testing, rollback readiness, and release provenance.
+
+A successful build in any earlier execution does not authorize or imply completion of Execution 5.
+
 ## CURRENT repository deployment model
 
-- Each app has its own package, root directory, example environment file, and Vercel configuration.
-- Web, app, and admin are Next.js applications with security headers.
-- API is a Node.js/TypeScript serverless service with `/v1` routes and explicit runtime configuration.
+- Canonical repository authority is `Neptliumforge/neptlium`.
+- Each app has its own package and Vercel project root: `apps/web`, `apps/app`, `apps/admin`, and `apps/api`.
+- Web, App, and Admin are Next.js applications; API is a Node.js/TypeScript serverless service.
+- All four Vercel projects are intended to source from the canonical repository while preserving independent root directories and release health.
 - Supabase migrations are a separately reviewed, append-only deployment stream. Application deployment must not silently apply migrations.
-- This documentation phase changes no remote project, domain, environment variable, provider credential, or database.
+- Production environment state is verified independently from source. Missing or stale environment variables remain production defects even when source builds successfully.
 
 ## Environment boundaries
 
-### Public web
+### Public Web
 
-No environment variable is currently required. If introduced, only genuinely browser-safe values may use `NEXT_PUBLIC_*`. Public web never receives service-role or provider secrets.
+Public Web should require no privileged runtime secret. If environment values are introduced, only genuinely browser-safe values may use `NEXT_PUBLIC_*`. Public Web never receives service-role or provider credentials.
 
-### Authenticated app
+### Authenticated App
 
-Browser-safe current inputs include Supabase URL/publishable key and site URL. `NEPTLIUM_API_URL` is server-side routing configuration for the app-to-API boundary. The customer app does not require the service-role key.
+Clerk is the intended browser authentication/session authority in current application source. Runtime configuration includes the Clerk publishable key and server-side Clerk secret plus App/API routing values. App does not receive Supabase service-role credentials or provider execution secrets.
 
 ### Admin
 
-Browser-safe Supabase URL/publishable key and site URL are separate from the server-only service-role key. The admin root must never expose the service role to client components or logs.
+Admin uses the same Clerk identity authority while preserving separate operator authorization and server-side API boundaries. Clerk authentication is not sufficient authorization for administrative or financial actions. Admin never exposes Supabase service-role or provider secrets to client components or logs.
 
 ### API
 
-Server-only configuration covers runtime/build identity, allowed origins, Supabase Auth/data access, Circle, legacy Alchemy/Coinbase webhook groundwork, and provider verification. Production Circle or Alchemy configuration requires `ENABLE_MAINNET=true`. This permits production provider initialization only; capability verification, execution enablement, implemented code, authorization, posting, and reconciliation remain separate gates.
+API is server-only and owns durable data/provider configuration. Current source supports:
 
-Clerk and Stripe Onramp are not implemented. Stripe Treasury variables are present for a gated server-side adapter and remain server-only; their presence does not prove eligibility or live capability.
+- `API_AUTH_MODE=SUPABASE|DUAL|CLERK`, defaulting to `SUPABASE`;
+- durable Supabase URL, anon/publishable compatibility key, and service-role access;
+- Clerk verification and authorized-party configuration for `DUAL`/`CLERK` modes;
+- Circle, Alchemy, and Stripe Treasury configuration with explicit capability and execution gates;
+- allowed-origin, logging, webhook-tolerance, and mainnet controls.
 
-## Environment principles
+`DUAL` or `CLERK` API mode must not be enabled against a production schema that lacks the provider-independent identity foundation and corresponding mappings.
 
-- Separate development, preview/staging, and production projects and credentials.
-- Use least-privilege, app-specific variables; do not share a broad `.env` across app roots.
-- Never commit real secrets or print them during validation.
-- Preview must not point at production financial execution by convenience.
+## Identity deployment sequencing
+
+The production database may remain on Supabase Auth compatibility while App/Admin source has moved toward Clerk. Treat this as a transition state, not as permission to mix incompatible runtime modes.
+
+The controlled identity sequence is:
+
+1. Restore API durable Supabase connectivity and keep `API_AUTH_MODE=SUPABASE` while production lacks provider-independent identity tables.
+2. Apply and verify the provider-independent identity foundation under separate migration authorization.
+3. Apply and verify Clerk linking/lifecycle commands during the controlled bridge.
+4. Verify existing principal mappings and App/Admin Clerk runtime configuration.
+5. Apply the Clerk application cutover migration only as a coordinated release with compatible App/Admin/API behavior.
+6. Switch API auth mode deliberately and verify authentication, ownership, roles, onboarding, treasury authorization, audit, and rollback behavior.
+
+Application deployment and migration application remain separate approvals.
+
+## Provider principles
+
+- Configuration presence does not prove capability.
+- Capability verification does not itself authorize live execution.
+- Live execution requires explicit reviewed enablement, compatible provider environment, authorization, durable state, posting/reconciliation design, and operational evidence.
+- Keep Stripe Treasury, Circle, and Alchemy execution/capability flags fail-closed until their respective production checks are complete.
+- Preview/staging must not point at production financial execution by convenience.
 - Provider environment and database environment must agree; mixed testnet/production configurations fail closed.
-- Configuration presence does not prove provider health or capability.
 - Rotate and revoke credentials through provider/platform controls, not source edits.
-- Remote environment mutation requires explicit instruction, approval, and rollback planning.
+
+## Domain and canonical-host policy
+
+The intended production domains are:
+
+- `https://neptlium.com` — canonical public marketing origin.
+- `https://www.neptlium.com` — redirect/alias to the canonical apex origin, not a separate SEO authority.
+- `https://app.neptlium.com` — customer application.
+- `https://admin.neptlium.com` — operator application.
+- `https://api.neptlium.com` — API origin.
+
+Canonical URLs, sitemap URLs, structured-data URLs, Open Graph URLs, redirects, DNS/Vercel domain bindings, and cross-surface links must agree with this model.
 
 ## Build and release gates
 
-At minimum, run repository-supported formatting, lint, typecheck, tests, and builds proportionate to the change. Financial/provider changes additionally require:
+At minimum, run repository-supported formatting/diff checks, lint, typecheck, tests, and builds proportionate to the change. Financial/provider changes additionally require:
 
 - migration dry-run and review;
 - ownership/RLS and negative authorization tests;
 - idempotency, concurrency, replay, timeout, and retry tests;
-- balanced-ledger and append-only tests;
+- balanced-ledger and append-only tests where applicable;
 - provider sandbox/testnet verification;
 - webhook official-contract verification;
 - reconciliation and rollback/compensation rehearsal;
@@ -67,12 +112,28 @@ At minimum, run repository-supported formatting, lint, typecheck, tests, and bui
 
 No capability is advertised as live from a successful build alone.
 
+## Release coherence
+
+A production release is coherent only when the following identify the same reviewed state:
+
+- canonical Git SHA and branch;
+- Vercel project/root and deployment IDs;
+- domain/canonical-host routing;
+- environment variable set and provider mode;
+- applied database migration version;
+- identity model and API auth mode;
+- provider capability/execution gates;
+- smoke tests, runtime errors/logs, and observability;
+- rollback-compatible code/schema state.
+
+Report each check as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. A READY deployment is not by itself a production-health PASS.
+
 ## Database migrations
 
 - Do not modify applied migration files.
 - Add forward-only corrective migrations with explicit review.
 - Review privilege, RLS, locking, data backfill, reversibility, and environment scope.
-- Apply staging first and verify invariants before production.
+- Apply staging/branch proof first when appropriate and verify invariants before production.
 - Application deploy and migration apply are separate approvals.
 
 ## Rollback
@@ -80,7 +141,3 @@ No capability is advertised as live from a successful build alone.
 Code rollback must remain compatible with the deployed schema. Financial events already accepted are not erased by rollback. Use forward fixes, disabled capability flags, compensating entries, reconciliation, and provider lookup as appropriate.
 
 The containment rollback reference under `docs/security` must not be executed automatically.
-
-## Separately reviewed changes
-
-Clerk identity and Stripe Onramp will require separately reviewed variables, callback/webhook origins, secrets, deployment sequencing, and rollback plans. Stripe Treasury code already exists, but live eligibility, configuration, execution, posting, and reconciliation require separate operational evidence and authorization.
