@@ -15,7 +15,7 @@ const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${sit
 
 test('hero preserves canonical capital-operating proposition and exactly one H1', () => {
   for (const copy of [
-    'Institutional capital operating infrastructure',
+    'Capital operating infrastructure',
     'A capital operating',
     'platform for modern',
     'investment organizations.',
@@ -35,7 +35,7 @@ test('homepage carries the institutional operating narrative', () => {
     'Treasury',
     'Allocation',
     'Institutional controls',
-    'Put capital context into operation.',
+    'Capital context, put into operation.',
     'Investment firms',
     'Family offices',
     'Treasury teams',
@@ -46,7 +46,7 @@ test('homepage carries the institutional operating narrative', () => {
 });
 
 test('public CTAs stay within the certified marketing surface', () => {
-  assert.match(page, /Explore platform/);
+  assert.match(page, /Explore the platform/);
   assert.match(header, />\s*Contact\s*</);
   assert.match(site, /publicAccessLabel:\s*'Request access'/);
   assert.match(site, /publicAccessUrl:\s*'\/contact'/);
@@ -113,8 +113,5 @@ test('marketing remains non-financial authority', () => {
     marketingCopy,
     /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|transaction volume|testimonial|licensed|regulated partner/i,
   );
-  assert.doesNotMatch(
-    shell,
-    /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|\.from\(|\.rpc\(/,
-  );
+  assert.doesNotMatch(shell, /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|\.from\(|\.rpc\(/);
 });
