@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
 import { AllocationVisual, OperatingModelVisual } from '@/components/product-visuals';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Institutional Capital Allocation Platform',
   description:
     'Explore Neptlium’s governed allocation model for shaping capital intent while keeping modeling, approval and execution as distinct states.',
-  alternates: { canonical: '/allocation' },
-};
+  path: '/allocation',
+});
 
 export default function Page() {
   return (
