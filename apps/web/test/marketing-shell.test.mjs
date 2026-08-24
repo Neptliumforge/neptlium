@@ -12,46 +12,44 @@ const sitemap = read('app/sitemap.ts');
 const css = read('app/neptlium-visual-direction.css');
 const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}`;
 
-test('hero preserves canonical proposition and exactly one H1', () => {
-  assert.match(page, /Digital capital operating infrastructure/i);
+test('hero preserves canonical capital-operating proposition and exactly one H1', () => {
   for (const copy of [
-    'Digital capital,',
-    'organized',
-    'around you.',
-    'A capital operating environment for visibility, treasury context, and governed allocation.',
+    'Institutional capital operating infrastructure',
+    'A capital operating',
+    'platform for modern',
+    'investment organizations.',
+    'portfolio context, capital operations, treasury and governed allocation',
   ])
-    assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+    assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   assert.match(page, /CapitalArchitecture/);
   assert.doesNotMatch(page, /\.png|\.webp|1000209629/);
 });
 
-test('homepage carries the simplified institutional narrative', () => {
+test('homepage carries the institutional operating narrative', () => {
   for (const copy of [
-    'One operating environment',
-    'Portfolio visibility',
+    'One operating environment for fragmented capital work.',
+    'Portfolio',
     'Capital Account',
     'Treasury',
     'Allocation',
-    'capital movement',
-    'Institutional control',
+    'Institutional controls',
     'Put capital context into operation.',
+    'Investment firms',
+    'Family offices',
+    'Treasury teams',
   ])
-    assert.match(page, new RegExp(copy, 'i'));
-  for (const obsolete of [
-    'Provider Evidence',
-    'Canonical Ledger',
-    'Reconciliation',
-    'Provisioning',
-    'Testnet',
-  ])
+    assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
+  for (const obsolete of ['Provider Evidence', 'Canonical Ledger', 'Provisioning', 'Testnet'])
     assert.doesNotMatch(page, new RegExp(obsolete, 'i'));
 });
 
-test('canonical CTAs are used across public entry points', () => {
-  for (const label of ['Explore platform', 'Open Neptlium', 'Talk to Neptlium', 'Sign in'])
+test('public CTAs stay within the certified marketing surface', () => {
+  for (const label of ['Explore platform', 'Request access', 'Contact'])
     assert.match(shell, new RegExp(label));
-  assert.doesNotMatch(shell, /Enter Neptlium/);
+  assert.doesNotMatch(`${page}\n${header}\n${footer}`, /Open Neptlium|Sign in/);
+  assert.match(header, /SITE\.publicAccessUrl/);
+  assert.match(footer, /SITE\.publicAccessUrl/);
 });
 
 test('navigation is exactly the four canonical groups with real routes', () => {
@@ -82,7 +80,7 @@ test('navigation preserves desktop and mobile accessibility', () => {
     assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
 });
 
-test('footer closes the shell with six groups and approved destinations', () => {
+test('footer closes the shell with six groups and canonical destinations', () => {
   for (const label of ['Platform', 'Solutions', 'Resources', 'Company', 'Legal', 'Connect'])
     assert.match(footer, new RegExp(`label: '${label}'`));
   for (const destination of [
@@ -90,9 +88,10 @@ test('footer closes the shell with six groups and approved destinations', () => 
     'https://x.com/Neptlium',
     'https://youtube.com/@neptlium',
     'https://www.tiktok.com/@neptlium',
-    'https://github.com/Neptliumlabs',
+    'https://github.com/Neptliumforge',
   ])
     assert.match(footer, new RegExp(destination.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+  assert.doesNotMatch(footer, /Neptliumlabs/i);
   assert.doesNotMatch(footer, /href=["']#["']/);
 });
 
