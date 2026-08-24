@@ -1,24 +1,33 @@
-import type { Metadata } from 'next';
 import { DetailPage } from '@/components/detail-page';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Research | Neptlium',
-  description: 'Neptlium perspectives on capital structure, allocation, ownership and infrastructure risk.',
-  alternates: { canonical: '/research' },
-};
+export const metadata = createPageMetadata({
+  title: 'Neptlium Research — Publication Surface',
+  description:
+    'Neptlium research topics and publication direction. This route remains non-indexable until substantive, dated research is published.',
+  path: '/research',
+  index: false,
+});
 
 export default function Page() {
   return (
     <DetailPage
-      eyebrow="Neptlium Research"
-      title="Thinking for a changing capital system."
-      intro="Research will examine the structures shaping digital ownership. No publications are available yet."
+      eyebrow="Research"
+      title="Research should earn its authority."
+      intro="Neptlium intends to publish substantive, dated perspectives on capital operations. No research library is represented as available until those publications exist."
       sections={[
-        ['Capital Structure', 'How assets, liquidity and strategic roles form a coherent portfolio.'],
-        ['Allocation Systems', 'How modeling and authorization can remain distinct from execution.'],
-        ['Digital Ownership', 'How network-native assets change account and operating boundaries.'],
-        ['Treasury Architecture', 'How liquidity, reserves and readiness shape capital decisions.'],
-        ['Infrastructure Risk', 'How provider, network and operational dependencies affect capital systems.'],
+        [
+          'Capital operations',
+          'How portfolio context, liquidity, treasury and allocation interact without collapsing their authority boundaries.',
+        ],
+        [
+          'Allocation systems',
+          'How modeling, policy, review and authorization can remain distinct from execution.',
+        ],
+        [
+          'Infrastructure risk',
+          'How provider, network and operational dependencies affect institutional capital systems.',
+        ],
       ]}
     />
   );
