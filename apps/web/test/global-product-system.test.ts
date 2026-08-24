@@ -35,7 +35,8 @@ test('public brand delegates geometry to the shared production mark', async () =
   assert.equal(brand.includes('<svg'), false);
   assert.equal(brand.includes('<path'), false);
   assert.equal(brand.includes('next/image'), false);
-  assert.equal(icon.includes('#0141F3'), true);
+  assert.equal(icon.includes('#0F8F86'), true);
+  assert.equal(icon.includes('#0141F3'), false);
   assert.equal(icon.includes('#2764FF'), false);
   assert.equal(icon.includes('linearGradient'), false);
 });
