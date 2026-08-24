@@ -24,3 +24,5 @@ pnpm --filter @neptlium/web build
 Never imply provider availability, custody/execution readiness, financial results, customers, pricing, certification, or regulatory approval without verified evidence.
 
 Architecture: [`docs/00_PRODUCT_CONSTITUTION.md`](../../docs/00_PRODUCT_CONSTITUTION.md).
+
+<!-- production-deployment-refresh: 2026-08-24 -->
