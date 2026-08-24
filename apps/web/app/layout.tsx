@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './marketing-shell.css';
-import './navigation-depth.css';
-import './navigation-integration.css';
 import './footer-depth.css';
 import './hero-platform.css';
 import './platform-calibration.css';
@@ -15,7 +13,6 @@ import './home-composition.css';
 import './marketing-production.css';
 import './marketing-home.css';
 import './unified-design.css';
-import './production-experience.css';
 import './neptlium-visual-direction.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
