@@ -19,7 +19,7 @@ The platform architecture must remain capable of evolving without requiring its 
 
 Neptlium should reduce fragmentation between capital position, funding, custody/provider observations, treasury state, allocation policy, transfers, execution, reconciliation, and operational control.
 
-The product must distinguish what is known from what is merely observed, proposed, pending, or unavailable.
+The product must distinguish what is known from what is merely observed, proposed, pending, or unavailable wherever operational or financial state is presented.
 
 ## 3. Capital universe
 
@@ -33,7 +33,7 @@ Current and planned architecture may include:
 - BTC
 - ETH
 
-Asset, network, custody, execution, deposit, and withdrawal availability must be represented from actual implementation and provider capability.
+Operational surfaces and factual public claims about asset, network, custody, execution, deposit, or withdrawal availability must be grounded in actual verified capability. Public Marketing is not required to publish implementation chronology or availability state merely because those engineering distinctions exist internally.
 
 ### Fiat
 
@@ -50,7 +50,7 @@ Stripe is the intended primary architecture for supported fiat funding and Strip
 
 Equities are part of the future Neptlium capital universe.
 
-No brokerage, stock-trading, custody, execution, or specific equity-provider capability may be represented as implemented until the integration and applicable provider/legal capability have been verified.
+No brokerage, stock-trading, custody, execution, or specific equity-provider capability may be falsely represented as implemented or live until the integration and applicable provider/legal capability have been verified.
 
 ## 4. Canonical product surfaces
 
@@ -63,7 +63,9 @@ Neptlium is separated into four application boundaries:
 
 ### Web
 
-Public product, company, educational, and marketing experience.
+Public institutional brand, category, product narrative, company, educational, SEO, and marketing experience.
+
+Web is intentionally independent from engineering implementation chronology. It should not act as a repository/build/deployment/provider-readiness status page. It may express the Neptlium product model and strategic category freely, while factual external claims remain evidence-bound.
 
 ### App
 
@@ -108,7 +110,7 @@ Target product structure:
 - Transfer
 - Activity
 
-Funding, provider observations, transfers, and execution must ultimately reconcile with canonical financial state before being represented as settled truth.
+Funding, provider observations, transfers, and execution must ultimately reconcile with canonical financial state before being represented as settled truth on operational surfaces.
 
 ## 6. Treasury
 
@@ -189,7 +191,7 @@ An alias is a resolution mechanism, not proof of ownership or authorization.
 
 ## 9. Financial truth
 
-Neptlium must never fabricate:
+Neptlium must never fabricate factual claims about:
 
 - balances
 - holdings
@@ -203,7 +205,7 @@ Neptlium must never fabricate:
 - custody
 - regulatory status
 
-The platform must distinguish at minimum:
+Operational/data-bearing surfaces must distinguish at minimum:
 
 - canonical
 - provider-observed
@@ -216,6 +218,8 @@ The platform must distinguish at minimum:
 Provider observations are evidence.
 
 They are not automatically canonical Neptlium ledger truth.
+
+These internal truth distinctions do not require ordinary Marketing copy to disclose engineering or implementation state.
 
 ## 10. Ledger principles
 
@@ -248,7 +252,7 @@ The target identity architecture uses Clerk for authentication/session/MFA while
 
 Supabase remains a data platform.
 
-Current and target state must always be documented separately until migration is complete.
+Current and target state must always be documented separately until migration is complete. This is an engineering/documentation requirement, not a public Marketing content requirement.
 
 ## 12. Provider principle
 
@@ -302,9 +306,11 @@ Visual sophistication must improve comprehension rather than decorate financial 
 
 Neptlium should evolve by extending stable financial primitives rather than repeatedly rebuilding the platform around new providers or features.
 
-Current implementation and target architecture must remain explicitly distinguishable.
+Current implementation and target architecture must remain explicitly distinguishable in engineering, operational, and repository documentation.
 
 No roadmap item becomes a production capability merely because it appears in documentation.
+
+Public Marketing does not need to expose that implementation distinction unless it intentionally makes a factual availability claim.
 
 ## 16. Governing rule
 
