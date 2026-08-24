@@ -1,19 +1,16 @@
-/* ==========================================================
-   NEPTLIUM INSTITUTIONAL FOOTER
-   Uses only canonical Neptlium surfaces, text and blue.
-   ========================================================== */
-
+/* Institutional footer: Carbon authority surface, Ivory text, Teal interaction. */
 .institutional-footer {
+  --footer-bg: #101214;
+  --footer-text: #f5f3ee;
+  --footer-supporting: color-mix(in srgb, #f5f3ee 68%, transparent);
+  --footer-muted: color-mix(in srgb, #f5f3ee 48%, transparent);
+  --footer-line: color-mix(in srgb, #f5f3ee 14%, transparent);
+  --footer-accent: #20afa3;
   position: relative;
   overflow: hidden;
-  border-top: 1px solid var(--marketing-border-soft);
-  background:
-    linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--marketing-surface-1) 34%, var(--marketing-bg-deep)),
-      var(--marketing-bg-deep) 34%,
-      var(--marketing-bg-deep)
-    );
+  border-top: 1px solid var(--footer-line);
+  background: var(--footer-bg);
+  color: var(--footer-text);
   isolation: isolate;
 }
 
@@ -21,103 +18,89 @@
   position: absolute;
   inset: 0 0 auto;
   z-index: -1;
-  height: 26rem;
+  height: 24rem;
   pointer-events: none;
   background:
-    radial-gradient(
-      circle at 18% 0%,
-      color-mix(in oklab, var(--marketing-blue) 9%, transparent),
-      transparent 44%
-    ),
-    linear-gradient(
-      to right,
-      var(--marketing-grid) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      var(--marketing-grid) 1px,
-      transparent 1px
-    );
-  background-size: auto, 6rem 6rem, 6rem 6rem;
-  mask-image: linear-gradient(to bottom, black 0%, rgb(0 0 0 / 0.6) 48%, transparent 100%);
+    linear-gradient(90deg, transparent 0 12%, color-mix(in srgb, #20afa3 12%, transparent) 12% 12.08%, transparent 12.08%),
+    linear-gradient(180deg, color-mix(in srgb, #20afa3 7%, transparent), transparent 70%);
 }
 
 .footer-shell {
-  width: min(calc(100% - (var(--page-gutter) * 2)), var(--marketing-max-width));
+  width: min(calc(100% - (var(--page-gutter) * 2)), 86rem);
   margin-inline: auto;
 }
 
 .footer-primary {
   display: grid;
-  grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.6fr);
+  grid-template-columns: minmax(18rem, .8fr) minmax(0, 1.7fr);
   gap: clamp(4rem, 8vw, 8rem);
-  padding: clamp(4.75rem, 7vw, 6.75rem) 0 clamp(4rem, 6vw, 5.5rem);
+  padding: clamp(5rem, 8vw, 7rem) 0 clamp(4rem, 7vw, 6rem);
 }
 
 .footer-brand-column {
-  max-width: 27rem;
+  max-width: 29rem;
 }
 
 .footer-brand-column .brand {
   margin-bottom: 2rem;
+  color: var(--footer-text);
 }
 
 .footer-brand-statement {
-  max-width: 18ch;
+  max-width: 20ch;
   margin: 0;
-  color: var(--marketing-text);
-  font-family: var(--nts-font-sans);
-  font-size: clamp(1.5rem, 1.25rem + 0.7vw, 1.875rem);
-  font-weight: var(--nts-weight-emphasis);
-  line-height: 1.12;
-  letter-spacing: -0.03em;
+  color: var(--footer-text);
+  font-family: var(--font-display, 'Iowan Old Style', Baskerville, Georgia, serif);
+  font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -.035em;
   text-wrap: balance;
 }
 
 .footer-brand-copy {
-  max-width: 34ch;
-  margin: 1.25rem 0 0;
-  color: var(--marketing-text-secondary);
-  font-family: var(--nts-font-sans);
-  font-size: 0.9375rem;
-  line-height: 1.62;
-  letter-spacing: -0.006em;
+  max-width: 38ch;
+  margin: 1.4rem 0 0;
+  color: var(--footer-supporting);
+  font-size: .95rem;
+  line-height: 1.68;
 }
 
 .footer-platform-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1.75rem;
-  color: var(--marketing-text);
-  font-family: var(--nts-font-sans);
-  font-size: 0.875rem;
-  font-weight: var(--nts-weight-medium);
-  letter-spacing: -0.01em;
-  transition: color 160ms var(--marketing-ease);
+  gap: .55rem;
+  margin-top: 1.8rem;
+  padding-bottom: .28rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--footer-accent) 70%, transparent);
+  color: var(--footer-text);
+  font-size: .875rem;
+  font-weight: 600;
+  transition: border-color 160ms ease, color 160ms ease;
 }
 
 .footer-platform-link svg {
-  width: 0.875rem;
-  height: 0.875rem;
-  color: var(--marketing-blue);
-  stroke-width: 1.7;
-  transition: transform 160ms var(--marketing-ease);
+  width: .9rem;
+  height: .9rem;
+  color: var(--footer-accent);
+  transition: transform 160ms ease;
 }
 
-.footer-platform-link:hover {
-  color: var(--marketing-blue-hover);
+.footer-platform-link:hover,
+.footer-platform-link:focus-visible {
+  border-color: var(--footer-accent);
+  color: var(--footer-accent);
 }
 
-.footer-platform-link:hover svg {
+.footer-platform-link:hover svg,
+.footer-platform-link:focus-visible svg {
   transform: translate(1px, -1px);
 }
 
 .footer-navigation-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(1.5rem, 3vw, 2.75rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3rem clamp(1.5rem, 3vw, 3rem);
 }
 
 .footer-navigation-grid nav {
@@ -125,111 +108,81 @@
 }
 
 .footer-navigation-grid h2 {
-  margin: 0 0 1.125rem;
-  color: var(--marketing-text-muted);
-  font-family: var(--nts-font-sans);
-  font-size: var(--nts-label);
-  font-weight: var(--nts-weight-semibold);
+  margin: 0 0 1.15rem;
+  color: var(--footer-accent);
+  font-size: .68rem;
+  font-weight: 700;
   line-height: 1.2;
-  letter-spacing: 0.14em;
+  letter-spacing: .14em;
   text-transform: uppercase;
 }
 
 .footer-navigation-grid nav > div {
   display: grid;
-  gap: 0.8125rem;
+  gap: .78rem;
 }
 
 .footer-navigation-grid a {
   width: fit-content;
-  color: var(--marketing-text-secondary);
-  font-family: var(--nts-font-sans);
-  font-size: 0.875rem;
-  font-weight: var(--nts-weight-medium);
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  transition: color 150ms var(--marketing-ease);
+  color: var(--footer-supporting);
+  font-size: .875rem;
+  line-height: 1.4;
+  transition: color 150ms ease;
 }
 
 .footer-navigation-grid a:hover,
 .footer-navigation-grid a:focus-visible {
-  color: var(--marketing-text);
+  color: var(--footer-text);
 }
 
 .footer-closing {
-  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr);
   gap: clamp(3rem, 7vw, 7rem);
   align-items: end;
-  padding: clamp(3.5rem, 5vw, 5rem) 0;
-  border-top: 1px solid var(--marketing-border-soft);
-  border-bottom: 1px solid var(--marketing-border-soft);
-}
-
-.footer-closing::before,
-.footer-closing::after {
-  content: '';
-  position: absolute;
-  top: -4px;
-  width: 7px;
-  height: 7px;
-  border: 1px solid var(--marketing-blue-line);
-  background: var(--marketing-bg-deep);
-}
-
-.footer-closing::before {
-  left: 0;
-}
-
-.footer-closing::after {
-  right: 0;
+  padding: clamp(3.5rem, 6vw, 5.5rem) 0;
+  border-top: 1px solid var(--footer-line);
+  border-bottom: 1px solid var(--footer-line);
 }
 
 .footer-kicker {
   display: block;
   margin-bottom: 1.25rem;
-  color: var(--marketing-text-muted);
-  font-family: var(--nts-font-sans);
-  font-size: var(--nts-label);
-  font-weight: var(--nts-weight-semibold);
-  line-height: 1.2;
-  letter-spacing: 0.14em;
+  color: var(--footer-accent);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .14em;
   text-transform: uppercase;
 }
 
 .footer-closing h2 {
-  max-width: 19ch;
+  max-width: 20ch;
   margin: 0;
-  color: var(--marketing-text);
-  font-family: var(--nts-font-sans);
-  font-size: clamp(2rem, 1.7rem + 0.95vw, 2.75rem);
-  font-weight: var(--nts-weight-emphasis);
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  color: var(--footer-text);
+  font-family: var(--font-display, 'Iowan Old Style', Baskerville, Georgia, serif);
+  font-size: clamp(2.25rem, 4vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.04em;
   text-wrap: balance;
 }
 
 .footer-closing > p {
-  max-width: 34ch;
+  max-width: 36ch;
   margin: 0;
-  color: var(--marketing-text-secondary);
-  font-family: var(--nts-font-sans);
-  font-size: 0.9375rem;
-  line-height: 1.62;
-  letter-spacing: -0.006em;
+  color: var(--footer-supporting);
+  font-size: .95rem;
+  line-height: 1.68;
 }
 
 .footer-base {
   display: flex;
-  min-height: 5.25rem;
+  min-height: 5rem;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  color: var(--marketing-text-muted);
-  font-family: var(--nts-font-sans);
-  font-size: 0.8125rem;
-  line-height: 1.4;
+  color: var(--footer-muted);
+  font-size: .8rem;
 }
 
 .footer-base nav {
@@ -239,27 +192,30 @@
 }
 
 .footer-base a {
-  transition: color 150ms var(--marketing-ease);
+  transition: color 150ms ease;
 }
 
 .footer-base a:hover,
 .footer-base a:focus-visible {
-  color: var(--marketing-text);
+  color: var(--footer-text);
+}
+
+.institutional-footer :focus-visible {
+  outline-color: var(--footer-accent);
 }
 
 @media (max-width: 67.999rem) {
   .footer-primary {
     grid-template-columns: 1fr;
-    gap: 3.5rem;
+    gap: 3.75rem;
   }
 
   .footer-brand-column {
-    max-width: 34rem;
+    max-width: 38rem;
   }
 
   .footer-navigation-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 2.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .footer-closing {
@@ -273,9 +229,8 @@
 }
 
 @media (max-width: 47.999rem) {
-  .footer-atmosphere {
-    height: 22rem;
-    background-size: auto, 4.5rem 4.5rem, 4.5rem 4.5rem;
+  .footer-shell {
+    width: min(calc(100% - 2rem), 86rem);
   }
 
   .footer-primary {
@@ -286,26 +241,13 @@
     margin-bottom: 1.5rem;
   }
 
-  .footer-brand-statement {
-    max-width: 20ch;
-    font-size: 1.5rem;
-  }
-
   .footer-navigation-grid {
     grid-template-columns: 1fr 1fr;
     gap: 2.5rem 1.5rem;
   }
 
-  .footer-navigation-grid nav > div {
-    gap: 0.75rem;
-  }
-
   .footer-closing {
-    padding: 3rem 0;
-  }
-
-  .footer-closing h2 {
-    font-size: clamp(1.875rem, 8vw, 2.25rem);
+    padding: 3.25rem 0;
   }
 
   .footer-base {
