@@ -2,18 +2,26 @@
 
 Production monorepo for the Neptlium Capital Operating Platform.
 
-**Repository:** `Neptlium-Labs/neptlium`
+**Canonical repository:** `Neptliumforge/neptlium`
 
 ## Applications
 
 | Workspace | Domain | Responsibility |
 | --- | --- | --- |
-| `apps/web` | `neptlium.com` | Public institutional website. No privileged financial authority. |
+| `apps/web` | `neptlium.com` | Public institutional marketing and information. Editorial/visual authority is independent from engineering build state; no privileged financial authority. |
 | `apps/app` | `app.neptlium.com` | Authenticated customer interaction surface. Browser/session checks are not canonical financial authority. |
 | `apps/admin` | `admin.neptlium.com` | Internal operational interface. Privileged financial operations must flow through `apps/api`. |
 | `apps/api` | `api.neptlium.com` | Privileged API, provider-isolation, ledger, authorization, and reconciliation boundary. |
 
 Shared repository foundations live in `packages/`, `supabase/`, `docs/`, and `.github/`.
+
+## Public Web boundary
+
+`apps/web` is the institutional brand, category, editorial, SEO, and public information surface. It should express the Neptlium product model and worldview without narrating internal repository progress, build completion, migration state, provider configuration, environment readiness, feature flags, or release engineering status.
+
+Marketing may develop its own high-end visual and editorial language and does not need to mirror implementation chronology. That independence does not authorize false factual claims: customers, AUM, balances, performance, partnerships, licences, regulatory status, custody, provider relationships, live execution, settlement, and product availability require evidence before they are represented as facts.
+
+Public search authority belongs to `https://neptlium.com`. `https://www.neptlium.com` should converge on the canonical apex origin. App, Admin, API, auth, drafts, and operational surfaces should not compete as public search destinations.
 
 ## Development
 
@@ -57,4 +65,8 @@ Current numbered documentation authority:
 
 ## Financial correctness
 
-Provider observations are evidence, not canonical ledger truth. Unknown is not zero. Authorization, reservation, submission, settlement, posting, reconciliation, and availability remain distinct states. Never infer live provider capability, deployment state, migration application, or financial execution from source code or configuration presence alone.
+Provider observations are evidence, not canonical ledger truth. Unknown is not zero. Authorization, reservation, submission, settlement, posting, reconciliation, and availability remain distinct states inside operational/product systems.
+
+Those engineering/domain distinctions govern App/Admin/API correctness; ordinary Marketing copy should not expose implementation-state machinery merely because it exists internally.
+
+Never infer live provider capability, deployment state, migration application, or financial execution from source code or configuration presence alone.
