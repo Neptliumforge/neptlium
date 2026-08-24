@@ -1,14 +1,14 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { SITE } from '@/lib/content/site';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Capital Operating Platform for Modern Investment Organizations',
+export const metadata = createPageMetadata({
+  title: 'Capital Operating Platform for Investment Organizations',
   description:
     'Neptlium brings portfolio context, capital operations, treasury and governed allocation into one institutional operating environment.',
-  alternates: { canonical: '/' },
-};
+  path: '/',
+});
 
 const capabilities = [
   [
@@ -17,15 +17,15 @@ const capabilities = [
   ],
   [
     'Capital Account',
-    'Organize capital context and controlled movement while keeping configured capability distinct from availability.',
+    'Organize capital context and movement within one clear operating environment.',
   ],
   [
     'Treasury',
-    'Coordinate liquidity and operating context without treating external observations as canonical financial truth.',
+    'Connect liquidity, reserves and capital readiness to the broader portfolio context.',
   ],
   [
     'Allocation',
-    'Move from modeled intent to governed decisions through explicit states, policy and authority.',
+    'Turn investment intent into a deliberate process for modeling, review and governed action.',
   ],
 ] as const;
 
@@ -63,7 +63,7 @@ export default function HomePage() {
       <section className="authority-hero" aria-labelledby="home-hero-title">
         <div className="web-shell authority-hero-grid">
           <div className="authority-hero-copy">
-            <p className="web-eyebrow">Institutional capital operating infrastructure</p>
+            <p className="web-eyebrow">Capital operating infrastructure</p>
             <h1 id="home-hero-title">
               <span>A capital operating</span>
               <span>platform for modern</span>
@@ -78,7 +78,7 @@ export default function HomePage() {
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
               <Link className="web-button secondary" href="/platform">
-                Explore platform <ArrowRight aria-hidden="true" />
+                Explore the platform <ArrowRight aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -106,8 +106,8 @@ export default function HomePage() {
           </div>
           <p>
             Investment operations often separate portfolio context, treasury, capital movement and
-            allocation across disconnected systems. Neptlium is designed to organize those functions
-            without erasing the boundaries between visibility, authority and execution.
+            allocation across disconnected systems. Neptlium brings those responsibilities into one
+            coherent operating model without reducing every capital decision to a transaction.
           </p>
         </div>
       </section>
@@ -138,9 +138,8 @@ export default function HomePage() {
           </div>
           <div className="operations-narrative">
             <p>
-              Neptlium is designed to keep observed information, modeled intent, approvals,
-              execution and reconciliation legible as different states rather than presenting them
-              as the same thing.
+              Neptlium is designed around a deliberate progression: understand the operating context,
+              shape capital intent, review what should change and act through explicit authority.
             </p>
             <ol>
               <li>
@@ -149,11 +148,11 @@ export default function HomePage() {
               </li>
               <li>
                 <span>02</span>
-                <strong>Shape governed allocation and treasury intent</strong>
+                <strong>Shape allocation and treasury intent</strong>
               </li>
               <li>
                 <span>03</span>
-                <strong>Act only through explicit authority</strong>
+                <strong>Move forward through explicit authority</strong>
               </li>
             </ol>
           </div>
@@ -168,9 +167,9 @@ export default function HomePage() {
           </div>
           <div>
             <p>
-              Identity, authorization, auditability, controlled execution and reconciliation are
-              treated as distinct responsibilities. The public website explains that operating
-              model without presenting marketing copy as financial or provider truth.
+              Identity, authorization, auditability and controlled capital workflows belong inside
+              the operating model—not bolted on after the fact. Neptlium is designed to make those
+              boundaries understandable without turning complexity into theatre.
             </p>
             <Link className="editorial-link" href="/security">
               Explore security and control <ArrowRight aria-hidden="true" />
@@ -200,17 +199,17 @@ export default function HomePage() {
       <section className="final-authority" aria-labelledby="final-title">
         <div className="web-shell">
           <p className="web-eyebrow">Neptlium</p>
-          <h2 id="final-title">Put capital context into operation.</h2>
+          <h2 id="final-title">Capital context, put into operation.</h2>
           <p className="authority-hero-lead">
-            Start with the public platform model and talk with Neptlium about access. Authenticated
-            application availability is certified separately from the marketing website.
+            Explore the Neptlium operating model or start a conversation about a more coherent way to
+            organize portfolio, treasury and allocation work.
           </p>
           <div className="authority-actions">
             <Link className="web-button primary" href={SITE.publicAccessUrl}>
               {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
             </Link>
             <Link className="web-button secondary" href="/platform">
-              Explore platform
+              Explore the platform
             </Link>
           </div>
         </div>
