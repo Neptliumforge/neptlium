@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
 import { FoundationPage } from '@/components/foundation-page';
 import { CapitalSystemVisual, OperatingModelVisual } from '@/components/product-visuals';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Capital Operating Platform for Investment Organizations',
   description:
     'Explore how Neptlium brings portfolio context, capital operations, treasury and governed allocation into one institutional operating environment.',
-  alternates: { canonical: '/platform' },
-};
+  path: '/platform',
+});
 
 export default function Page() {
   return (
