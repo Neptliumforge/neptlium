@@ -14,33 +14,34 @@ export default function OpenGraphImage() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          background: '#F5F3EE',
-          color: '#101214',
+          background: '#101214',
+          color: '#F5F3EE',
           padding: '72px 80px',
           fontFamily: 'Arial, Helvetica, sans-serif',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
-          <svg width="54" height="54" viewBox="0 0 64 64" aria-hidden="true">
-            <path
-              fill="#0F8F86"
-              d="M6.07 9.85 6.2 19.75 7.13 21.34 10.72 25.06 10.72 25.86 7.79 30.17 7.06 32.83 7.13 54.02 22.54 43.72 23.73 41.86 23.67 31.17 24.73 31.44 33.16 43.79 37.61 49.3 41.13 52.69 43.99 54.02 46.98 54.15 49.03 53.42 51.16 51.89 55.48 46.05 57.07 42.26 57.73 39.07 57.54 11.78 43.06 22.87 42.13 24.66 42.26 31.17 41.4 31.24 34.22 23.13 29.44 19.28 26.45 13.9 23.93 11.38 22.01 10.45 19.15 9.79Z"
-            />
+          <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: '-0.04em' }}>Neptlium</div>
+          <svg width="52" height="52" viewBox="0 0 64 64" aria-hidden="true">
+            <g fill="none" stroke="#20AFA3" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 17.5C23 17.5 38 13.5 54 6.5" />
+              <path d="M10 38.5C19.5 36.5 25.5 28.5 34.5 27.5C43 26.5 49 21.5 54.5 16" />
+              <path d="M30.5 52C35.5 45.5 44.5 45.5 50.5 51.5" />
+            </g>
           </svg>
-          <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: '-0.04em' }}>NEPTLIUM</div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 900 }}>
           <div style={{ fontSize: 76, lineHeight: 0.98, letterSpacing: '-0.055em', fontWeight: 600 }}>
-            Capital operating infrastructure.
+            The operating system for capital.
           </div>
-          <div style={{ width: 170, height: 4, background: '#0F8F86' }} />
-          <div style={{ fontSize: 28, lineHeight: 1.35, color: '#343A3F' }}>
-            Portfolio context, capital operations, treasury and governed allocation in one institutional operating environment.
+          <div style={{ width: 170, height: 1, background: '#20AFA3' }} />
+          <div style={{ fontSize: 28, lineHeight: 1.35, color: 'rgba(245,243,238,.68)' }}>
+            See, coordinate and govern capital across treasury, allocation and portfolio context.
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 22, color: '#343A3F' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 22, color: 'rgba(245,243,238,.56)' }}>
           <span>Capital context, put into operation.</span>
           <span>neptlium.com</span>
         </div>
