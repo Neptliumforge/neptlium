@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './marketing-shell.css';
 import './footer-depth.css';
-import './hero-platform.css';
-import './platform-calibration.css';
 import './production-hardening.css';
 import './apple-calibration.css';
 import './product-showcase-calibration.css';
@@ -43,7 +41,14 @@ export const metadata: Metadata = {
     description: SITE.description,
     url: SITE.url,
     locale: 'en_US',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Neptlium — Capital Operating Platform' }],
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Neptlium — Capital Operating Platform',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
