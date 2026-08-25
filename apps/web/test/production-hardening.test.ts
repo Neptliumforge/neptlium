@@ -96,7 +96,7 @@ test('homepage carries canonical capital-operating positioning through a truthfu
     assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
 });
 
-test('footer is institutional closure using only canonical destinations', () => {
+test('footer is institutional closure using only verified destinations', () => {
   const footer = read('components/site-footer.tsx');
   for (const label of [
     "label: 'Platform'",
@@ -107,30 +107,30 @@ test('footer is institutional closure using only canonical destinations', () => 
     "label: 'Connect'",
     "label: 'Privacy'",
     "label: 'Contact'",
-    "label: 'Bluesky'",
-    "label: 'X'",
-    "label: 'YouTube'",
-    "label: 'TikTok'",
     "label: 'GitHub'",
   ]) {
     assert.equal(footer.includes(label), true, `Missing footer label: ${label}`);
   }
   assert.equal(footer.includes("href: '/research'"), false);
-  for (const destination of [
-    'https://bsky.app/profile/neptlium.bsky.social',
-    'https://x.com/Neptlium',
-    'https://youtube.com/@neptlium',
-    'https://www.tiktok.com/@neptlium',
-    'https://github.com/Neptliumforge',
-  ]) {
-    assert.equal(footer.includes(destination), true, `Missing canonical destination: ${destination}`);
-  }
+  assert.equal(footer.includes('https://github.com/Neptliumforge'), true);
+  for (const unverified of ['bsky.app', 'x.com/Neptlium', 'youtube.com/@neptlium', 'tiktok.com/@neptlium'])
+    assert.equal(footer.includes(unverified), false, `Unverified footer destination found: ${unverified}`);
   assert.equal(footer.includes('Neptliumlabs'), false);
-  for (const forbidden of ['Instagram', 'LinkedIn', 'Threads', 'Facebook', 'Discord', 'Telegram', 'href="#"']) {
+  for (const forbidden of [
+    'Instagram',
+    'LinkedIn',
+    'Threads',
+    'Facebook',
+    'Discord',
+    'Telegram',
+    'href="#"',
+    'Product availability is established',
+    'authenticated operating environment',
+  ]) {
     assert.equal(
       footer.toLowerCase().includes(forbidden.toLowerCase()),
       false,
-      `Unapproved or placeholder footer destination found: ${forbidden}`,
+      `Unapproved footer content found: ${forbidden}`,
     );
   }
   assert.equal(footer.includes('rel="noopener noreferrer"'), true);
@@ -164,6 +164,10 @@ test('canonical public metadata stays wired to apex production domain and warm-i
   assert.equal(layout.includes('data-theme="light"'), true);
   assert.equal(layout.includes("themeColor: '#F5F3EE'"), true);
   assert.equal(layout.includes('https://github.com/Neptliumforge'), true);
+  assert.equal(layout.includes('bsky.app'), false);
+  assert.equal(layout.includes('x.com/Neptlium'), false);
+  assert.equal(layout.includes('youtube.com/@neptlium'), false);
+  assert.equal(layout.includes('tiktok.com/@neptlium'), false);
   assert.equal(layout.includes('Neptliumlabs'), false);
   assert.equal(layout.includes("url: '/apple-icon'"), true);
   assert.equal(icon.includes('#0F8F86'), true);
