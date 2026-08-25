@@ -55,30 +55,7 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
   {
     label: 'Connect',
     links: [
-      {
-        label: 'Bluesky',
-        href: 'https://bsky.app/profile/neptlium.bsky.social',
-        external: true,
-        accessibleLabel: 'Neptlium on Bluesky (opens in a new tab)',
-      },
-      {
-        label: 'X',
-        href: 'https://x.com/Neptlium',
-        external: true,
-        accessibleLabel: 'Neptlium on X (opens in a new tab)',
-      },
-      {
-        label: 'YouTube',
-        href: 'https://youtube.com/@neptlium',
-        external: true,
-        accessibleLabel: 'Neptlium on YouTube (opens in a new tab)',
-      },
-      {
-        label: 'TikTok',
-        href: 'https://www.tiktok.com/@neptlium',
-        external: true,
-        accessibleLabel: 'Neptlium on TikTok (opens in a new tab)',
-      },
+      { label: 'Contact', href: '/contact' },
       {
         label: 'GitHub',
         href: 'https://github.com/Neptliumforge',
@@ -118,9 +95,8 @@ export function SiteFooter() {
               A capital operating platform for modern investment organizations.
             </p>
             <p className="footer-brand-copy">
-              Explore Neptlium’s public platform, operating model and control principles. Product
-              availability is established by the authenticated operating environment, not by marketing
-              copy.
+              Portfolio context, capital operations, treasury and governed allocation in one coherent
+              institutional environment.
             </p>
             <Link className="footer-platform-link" href={SITE.publicAccessUrl}>
               {SITE.publicAccessLabel} <ArrowUpRight aria-hidden="true" />
@@ -133,7 +109,7 @@ export function SiteFooter() {
                 <h2>{group.label}</h2>
                 <div>
                   {group.links.map((destination) => (
-                    <FooterDestination key={destination.label} destination={destination} />
+                    <FooterDestination key={`${group.label}-${destination.label}`} destination={destination} />
                   ))}
                 </div>
               </nav>
@@ -147,8 +123,7 @@ export function SiteFooter() {
             <h2>Capital, organized with precision.</h2>
           </div>
           <p>
-            Understand the platform, its operating boundaries and the principles that govern how
-            Neptlium presents capital state.
+            A shared operating language for portfolio context, treasury, capital movement and allocation.
           </p>
         </div>
 
