@@ -1,313 +1,1027 @@
-/* Neptlium Route Product Architecture
-   Product routes should explain one idea quickly, show one real surface, then move on. */
+/* Canonical product-page compositions.
+   These rules intentionally avoid one shared product-page skeleton. */
 
-.route-page-header {
-  border-bottom: 1px solid var(--marketing-border-soft);
-  background: var(--marketing-bg-deep);
+.product-story {
+  background: var(--web-ivory);
+  color: var(--web-carbon);
 }
 
-.route-page-header-inner {
-  padding-block: clamp(2.75rem, 5vw, 4.75rem);
+.product-story h1,
+.product-story h2,
+.product-story h3,
+.learn-editorial-page h1,
+.learn-editorial-page h2,
+.security-architecture-page h1,
+.security-architecture-page h2 {
+  font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
+  font-weight: 400;
 }
 
-.route-page-header .eyebrow {
-  margin: 1.25rem 0 0;
-}
-
-.route-page-header h1 {
-  max-width: 17ch;
-  margin: 1rem 0 0;
-  color: var(--marketing-text);
-  font-family: var(--nts-font-sans);
-  font-size: clamp(2.25rem, 4.2vw, 4rem);
-  font-weight: 600;
-  line-height: 1.04;
-  letter-spacing: -0.045em;
-  text-wrap: balance;
-}
-
-.route-page-intro {
-  max-width: 37rem;
-  margin: 1.25rem 0 0;
-  color: var(--marketing-text-secondary);
-  font-size: clamp(1rem, 1.2vw, 1.1875rem);
-  line-height: 1.5;
-  letter-spacing: -0.015em;
-}
-
-.route-product-nav {
-  border-bottom: 1px solid var(--marketing-border-soft);
-  background: color-mix(in oklab, var(--marketing-bg-deep) 98%, transparent);
-}
-
-.route-product-nav .container-page {
-  display: flex;
-  gap: 1.5rem;
-  overflow-x: auto;
-  padding-block: 0.875rem;
-  scrollbar-width: none;
-}
-
-.route-product-nav .container-page::-webkit-scrollbar {
-  display: none;
-}
-
-.route-product-nav a {
-  flex: none;
-  color: var(--marketing-text-muted);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-.route-product-nav a:hover {
-  color: var(--marketing-text);
-}
-
-.route-product-showcase {
-  border-bottom: 1px solid var(--marketing-border-soft);
-  background:
-    radial-gradient(circle at 78% 42%, color-mix(in oklab, var(--marketing-blue) 6%, transparent), transparent 34%),
-    var(--marketing-bg-deep);
-}
-
-.route-product-showcase-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(32rem, 1.22fr);
-  align-items: center;
-  gap: clamp(2.5rem, 5vw, 5rem);
-  min-height: clamp(32rem, 62vh, 42rem);
-  padding-block: clamp(3rem, 6vw, 5rem);
-}
-
-.route-product-copy {
-  max-width: 31rem;
-}
-
-.route-product-kicker {
-  color: var(--marketing-text-muted);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.route-product-copy h2 {
-  max-width: 15ch;
-  margin: 0.875rem 0 0;
-  color: var(--marketing-text);
-  font-size: clamp(1.875rem, 3vw, 3rem);
-  font-weight: 600;
-  line-height: 1.06;
+.product-story h1,
+.learn-editorial-page h1,
+.security-architecture-page h1 {
+  margin: 0.9rem 0 0;
+  font-size: clamp(2.75rem, 4.6vw, 4.1rem);
+  line-height: 1;
   letter-spacing: -0.04em;
   text-wrap: balance;
 }
 
-.route-product-copy > p {
-  max-width: 34rem;
-  margin: 1rem 0 0;
-  color: var(--marketing-text-secondary);
-  font-size: clamp(1rem, 1.2vw, 1.125rem);
-  line-height: 1.55;
-  letter-spacing: -0.012em;
+.product-story h2,
+.learn-editorial-page h2,
+.security-architecture-page h2 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.3vw, 2.9rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
-.route-product-principle {
-  display: block;
-  margin-top: 1.25rem;
-  color: var(--marketing-text-secondary);
-  font-size: 0.8125rem;
-  font-weight: 500;
+.product-story p,
+.learn-editorial-page p,
+.security-architecture-page p {
+  line-height: 1.65;
 }
 
-.route-product-link,
-.route-product-actions > a:not(.button) {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 1.5rem;
-  color: var(--marketing-text);
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.route-product-link svg {
-  width: 0.875rem;
-}
-
-.route-product-visual {
+.product-story-visual {
   min-width: 0;
 }
 
-.route-product-visual > * + * {
-  margin-top: 0.875rem;
+.product-story-close {
+  padding: clamp(4rem, 7vw, 6rem) 0;
+  border-top: 1px solid var(--web-stone);
 }
 
-.route-product-capabilities {
-  border-bottom: 1px solid var(--marketing-border-soft);
-  background: var(--marketing-bg);
+.product-story-close.architecture-dark {
+  border-top-color: var(--web-rule-dark);
 }
 
-.route-product-capabilities > .container-page,
-.route-product-capabilities .container-page {
-  padding-block: clamp(2.25rem, 4vw, 3.75rem);
-}
-
-.route-product-capability-grid {
+.product-story-close-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  border-top: 1px solid var(--marketing-border-soft);
-  border-bottom: 1px solid var(--marketing-border-soft);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: end;
 }
 
-.route-product-capability-grid article {
-  min-height: 8rem;
-  padding: 1.25rem;
-  border-right: 1px solid var(--marketing-border-soft);
+.product-story-close-grid h2 {
+  max-width: 23ch;
 }
 
-.route-product-capability-grid article:last-child {
-  border-right: 0;
+/* Capital Account: ledger-oriented, account-context composition. */
+.product-story-hero {
+  padding: clamp(5rem, 8vw, 7.5rem) 0 clamp(3.5rem, 6vw, 5rem);
+  border-bottom: 1px solid var(--web-stone);
+  background: var(--web-ivory-high);
 }
 
-.route-product-capability-grid h3 {
+.product-story-hero-grid,
+.capital-account-ledger-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 0.7fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: end;
+}
+
+.product-story-intro p,
+.capital-account-ledger-grid > div:first-child > p,
+.product-story-aside > p:last-child {
+  max-width: 38rem;
   margin: 0;
-  color: var(--marketing-text);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  color: var(--web-graphite);
 }
 
-.route-product-capability-grid p {
-  margin: 0.5rem 0 0;
-  color: var(--marketing-text-muted);
-  font-size: 0.8125rem;
-  line-height: 1.5;
-}
-
-.route-product-capability-grid a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.75rem;
-  color: var(--marketing-text-secondary);
-  font-size: 0.75rem;
-}
-
-.route-product-capability-grid a svg {
-  width: 0.75rem;
-}
-
-.route-product-asset-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+.product-story-intro .text-arrow-link {
   margin-top: 1.25rem;
 }
 
-.route-product-actions {
-  display: flex;
-  align-items: center;
+.capital-account-ledger {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+
+.capital-account-ledger-grid {
+  align-items: start;
+}
+
+.capital-account-ledger-grid > div:first-child > h2 {
+  margin-top: 0.8rem;
+}
+
+.capital-account-ledger-grid > div:first-child > p {
+  margin-top: 1.2rem;
+}
+
+.capital-account-state-list {
+  border-top: 1px solid var(--web-stone);
+}
+
+.capital-account-state-list article {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
   gap: 1rem;
-  margin-top: 1.5rem;
+  padding: 1.3rem 0;
+  border-bottom: 1px solid var(--web-stone);
 }
 
-.route-product-actions > a:not(.button) {
-  margin-top: 0;
+.capital-account-state-list article > span {
+  color: var(--web-teal);
+  font-size: 0.68rem;
 }
 
-.route-product-disclosure {
-  padding-top: 0 !important;
-  color: var(--marketing-text-muted);
-  font-size: 0.75rem;
-  line-height: 1.5;
+.capital-account-state-list h3,
+.capital-account-state-list p {
+  margin: 0;
 }
 
-@media (max-width: 67.999rem) {
-  .route-product-showcase-grid {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    gap: 2.25rem;
-  }
+.capital-account-state-list h3 {
+  font-size: 1.15rem;
+}
 
-  .route-product-copy {
-    max-width: 38rem;
-  }
+.capital-account-state-list p {
+  margin-top: 0.4rem;
+  color: var(--web-graphite);
+  font-size: 0.88rem;
+}
 
-  .route-product-capability-grid {
+.capital-account-visual-section {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+  background: var(--web-mist);
+}
+
+.capital-account-visual-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.6fr);
+  gap: clamp(3rem, 7vw, 6rem);
+  align-items: center;
+}
+
+.product-story-aside h2 {
+  margin-top: 0.8rem;
+}
+
+.product-story-aside > p:last-child {
+  margin-top: 1.1rem;
+}
+
+/* Treasury: horizontal readiness continuum with a dark operating-context band. */
+.treasury-hero {
+  padding: clamp(5.25rem, 8vw, 7.75rem) 0 clamp(4rem, 6vw, 5.5rem);
+  background: var(--web-ivory-high);
+}
+
+.treasury-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.55fr);
+  gap: clamp(3rem, 9vw, 8rem);
+  align-items: end;
+}
+
+.treasury-hero-note {
+  padding-left: 1.4rem;
+  border-left: 2px solid var(--web-teal);
+}
+
+.treasury-hero-note p {
+  margin: 0;
+  color: var(--web-graphite);
+}
+
+.treasury-readiness {
+  padding: clamp(4rem, 7vw, 6rem) 0;
+  border-top: 1px solid var(--web-stone);
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.treasury-readiness-heading {
+  max-width: 45rem;
+}
+
+.treasury-readiness-heading h2 {
+  margin-top: 0.8rem;
+}
+
+.treasury-readiness-line {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 2.8rem;
+  border-top: 1px solid var(--web-stone);
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.treasury-readiness-line article {
+  min-height: 10rem;
+  padding: 1.25rem;
+  border-right: 1px solid var(--web-stone);
+}
+
+.treasury-readiness-line article:first-child {
+  padding-left: 0;
+}
+
+.treasury-readiness-line article:last-child {
+  border-right: 0;
+}
+
+.treasury-readiness-line h3,
+.treasury-readiness-line p {
+  margin: 0;
+}
+
+.treasury-readiness-line h3 {
+  font-size: 1.25rem;
+}
+
+.treasury-readiness-line p {
+  margin-top: 0.6rem;
+  color: var(--web-graphite);
+  font-size: 0.85rem;
+}
+
+.treasury-context-band {
+  padding: clamp(5rem, 8vw, 7rem) 0;
+  background: var(--web-carbon-soft);
+  color: var(--web-ivory);
+}
+
+.treasury-context-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.75fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: center;
+}
+
+.treasury-context-grid h2 {
+  margin-top: 0.8rem;
+}
+
+.treasury-context-grid > div:last-child > p:last-child {
+  margin-top: 1.1rem;
+  color: rgb(245 243 238 / 64%);
+}
+
+.treasury-links {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.treasury-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  min-height: 3rem;
+  font-size: 0.82rem;
+}
+
+.treasury-link-row a {
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+/* Allocation: decision sequence then a dark workbench. */
+.allocation-hero {
+  padding: clamp(5rem, 8vw, 7.25rem) 0;
+}
+
+.allocation-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(24rem, 1.1fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: center;
+}
+
+.allocation-hero-grid > div:first-child > p:last-child {
+  max-width: 34rem;
+  margin: 1.2rem 0 0;
+  color: var(--web-graphite);
+}
+
+.allocation-decision-sequence {
+  padding: clamp(4.5rem, 7vw, 6.5rem) 0;
+  background: var(--web-ivory-high);
+}
+
+.allocation-decision-sequence h2 {
+  max-width: 26ch;
+  margin-top: 0.8rem;
+}
+
+.allocation-decision-sequence ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 2.8rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--web-stone);
+  border-bottom: 1px solid var(--web-stone);
+  list-style: none;
+}
+
+.allocation-decision-sequence li {
+  min-height: 11rem;
+  padding: 1.25rem;
+  border-right: 1px solid var(--web-stone);
+}
+
+.allocation-decision-sequence li:first-child {
+  padding-left: 0;
+}
+
+.allocation-decision-sequence li:last-child {
+  border-right: 0;
+}
+
+.allocation-decision-sequence li > span {
+  color: var(--web-teal);
+  font-size: 0.68rem;
+}
+
+.allocation-decision-sequence h3,
+.allocation-decision-sequence p {
+  margin: 0;
+}
+
+.allocation-decision-sequence h3 {
+  margin-top: 1.2rem;
+  font-size: 1.25rem;
+}
+
+.allocation-decision-sequence p {
+  margin-top: 0.55rem;
+  color: var(--web-graphite);
+  font-size: 0.84rem;
+}
+
+.allocation-workbench {
+  padding: clamp(5rem, 8vw, 7rem) 0;
+}
+
+.allocation-workbench-grid {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.6fr) minmax(0, 1.15fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: center;
+}
+
+.allocation-workbench-grid > div:first-child > p:last-of-type {
+  margin-top: 1.1rem;
+  color: rgb(245 243 238 / 64%);
+}
+
+.allocation-workbench-grid .text-arrow-link {
+  margin-top: 1.2rem;
+}
+
+/* Portfolio Intelligence: visual-led hero, analytical lenses, relational field. */
+.portfolio-hero {
+  padding: clamp(5rem, 8vw, 7.5rem) 0;
+  background: var(--web-ivory-high);
+}
+
+.portfolio-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.65fr) minmax(0, 1.25fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: center;
+}
+
+.portfolio-hero-copy > p:last-child {
+  margin: 1.2rem 0 0;
+  color: var(--web-graphite);
+}
+
+.portfolio-lenses {
+  padding: clamp(4.5rem, 7vw, 6.5rem) 0;
+}
+
+.portfolio-lenses-grid {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.5fr) minmax(0, 1fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: start;
+}
+
+.portfolio-lenses-grid > div:first-child h2 {
+  margin-top: 0.8rem;
+}
+
+.portfolio-lens-list {
+  columns: 2 16rem;
+  column-gap: 2.5rem;
+}
+
+.portfolio-lens-list article {
+  break-inside: avoid;
+  padding: 0 0 1.8rem;
+  margin-bottom: 1.8rem;
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.portfolio-lens-list h3,
+.portfolio-lens-list p {
+  margin: 0;
+}
+
+.portfolio-lens-list h3 {
+  font-size: 1.25rem;
+}
+
+.portfolio-lens-list p {
+  margin-top: 0.55rem;
+  color: var(--web-graphite);
+  font-size: 0.86rem;
+}
+
+.portfolio-relationship-field {
+  padding: clamp(5rem, 8vw, 7rem) 0;
+}
+
+.portfolio-relationship-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.55fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: start;
+  margin-top: 1rem;
+}
+
+.portfolio-relationship-grid > div > p {
+  margin: 0;
+  color: rgb(245 243 238 / 64%);
+}
+
+.architecture-dark .inline-links a {
+  color: var(--web-ivory);
+}
+
+/* Performance: evidence-first editorial definition list. */
+.performance-hero {
+  padding: clamp(5.5rem, 9vw, 8rem) 0;
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.performance-hero-inner {
+  max-width: 58rem;
+}
+
+.performance-hero-inner h1 {
+  max-width: 13ch;
+}
+
+.performance-hero-inner > p:last-child {
+  max-width: 42rem;
+  margin: 1.5rem 0 0;
+  color: var(--web-graphite);
+  font-size: 1.02rem;
+}
+
+.performance-evidence {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+
+.performance-evidence-heading {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.25fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: baseline;
+}
+
+.performance-evidence-heading > span {
+  color: var(--web-teal);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.performance-question-list {
+  margin: 2.5rem 0 0;
+  border-top: 1px solid var(--web-stone);
+}
+
+.performance-question-list > div {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr);
+  gap: 2rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.performance-question-list dt {
+  display: flex;
+  gap: 0.9rem;
+  font-weight: 650;
+}
+
+.performance-question-list dt span {
+  color: var(--web-teal);
+  font-size: 0.68rem;
+}
+
+.performance-question-list dd {
+  margin: 0;
+  color: var(--web-graphite);
+}
+
+.performance-boundary {
+  padding: clamp(5rem, 8vw, 7rem) 0;
+}
+
+.performance-boundary-grid,
+.performance-return-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.65fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: start;
+}
+
+.performance-boundary-grid > p {
+  margin: 0;
+  color: rgb(245 243 238 / 64%);
+}
+
+.performance-return-context {
+  padding: clamp(4rem, 7vw, 6rem) 0;
+}
+
+.performance-return-grid {
+  align-items: end;
+}
+
+.performance-return-grid > div > p {
+  max-width: 38rem;
+  margin: 1rem 0 0;
+  color: var(--web-graphite);
+}
+
+.performance-return-grid .web-button {
+  justify-self: end;
+}
+
+/* Capital Universe: classification field instead of numbered feature list. */
+.universe-hero {
+  padding: clamp(5.25rem, 8vw, 7.75rem) 0 clamp(4rem, 7vw, 6rem);
+  background: var(--web-ivory-high);
+}
+
+.universe-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.6fr);
+  gap: clamp(3rem, 9vw, 8rem);
+  align-items: end;
+}
+
+.universe-hero-grid > p {
+  margin: 0;
+  color: var(--web-graphite);
+}
+
+.universe-role-field {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+
+.universe-role-heading {
+  max-width: 46rem;
+}
+
+.universe-role-heading h2 {
+  margin-top: 0.8rem;
+}
+
+.universe-role-map {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 2.7rem;
+  border-top: 1px solid var(--web-stone);
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.universe-role-map article {
+  min-height: 12rem;
+  padding: 1.25rem;
+  border-right: 1px solid var(--web-stone);
+}
+
+.universe-role-map article:first-child {
+  padding-left: 0;
+}
+
+.universe-role-map article:last-child {
+  border-right: 0;
+}
+
+.universe-role-map article > span {
+  color: var(--web-teal);
+  font-size: 0.68rem;
+}
+
+.universe-role-map h3,
+.universe-role-map p {
+  margin: 0;
+}
+
+.universe-role-map h3 {
+  margin-top: 1.1rem;
+  font-size: 1.25rem;
+}
+
+.universe-role-map p {
+  margin-top: 0.55rem;
+  color: var(--web-graphite);
+  font-size: 0.84rem;
+}
+
+.universe-boundary {
+  padding: clamp(4.5rem, 7vw, 6.5rem) 0;
+  background: var(--web-mist);
+}
+
+.universe-boundary-grid {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.3fr) minmax(0, 1fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: start;
+}
+
+.universe-boundary-grid > div {
+  max-width: 48rem;
+}
+
+.universe-boundary-grid > div > p {
+  margin: 1rem 0 0;
+  color: var(--web-graphite);
+}
+
+.universe-provider-independent {
+  padding: clamp(5rem, 8vw, 7rem) 0;
+}
+
+.universe-provider-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.55fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: start;
+}
+
+.universe-provider-grid > div > p {
+  margin: 0;
+  color: rgb(245 243 238 / 64%);
+}
+
+.universe-provider-grid .text-arrow-link {
+  margin-top: 1.2rem;
+}
+
+/* Learn: editorial definition ledger rather than product template. */
+.learn-editorial-page {
+  background: var(--web-ivory);
+  color: var(--web-carbon);
+}
+
+.learn-editorial-hero {
+  padding: clamp(5rem, 8vw, 7.5rem) 0;
+  background: var(--web-ivory-high);
+}
+
+.learn-editorial-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.55fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: end;
+}
+
+.learn-editorial-hero-grid > p {
+  margin: 0;
+  color: var(--web-graphite);
+}
+
+.learn-definition-ledger {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+
+.learn-definition-heading {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: 2rem;
+  align-items: baseline;
+}
+
+.learn-definition-heading > span {
+  color: var(--web-teal);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.learn-definition-ledger dl {
+  margin: 2.5rem 0 0;
+  border-top: 1px solid var(--web-stone);
+}
+
+.learn-definition-ledger dl > div {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.4fr) minmax(0, 1fr);
+  gap: 2rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.learn-definition-ledger dt {
+  display: flex;
+  gap: 0.85rem;
+  font-weight: 650;
+}
+
+.learn-definition-ledger dt span {
+  color: var(--web-teal);
+  font-size: 0.68rem;
+}
+
+.learn-definition-ledger dd {
+  margin: 0;
+  color: var(--web-graphite);
+}
+
+.learn-principle {
+  padding: clamp(5rem, 8vw, 7rem) 0;
+}
+
+.learn-principle-grid {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.3fr) minmax(0, 1fr);
+  gap: clamp(3rem, 8vw, 7rem);
+}
+
+.learn-principle-grid > div > p {
+  max-width: 38rem;
+  margin: 1rem 0 0;
+  color: rgb(245 243 238 / 64%);
+}
+
+.learn-paths {
+  padding: clamp(4rem, 7vw, 6rem) 0;
+}
+
+.learn-paths-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.5fr);
+  gap: 1.5rem 3rem;
+  align-items: end;
+}
+
+.learn-paths-grid .text-arrow-link {
+  grid-column: 2;
+}
+
+/* Security: control-map composition rather than DetailPage. */
+.security-architecture-page {
+  background: var(--web-ivory);
+  color: var(--web-carbon);
+}
+
+.security-hero {
+  padding: clamp(5.5rem, 9vw, 8rem) 0;
+}
+
+.security-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.6fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: end;
+}
+
+.security-hero-grid > p {
+  margin: 0;
+  color: rgb(245 243 238 / 64%);
+}
+
+.security-control-map {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+
+.security-control-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.65fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: start;
+}
+
+.security-control-grid > div:first-child h2 {
+  margin-top: 0.8rem;
+}
+
+.security-primary-visual {
+  margin-top: 2rem;
+}
+
+.security-boundary-list {
+  border-top: 1px solid var(--web-stone);
+}
+
+.security-boundary-list article {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.security-boundary-list article > span {
+  color: var(--web-teal);
+  font-size: 0.68rem;
+}
+
+.security-boundary-list h3,
+.security-boundary-list p {
+  margin: 0;
+}
+
+.security-boundary-list h3 {
+  font-size: 1.1rem;
+}
+
+.security-boundary-list p {
+  margin-top: 0.4rem;
+  color: var(--web-graphite);
+  font-size: 0.85rem;
+}
+
+.security-principles {
+  padding: clamp(4rem, 7vw, 6rem) 0;
+  background: var(--web-mist);
+}
+
+.security-principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--web-stone);
+  border-bottom: 1px solid var(--web-stone);
+}
+
+.security-principles-grid article {
+  min-height: 11rem;
+  padding: 1.25rem;
+  border-right: 1px solid var(--web-stone);
+}
+
+.security-principles-grid article:first-child {
+  padding-left: 0;
+}
+
+.security-principles-grid article:last-child {
+  border-right: 0;
+}
+
+.security-principles-grid h2,
+.security-principles-grid p {
+  margin: 0;
+}
+
+.security-principles-grid h2 {
+  font-size: 1.45rem;
+}
+
+.security-principles-grid p {
+  margin-top: 0.7rem;
+  color: var(--web-graphite);
+  font-size: 0.86rem;
+}
+
+.security-close {
+  padding: clamp(4rem, 7vw, 6rem) 0;
+}
+
+@media (max-width: 68rem) {
+  .treasury-readiness-line,
+  .allocation-decision-sequence ol,
+  .universe-role-map {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .route-product-capability-grid article:nth-child(2n) {
+  .treasury-readiness-line article:nth-child(2n),
+  .allocation-decision-sequence li:nth-child(2n),
+  .universe-role-map article:nth-child(2n) {
     border-right: 0;
   }
 
-  .route-product-capability-grid article:nth-child(n + 3) {
-    border-top: 1px solid var(--marketing-border-soft);
+  .treasury-readiness-line article:nth-child(n + 3),
+  .allocation-decision-sequence li:nth-child(n + 3),
+  .universe-role-map article:nth-child(n + 3) {
+    border-top: 1px solid var(--web-stone);
+  }
+
+  .security-principles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .security-principles-grid article,
+  .security-principles-grid article:first-child {
+    min-height: auto;
+    padding: 1.25rem 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--web-stone);
+  }
+
+  .security-principles-grid article:last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 56rem) {
+  .product-story-hero-grid,
+  .capital-account-ledger-grid,
+  .capital-account-visual-grid,
+  .treasury-hero-grid,
+  .treasury-context-grid,
+  .allocation-hero-grid,
+  .allocation-workbench-grid,
+  .portfolio-hero-grid,
+  .portfolio-lenses-grid,
+  .portfolio-relationship-grid,
+  .performance-boundary-grid,
+  .performance-return-grid,
+  .universe-hero-grid,
+  .universe-boundary-grid,
+  .universe-provider-grid,
+  .learn-editorial-hero-grid,
+  .learn-principle-grid,
+  .learn-paths-grid,
+  .security-hero-grid,
+  .security-control-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .performance-return-grid .web-button {
+    justify-self: start;
+  }
+
+  .learn-paths-grid .text-arrow-link {
+    grid-column: auto;
+  }
+
+  .product-story-close-grid {
+    grid-template-columns: 1fr;
+    align-items: start;
   }
 }
 
 @media (max-width: 40rem) {
-  .route-page-header-inner {
-    padding-block: 2.5rem 2.75rem;
+  .product-story h1,
+  .learn-editorial-page h1,
+  .security-architecture-page h1 {
+    font-size: clamp(2.3rem, 11vw, 3.1rem);
   }
 
-  .route-page-header h1 {
-    max-width: 15ch;
-    font-size: clamp(2rem, 10vw, 2.75rem);
+  .product-story h2,
+  .learn-editorial-page h2,
+  .security-architecture-page h2 {
+    font-size: clamp(1.8rem, 8.5vw, 2.35rem);
   }
 
-  .route-page-intro {
-    font-size: 1rem;
-  }
-
-  .route-product-nav .container-page {
-    gap: 1rem;
-    padding-block: 0.75rem;
-  }
-
-  .route-product-showcase-grid {
-    gap: 1.75rem;
-    padding-block: 2.5rem;
-  }
-
-  .route-product-copy h2 {
-    font-size: clamp(1.75rem, 8vw, 2.25rem);
-  }
-
-  .route-product-copy > p {
-    font-size: 1rem;
-  }
-
-  .route-product-capabilities > .container-page,
-  .route-product-capabilities .container-page {
-    padding-block: 2rem;
-  }
-
-  .route-product-capability-grid {
+  .treasury-readiness-line,
+  .allocation-decision-sequence ol,
+  .universe-role-map {
     grid-template-columns: 1fr;
   }
 
-  .route-product-capability-grid article,
-  .route-product-capability-grid article:nth-child(2n) {
+  .treasury-readiness-line article,
+  .treasury-readiness-line article:first-child,
+  .allocation-decision-sequence li,
+  .allocation-decision-sequence li:first-child,
+  .universe-role-map article,
+  .universe-role-map article:first-child {
     min-height: auto;
-    padding: 1rem 0;
+    padding: 1.1rem 0;
     border-right: 0;
-    border-top: 1px solid var(--marketing-border-soft);
+    border-top: 1px solid var(--web-stone);
   }
 
-  .route-product-capability-grid article:first-child {
+  .treasury-readiness-line article:first-child,
+  .allocation-decision-sequence li:first-child,
+  .universe-role-map article:first-child {
     border-top: 0;
   }
 
-  .route-product-actions {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.75rem;
+  .performance-evidence-heading,
+  .performance-question-list > div,
+  .learn-definition-heading,
+  .learn-definition-ledger dl > div {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
   }
 
-  .route-product-actions .button {
-    width: 100%;
+  .portfolio-lens-list {
+    columns: 1;
+  }
+
+  .treasury-link-row {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-story *,
+  .learn-editorial-page *,
+  .security-architecture-page * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
