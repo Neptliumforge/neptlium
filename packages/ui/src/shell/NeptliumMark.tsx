@@ -17,11 +17,11 @@ const toneColor: Record<NeptliumMarkTone, string> = {
 };
 
 /**
- * Canonical production Neptlium mark.
+ * Canonical Neptlium flow mark.
  *
- * The repository owns one flat geometry. Marketing may use the teal precision
- * treatment; authenticated and operator surfaces should normally inherit
- * monochrome foreground through `current`, `ink`, or `paper`.
+ * Three independent structural strokes express capital movement, coordination,
+ * and convergence. This is the sole production mark geometry across Web, App,
+ * Admin, icons, and generated brand assets.
  */
 export function NeptliumMark({
   size = 22,
@@ -47,10 +47,17 @@ export function NeptliumMark({
       aria-label="Neptlium"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        fill="currentColor"
-        d="M6.07 9.85 6.2 19.75 7.13 21.34 10.72 25.06 10.72 25.86 7.79 30.17 7.06 32.83 7.13 54.02 22.54 43.72 23.73 41.86 23.67 31.17 24.73 31.44 33.16 43.79 37.61 49.3 41.13 52.69 43.99 54.02 46.98 54.15 49.03 53.42 51.16 51.89 55.48 46.05 57.07 42.26 57.73 39.07 57.54 11.78 43.06 22.87 42.13 24.66 42.26 31.17 41.4 31.24 34.22 23.13 29.44 19.28 26.45 13.9 23.93 11.38 22.01 10.45 19.15 9.79Z"
-      />
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M9 17.5C23 17.5 38 13.5 54 6.5" />
+        <path d="M10 38.5C19.5 36.5 25.5 28.5 34.5 27.5C43 26.5 49 21.5 54.5 16" />
+        <path d="M30.5 52C35.5 45.5 44.5 45.5 50.5 51.5" />
+      </g>
     </svg>
   );
 }
