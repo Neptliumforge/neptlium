@@ -65,7 +65,7 @@ test('Capital Universe is canonical strategic product context without asset-avai
   const universe = await webFile('app/products/capital-universe/page.tsx');
   assert.equal(universe.includes("path: '/products/capital-universe'"), true);
   assert.equal(universe.includes('Classification is not availability.'), true);
-  assert.equal(universe.includes('asset, network, custody, market or execution availability'), true);
+  assert.match(universe, /does not establish asset,\s*network,\s*custody,\s*market or execution availability\./i);
   assert.match(universe, /provider|infrastructure/i);
   assert.equal(universe.includes('USDC'), false);
   assert.equal(universe.includes('BTC'), false);
