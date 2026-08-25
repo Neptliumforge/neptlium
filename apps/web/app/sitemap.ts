@@ -1,33 +1,19 @@
 import type { MetadataRoute } from 'next';
-
-const routes = [
-  '',
-  '/platform',
-  '/portfolio-intelligence',
-  '/capital-account',
-  '/allocation',
-  '/treasury',
-  '/learn',
-  '/company',
-  '/about',
-  '/security',
-  '/contact',
-  '/accessibility',
-] as const;
+import { INDEXABLE_ROUTES } from '@/lib/content/public-architecture';
 
 const highPriorityRoutes = new Set([
-  '',
+  '/',
   '/platform',
-  '/portfolio-intelligence',
-  '/capital-account',
-  '/allocation',
-  '/treasury',
+  '/products',
+  '/solutions',
+  '/resources',
+  '/company',
 ]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.map((route) => ({
-    url: `https://neptlium.com${route}`,
-    changeFrequency: route === '' ? 'weekly' : 'monthly',
-    priority: route === '' ? 1 : highPriorityRoutes.has(route) ? 0.8 : 0.6,
+  return INDEXABLE_ROUTES.map((route) => ({
+    url: `https://neptlium.com${route === '/' ? '' : route}`,
+    changeFrequency: route === '/' ? 'weekly' : 'monthly',
+    priority: route === '/' ? 1 : highPriorityRoutes.has(route) ? 0.85 : 0.65,
   }));
 }

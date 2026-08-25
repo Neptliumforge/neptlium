@@ -4,170 +4,167 @@ import test from 'node:test';
 
 const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('sitemap contains only authoritative indexable public landing pages', () => {
+test('public architecture defines five canonical domains and the complete product family', () => {
+  const architecture = read('lib/content/public-architecture.ts');
+  for (const domain of ['Platform', 'Products', 'Solutions', 'Resources', 'Company'])
+    assert.equal(architecture.includes(`label: '${domain}'`), true, `Missing domain: ${domain}`);
+  for (const route of [
+    '/products/capital-account',
+    '/products/treasury',
+    '/products/allocation',
+    '/products/portfolio-intelligence',
+    '/products/performance',
+    '/products/capital-universe',
+  ])
+    assert.equal(architecture.includes(`href: '${route}'`), true, `Missing canonical product route: ${route}`);
+});
+
+test('sitemap authority comes from the canonical indexable route registry without fabricated freshness', () => {
   const sitemap = read('app/sitemap.ts');
-  for (const route of [
-    '/platform',
-    '/portfolio-intelligence',
+  const architecture = read('lib/content/public-architecture.ts');
+  assert.equal(sitemap.includes('INDEXABLE_ROUTES'), true);
+  for (const route of ['/platform', '/products', '/solutions', '/resources', '/company'])
+    assert.equal(architecture.includes(`'${route}'`), true, `Missing canonical hub: ${route}`);
+  for (const legacy of [
     '/capital-account',
-    '/allocation',
     '/treasury',
-    '/learn',
-    '/company',
-    '/about',
-    '/security',
-    '/contact',
-    '/accessibility',
-  ]) {
-    assert.equal(sitemap.includes(`'${route}'`), true, `Missing sitemap route: ${route}`);
-  }
-  for (const route of [
-    '/capital-activity',
-    '/neptlium-link',
+    '/allocation',
+    '/portfolio-intelligence',
     '/performance',
     '/capital-universe',
-    '/research',
-    '/trust',
-    '/press',
-    '/privacy',
-    '/terms',
-    '/cookie-policy',
-    '/risk-disclosure',
-    '/pricing',
-  ])
-    assert.equal(sitemap.includes(`'${route}'`), false, `Non-authoritative route in sitemap: ${route}`);
+  ]) {
+    const indexableBlock = architecture.slice(
+      architecture.indexOf('export const INDEXABLE_ROUTES'),
+      architecture.indexOf('export const ROUTE_POLICY'),
+    );
+    assert.equal(indexableBlock.includes(`'${legacy}'`), false, `Legacy route remains indexable: ${legacy}`);
+  }
   assert.equal(sitemap.includes('lastModified: new Date()'), false);
 });
 
-test('supporting product routes explicitly opt out of indexing', () => {
+test('legacy product and supporting URLs converge through permanent one-hop redirects', () => {
+  const nextConfig = read('next.config.mjs');
+  const redirects = [
+    ['/capital-account', '/products/capital-account'],
+    ['/treasury', '/products/treasury'],
+    ['/allocation', '/products/allocation'],
+    ['/portfolio-intelligence', '/products/portfolio-intelligence'],
+    ['/performance', '/products/performance'],
+    ['/capital-universe', '/products/capital-universe'],
+    ['/capital-activity', '/products/capital-account'],
+    ['/neptlium-link', '/platform'],
+  ] as const;
+  for (const [source, destination] of redirects) {
+    assert.equal(nextConfig.includes(`source: '${source}'`), true, `Missing redirect source: ${source}`);
+    assert.equal(nextConfig.includes(`destination: '${destination}'`), true, `Missing redirect destination: ${destination}`);
+  }
+  assert.equal((nextConfig.match(/permanent: true/g) ?? []).length >= redirects.length, true);
+});
+
+test('supporting surfaces stay truthful and noindex while Trust is a substantive canonical resource', () => {
+  for (const path of ['app/pricing/page.tsx', 'app/research/page.tsx', 'app/press/page.tsx']) {
+    const source = read(path);
+    assert.equal(source.includes('index: false') || source.includes('index: false,') || source.includes('index: false'), true, `Expected noindex: ${path}`);
+  }
   for (const path of [
-    'app/capital-activity/page.tsx',
-    'app/neptlium-link/page.tsx',
-    'app/performance/page.tsx',
-    'app/capital-universe/page.tsx',
-    'app/research/page.tsx',
-    'app/trust/page.tsx',
-    'app/press/page.tsx',
+    'app/privacy/page.tsx',
+    'app/terms/page.tsx',
+    'app/cookie-policy/page.tsx',
+    'app/risk-disclosure/page.tsx',
   ]) {
     const source = read(path);
-    assert.equal(source.includes('index: false'), true, `Expected noindex contract in ${path}`);
+    assert.equal(source.includes('index: false'), true, `Expected legal noindex: ${path}`);
+  }
+  const trust = read('app/trust/page.tsx');
+  assert.equal(trust.includes('index: false'), false);
+  assert.equal(trust.includes("path: '/trust'"), true);
+  assert.equal(trust.includes('certifications, insurance, regulatory approvals'), true);
+});
+
+test('five hubs have distinct jobs and substantive content', () => {
+  const expectations = [
+    ['app/platform/page.tsx', 'Operating lifecycle', 'Architectural principles'],
+    ['app/products/page.tsx', 'Product family', 'Six products. One operating language.'],
+    ['app/solutions/page.tsx', 'Operating needs', 'Start with the operating problem'],
+    ['app/resources/page.tsx', 'Resource roles', 'Publishing discipline'],
+    ['app/company/page.tsx', 'Operating principles', 'Company information'],
+  ] as const;
+  for (const [path, first, second] of expectations) {
+    const source = read(path);
+    assert.equal((source.match(/<h1/g) ?? []).length, 1, `${path} must have one H1`);
+    assert.equal(source.includes(first), true, `Missing ${first} in ${path}`);
+    assert.equal(source.includes(second), true, `Missing ${second} in ${path}`);
+    assert.equal(source.includes('createPageMetadata'), true, `Missing metadata helper in ${path}`);
   }
 });
 
-test('navigation exposes only the locked public categories and preserves accessibility controls', () => {
+test('navigation and footer consume shared architecture and preserve accessibility controls', () => {
   const header = read('components/site-header.tsx');
-  for (const section of ['Platform', 'Solutions', 'Resources', 'Company'])
-    assert.equal(header.includes(`label: '${section}'`), true);
-  for (const removed of ['Capital', 'Connectivity', 'Governance'])
-    assert.equal(header.includes(`label: '${removed}'`), false);
-  assert.equal(header.includes("href: '/research'"), false);
-  assert.equal(header.includes('SITE.publicAccessLabel'), true);
-  assert.equal(header.includes('SITE.publicAccessUrl'), true);
-  assert.equal(header.includes('SITE.exploreLabel'), true);
-  assert.equal(header.includes('SITE.exploreUrl'), true);
-  assert.equal(header.includes('Request access'), false);
-  assert.equal(header.includes('aria-expanded={open}'), true);
-  assert.equal(header.includes('aria-controls={id}'), true);
-  assert.equal(header.includes('aria-haspopup="true"'), true);
-  assert.equal(header.includes("event.key === 'Escape'"), true);
-  assert.equal(header.includes("event.key !== 'ArrowDown'"), true);
-  assert.equal(header.includes("document.addEventListener('pointerdown', outside)"), true);
+  const footer = read('components/site-footer.tsx');
+  assert.equal(header.includes('NAVIGATION'), true);
+  assert.equal(footer.includes('PRODUCTS'), true);
+  assert.equal(footer.includes('SOLUTIONS'), true);
+  assert.equal(footer.includes('RESOURCES'), true);
+  assert.equal(footer.includes('COMPANY'), true);
+  for (const contract of [
+    'aria-expanded',
+    'aria-controls',
+    'aria-haspopup="true"',
+    'aria-modal="true"',
+    "event.key === 'Escape'",
+    "event.key !== 'ArrowDown'",
+    "document.addEventListener('pointerdown', outside)",
+    "document.body.style.overflow = 'hidden'",
+    'trigger.current?.focus()',
+  ])
+    assert.equal(header.includes(contract), true, `Missing accessibility contract: ${contract}`);
 });
 
-test('homepage carries canonical capital-operating positioning through native system language', () => {
+test('homepage carries the native proposition and routes into the five-domain model without fabricated financial values', () => {
   const page = read('app/page.tsx');
   for (const stage of [
-    'Capital operating platform',
     'Digital capital,',
     'organized',
     'around you.',
-    'The operating environment',
-    'How capital is organized',
-    'Portfolio Intelligence',
-    'Capital Account',
-    'Treasury',
-    'Allocation',
-    'Intelligence and governance',
+    'The operating model',
+    'Products',
+    'Solutions',
+    'Intelligence, governance and trust',
     'Why Neptlium exists',
-    'See capital as one connected system.',
   ])
-    assert.equal(page.includes(stage), true, `Missing narrative stage: ${stage}`);
-  assert.equal(page.includes('SITE.publicAccessLabel'), true);
-  assert.equal(page.includes('SITE.exploreLabel'), true);
-  assert.equal(page.includes('className="hero-system"'), true);
+    assert.equal(page.includes(stage), true, `Missing homepage stage: ${stage}`);
   for (const obsoleteVisual of ['ProductContextIllustration', 'HeroArchitecture', 'CapitalArchitecture'])
     assert.equal(page.includes(obsoleteVisual), false, `Obsolete hero visual found: ${obsoleteVisual}`);
   for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD'])
     assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
 });
 
-test('footer is compact closure using only verified destinations', () => {
-  const footer = read('components/site-footer.tsx');
-  for (const label of [
-    "label: 'Platform'",
-    "label: 'Learn'",
-    "label: 'Legal'",
-    "label: 'Connect'",
-    "label: 'Privacy'",
-    "label: 'GitHub'",
-  ]) {
-    assert.equal(footer.includes(label), true, `Missing footer label: ${label}`);
-  }
-  assert.equal(footer.includes('Keep your capital work connected.'), true);
-  assert.equal(footer.includes('SITE.publicAccessLabel'), true);
-  assert.equal(footer.includes('SITE.exploreLabel'), true);
-  assert.equal(footer.includes('https://github.com/Neptliumforge'), true);
-  assert.equal(footer.includes('footer-closing'), false);
-  for (const unverified of ['bsky.app', 'x.com/Neptlium', 'youtube.com/@neptlium', 'tiktok.com/@neptlium'])
-    assert.equal(footer.includes(unverified), false, `Unverified footer destination found: ${unverified}`);
-  assert.equal(footer.includes('Neptliumlabs'), false);
-  assert.equal(footer.includes('rel="noopener noreferrer"'), true);
-  assert.equal(footer.includes('opens in a new tab'), true);
-});
-
-test('marketing palette resolves to ivory carbon teal and structural medium-scale direction', () => {
+test('marketing palette, medium scale and reduced motion remain explicit without decorative blur artwork', () => {
   const css = read('app/neptlium-visual-direction.css');
   for (const token of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
     assert.equal(css.toLowerCase().includes(token), true, `Missing palette token: ${token}`);
-  assert.equal(css.includes('clamp(3.1rem, 5vw, 4.5rem)'), true);
   assert.equal(css.includes('.hero-system'), true);
-  assert.equal(css.includes('.capability-system'), true);
-  assert.equal(css.includes('product-context'), false);
+  assert.equal(css.includes('.architecture-page'), true);
+  assert.equal(css.includes('.solution-essays'), true);
   assert.equal(css.includes('prefers-reduced-motion: reduce'), true);
+  assert.equal(/radial-gradient|filter:\s*blur\(|backdrop-filter:\s*blur\(/i.test(css), false);
 });
 
-test('canonical public metadata stays wired to apex production domain and warm-ivory browser chrome', () => {
+test('canonical public metadata stays wired to apex authority and production security headers remain enforced', () => {
   const layout = read('app/layout.tsx');
   const site = read('lib/content/site.ts');
   const robots = read('app/robots.ts');
   const seo = read('lib/seo.ts');
-  const icon = read('public/icon.svg');
-  const og = read('app/opengraph-image.tsx');
-  const apple = read('app/apple-icon.tsx');
+  const nextConfig = read('next.config.mjs');
   assert.equal(site.includes("url: 'https://neptlium.com'"), true);
-  assert.equal(site.includes("positioning: 'Keep your capital work connected.'"), true);
   assert.equal(site.includes("publicAccessLabel: 'Enter Neptlium'"), true);
-  assert.equal(site.includes("exploreLabel: 'Explore platforms'"), true);
   assert.equal(layout.includes('metadataBase: new URL(SITE.url)'), true);
-  assert.equal(layout.includes("colorScheme: 'light'"), true);
-  assert.equal(layout.includes('data-theme="light"'), true);
   assert.equal(layout.includes("themeColor: '#F5F3EE'"), true);
-  assert.equal(layout.includes('https://github.com/Neptliumforge'), true);
-  assert.equal(layout.includes("url: '/apple-icon'"), true);
-  assert.equal(icon.includes('#0F8F86'), true);
-  assert.equal(og.includes('#F5F3EE'), true);
-  assert.equal(og.includes('#0F8F86'), true);
-  assert.equal(apple.includes('#F5F3EE'), true);
-  assert.equal(apple.includes('#0F8F86'), true);
   assert.equal(robots.includes("sitemap: 'https://neptlium.com/sitemap.xml'"), true);
   assert.equal(robots.includes("host: 'https://neptlium.com'"), true);
   assert.equal(seo.includes('openGraph:'), true);
   assert.equal(seo.includes('twitter:'), true);
   assert.equal(seo.includes('alternates: { canonical: path }'), true);
-});
-
-test('production security headers remain enforced outside deployment-specific config', () => {
-  const nextConfig = read('next.config.mjs');
   for (const header of ['X-Content-Type-Options', 'Referrer-Policy', 'Permissions-Policy'])
     assert.equal(nextConfig.includes(header), true, `Missing security header: ${header}`);
 });

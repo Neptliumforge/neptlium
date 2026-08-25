@@ -6,151 +6,153 @@
 
 Marketing establishes category, narrative, customer relevance, institutional confidence, editorial authority, product meaning, and an intentional path into the operating application. Public Web is deliberately independent from repository, build, migration, environment, provider, deployment, and runtime implementation state.
 
-`apps/web` must not expose or narrate internal build progress, migration status, environment configuration, provider setup, release readiness, testnet/production transitions, feature-flag state, deployment health, repository architecture progress, or engineering implementation status as part of ordinary marketing content. Those belong to engineering, release, operational, or specifically authorized public-status communications.
+`apps/web` must not expose internal build progress, migration status, provider setup, release readiness, feature-flag state, deployment health, or engineering implementation status as ordinary marketing content.
 
-Marketing is free to develop its own visual, editorial, narrative, and information architecture without mirroring engineering implementation chronology. It may describe the Neptlium product model, customer problem, intended operating experience, principles, concepts, and strategic category in strong institutional language.
+Marketing may describe the Neptlium product model, customer problem, intended operating experience, principles, concepts, and strategic category. It must not invent or falsely imply customers, balances, AUM, volume, performance, returns, testimonials, partnerships, licences, regulatory status, custody, provider relationships, live execution, settlement, or product availability.
 
-That freedom does not authorize fabrication. Public Web must not invent or falsely imply customers, balances, AUM, volume, performance, returns, testimonials, partnerships, licences, regulatory status, custody, provider relationships, live execution, settlement, product availability, or other factual claims that require external evidence.
-
-Before Web work, follow root `AGENTS.md`, read `docs/00_PRODUCT_CONSTITUTION.md`, `docs/03_DESIGN_SYSTEM.md`, relevant current documents, current Web source/tests/configuration, relevant production behavior where needed for Web correctness, and overlapping open PRs. `docs/archive/**` is never current authority.
+Before Web work, follow root `AGENTS.md`, `docs/00_PRODUCT_CONSTITUTION.md`, `docs/03_DESIGN_SYSTEM.md`, `docs/04_WEB_MARKETING_SYSTEM.md`, current Web source/tests/configuration, and overlapping open PRs. `docs/archive/**` is never current authority.
 
 Do not change App, Admin, API, migrations, providers, remote environments, or shared packages unless a verified dependency requires it and the task authorizes that scope.
 
+## Public information architecture
+
+Canonical top-level public domains are exactly:
+
+1. Platform
+2. Products
+3. Solutions
+4. Resources
+5. Company
+
+Each has a meaningful hub destination: `/platform`, `/products`, `/solutions`, `/resources`, `/company`.
+
+Do not collapse Products into Platform. Do not use product capabilities as additional top-level categories. Do not preserve legacy routes merely because they existed previously.
+
+Canonical product URLs are:
+
+- `/products/capital-account`
+- `/products/treasury`
+- `/products/allocation`
+- `/products/portfolio-intelligence`
+- `/products/performance`
+- `/products/capital-universe`
+
+Superseded root product URLs converge by one-hop permanent redirects and must not compete as canonical/indexable pages.
+
+Route taxonomy, navigation data, sitemap authority, and route classification are centralized in `lib/content/public-architecture.ts`. Keep them aligned with `next.config.mjs`, page metadata, navigation, footer, and tests.
+
+## Domain responsibilities
+
+**Platform** explains the complete system: operating model, lifecycle, product relationships, intelligence, governance, and architectural principles.
+
+**Products** explains the components Neptlium provides. Product pages remain truthful about capability and availability and never fabricate financial values.
+
+**Solutions** explains operating problems rather than repeating products. Current taxonomy is capital visibility, treasury coordination, allocation workflows, and governance/control; do not invent personas without evidence.
+
+**Resources** separates Learn, Security, Trust, and Research. Research remains truthful/noindex until substantive dated publications exist.
+
+**Company** explains the organization and principles. `/about` may go deeper into the thesis; `/press` remains noindex until verified substantive communications exist.
+
 ## Visual character
 
-Neptlium Marketing is institutional, editorial, architectural, dimensional, restrained, premium, information-first, confident, and mobile-excellent.
+Neptlium Marketing is institutional, editorial, architectural, restrained, premium, information-first, confident, and mobile-excellent.
 
-It must not resemble a crypto exchange, retail brokerage, generic SaaS or dashboard-marketing page, neon fintech site, card-grid landing page, token website, or bank clone.
+It must not resemble a crypto exchange, retail brokerage, generic SaaS/dashboard-marketing page, neon fintech site, card-grid landing page, token website, or bank clone.
 
-## Canonical marketing palette
+Identity comes from typography, space, structure, product relationships, information, controlled motion, and precise use of the canonical brand rather than decorative hero imagery.
 
-| Token | Value | Purpose |
-| --- | --- | --- |
-| Warm Ivory | `#F5F3EE` | Primary marketing canvas. |
-| Carbon | `#101214` | Authority surface and primary text on light backgrounds. |
-| Mineral Teal | `#0F8F86` | Canonical marketing precision accent. |
-| Interaction Teal | `#20AFA3` | Hover, focus, and interactive emphasis. |
-| Graphite | `#343A3F` | Secondary text and structural dark neutral. |
-| Stone | `#D8D5CE` | Dividers and subtle structure. |
-| Soft Mist | `#ECEAE5` | Secondary light surfaces. |
-| Signal Amber | `#C88B28` | Warning or attention semantics only; never decoration. |
+Canonical palette: Warm Ivory `#F5F3EE`, Carbon `#101214`, Mineral Teal `#0F8F86`, Interaction Teal `#20AFA3`, Graphite `#343A3F`, Stone `#D8D5CE`, Soft Mist `#ECEAE5`, and Signal Amber `#C88B28` for warning semantics only.
 
-Neptlium color is an instrument, not background paint. Marketing should feel approximately 70% light neutral, 20–25% Carbon/Graphite, and 5–10% accent/semantic color. This is a compositional principle, not a measurement gate. Brand color never overrides semantic state.
+Teal is a precision signal, not background paint.
 
-## Brand mark
+## Brand and typography
 
-Use only repository-authoritative canonical Neptlium mark geometry. Never redraw a logo from a screenshot or prompt, create competing SVG geometries, or invent token, coin, crest, or alternate “N” marks.
+Use only repository-authoritative Neptlium mark geometry. Never redraw or create competing logo geometry.
 
-The canonical mark is compact, structural, architectural, flat, monochrome-capable, and legible at small size. Control color semantically where the implementation supports it. Do not change mark geometry in ordinary Web styling work.
+Marketing uses repository-supported editorial display/serif expression with restrained sans-serif utility/body typography. Keep public type medium-scale; authority comes from hierarchy and composition rather than enormous headlines. Do not introduce fonts without repository evidence, licensing review, and performance consideration.
 
-The public identity system must support a consistent wordmark, symbol, horizontal lockup, favicon, browser icons, Apple/PWA icons, social mark, and Open Graph identity from one canonical geometry source.
+## Composition
 
-## Typography
+Create hierarchy through typography, whitespace, alignment, scale, contrast, structural lines, and surface changes before borders/elevation.
 
-Marketing typography remains distinct from operational App typography.
+Avoid card-per-concept layouts, excessive radius/shadow, nested containers, dashboard grids, decorative gradients, glassmorphism, ornamental blur, and meaningless depth.
 
-- Use repository-supported editorial display/serif authority for major marketing expression.
-- Use restrained sans-serif typography for utility and body content.
-- Preserve narrow readable measures, generous line height, and deliberate hierarchy.
-- Do not introduce a font without repository evidence, licensing review, loading/performance consideration, and explicit scope.
-- Do not turn every label into tiny uppercase institutional microcopy.
-- Do not begin every section with an eyebrow merely to simulate authority.
-
-App retains Geist/current operational typography, denser readability, and tabular numerals for financial/data contexts.
-
-## Composition and grid
-
-Create hierarchy in this order: typography, whitespace, alignment, scale, contrast, structural lines, and surface changes. Borders, elevation, shadows, and cards come later.
-
-Avoid card-per-concept layouts, excessive radius/shadow, nested containers, dashboard grids, generic three-card rows, decorative gradients, glassmorphism, and ornamental depth.
-
-Use repository spacing tokens and a 4/8-derived philosophy. The conceptual progression is `4, 8, 12, 16, 24, 32, 48, 64, 80, 96, 128, 160`; do not duplicate equivalent existing tokens. Layout supports strong left alignment, meaningful editorial asymmetry, generous negative space, controlled maximum widths, consistent responsive gutters, and selective full-bleed authority sections.
+Use controlled maximum widths, purposeful negative space, responsive gutters, and selective authority-dark sections.
 
 ## Navigation and URL authority
 
-Canonical primary marketing groups are:
+Every top-level domain is a real link. A disclosure may supplement the direct link but must not replace it.
 
-1. Platform
-2. Solutions
-3. Resources
-4. Company
+Desktop disclosures are concise and support keyboard operation, visible focus, Escape close, outside/focus close, and focus return.
 
-Use real routes. Do not create dead pages to populate navigation.
+Mobile navigation is independently designed. Parent domains remain direct links while child destinations may use accessible disclosure behavior. Preserve 44px+ touch targets, focus containment, body scroll lock, Escape close, focus restoration, and route-close behavior.
 
-Every promoted route, CTA, navigation item, footer link, canonical URL, sitemap URL, social asset, and internal destination must resolve intentionally. A completed Web build must not knowingly ship internal 404s, dead CTAs, broken canonical URLs, missing favicon/OG assets, redirect loops, or placeholder destinations.
-
-Prefer one-hop permanent redirects for superseded public URLs. `https://neptlium.com` is the canonical search authority; `https://www.neptlium.com` should converge on the apex origin rather than act as an independent SEO authority.
-
-Desktop disclosure surfaces are concise and institutional, not command palettes or architecture essays. They support keyboard operation, visible focus, Escape close, outside close, and focus return.
-
-Mobile navigation begins at the top, is left-aligned, and uses accessible accordion/disclosure behavior. The entire row is tappable; children appear below parents; one group is open at a time where practical. Preserve large touch targets, focus containment, body scroll lock, Escape close, focus restoration, and route-close behavior.
+Every promoted route, CTA, footer link, canonical URL, sitemap URL, social asset, and internal destination must resolve intentionally. Prefer one-hop permanent redirects for superseded URLs. `https://neptlium.com` is canonical search authority.
 
 ## Homepage content contract
 
-The homepage answers:
+The homepage is the entry into the wider architecture, not the entire site. It establishes proposition, operating model, Platform, Products, solution relevance, intelligence/governance/trust, why Neptlium exists, and the next action.
 
-1. What is Neptlium?
-2. Why does it matter?
-3. What is the capital operating model?
-4. How are Portfolio, Capital Account, Treasury, and Allocation related?
-5. Who is Neptlium for?
-6. Why should an institutional visitor trust the product philosophy and system design?
-7. What should the visitor do next?
+Canonical proposition:
 
-The homepage does **not** answer:
+> Digital capital,
+> organized
+> around you.
 
-- which repository features are complete;
-- which migrations are applied;
-- which providers or credentials are configured;
-- which capability flags are enabled;
-- whether App/Admin/API construction is complete;
-- current deployment or environment readiness;
-- internal release-state classifications.
+The homepage does not narrate repository features, migrations, provider configuration, capability flags, App/Admin/API construction state, deployment health, or internal release classifications.
 
-Do not teach the entire internal financial state machine. Avoid prominent public exposition of ledger mechanics, reconciliation internals, provider evidence, provisioning, provider internals, lifecycle machinery, testnet groundwork, engineering migration state, or implementation chronology unless it is the subject of an intentionally published technical document.
+## CTA authority
 
-Marketing may use strategic and conceptual product language freely, but factual external claims remain evidence-bound. Never fabricate customers, balances, AUM, volume, performance, returns, testimonials, logos, providers, partnerships, licences, custody, regulatory status, or live product availability.
+Global primary CTA is `Enter Neptlium` → authenticated application sign-in.
+
+Broad secondary exploration is `Explore platform` → `/platform`. Contextual pages may use precise next steps such as Explore products, Explore Security, or About Neptlium.
+
+Contact remains a Company destination, not the primary product-entry action.
+
+## Footer
+
+Footer navigation mirrors Platform, Products, Solutions, Resources, Company, and Legal. Do not retain dead destinations for symmetry or add unverified social links.
 
 ## Communication tone
 
-Neptlium communicates with quiet authority.
-
-Public language should be calm, exact, institutional, consequential, intelligent, sparse, and confident. Prefer declarative product/category language over startup hype. Avoid exaggerated superlatives, breathless future-of-finance language, generic “revolutionary”, “game-changing”, “10x”, “seamless everything”, or feature-count marketing.
-
-Marketing should explain a worldview and operating model, not engineering progress.
+Public language is calm, exact, institutional, intelligent, economical, and confident. Prefer mechanisms and relationships over startup hype. Marketing explains a worldview and operating model, not engineering progress.
 
 ## SEO and discoverability
 
-Public search authority belongs to `neptlium.com` only. App, Admin, API, auth, internal utilities, drafts, and operational surfaces should not compete as public search destinations.
+Public search authority belongs to `neptlium.com`. Every indexable page needs deliberate title, description, canonical URL, social metadata, robots behavior, and useful internal links.
 
-Every indexable page must have deliberate title, description, canonical URL, Open Graph metadata, Twitter/social metadata, robots behavior, internal links, and structured data only where legitimate. Do not manufacture ratings, reviews, offers, customer proof, or financial-product schema.
+Thin, empty, speculative, duplicate, draft, operational, or future-only pages should be merged, redirected, removed, or noindexed. Sitemap, robots, route policy, canonical metadata, redirects, navigation, and internal links must agree.
 
-Index substantive durable pages. Thin, empty, speculative, duplicate, draft, operational, or future-only pages should be merged, redirected, removed, or noindexed rather than used to inflate page count.
+## Accessibility, motion, and responsive behavior
 
-## Accessibility
+Preserve semantic HTML/landmarks, one clear H1, coherent heading order, keyboard access, visible focus, correct disclosure semantics, WCAG 2.2 AA contrast/targets, reduced motion, accessible link names, and meaningful ARIA only where native semantics are insufficient.
 
-Preserve semantic HTML and landmarks, one clear H1, coherent heading order, keyboard access, visible focus, correct disclosure semantics, WCAG 2.2 AA contrast and interaction targets, reduced-motion support, accessible link names, correct external-link labeling, and meaningful ARIA only where native semantics are insufficient.
+Motion communicates state or continuity; it does not decorate or imply financial execution/success.
 
-Essential content must remain visible and understandable without animation or client hydration.
+Mobile is not compressed desktop. Validate representative widths `320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440, 1600+` and preserve content priority, readable measures, stable navigation, touch behavior, and intentional whitespace.
 
-## Motion
+## CSS ownership
 
-Motion communicates state, hierarchy, continuity, or relationship; it does not decorate. Guidance bands are approximately 120–200ms for micro-interactions, 160–280ms for navigation/state changes, and 300–600ms for justified editorial reveals. Respect `prefers-reduced-motion`. Never use motion to imply financial progress, execution, settlement, or success.
+Do not add a new global override stylesheet for visual iterations.
 
-## Responsive behavior
-
-Responsive design is content-driven, and mobile is not compressed desktop. Validate representative widths `320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440, 1600+`. Preserve content priority, readable measures, stable navigation, touch behavior, and intentional whitespace rather than only preventing overflow.
+`neptlium-visual-direction.css` is the canonical visual authority for reconstructed public surfaces. Historical route-specific layers may remain only while current untouched routes rely on them. When a reconstructed surface is fully owned by the canonical layer, remove its superseded overlapping stylesheet after proving it is no longer required.
 
 ## Required validation
 
-When scripts and environment are available, run:
+When scripts/environment are available, run:
 
 ```sh
-git diff --check
+git diff --check origin/main...HEAD
+pnpm --filter @neptlium/ui typecheck
+pnpm --filter @neptlium/ui lint
 pnpm --filter @neptlium/web typecheck
 pnpm --filter @neptlium/web lint
 pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-Perform browser validation for navigation, focus, content visibility, responsive layouts, console errors, representative widths, route/link integrity, canonical behavior, favicon/social assets, and internal 404s when browser tooling is available. Report every check as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Source inspection is never a build, render, accessibility, SEO, link-integrity, or production PASS.
+On Termux/Android use `pnpm --filter @neptlium/web exec next build --webpack`.
+
+Perform browser validation for navigation, focus, content visibility, responsive layouts, console errors, representative widths, route/link integrity, canonical behavior, favicon/social assets, and internal 404s when browser tooling is available.
+
+Report every check as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Source inspection is never a build, render, accessibility, SEO, link-integrity, or production PASS.

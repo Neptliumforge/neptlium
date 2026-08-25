@@ -1,255 +1,200 @@
 # Neptlium Web Marketing System
 
 **Status:** Authoritative for `apps/web`
-
-**Scope:** Public marketing architecture, tone, CTA hierarchy, navigation, footer, responsive behavior, and visual-material direction
-
+**Scope:** Public information architecture, content roles, navigation, conversion, SEO, responsive behavior, and visual direction
 **Category:** Capital Operating Platform
 
-This document refines the Web-specific interpretation of `docs/03_DESIGN_SYSTEM.md`. Where the central design system permits a broad range of marketing expression, this document defines the current public-Web direction.
+This document refines `docs/03_DESIGN_SYSTEM.md` for the public Web. Repository implementation and tests must converge on this architecture rather than preserve superseded route organization.
 
-## 1. Web objective
+## 1. Public-Web objective
 
-`apps/web` should make Neptlium feel understandable before it feels impressive.
+`apps/web` explains Neptlium as one capital operating environment for understanding, organizing, governing, and operating capital.
 
-The public experience is calm, conversational, product-led, institutionally credible, medium-scale, and visually soft without becoming playful, bubbly, glassy, or generic SaaS.
+The site is not a feature directory, engineering-status surface, authenticated dashboard, or collection of disconnected landing pages. It should progressively establish what Neptlium is, why it exists, how the system works, what products form it, what operating problems it addresses, how intelligence/security/trust fit, and where the visitor should go next.
 
-The visitor should quickly understand:
+## 2. Canonical top-level architecture
 
-1. what Neptlium brings together;
-2. how Portfolio, Capital Account, Treasury, and Allocation relate;
-3. why connected capital work matters;
-4. how control remains part of the operating model;
-5. where to go next.
+The five public domains are exactly:
 
-## 2. Canonical CTA system
+1. **Platform** — how Neptlium works as one system.
+2. **Products** — the components that form the system.
+3. **Solutions** — the operating problems the system is designed to address.
+4. **Resources** — product understanding, security, trust, and substantive research when available.
+5. **Company** — the organization and principles behind Neptlium.
 
-The public marketing CTA pair is:
+Each domain has a real hub destination: `/platform`, `/products`, `/solutions`, `/resources`, `/company`.
 
-- **Primary:** `Enter Neptlium`
-- **Secondary:** `Explore platforms`
+A top-level label must not exist only as a dropdown trigger.
 
-`Enter Neptlium` links to the authenticated application entry point. Marketing must not replace it with `Request access` as the default global action.
+## 3. Platform
 
-`Explore platforms` links to `/platform` and is the canonical secondary action in the hero, mobile navigation, footer closing surface, and other broad marketing contexts where a second action is useful.
+Platform answers **“What is Neptlium as a whole?”**
 
-Contact remains available as a Company destination, not as the primary product-entry action.
+It explains the unified capital operating environment, system model, visibility, organization, product relationships, intelligence, governance, operating lifecycle, and architectural principles. Platform must not become a duplicate Products directory.
 
-## 3. Voice
+## 4. Products
 
-Write like a clear, informed person explaining a serious product to another informed person.
+Products answers **“What does Neptlium provide?”**
 
-Prefer:
+Canonical product family and URLs:
 
-- short declarative headlines;
-- direct verbs;
-- one idea per sentence;
-- familiar words before institutional jargon;
-- product meaning before category theory;
-- concise support copy;
-- visible outcomes and relationships rather than abstract architecture language.
+- Capital Account — `/products/capital-account`
+- Treasury — `/products/treasury`
+- Allocation — `/products/allocation`
+- Portfolio Intelligence — `/products/portfolio-intelligence`
+- Performance — `/products/performance`
+- Capital Universe — `/products/capital-universe`
 
-Avoid:
+The product model may explain strategic relationships and intended product semantics without implying unsupported production capability. Performance never manufactures returns. Capital Universe never turns strategic architecture into an asset/network/custody/execution-availability claim.
 
-- category essays as hero copy;
-- oversized slogans;
-- repetitive `institutional`, `operating environment`, `governed`, or `infrastructure` phrasing when a simpler sentence works;
-- engineering-state language;
-- startup hype;
-- retail-finance language;
-- unsupported claims.
+Superseded root product URLs permanently converge to the nested canonical family.
 
-A useful test: if a sentence sounds like an internal architecture document rather than something a prospective customer would naturally read, rewrite it.
+## 5. Solutions
 
-## 4. Type scale
+Solutions answers **“What operating problem does Neptlium help me reason about?”**
 
-Neptlium Web does not use giant typography as its main source of authority.
+Current need-based taxonomy is Capital visibility, Treasury coordination, Allocation workflows, and Governance and control. Do not invent customer/persona segmentation without evidence.
 
-Recommended responsive bands:
+Solutions connects problems to relevant products and resources without simply renaming product features.
 
-- Hero H1: `clamp(3.1rem, 5vw, 4.5rem)`
-- Major H2: `clamp(2.25rem, 4vw, 3.6rem)`
-- Product/module H3: `1.35rem–2rem`
-- Lead: `1.05rem–1.2rem`
-- Body: `0.95rem–1.05rem`
-- Utility/navigation: `0.78rem–0.9rem`
+## 6. Resources
 
-Authority comes from composition, clarity, restraint, material, and product evidence—not extreme scale.
+Resources separates different kinds of authority:
 
-## 5. Material direction
+- **Learn** — concepts, terminology, workflows, and product understanding.
+- **Security** — public security/control architecture principles.
+- **Trust** — product truth, uncertainty, privacy boundaries, risk communication, and control boundaries.
+- **Research** — substantive, dated original analysis only when it genuinely exists.
 
-Canonical colors remain Warm Ivory, Carbon, Mineral Teal, Interaction Teal, Graphite, Stone, and Soft Mist.
+Research remains a truthful non-indexable publication surface until real publications are available. Never invent articles, findings, reports, certifications, or dates to make the library look mature.
 
-Warm Ivory should feel like a digital material, not flat paper. Use subtle tonal layering, quiet high/low surfaces, restrained inset highlights, and low-contrast depth where useful.
+## 7. Company
 
-Do not use:
+Company is the institutional hub.
 
-- loud gradients;
-- glassmorphism;
-- high-glow shadows;
-- large floating card stacks;
-- soft consumer-fintech bubbles;
-- decorative blur for its own sake.
+- `/company` explains the organization and operating principles.
+- `/about` goes deeper into the Neptlium product/company thesis.
+- `/contact` provides direct contact.
+- `/press` provides verified company/media information and remains noindex until a substantive publication surface exists.
 
-Preferred radii:
+Do not fabricate employees, locations, investors, funding, customers, awards, partnerships, press coverage, licenses, or regulatory status.
 
-- 4px for precision controls;
-- 8px for buttons and menus;
-- 10–12px for contained product surfaces;
-- 16px only for rare broad atmospheric panels.
+## 8. Supporting, legal, and system routes
 
-Use shadows sparingly and at low opacity. Borders should encode structure rather than imitate ruled paper.
+Public supporting/noindex surfaces include Pricing/Access, Research, Press, Privacy, Terms, Cookie Policy, and Risk Disclosure unless later evidence justifies a different search role.
 
-## 6. Density and rhythm
+Authentication and system routes remain outside marketing search authority. Generated metadata/assets remain infrastructure surfaces rather than navigation destinations.
 
-The Web should feel calm but not empty.
+Route classification is centralized in `apps/web/lib/content/public-architecture.ts` and must agree with sitemap, redirects, navigation, tests, and page metadata.
 
-Prefer medium section spacing and keep enough meaningful content in the first viewport to explain the product without scrolling through a poster-sized hero.
+## 9. Homepage role
 
-Major section spacing generally sits around 80–120px on desktop and 56–80px on mobile, adjusted by content.
+The homepage establishes Neptlium and routes visitors into the wider architecture. It is not the entire website.
 
-Reduce repeated 1px divider rows. Use whitespace, grouping, tonal surface shifts, and alignment before borders.
+Canonical proposition remains:
 
-## 7. Product-led storytelling
+> Digital capital,
+> organized
+> around you.
 
-Marketing may use clearly illustrative product compositions when they do not fabricate live financial truth.
+The homepage moves through proposition → operating model → products → solution relevance → intelligence/governance/trust → company rationale → next action.
 
-Illustrations should show relationships such as:
+It remains image-independent: brand authority comes from typography, space, system relationships, product concepts, information, and controlled motion rather than decorative hero art.
 
-- Portfolio context alongside Treasury;
-- Allocation intent before action;
-- Capital Account as movement context;
-- review and control boundaries;
-- connected operating surfaces.
+## 10. CTA system
 
-Illustrative states must be obviously demonstrative and must not imply customer balances, execution, settlement, performance, provider availability, or live product data.
+Primary global action: **Enter Neptlium** → authenticated application sign-in.
 
-Prefer a few medium product compositions over abstract decorative architecture everywhere.
+Broad exploration action: **Explore platform** → `/platform`.
 
-## 8. Homepage architecture
+Contextual pages may use more precise next actions such as Explore products, Explore Security, or About Neptlium. Contact is a Company destination, not the default product-entry CTA.
 
-The homepage follows this narrative:
+## 11. Navigation
 
-1. **Hero:** simple promise + concise explanation + `Enter Neptlium` / `Explore platforms`.
-2. **Connected work:** why portfolio, treasury, capital movement, and allocation belong in one view.
-3. **Platform model:** Portfolio, Capital Account, Treasury, Allocation in a compact scannable composition.
-4. **Product story:** medium illustrative composition showing how context becomes deliberate action.
-5. **Control:** identity, authorization, review, and auditability explained plainly.
-6. **Audience:** investment firms, family offices, and treasury teams without persona marketing theatre.
-7. **Closing:** conversational final statement + canonical CTA pair.
+Desktop navigation exposes exactly Platform, Products, Solutions, Resources, Company.
 
-No homepage section should rely on a huge heading merely to create visual importance.
+Each top-level domain has a direct hub link. Disclosures expose concise hierarchy and must not become mini landing pages or command palettes.
 
-## 9. Desktop navigation
+Required behavior includes keyboard operation, ArrowDown entry where implemented, Escape close, outside/focus close, visible focus, `aria-expanded`, `aria-controls`, and `aria-haspopup` where applicable.
 
-Canonical groups remain Platform, Solutions, Resources, and Company.
+Mobile navigation is designed independently as a top-origin full-height structure with direct hub links plus expandable child navigation, 44px+ touch targets, body-scroll lock, focus containment/restoration, Escape close, and route-close behavior.
 
-Mega menus are compact soft-surface disclosures, not command palettes. Descriptions are short and conversational.
+## 12. Footer
 
-Examples:
+Footer hierarchy mirrors Platform, Products, Solutions, Resources, Company, and Legal.
 
-- `Overview` — See how Neptlium fits together.
-- `Portfolio` — Understand what you own and where it sits.
-- `Treasury` — See liquidity in context.
-- `Allocation` — Shape where capital should go.
-- `Capital Account` — Keep capital movement organized.
+Do not retain dead destinations for symmetry. Do not add unverified social links. GitHub may be exposed as the verified repository destination.
 
-The header primary action is `Enter Neptlium`.
+## 13. Voice and content
 
-## 10. Mobile navigation
+Copy is clear, calm, specific, economical, confident, institutional, and human.
 
-Mobile navigation is a top-origin full-height sheet with:
+Prefer mechanisms and relationships over slogans. Avoid startup hype, category essays, repeated internal architecture jargon, and unsupported outcome language.
 
-- canonical brand at the top;
-- accordion groups;
-- concise child descriptions;
-- 44px+ touch targets;
-- body scroll lock;
-- focus containment and restoration;
-- Escape close;
-- route close;
-- one expanded group where practical.
+Every section must answer a question. Remove sections that exist only to create visual length.
 
-The bottom action area contains:
+Marketing remains independent from repository progress, App/Admin/API completion, migrations, provider configuration, deployment health, feature flags, and release-readiness chronology.
 
-- `Enter Neptlium`
-- `Explore platforms`
+## 14. Visual system
 
-Contact remains inside Company.
+Canonical public identity: Warm Ivory, Carbon/near-black, Mineral Teal as a precision signal, editorial serif where useful, precise sans-serif interface typography, medium-scale hierarchy, purposeful negative space, thin structural rules, restrained geometry, and minimal elevation.
 
-## 11. Footer architecture
+Do not use neon crypto visuals, generic gradients, glassmorphism, floating card stacks, fake dashboards, decorative coins, stock photography, random 3D forms, blur-heavy atmosphere, or card grids as the default solution to every section.
 
-The footer is not a giant closing poster.
+Product explanation should use Neptlium-native operating representations and neutral states without fabricated balances, returns, transactions, AUM, customers, asset availability, providers, or execution readiness.
 
-Structure:
+## 15. Responsive system
 
-1. brand + one conversational proposition;
-2. `Enter Neptlium` and `Explore platforms`;
-3. compact navigation groups;
-4. concise legal/base row.
+Design intentionally for large desktop, laptop, tablet, mobile, and small mobile. Validate approximately 1440, 1280, 1024, 768, 430, 390, 360, and surrounding transitions.
 
-Preferred closing language should sound natural, for example:
+Mobile is not collapsed desktop. Reassess heading wrapping, navigation, section rhythm, structural rules, product representations, CTA sizing, footer layout, legal readability, and touch targets at each range.
 
-> Keep your capital work connected.
+## 16. Accessibility
 
-Supporting copy should be one or two short sentences. Avoid oversized footer headlines and repeated category slogans.
+WCAG 2.2 AA is the minimum target. Preserve landmarks, one appropriate H1 per page, coherent heading hierarchy, skip navigation, keyboard operation, focus visibility, disclosure semantics, contrast, descriptive links, touch targets, form labels, and reduced motion.
 
-## 12. Motion
+Important meaning must never depend on color or motion alone.
 
-Motion is quiet and functional.
+## 17. SEO and indexing
 
-Use it for disclosure, hover/focus continuity, small product-state illustration transitions, and justified section entrance only.
+Only pages with independent public search value belong in the sitemap.
 
-No continuous decorative motion. No motion that implies financial execution or live market activity.
+Canonical product URLs are the nested `/products/*` family. Legacy root product URLs must not compete with them and permanently redirect in one hop.
 
-## 13. Responsive rules
+Every canonical page requires purpose-specific metadata and canonical URL. Supporting noindex pages stay out of sitemap authority. Do not fabricate `lastModified` timestamps from build/request time.
 
-Mobile is not a compressed desktop poster.
+`robots.txt`, sitemap, route policy, redirects, metadata, navigation, and internal links must describe the same architecture.
 
-At small widths:
+## 18. Engineering ownership
 
-- reduce heading size early;
-- stack product compositions before they become cramped;
-- keep CTA buttons reachable and readable;
-- avoid edge-to-edge text blocks;
-- preserve useful density;
-- keep navigation labels conversational and short.
+Prefer server components, semantic HTML, CSS, and small targeted client boundaries. Do not add hydration or large dependencies for decorative effects.
 
-Validate at `320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440, 1600+`.
+The canonical current Web visual authority is `apps/web/app/neptlium-visual-direction.css`. Reconstructed global surfaces must be consolidated there rather than creating another `v2`, `final`, or override stylesheet.
 
-## 14. Web implementation architecture
+Historical route-specific CSS may remain only where current untouched routes still depend on it. When a reconstructed surface is fully owned by the canonical layer, remove superseded overlapping imports/files after proving they are no longer required.
 
-The Web CSS stack should converge toward clear ownership rather than accumulated correction layers.
+## 19. Truthfulness
 
-Preferred responsibilities:
+Never invent or imply customer assets, returns, AUM, live transactions, live providers, custody availability, execution availability, certification, regulatory approval, partnerships, customer logos, pricing, or asset support without verified authority.
 
-- `globals.css` — reset, shared tokens, base typography, generic accessibility primitives;
-- `marketing-shell.css` — header, desktop disclosure, mobile navigation, shared marketing shell;
-- `neptlium-visual-direction.css` — current homepage/material direction;
-- route-specific CSS only where a route genuinely needs a distinct composition.
+Marketing can explain product concepts and intended operating relationships without publishing internal engineering readiness.
 
-Do not create a new global override file for every visual iteration. Delete superseded layers once their rules are migrated.
+## 20. Validation
 
-## 15. Deployment and security
-
-Web deploy configuration must not remove required security headers merely to make a deployment succeed.
-
-The Vercel project for `apps/web` should build Web deterministically. App, Admin, and API projects should independently ignore Web-only commits unless shared dependency changes require their deployment.
-
-Canonical search authority is `https://neptlium.com`; `www.neptlium.com` permanently converges to the apex.
-
-## 16. Validation
-
-Every material Web reconstruction must run:
+At minimum:
 
 ```sh
-git diff --check
+git diff --check origin/main...HEAD
+pnpm --filter @neptlium/ui typecheck
+pnpm --filter @neptlium/ui lint
 pnpm --filter @neptlium/web typecheck
 pnpm --filter @neptlium/web lint
 pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-Then validate navigation, keyboard/focus behavior, representative mobile widths, CTA destinations, route/link integrity, canonical/robots/sitemap behavior, social assets, console errors, and production routing.
+On Termux/Android, use `pnpm --filter @neptlium/web exec next build --webpack`.
 
-Report every check as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`.
+Also validate the actual build route inventory, redirects/indexing policy, static links, keyboard navigation, representative responsive widths, and rendered pages when browser tooling is available.
+
+Report every check as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Never infer browser/visual certification from compilation alone.

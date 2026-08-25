@@ -50,15 +50,25 @@ test('all static internal Web links resolve to real App Router pages', () => {
   }
 });
 
-test('foundation page section links resolve to rendered fragment targets', () => {
-  const source = readFileSync(join(webRoot, 'components/foundation-page.tsx'), 'utf8');
-  assert.match(source, /const overviewId = anchorId\(anchors\[0\]/);
-  assert.match(source, /const systemsId = anchorId\(anchors\[1\]/);
-  assert.match(source, /const principleId = anchorId\(anchors\[2\]/);
-  assert.match(source, /id=\{overviewId\}/);
-  assert.match(source, /id=\{systemsId\}/);
-  assert.match(source, /id=\{principleId\}/);
-  assert.match(source, /href=\{`#\$\{anchorId\(anchor, 'section'\)\}`\}/);
+test('canonical product pages are authored independently rather than through FoundationPage', () => {
+  assert.equal(existsSync(join(webRoot, 'components/foundation-page.tsx')), false);
+  const productPaths = [
+    'products/capital-account',
+    'products/treasury',
+    'products/allocation',
+    'products/portfolio-intelligence',
+    'products/performance',
+    'products/capital-universe',
+  ];
+  const signatures = new Set();
+  for (const path of productPaths) {
+    const source = readFileSync(join(appRoot, path, 'page.tsx'), 'utf8');
+    assert.doesNotMatch(source, /FoundationPage|DetailPage/);
+    assert.equal((source.match(/<h1/g) ?? []).length, 1, `Expected one H1 in ${path}`);
+    const classes = [...source.matchAll(/className="([^"]+)"/g)].map((match) => match[1]).filter((value) => value.includes('story') || value.includes('hero'));
+    signatures.add(classes.join('|'));
+  }
+  assert.equal(signatures.size, productPaths.length, 'Product pages should not share one identical composition signature');
 });
 
 test('public access CTA resolves to the authenticated Neptlium application', () => {

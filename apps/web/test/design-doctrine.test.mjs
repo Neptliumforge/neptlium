@@ -11,6 +11,7 @@ test('marketing root loads the canonical visual-direction layer', () => {
   assert.match(layout, /data-theme="light"/);
   assert.match(layout, /colorScheme:\s*'light'/);
   assert.match(layout, /import '\.\/neptlium-visual-direction\.css';/);
+  assert.doesNotMatch(layout, /footer-depth\.css/);
   assert.match(css, /--web-ivory:\s*#f5f3ee/i);
   assert.match(css, /--web-carbon:\s*#101214/i);
   assert.match(css, /--web-teal:\s*#0f8f86/i);
@@ -25,11 +26,10 @@ test('marketing uses teal as a precision instrument', () => {
 });
 
 test('responsive and reduced-motion behavior are first-class', () => {
-  assert.match(css, /@media\s*\(max-width:\s*900px\)/);
-  assert.match(css, /@media\s*\(max-width:\s*600px\)/);
+  for (const media of ['68rem', '56rem', '40rem', '24.5rem'])
+    assert.match(css, new RegExp(`@media \\(max-width: ${media.replace('.', '\\.')}\\)`));
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.match(
-    css,
-    /\.authority-actions,\s*\.footer-actions\s*\{[^}]*align-items:\s*stretch;[^}]*flex-direction:\s*column/s,
-  );
+  assert.match(css, /\.authority-actions\s*\{[^}]*display:\s*grid/s);
+  assert.match(css, /\.command-mobile-trigger\s*\{[^}]*display:\s*inline-flex/s);
+  assert.match(css, /\.mobile-command-wrap/);
 });

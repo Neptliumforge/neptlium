@@ -4,25 +4,22 @@ import { readFile } from 'node:fs/promises';
 
 const webFile = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('public site consumes shared tokens and the canonical marketing authority', async () => {
-  const [globals, production, brand, visualDirection] = await Promise.all([
+test('public site consumes shared tokens and one canonical Web visual authority', async () => {
+  const [globals, brand, visualDirection, layout] = await Promise.all([
     webFile('app/globals.css'),
-    webFile('app/marketing-production.css'),
     readFile(new URL('../../../packages/ui/src/styles/brand.css', import.meta.url), 'utf8'),
     webFile('app/neptlium-visual-direction.css'),
+    webFile('app/layout.tsx'),
   ]);
   assert.equal(globals.includes('packages/ui/src/styles/tokens.css'), true);
-  assert.equal(production.includes("@import '../../../packages/ui/src/styles/brand.css';"), true);
-  assert.equal(production.includes('--np-paper: var(--n-brand-canvas)'), true);
-  assert.equal(production.includes('--np-ink: var(--n-brand-ink)'), true);
-  assert.equal(production.includes('--np-blue: var(--n-brand-blue)'), true);
   assert.equal(brand.includes('--n-brand-blue: #258be5'), true);
   assert.match(visualDirection, /--web-ivory:\s*#f5f3ee/);
   assert.match(visualDirection, /--web-carbon:\s*#101214/);
   assert.match(visualDirection, /--web-teal:\s*#0f8f86/);
-  assert.equal(production.includes('#2764ff'), false);
-  assert.equal(production.includes('#147dff'), false);
-  assert.equal(production.includes('radial-gradient'), false);
+  assert.equal(visualDirection.includes('#2764ff'), false);
+  assert.equal(visualDirection.includes('#147dff'), false);
+  assert.equal(visualDirection.includes('radial-gradient'), false);
+  assert.equal(layout.includes("import './neptlium-visual-direction.css';"), true);
 });
 
 test('public brand delegates geometry to the shared production mark', async () => {
@@ -64,11 +61,12 @@ test('public product visuals never format unavailable state as money', async () 
   assert.equal(/\$[0-9]|\$—|0 USD|\+[0-9]+(?:\.[0-9]+)?%/.test(visuals), false);
 });
 
-test('capital universe is strategic context and does not advertise asset availability', async () => {
-  const universe = await webFile('app/capital-universe/page.tsx');
-  assert.equal(universe.includes('index: false'), true);
-  assert.equal(universe.includes('provider-independent model for capital'), true);
-  assert.equal(universe.includes('Future architecture is not current'), true);
+test('Capital Universe is canonical strategic product context without asset-availability claims', async () => {
+  const universe = await webFile('app/products/capital-universe/page.tsx');
+  assert.equal(universe.includes("path: '/products/capital-universe'"), true);
+  assert.equal(universe.includes('Classification is not availability.'), true);
+  assert.match(universe, /does not establish asset,\s*network,\s*custody,\s*market or execution availability\./i);
+  assert.match(universe, /provider|infrastructure/i);
   assert.equal(universe.includes('USDC'), false);
   assert.equal(universe.includes('BTC'), false);
   assert.equal(universe.includes('ETH'), false);
