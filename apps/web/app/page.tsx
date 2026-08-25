@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { PRODUCTS, SOLUTIONS } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata = createPageMetadata({
   title: 'Capital Operating Platform for Investment Organizations',
   description:
-    'Neptlium brings portfolio context, capital movement, treasury and allocation into one clear capital operating platform.',
+    'Neptlium brings portfolio context, capital movement, treasury and allocation into one clear capital operating environment.',
   path: '/',
 });
 
@@ -17,41 +18,10 @@ const operatingSequence = [
   ['04', 'Portfolio Intelligence', 'Decisions return to the whole picture.'],
 ] as const;
 
-const capabilities = [
-  {
-    index: '01',
-    title: 'Capital Account',
-    copy: 'Keep funding and capital movement organized around one operating context.',
-    href: '/capital-account',
-    signal: 'Movement context',
-  },
-  {
-    index: '02',
-    title: 'Treasury',
-    copy: 'Understand liquidity alongside the rest of the capital picture.',
-    href: '/treasury',
-    signal: 'Liquidity context',
-  },
-  {
-    index: '03',
-    title: 'Allocation',
-    copy: 'Model where capital should go before anything is represented as moved.',
-    href: '/allocation',
-    signal: 'Intent before action',
-  },
-  {
-    index: '04',
-    title: 'Portfolio Intelligence',
-    copy: 'Read positions and operating context together rather than in isolation.',
-    href: '/portfolio-intelligence',
-    signal: 'Whole-picture context',
-  },
-] as const;
-
-const intelligenceLayers = [
-  ['Performance', 'A framework for understanding results without manufacturing certainty.'],
-  ['Capital Universe', 'A strategic view of the capital landscape without implying asset availability.'],
-  ['Governance', 'Identity, review and authorization stay visible around consequential decisions.'],
+const trustLayers = [
+  ['Clarity', 'Keep what is visible, modeled, authorized and authoritative conceptually distinct.'],
+  ['Governance', 'Make identity, review and control part of the operating model rather than an afterthought.'],
+  ['Security', 'Keep privileged operations and sensitive authority outside public browser control.'],
 ] as const;
 
 export default function HomePage() {
@@ -75,8 +45,8 @@ export default function HomePage() {
               <Link className="web-button primary" href={SITE.publicAccessUrl}>
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
-              <Link className="web-button secondary" href={SITE.exploreUrl}>
-                {SITE.exploreLabel} <ArrowRight aria-hidden="true" />
+              <Link className="web-button secondary" href="/platform">
+                Explore platform <ArrowRight aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -104,7 +74,7 @@ export default function HomePage() {
       <section className="operating-environment" aria-labelledby="environment-title">
         <div className="web-shell editorial-grid">
           <div>
-            <p className="web-eyebrow on-light">The operating environment</p>
+            <p className="web-eyebrow on-light">The operating model</p>
             <h2 id="environment-title">Capital should not lose context as it moves.</h2>
           </div>
           <div className="editorial-copy">
@@ -112,33 +82,66 @@ export default function HomePage() {
               Investment context, liquidity, capital movement and allocation are often separated by
               tools, teams and handoffs. Neptlium is designed to keep those relationships visible.
             </p>
-            <p>
-              The result is not another dashboard. It is a clearer operating model for understanding
-              capital, shaping intent and preserving control around action.
-            </p>
+            <Link className="text-arrow-link" href="/platform">
+              See how the platform works <ArrowRight aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="capital-organization" aria-labelledby="organization-title">
+      <section className="capital-organization" aria-labelledby="products-title">
         <div className="web-shell">
           <header className="section-heading system-heading">
-            <p className="web-eyebrow on-light">How capital is organized</p>
-            <h2 id="organization-title">One system. Distinct responsibilities.</h2>
+            <p className="web-eyebrow on-light">Products</p>
+            <h2 id="products-title">Distinct products, one operating language.</h2>
             <p>
-              Each surface has a clear role, but the relationships between them remain visible.
+              Each product has a clear responsibility. The system becomes useful through the
+              relationships between them.
             </p>
           </header>
 
           <div className="capability-system">
-            {capabilities.map((item) => (
-              <Link className="capability-row" href={item.href} key={item.title}>
-                <span className="capability-index">{item.index}</span>
+            {PRODUCTS.slice(0, 4).map((product, index) => (
+              <Link className="capability-row" href={product.href} key={product.href}>
+                <span className="capability-index">{String(index + 1).padStart(2, '0')}</span>
                 <div className="capability-copy">
-                  <h3>{item.title}</h3>
-                  <p>{item.copy}</p>
+                  <h3>{product.label}</h3>
+                  <p>{product.description}</p>
                 </div>
-                <span className="capability-signal">{item.signal}</span>
+                <span className="capability-signal">Product</span>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
+          <div className="section-followup">
+            <Link className="text-arrow-link" href="/products">
+              Explore all products <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="homepage-solutions" aria-labelledby="solutions-title">
+        <div className="web-shell architecture-split">
+          <div>
+            <p className="web-eyebrow">Solutions</p>
+            <h2 id="solutions-title">Start with the operating problem.</h2>
+            <p>
+              Neptlium is most useful where capital visibility, treasury coordination, allocation and
+              control have become fragmented across separate systems.
+            </p>
+            <Link className="text-arrow-link on-dark" href="/solutions">
+              Explore solutions <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="homepage-solution-list">
+            {SOLUTIONS.slice(0, 3).map((solution, index) => (
+              <Link href={solution.href} key={solution.href}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{solution.label}</h3>
+                  <p>{solution.description}</p>
+                </div>
                 <ArrowRight aria-hidden="true" />
               </Link>
             ))}
@@ -149,7 +152,7 @@ export default function HomePage() {
       <section className="intelligence-section" aria-labelledby="intelligence-title">
         <div className="web-shell intelligence-grid">
           <div className="intelligence-heading">
-            <p className="web-eyebrow">Intelligence and governance</p>
+            <p className="web-eyebrow">Intelligence, governance and trust</p>
             <h2 id="intelligence-title">Clarity before consequence.</h2>
             <p>
               Neptlium is designed to make the difference between understanding, modeling, reviewing
@@ -157,7 +160,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="intelligence-list">
-            {intelligenceLayers.map(([title, copy], index) => (
+            {trustLayers.map(([title, copy], index) => (
               <article key={title}>
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <div>
@@ -166,6 +169,11 @@ export default function HomePage() {
                 </div>
               </article>
             ))}
+            <div className="intelligence-links">
+              <Link href="/security">Security</Link>
+              <Link href="/trust">Trust</Link>
+              <Link href="/resources">Resources</Link>
+            </div>
           </div>
         </div>
       </section>
@@ -176,9 +184,14 @@ export default function HomePage() {
           <div>
             <h2 id="reason-title">Complex capital deserves a simpler operating language.</h2>
             <p>
-              Neptlium exists to reduce the distance between knowing where capital stands, understanding
-              what should change, and moving forward with the right context and control.
+              Neptlium exists to reduce the distance between knowing where capital stands,
+              understanding what should change, and moving forward with the right context and control.
             </p>
+            <div className="inline-links home-company-links">
+              <Link href="/about">About Neptlium</Link>
+              <Link href="/company">Company</Link>
+              <Link href="/learn">Learn</Link>
+            </div>
           </div>
         </div>
       </section>
@@ -191,14 +204,15 @@ export default function HomePage() {
           </div>
           <div>
             <p className="authority-hero-lead">
-              Enter the operating application or explore how the public platform story fits together.
+              Enter Neptlium or continue through the public architecture to understand the system in
+              more depth.
             </p>
             <div className="authority-actions">
               <Link className="web-button primary" href={SITE.publicAccessUrl}>
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
-              <Link className="web-button secondary" href={SITE.exploreUrl}>
-                {SITE.exploreLabel}
+              <Link className="web-button secondary" href="/products">
+                Explore products
               </Link>
             </div>
           </div>
