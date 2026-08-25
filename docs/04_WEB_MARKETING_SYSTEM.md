@@ -91,11 +91,13 @@ Route classification is centralized in `apps/web/lib/content/public-architecture
 
 The homepage establishes Neptlium and routes visitors into the wider architecture. It is not the entire website.
 
-Canonical proposition remains:
+The canonical proposition is deliberately category-defining and minimal:
 
-> Digital capital,
-> organized
-> around you.
+> **The operating system for capital.**
+>
+> See, coordinate and govern capital across treasury, allocation and portfolio context.
+
+The headline should work the way the strongest infrastructure brands do: one clear category statement, followed by one short explanatory sentence. Do not stack slogans, decorate the proposition with unnecessary microcopy, or force line breaks for spectacle.
 
 The homepage moves through proposition → operating model → products → solution relevance → intelligence/governance/trust → company rationale → next action.
 
