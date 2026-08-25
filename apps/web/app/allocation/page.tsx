@@ -5,7 +5,7 @@ import { createPageMetadata } from '@/lib/seo';
 export const metadata = createPageMetadata({
   title: 'Institutional Capital Allocation Platform',
   description:
-    'Explore Neptlium’s governed allocation model for shaping capital intent while keeping modeling, approval and execution as distinct states.',
+    'Explore how Neptlium helps teams shape allocation intent, review it clearly and keep authority explicit before capital moves.',
   path: '/allocation',
 });
 
@@ -13,12 +13,12 @@ export default function Page() {
   return (
     <FoundationPage
       eyebrow="Allocation"
-      title="Capital structure before capital movement."
-      intro="Model how capital could be positioned, review that intent against policy and preserve the distinction between a proposed structure and an executed financial outcome."
-      anchors={['Decision pathway', 'Capital roles', 'Authorization']}
+      title="Shape the plan before capital moves."
+      intro="Use allocation to turn investment intent into a clear plan your team can review before anything becomes an action."
+      anchors={['Allocation intent', 'Capital roles', 'Review']}
       lead={[
-        'Model. Review. Authorize. Then establish execution truth.',
-        'Neptlium is designed to keep analytical context, allocation intent, approval and downstream execution evidence legible as different states.',
+        'Model the next move without confusing it with the outcome.',
+        'Neptlium keeps allocation intent, review and downstream action understandable as separate steps in the same operating process.',
       ]}
       visual={
         <>
@@ -29,24 +29,22 @@ export default function Page() {
       cards={[
         {
           title: 'Allocation intent',
-          body: 'Express a proposed capital structure without representing the proposal as actual movement.',
+          body: 'Express how capital could be positioned before anything changes.',
         },
         {
-          title: 'Policy context',
-          body: 'Evaluate allocation intent against the constraints and operating context that govern the decision.',
+          title: 'Capital roles',
+          body: 'Keep the purpose of different pools of capital visible in the decision.',
         },
         {
-          title: 'Review and approval',
-          body: 'Separate analysis from the authority required to approve a consequential action.',
+          title: 'Review',
+          body: 'Give the right people a clear view of what is being proposed.',
         },
         {
-          title: 'Execution evidence',
-          body: 'Treat provider submission, settlement and reconciliation as downstream states requiring their own evidence.',
+          title: 'Action boundaries',
+          body: 'Keep planning, approval and financial outcome visibly distinct.',
         },
       ]}
-      principle="Modeled does not mean executed. Approved does not mean submitted."
-      cta="Request access"
-      ctaHref="/contact"
+      principle="Plan clearly. Review deliberately. Keep outcomes separate from intent."
     />
   );
 }
