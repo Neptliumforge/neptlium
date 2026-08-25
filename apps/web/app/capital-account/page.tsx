@@ -5,7 +5,7 @@ import { createPageMetadata } from '@/lib/seo';
 export const metadata = createPageMetadata({
   title: 'Institutional Capital Account',
   description:
-    'Explore Neptlium’s capital-account operating model for capital context, funding intent and controlled movement within explicit authority boundaries.',
+    'Explore how Neptlium keeps capital movement organized and connected to portfolio and treasury context.',
   path: '/capital-account',
 });
 
@@ -13,35 +13,33 @@ export default function Page() {
   return (
     <FoundationPage
       eyebrow="Capital Account"
-      title="Capital needs a clear operating boundary."
-      intro="Neptlium is designed to organize capital context, funding intent and controlled movement without turning infrastructure configuration into a promise of asset, network or provider availability."
-      anchors={['Account context', 'Operating boundaries', 'Availability']}
+      title="Keep capital movement organized."
+      intro="Bring funding and capital movement into the same operating picture as portfolio and treasury work so your team can follow what is changing and why."
+      anchors={['Capital context', 'Movement', 'Control']}
       lead={[
-        'A governed account view, not a trading screen.',
-        'Capital-account information stays connected to the wider portfolio while account state, network context, eligibility and authorization remain explicit.',
+        'Capital movement should stay connected to context.',
+        'Neptlium keeps account activity close to the wider portfolio picture while preserving the boundaries around review, authority and outcome.',
       ]}
       visual={<CapitalAccountVisual />}
       cards={[
         {
           title: 'Capital context',
-          body: 'Understand account state in relation to portfolio and treasury context.',
+          body: 'See account activity alongside portfolio and treasury context.',
         },
         {
-          title: 'Funding intent',
-          body: 'Represent planned or requested capital movement without presenting it as completed funding.',
+          title: 'Movement',
+          body: 'Keep planned and requested movement easy to follow as it progresses.',
         },
         {
-          title: 'Operating boundaries',
-          body: 'Keep network, account, eligibility and authorization boundaries visible when they matter.',
+          title: 'Boundaries',
+          body: 'Make the relevant account, network and authorization context clear when it matters.',
         },
         {
-          title: 'Availability truth',
-          body: 'Configured infrastructure, supported source code and production availability remain separate claims.',
+          title: 'Outcome',
+          body: 'Keep intent, action and final financial state distinct.',
         },
       ]}
-      principle="Configured does not mean available. Requested does not mean settled."
-      cta="Request access"
-      ctaHref="/contact"
+      principle="Movement is easier to understand when the surrounding context stays visible."
     />
   );
 }
