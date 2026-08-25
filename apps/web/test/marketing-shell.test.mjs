@@ -83,19 +83,15 @@ test('navigation preserves desktop and mobile accessibility', () => {
     assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
 });
 
-test('footer closes the shell with six groups and canonical destinations', () => {
+test('footer closes the shell with six groups and verified destinations', () => {
   for (const label of ['Platform', 'Solutions', 'Resources', 'Company', 'Legal', 'Connect'])
     assert.match(footer, new RegExp(`label: '${label}'`));
-  for (const destination of [
-    'https://bsky.app/profile/neptlium.bsky.social',
-    'https://x.com/Neptlium',
-    'https://youtube.com/@neptlium',
-    'https://www.tiktok.com/@neptlium',
-    'https://github.com/Neptliumforge',
-  ])
-    assert.match(footer, new RegExp(destination.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+  assert.match(footer, /https:\/\/github\.com\/Neptliumforge/);
+  for (const unverified of ['bsky.app', 'x.com/Neptlium', 'youtube.com/@neptlium', 'tiktok.com/@neptlium'])
+    assert.doesNotMatch(footer, new RegExp(unverified.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.doesNotMatch(footer, /Neptliumlabs/i);
   assert.doesNotMatch(footer, /href=["']#["']/);
+  assert.doesNotMatch(footer, /Product availability is established|authenticated operating environment/i);
 });
 
 test('canonical brand and palette remain authoritative', () => {
