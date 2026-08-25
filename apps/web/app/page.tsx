@@ -38,7 +38,7 @@ export default function HomePage() {
               <Link className="web-button primary" href={SITE.publicAccessUrl}>
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
-              <Link className="web-button secondary" href="/platform">
+              <Link className="text-arrow-link on-dark" href="/platform">
                 Explore platform <ArrowRight aria-hidden="true" />
               </Link>
             </div>
@@ -57,9 +57,7 @@ export default function HomePage() {
                 </li>
               ))}
             </ol>
-            <p className="hero-system-note">
-              System relationship only. No customer balances, transactions or performance data are shown.
-            </p>
+            <p className="hero-system-note">Illustrative operating relationship. No customer financial data shown.</p>
           </div>
         </div>
       </section>
@@ -204,8 +202,8 @@ export default function HomePage() {
               <Link className="web-button primary" href={SITE.publicAccessUrl}>
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
-              <Link className="web-button secondary" href="/products">
-                Explore products
+              <Link className="text-arrow-link on-dark" href="/products">
+                Explore products <ArrowRight aria-hidden="true" />
               </Link>
             </div>
           </div>

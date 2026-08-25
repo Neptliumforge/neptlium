@@ -118,9 +118,17 @@ export function SiteHeader() {
   const path = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSection, setMobileSection] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 32);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -159,7 +167,7 @@ export function SiteHeader() {
   }, [mobileOpen]);
 
   return (
-    <header className="site-header capital-command-bar">
+    <header className="site-header capital-command-bar" data-scrolled={scrolled ? 'true' : 'false'}>
       <div className="nav-shell">
         <Brand tone="current" />
         <nav className="desktop-command-nav" aria-label="Primary navigation">
