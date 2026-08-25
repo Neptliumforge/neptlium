@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './marketing-shell.css';
-import './footer-depth.css';
 import './production-hardening.css';
 import './apple-calibration.css';
 import './product-showcase-calibration.css';
