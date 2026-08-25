@@ -9,6 +9,8 @@
   --web-graphite: #343a3f;
   --web-stone: #d8d5ce;
   --web-mist: #eceae5;
+  --web-rule-dark: rgb(245 243 238 / 14%);
+  --web-rule-light: rgb(16 18 20 / 14%);
   --web-shadow-soft: 0 18px 60px rgb(16 18 20 / 6%);
 }
 
@@ -40,10 +42,10 @@ body:has(.neptlium-home) .site-header {
   inset: 0 0 auto;
   z-index: 50;
   height: 4.5rem;
-  border-bottom: 1px solid rgb(245 243 238 / 10%);
-  background: rgb(16 18 20 / 82%);
+  border-bottom: 1px solid var(--web-rule-dark);
+  background: rgb(16 18 20 / 94%);
   color: var(--web-ivory);
-  backdrop-filter: blur(12px);
+  backdrop-filter: none;
 }
 
 body:has(.neptlium-home) .site-header .brand,
@@ -121,59 +123,83 @@ body:has(.neptlium-home) :focus-visible {
 
 .authority-hero {
   position: relative;
-  isolation: isolate;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 78% 34%, rgb(32 175 163 / 12%), transparent 30%),
-    linear-gradient(180deg, #111416 0%, var(--web-carbon) 72%);
+  background: var(--web-carbon);
   color: var(--web-ivory);
 }
 
-.authority-hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 1.1fr);
-  gap: clamp(3rem, 7vw, 6rem);
-  align-items: center;
-  min-height: 43rem;
-  padding-block: 8rem 5rem;
+.authority-hero::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--web-teal);
+  content: '';
+  opacity: 0.72;
+}
+
+.authority-hero-inner {
+  min-height: min(52rem, 92vh);
+  padding-block: clamp(8.5rem, 13vw, 11rem) clamp(4.5rem, 7vw, 6rem);
 }
 
 .authority-hero-copy {
-  max-width: 38rem;
+  display: grid;
+  max-width: 58rem;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .authority-hero h1,
-.editorial-intro h2,
-.section-heading h2,
-.operations-section h2,
-.control-section h2,
+.operating-environment h2,
+.capital-organization h2,
+.intelligence-section h2,
+.reason-section h2,
 .final-authority h2,
 .institutional-footer h2 {
   font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
   font-weight: 400;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.038em;
 }
 
 .authority-hero h1 {
-  margin: 1.3rem 0 1.25rem;
+  display: grid;
+  margin: 1.55rem 0 1.45rem;
   max-width: 11ch;
   font-size: clamp(3.1rem, 5vw, 4.5rem);
-  line-height: 0.98;
+  line-height: 0.96;
+}
+
+.authority-hero h1 span:nth-child(2) {
+  position: relative;
+  width: fit-content;
+  padding-right: 0.35em;
+}
+
+.authority-hero h1 span:nth-child(2)::after {
+  position: absolute;
+  right: 0;
+  bottom: 0.12em;
+  width: 0.12em;
+  height: 0.12em;
+  border-radius: 50%;
+  background: var(--web-teal-interaction);
+  content: '';
 }
 
 .authority-hero-lead {
-  max-width: 34rem;
+  max-width: 39rem;
   margin: 0;
-  color: rgb(245 243 238 / 76%);
+  color: rgb(245 243 238 / 72%);
   font-size: clamp(1.02rem, 1.4vw, 1.16rem);
-  line-height: 1.62;
+  line-height: 1.66;
 }
 
 .authority-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem;
-  margin-top: 1.8rem;
+  margin-top: 1.9rem;
 }
 
 .web-button {
@@ -181,7 +207,7 @@ body:has(.neptlium-home) :focus-visible {
   min-height: 3rem;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.72rem;
   padding: 0.7rem 1rem;
   border: 1px solid transparent;
   border-radius: 0.5rem;
@@ -199,7 +225,7 @@ body:has(.neptlium-home) :focus-visible {
 }
 
 .web-button svg,
-.editorial-link svg {
+.capability-row svg {
   width: 0.95rem;
 }
 
@@ -213,325 +239,286 @@ body:has(.neptlium-home) :focus-visible {
 }
 
 .web-button.secondary {
-  border-color: rgb(245 243 238 / 28%);
-  background: rgb(245 243 238 / 5%);
+  border-color: rgb(245 243 238 / 26%);
+  background: transparent;
   color: var(--web-ivory);
 }
 
 .web-button.secondary:hover {
-  border-color: rgb(245 243 238 / 45%);
-  background: rgb(245 243 238 / 9%);
+  border-color: rgb(245 243 238 / 46%);
+  background: rgb(245 243 238 / 5%);
 }
 
-.product-context {
+.hero-system {
   position: relative;
-  overflow: hidden;
-  padding: 1rem;
-  border: 1px solid rgb(245 243 238 / 13%);
-  border-radius: 0.9rem;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 8%), rgb(255 255 255 / 3%)),
-    #171a1c;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 9%),
-    0 28px 80px rgb(0 0 0 / 18%);
+  margin-top: clamp(4rem, 8vw, 7rem);
+  padding-top: 1.25rem;
 }
 
-.product-context::after {
+.hero-system-rule {
   position: absolute;
-  right: -5rem;
-  bottom: -7rem;
-  width: 16rem;
-  height: 16rem;
-  border-radius: 50%;
-  background: rgb(32 175 163 / 9%);
-  filter: blur(34px);
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--web-rule-dark);
+}
+
+.hero-system-rule::before {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 4rem;
+  height: 5px;
+  background: var(--web-teal);
   content: '';
-  pointer-events: none;
 }
 
-.product-context-head {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.35rem 0.35rem 0.9rem;
-  color: rgb(245 243 238 / 56%);
-  font-size: 0.72rem;
-}
-
-.product-context-grid {
+.hero-system ol {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(12rem, 0.9fr);
-  gap: 0.7rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.product-context-primary,
-.product-context-stack > div {
-  border: 1px solid rgb(245 243 238 / 10%);
-  border-radius: 0.7rem;
-  background: rgb(245 243 238 / 4%);
+.hero-system li {
+  display: grid;
+  min-height: 8.5rem;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.8rem;
+  padding: 1.1rem 1.1rem 1.1rem 0;
+  border-right: 1px solid var(--web-rule-dark);
 }
 
-.product-context-primary {
-  min-height: 18rem;
-  padding: 1.35rem;
+.hero-system li + li {
+  padding-left: 1.1rem;
 }
 
-.product-context-label,
-.product-context-stack span {
-  color: #83c9c3;
-  font-size: 0.72rem;
+.hero-system li:last-child {
+  border-right: 0;
 }
 
-.product-context-primary strong {
+.hero-system-index,
+.capability-index,
+.intelligence-list article > span {
+  color: var(--web-teal-interaction);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.hero-system strong {
   display: block;
-  max-width: 11ch;
-  margin-top: 4.5rem;
-  font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
-  font-size: clamp(1.8rem, 3vw, 2.7rem);
-  font-weight: 400;
-  line-height: 1.05;
+  font-size: 0.88rem;
+  font-weight: 650;
 }
 
-.product-context-primary p {
-  max-width: 28rem;
+.hero-system li p {
+  max-width: 13rem;
+  margin: 0.55rem 0 0;
+  color: rgb(245 243 238 / 52%);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.hero-system-note {
   margin: 0.9rem 0 0;
-  color: rgb(245 243 238 / 62%);
-  font-size: 0.9rem;
-  line-height: 1.55;
+  color: rgb(245 243 238 / 38%);
+  font-size: 0.68rem;
 }
 
-.product-context-stack {
-  display: grid;
-  gap: 0.7rem;
-}
-
-.product-context-stack > div {
-  display: flex;
-  min-height: 5.5rem;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1rem;
-}
-
-.product-context-stack strong {
-  font-size: 0.93rem;
-  font-weight: 600;
-}
-
-.product-context-note {
-  margin: 0.8rem 0.35rem 0;
-  color: rgb(245 243 238 / 42%);
-  font-size: 0.67rem;
-}
-
-.editorial-intro,
-.platform-section,
-.control-section,
-.audience-section {
+.operating-environment,
+.capital-organization,
+.reason-section {
   background: var(--web-ivory);
 }
 
-.editorial-intro,
-.control-section {
-  padding: clamp(5rem, 8vw, 7.5rem) 0;
+.operating-environment {
+  padding: clamp(6rem, 10vw, 9rem) 0 clamp(4.5rem, 8vw, 7rem);
 }
 
 .editorial-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.8fr);
-  gap: clamp(3rem, 8vw, 7rem);
+  grid-template-columns: minmax(0, 0.95fr) minmax(18rem, 0.75fr);
+  gap: clamp(3rem, 9vw, 8rem);
   align-items: start;
 }
 
-.editorial-intro h2,
-.section-heading h2,
-.operations-section h2,
-.control-section h2,
+.operating-environment h2,
+.capital-organization h2,
+.intelligence-section h2,
+.reason-section h2,
 .final-authority h2 {
-  margin: 0.9rem 0 0;
+  margin: 0.95rem 0 0;
   font-size: clamp(2.25rem, 4vw, 3.6rem);
   line-height: 1.02;
 }
 
-.editorial-grid > p,
-.editorial-grid > div:last-child > p {
-  max-width: 35rem;
+.editorial-copy {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.editorial-copy p,
+.system-heading > p:last-child,
+.intelligence-heading > p:last-child,
+.reason-grid > div > p {
+  max-width: 38rem;
   margin: 0;
   color: var(--web-graphite);
   font-size: 1.02rem;
   line-height: 1.7;
 }
 
-.platform-section,
-.audience-section {
-  padding: 1rem 0 clamp(5rem, 8vw, 7.5rem);
+.capital-organization {
+  padding: 1rem 0 clamp(6rem, 10vw, 9rem);
 }
 
-.compact-heading {
-  max-width: 42rem;
-}
-
-.platform-list {
+.system-heading {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.8rem;
-  margin-top: 2.5rem;
+  max-width: 48rem;
+  gap: 0;
 }
 
-.platform-list-item {
+.system-heading > p:last-child {
+  margin-top: 1.35rem;
+}
+
+.capability-system {
+  margin-top: 3.25rem;
+  border-top: 1px solid var(--web-rule-light);
+}
+
+.capability-row {
   display: grid;
-  grid-template-columns: 2.2rem 1fr auto;
+  grid-template-columns: 3.5rem minmax(0, 1.3fr) minmax(10rem, 0.55fr) 1.5rem;
   gap: 1rem;
-  min-height: 9.5rem;
-  padding: 1.25rem;
-  border: 1px solid rgb(216 213 206 / 72%);
-  border-radius: 0.8rem;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 68%), rgb(255 255 255 / 22%)),
-    var(--web-ivory-high);
-  box-shadow: 0 10px 35px rgb(16 18 20 / 3.5%);
-  transition:
-    border-color 180ms ease,
-    transform 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.platform-list-item:hover {
-  border-color: rgb(15 143 134 / 34%);
-  box-shadow: 0 16px 45px rgb(16 18 20 / 5%);
-  transform: translateY(-2px);
-}
-
-.platform-list-item > span {
-  color: var(--web-teal);
-  font-size: 0.72rem;
-}
-
-.platform-list-item h3,
-.platform-list-item p {
-  margin: 0;
-}
-
-.platform-list-item h3 {
-  font-size: 1.25rem;
-}
-
-.platform-list-item p {
-  max-width: 26rem;
-  margin-top: 0.55rem;
-  color: var(--web-graphite);
-  font-size: 0.92rem;
-  line-height: 1.55;
-}
-
-.platform-list-item svg {
-  width: 1rem;
-  color: var(--web-teal);
-}
-
-.operations-section {
-  padding: clamp(5.5rem, 9vw, 8rem) 0;
-  background:
-    radial-gradient(circle at 15% 10%, rgb(32 175 163 / 8%), transparent 28%),
-    var(--web-carbon);
-  color: var(--web-ivory);
-}
-
-.operations-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(20rem, 0.75fr);
-  gap: clamp(3rem, 8vw, 7rem);
-}
-
-.operations-narrative > p {
-  margin: 0 0 2rem;
-  color: rgb(245 243 238 / 68%);
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-.operations-narrative ol {
-  display: grid;
-  gap: 0.65rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.operations-narrative li {
-  display: grid;
-  grid-template-columns: 2.25rem 1fr;
-  gap: 0.8rem;
-  padding: 0.95rem 1rem;
-  border: 1px solid rgb(245 243 238 / 10%);
-  border-radius: 0.65rem;
-  background: rgb(245 243 238 / 3.5%);
-}
-
-.operations-narrative li span {
-  color: var(--web-teal-interaction);
-  font-size: 0.72rem;
-}
-
-.operations-narrative li strong {
-  font-size: 0.93rem;
-  font-weight: 600;
-}
-
-.editorial-link {
-  display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  margin-top: 1.6rem;
-  color: var(--web-carbon);
-  font-size: 0.9rem;
-  font-weight: 650;
-}
-
-.editorial-link::after {
-  display: block;
-  width: 1.7rem;
-  height: 1px;
-  background: var(--web-teal);
-  content: '';
-}
-
-.audience-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 2.5rem;
-}
-
-.audience-grid article {
+  min-height: 9rem;
   padding: 1.2rem 0;
+  border-bottom: 1px solid var(--web-rule-light);
+  transition:
+    padding-inline 180ms ease,
+    background-color 180ms ease;
 }
 
-.audience-grid h3,
-.audience-grid p {
+.capability-row:hover {
+  padding-inline: 0.8rem;
+  background: var(--web-ivory-high);
+}
+
+.capability-copy h3,
+.capability-copy p {
   margin: 0;
 }
 
-.audience-grid h3 {
-  font-size: 1.12rem;
+.capability-copy h3 {
+  font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
 }
 
-.audience-grid p {
-  margin-top: 0.65rem;
+.capability-copy p {
+  max-width: 34rem;
+  margin-top: 0.5rem;
   color: var(--web-graphite);
   font-size: 0.92rem;
   line-height: 1.58;
 }
 
-.final-authority {
-  padding: clamp(4.5rem, 8vw, 6.5rem) 0;
+.capability-signal {
+  color: var(--web-graphite);
+  font-size: 0.75rem;
+}
+
+.capability-row svg {
+  justify-self: end;
+  color: var(--web-teal);
+}
+
+.intelligence-section {
+  padding: clamp(6rem, 10vw, 9rem) 0;
   background: var(--web-carbon-soft);
+  color: var(--web-ivory);
+}
+
+.intelligence-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.8fr);
+  gap: clamp(4rem, 10vw, 9rem);
+  align-items: start;
+}
+
+.intelligence-heading {
+  position: sticky;
+  top: 7rem;
+}
+
+.intelligence-heading > p:last-child {
+  margin-top: 1.5rem;
+  color: rgb(245 243 238 / 64%);
+}
+
+.intelligence-list {
+  border-top: 1px solid var(--web-rule-dark);
+}
+
+.intelligence-list article {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--web-rule-dark);
+}
+
+.intelligence-list h3,
+.intelligence-list p {
+  margin: 0;
+}
+
+.intelligence-list h3 {
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.intelligence-list p {
+  max-width: 30rem;
+  margin-top: 0.6rem;
+  color: rgb(245 243 238 / 56%);
+  font-size: 0.88rem;
+  line-height: 1.58;
+}
+
+.reason-section {
+  padding: clamp(6rem, 10vw, 9rem) 0;
+}
+
+.reason-grid {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr);
+  gap: clamp(3rem, 9vw, 8rem);
+  align-items: start;
+}
+
+.reason-grid > div {
+  max-width: 48rem;
+}
+
+.reason-grid > div > p {
+  margin-top: 1.5rem;
+}
+
+.final-authority {
+  padding: clamp(5rem, 8vw, 7rem) 0;
+  background: var(--web-carbon);
   color: var(--web-ivory);
 }
 
 .final-authority-inner {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.75fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 0.7fr);
   gap: clamp(3rem, 8vw, 7rem);
   align-items: end;
 }
@@ -597,7 +584,7 @@ body:has(.neptlium-home) :focus-visible {
 
 .footer-secondary-action {
   border: 1px solid var(--web-stone);
-  background: rgb(255 255 255 / 30%);
+  background: transparent;
 }
 
 .footer-navigation-grid {
@@ -649,34 +636,45 @@ body:has(.neptlium-home) :focus-visible {
     width: min(calc(100% - 2rem), 78rem);
   }
 
-  .authority-hero-grid,
+  .authority-hero-inner {
+    min-height: auto;
+    padding-block: 8rem 4.5rem;
+  }
+
+  .hero-system ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-system li:nth-child(2) {
+    border-right: 0;
+  }
+
+  .hero-system li:nth-child(n + 3) {
+    border-top: 1px solid var(--web-rule-dark);
+  }
+
   .editorial-grid,
-  .operations-grid,
+  .intelligence-grid,
   .final-authority-inner,
   .institutional-footer .footer-primary {
     grid-template-columns: 1fr;
   }
 
-  .authority-hero-grid {
-    min-height: auto;
-    padding-block: 7.5rem 4rem;
+  .intelligence-heading {
+    position: static;
   }
 
-  .product-context {
-    max-width: 42rem;
+  .capability-row {
+    grid-template-columns: 3rem minmax(0, 1fr) 1.5rem;
   }
 
-  .platform-list {
+  .capability-signal {
+    display: none;
+  }
+
+  .reason-grid {
     grid-template-columns: 1fr;
-  }
-
-  .audience-grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .audience-grid article + article {
-    border-top: 1px solid rgb(216 213 206 / 74%);
+    gap: 1.25rem;
   }
 
   .footer-navigation-grid {
@@ -689,19 +687,21 @@ body:has(.neptlium-home) :focus-visible {
     height: 4.2rem;
   }
 
-  .authority-hero-grid {
-    gap: 2.5rem;
-    padding-block: 6.8rem 3.5rem;
+  .authority-hero-inner {
+    padding-block: 7.2rem 3.75rem;
   }
 
   .authority-hero h1 {
-    max-width: 12ch;
+    max-width: 10ch;
     font-size: clamp(2.75rem, 12vw, 3.55rem);
+    line-height: 0.98;
   }
 
   .authority-hero-lead,
-  .editorial-grid > p,
-  .editorial-grid > div:last-child > p {
+  .editorial-copy p,
+  .system-heading > p:last-child,
+  .intelligence-heading > p:last-child,
+  .reason-grid > div > p {
     font-size: 0.98rem;
   }
 
@@ -717,42 +717,75 @@ body:has(.neptlium-home) :focus-visible {
     width: 100%;
   }
 
-  .product-context-grid {
+  .hero-system {
+    margin-top: 3.5rem;
+  }
+
+  .hero-system ol {
     grid-template-columns: 1fr;
   }
 
-  .product-context-primary {
-    min-height: 14rem;
+  .hero-system li,
+  .hero-system li + li {
+    min-height: auto;
+    grid-template-columns: 2rem 1fr;
+    padding: 1rem 0;
+    border-top: 1px solid var(--web-rule-dark);
+    border-right: 0;
   }
 
-  .product-context-primary strong {
-    margin-top: 3rem;
+  .hero-system li:first-child {
+    border-top: 0;
   }
 
-  .editorial-intro,
-  .control-section,
-  .operations-section,
+  .hero-system li p {
+    max-width: none;
+  }
+
+  .operating-environment,
+  .intelligence-section,
+  .reason-section,
   .final-authority {
-    padding-block: 4.5rem;
+    padding-block: 4.75rem;
   }
 
-  .platform-section,
-  .audience-section {
-    padding-bottom: 4.5rem;
+  .capital-organization {
+    padding-bottom: 4.75rem;
   }
 
-  .editorial-intro h2,
-  .section-heading h2,
-  .operations-section h2,
-  .control-section h2,
+  .operating-environment h2,
+  .capital-organization h2,
+  .intelligence-section h2,
+  .reason-section h2,
   .final-authority h2 {
     font-size: clamp(2.1rem, 10vw, 2.8rem);
   }
 
-  .platform-list-item {
-    grid-template-columns: 1.8rem 1fr auto;
-    min-height: 8.5rem;
-    padding: 1rem;
+  .capability-system {
+    margin-top: 2.5rem;
+  }
+
+  .capability-row {
+    grid-template-columns: 2rem minmax(0, 1fr) 1rem;
+    min-height: 0;
+    padding: 1.25rem 0;
+  }
+
+  .capability-row:hover {
+    padding-inline: 0;
+    background: transparent;
+  }
+
+  .capability-copy h3 {
+    font-size: 1.45rem;
+  }
+
+  .capability-copy p {
+    font-size: 0.86rem;
+  }
+
+  .intelligence-list article {
+    padding-block: 1.25rem;
   }
 
   .footer-navigation-grid {
@@ -767,12 +800,11 @@ body:has(.neptlium-home) :focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .web-button,
-  .platform-list-item {
+  .capability-row {
     transition: none;
   }
 
-  .web-button:hover,
-  .platform-list-item:hover {
+  .web-button:hover {
     transform: none;
   }
 }

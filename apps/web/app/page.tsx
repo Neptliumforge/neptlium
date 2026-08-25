@@ -10,63 +10,66 @@ export const metadata = createPageMetadata({
   path: '/',
 });
 
-const platformAreas = [
-  ['Portfolio', 'See what you own and understand it in context.', '/portfolio-intelligence'],
-  ['Capital Account', 'Keep capital movement organized and visible.', '/capital-account'],
-  ['Treasury', 'See liquidity alongside the rest of your capital picture.', '/treasury'],
-  ['Allocation', 'Model where capital should go before anything moves.', '/allocation'],
+const operatingSequence = [
+  ['01', 'Capital Account', 'Capital enters the operating context.'],
+  ['02', 'Treasury', 'Liquidity stays visible in context.'],
+  ['03', 'Allocation', 'Intent is shaped before action.'],
+  ['04', 'Portfolio Intelligence', 'Decisions return to the whole picture.'],
 ] as const;
 
-const audiences = [
-  ['Investment firms', 'Bring investment context and capital operations into one shared view.'],
-  ['Family offices', 'Keep portfolio, liquidity and allocation conversations connected.'],
-  ['Treasury teams', 'See where capital stands before deciding what happens next.'],
+const capabilities = [
+  {
+    index: '01',
+    title: 'Capital Account',
+    copy: 'Keep funding and capital movement organized around one operating context.',
+    href: '/capital-account',
+    signal: 'Movement context',
+  },
+  {
+    index: '02',
+    title: 'Treasury',
+    copy: 'Understand liquidity alongside the rest of the capital picture.',
+    href: '/treasury',
+    signal: 'Liquidity context',
+  },
+  {
+    index: '03',
+    title: 'Allocation',
+    copy: 'Model where capital should go before anything is represented as moved.',
+    href: '/allocation',
+    signal: 'Intent before action',
+  },
+  {
+    index: '04',
+    title: 'Portfolio Intelligence',
+    copy: 'Read positions and operating context together rather than in isolation.',
+    href: '/portfolio-intelligence',
+    signal: 'Whole-picture context',
+  },
 ] as const;
 
-function ProductContextIllustration() {
-  return (
-    <div className="product-context" aria-label="Illustrative Neptlium platform relationship">
-      <div className="product-context-head">
-        <span>Neptlium</span>
-        <span>Capital context</span>
-      </div>
-      <div className="product-context-grid">
-        <div className="product-context-primary">
-          <span className="product-context-label">Portfolio</span>
-          <strong>Understand the whole picture.</strong>
-          <p>Bring positions, capital context and operating decisions into one place.</p>
-        </div>
-        <div className="product-context-stack">
-          <div>
-            <span>Treasury</span>
-            <strong>Liquidity in context</strong>
-          </div>
-          <div>
-            <span>Allocation</span>
-            <strong>Intent before action</strong>
-          </div>
-          <div>
-            <span>Control</span>
-            <strong>Review stays explicit</strong>
-          </div>
-        </div>
-      </div>
-      <p className="product-context-note">Illustrative platform composition. No customer financial data is shown.</p>
-    </div>
-  );
-}
+const intelligenceLayers = [
+  ['Performance', 'A framework for understanding results without manufacturing certainty.'],
+  ['Capital Universe', 'A strategic view of the capital landscape without implying asset availability.'],
+  ['Governance', 'Identity, review and authorization stay visible around consequential decisions.'],
+] as const;
 
 export default function HomePage() {
   return (
     <div className="neptlium-home">
       <section className="authority-hero" aria-labelledby="home-hero-title">
-        <div className="web-shell authority-hero-grid">
+        <div className="web-shell authority-hero-inner">
           <div className="authority-hero-copy">
             <p className="web-eyebrow">Capital operating platform</p>
-            <h1 id="home-hero-title">Bring your capital work into one place.</h1>
+            <h1 id="home-hero-title">
+              <span>Digital capital,</span>
+              <span>organized</span>
+              <span>around you.</span>
+            </h1>
             <p className="authority-hero-lead">
-              See portfolio context, capital movement, treasury and allocation together — with the
-              controls your team needs to move deliberately.
+              Neptlium brings capital movement, treasury, allocation and portfolio context into one
+              operating environment — so your team can understand what matters before deciding what
+              happens next.
             </p>
             <div className="authority-actions">
               <Link className="web-button primary" href={SITE.publicAccessUrl}>
@@ -77,38 +80,65 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <ProductContextIllustration />
+
+          <div className="hero-system" aria-label="Illustrative Neptlium operating sequence">
+            <div className="hero-system-rule" aria-hidden="true" />
+            <ol>
+              {operatingSequence.map(([index, title, copy]) => (
+                <li key={title}>
+                  <span className="hero-system-index">{index}</span>
+                  <div>
+                    <strong>{title}</strong>
+                    <p>{copy}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="hero-system-note">
+              System relationship only. No customer balances, transactions or performance data are shown.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="editorial-intro" aria-labelledby="connected-title">
+      <section className="operating-environment" aria-labelledby="environment-title">
         <div className="web-shell editorial-grid">
           <div>
-            <p className="web-eyebrow on-light">Why Neptlium</p>
-            <h2 id="connected-title">Keep the work connected.</h2>
+            <p className="web-eyebrow on-light">The operating environment</p>
+            <h2 id="environment-title">Capital should not lose context as it moves.</h2>
           </div>
-          <p>
-            Portfolio context, treasury and allocation often sit in separate systems and separate
-            conversations. Neptlium brings them together so your team can see what matters before
-            deciding what happens next.
-          </p>
+          <div className="editorial-copy">
+            <p>
+              Investment context, liquidity, capital movement and allocation are often separated by
+              tools, teams and handoffs. Neptlium is designed to keep those relationships visible.
+            </p>
+            <p>
+              The result is not another dashboard. It is a clearer operating model for understanding
+              capital, shaping intent and preserving control around action.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="platform-section" aria-labelledby="platform-title">
+      <section className="capital-organization" aria-labelledby="organization-title">
         <div className="web-shell">
-          <header className="section-heading compact-heading">
-            <p className="web-eyebrow on-light">The platform</p>
-            <h2 id="platform-title">See how the pieces fit together.</h2>
+          <header className="section-heading system-heading">
+            <p className="web-eyebrow on-light">How capital is organized</p>
+            <h2 id="organization-title">One system. Distinct responsibilities.</h2>
+            <p>
+              Each surface has a clear role, but the relationships between them remain visible.
+            </p>
           </header>
-          <div className="platform-list">
-            {platformAreas.map(([title, copy, href], index) => (
-              <Link className="platform-list-item" href={href} key={title}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{copy}</p>
+
+          <div className="capability-system">
+            {capabilities.map((item) => (
+              <Link className="capability-row" href={item.href} key={item.title}>
+                <span className="capability-index">{item.index}</span>
+                <div className="capability-copy">
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
                 </div>
+                <span className="capability-signal">{item.signal}</span>
                 <ArrowRight aria-hidden="true" />
               </Link>
             ))}
@@ -116,67 +146,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="operations-section" aria-labelledby="operations-title">
-        <div className="web-shell operations-grid">
-          <div>
-            <p className="web-eyebrow">From context to action</p>
-            <h2 id="operations-title">Plan before you move.</h2>
-          </div>
-          <div className="operations-narrative">
+      <section className="intelligence-section" aria-labelledby="intelligence-title">
+        <div className="web-shell intelligence-grid">
+          <div className="intelligence-heading">
+            <p className="web-eyebrow">Intelligence and governance</p>
+            <h2 id="intelligence-title">Clarity before consequence.</h2>
             <p>
-              Understand where things stand, shape what should change, review it with the right people,
-              and keep authority explicit before capital moves.
+              Neptlium is designed to make the difference between understanding, modeling, reviewing
+              and acting visible rather than collapsing them into one moment.
             </p>
-            <ol>
-              <li>
-                <span>01</span>
-                <strong>Understand the current context</strong>
-              </li>
-              <li>
-                <span>02</span>
-                <strong>Shape treasury and allocation intent</strong>
-              </li>
-              <li>
-                <span>03</span>
-                <strong>Move forward with clear authority</strong>
-              </li>
-            </ol>
           </div>
-        </div>
-      </section>
-
-      <section className="control-section" aria-labelledby="control-title">
-        <div className="web-shell editorial-grid">
-          <div>
-            <p className="web-eyebrow on-light">Control</p>
-            <h2 id="control-title">Move with the right controls.</h2>
-          </div>
-          <div>
-            <p>
-              Identity, authorization, review and auditability stay part of the workflow from the
-              start. The goal is simple: make important capital decisions easier to understand without
-              hiding the boundaries around them.
-            </p>
-            <Link className="editorial-link" href="/security">
-              Explore security and control <ArrowRight aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="audience-section" aria-labelledby="audience-title">
-        <div className="web-shell">
-          <header className="section-heading compact-heading">
-            <p className="web-eyebrow on-light">Built for capital teams</p>
-            <h2 id="audience-title">A clearer way to work together.</h2>
-          </header>
-          <div className="audience-grid">
-            {audiences.map(([title, copy]) => (
+          <div className="intelligence-list">
+            {intelligenceLayers.map(([title, copy], index) => (
               <article key={title}>
-                <h3>{title}</h3>
-                <p>{copy}</p>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </div>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="reason-section" aria-labelledby="reason-title">
+        <div className="web-shell reason-grid">
+          <p className="web-eyebrow on-light">Why Neptlium exists</p>
+          <div>
+            <h2 id="reason-title">Complex capital deserves a simpler operating language.</h2>
+            <p>
+              Neptlium exists to reduce the distance between knowing where capital stands, understanding
+              what should change, and moving forward with the right context and control.
+            </p>
           </div>
         </div>
       </section>
@@ -185,11 +187,11 @@ export default function HomePage() {
         <div className="web-shell final-authority-inner">
           <div>
             <p className="web-eyebrow">Neptlium</p>
-            <h2 id="final-title">Keep your capital work connected.</h2>
+            <h2 id="final-title">See capital as one connected system.</h2>
           </div>
           <div>
             <p className="authority-hero-lead">
-              Bring portfolio context, treasury and allocation into one clear operating platform.
+              Enter the operating application or explore how the public platform story fits together.
             </p>
             <div className="authority-actions">
               <Link className="web-button primary" href={SITE.publicAccessUrl}>

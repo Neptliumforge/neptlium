@@ -16,27 +16,28 @@ const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${sit
 test('hero preserves capital-operating meaning with conversational copy and exactly one H1', () => {
   for (const copy of [
     'Capital operating platform',
-    'Bring your capital work into one place.',
-    'portfolio context, capital movement, treasury and allocation',
+    'Digital capital,',
+    'organized',
+    'around you.',
+    'capital movement, treasury, allocation and portfolio context',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /ProductContextIllustration/);
-  assert.doesNotMatch(page, /CapitalArchitecture|\.png|\.webp|1000209629/);
+  assert.match(page, /className="hero-system"/);
+  assert.doesNotMatch(page, /ProductContextIllustration|HeroArchitecture|CapitalArchitecture|<Image|<img|\.png|\.webp|1000209629/i);
 });
 
 test('homepage carries the connected capital narrative', () => {
   for (const copy of [
-    'Keep the work connected.',
-    'Portfolio',
+    'The operating environment',
+    'How capital is organized',
+    'Portfolio Intelligence',
     'Capital Account',
     'Treasury',
     'Allocation',
-    'Move with the right controls.',
-    'Keep your capital work connected.',
-    'Investment firms',
-    'Family offices',
-    'Treasury teams',
+    'Intelligence and governance',
+    'Why Neptlium exists',
+    'See capital as one connected system.',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   for (const obsolete of ['Provider Evidence', 'Canonical Ledger', 'Provisioning', 'Testnet'])
