@@ -1,7 +1,9 @@
 # Neptlium Web Marketing System
 
-**Status:** Authoritative for `apps/web`  
-**Scope:** Public marketing architecture, tone, CTA hierarchy, navigation, footer, responsive behavior, and visual-material direction  
+**Status:** Authoritative for `apps/web`
+
+**Scope:** Public marketing architecture, tone, CTA hierarchy, navigation, footer, responsive behavior, and visual-material direction
+
 **Category:** Capital Operating Platform
 
 This document refines the Web-specific interpretation of `docs/03_DESIGN_SYSTEM.md`. Where the central design system permits a broad range of marketing expression, this document defines the current public-Web direction.
