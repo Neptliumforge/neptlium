@@ -1,46 +1,32 @@
 # Neptlium Design System
 
-**Status:** Authoritative  
-**Scope:** `neptlium.com`, `app.neptlium.com`, `admin.neptlium.com`, and shared brand expression  
+**Status:** Authoritative
+**Scope:** `neptlium.com`, `app.neptlium.com`, `admin.neptlium.com`, and shared brand expression
 **Category:** Capital Operating Platform
 
 This is the central design authority for Neptlium. It defines durable principles and surface responsibilities; it does not convert target architecture into current product capability. Historical design material under `docs/archive/**` is non-authoritative.
 
-## 1. Purpose
+## 1. Purpose and surface responsibilities
 
-Neptlium is a capital operating platform. Its design system communicates institutional authority, operational clarity, financial truth, controlled complexity, and confidence without spectacle.
+Neptlium is a capital operating platform. Its identity is governed by **precision, restraint, depth, and certainty**. Visual sophistication must increase comprehension and must never decorate ambiguity or imply unsupported factual claims.
 
-The shared identity is governed by **precision, restraint, depth, and certainty**. Visual sophistication must increase comprehension. It must never decorate ambiguity, imply unsupported factual claims, or obscure consequential state.
+**Marketing** establishes category, narrative, customer relevance, institutional confidence, editorial authority, product meaning, and a path into the operating application. It is independent from repository/build/migration/provider/deployment chronology and is not a financial authority.
 
-## 2. Surface responsibilities
+**Application** establishes customer control and operation. It presents authoritative customer state and governed actions while distinguishing capability, availability, loading, error, and lifecycle state.
 
-### Marketing
+**Admin** establishes operator comprehension, risk visibility, status clarity, evidence, queues, approvals, and auditability.
 
-Marketing establishes authority and meaning. It defines the category, frames customer relevance, explains the operating thesis, creates institutional confidence, and owns public editorial/visual expression. Marketing is intentionally independent from repository, deployment, migration, provider, and runtime implementation chronology. It is not a financial authority, authenticated dashboard, or build-status surface.
+**API/domain** establishes authentication, authorization, ownership, durability, provider isolation, ledger effects, audit, reconciliation, and domain truth.
 
-Marketing may describe the Neptlium product model, strategic category, customer problem, concepts, principles, and intended operating experience without narrating which engineering milestones are currently complete. Factual external claims still require evidence.
+The surfaces share one identity without sharing one composition language.
 
-### Application
+## 2. Brand identity
 
-Application establishes control and operation. It presents authoritative customer state, requests governed actions, and distinguishes capability, availability, loading, error, and lifecycle state. Browser representation is not authorization.
+Use only repository-authoritative Neptlium mark geometry. Preserve the canonical mark/wordmark relationship and derive browser/social identity from the same source.
 
-### Admin
+Do not redraw, stretch, rotate, add gradients/shadows/outlines, create crests or token/coin forms, animate decoratively, or create competing “N” geometries.
 
-Admin establishes operator comprehension, risk visibility, status clarity, and auditability. It prioritizes exceptions, evidence, queues, approvals, and operational consequence. Administrative state changes do not prove external execution.
-
-### API and domain
-
-API establishes domain truth, authentication enforcement, authorization, ownership, durability, provider isolation, ledger effects, audit, and reconciliation. Presentation cannot override domain state.
-
-The four surfaces share one Neptlium identity but must not be visually or operationally collapsed into one composition language.
-
-## 3. Brand identity
-
-Use only repository-authoritative canonical Neptlium mark geometry. The mark is compact, structural, architectural, flat, monochrome-capable, and recognizable at small size.
-
-Preserve the canonical mark/wordmark relationship, derive browser/social identity from the same geometry source, and choose light/dark treatment from actual contrast. Do not redraw, stretch, rotate, add effects, gradients, shadows, crests, token/coin forms, decorative animation, or competing “N” geometries.
-
-## 4. Color philosophy
+## 3. Color philosophy
 
 | Name | Value | Role |
 | --- | --- | --- |
@@ -53,29 +39,17 @@ Preserve the canonical mark/wordmark relationship, derive browser/social identit
 | Soft Mist | `#ECEAE5` | Secondary light surfaces. |
 | Signal Amber | `#C88B28` | Warning and attention semantics only. |
 
-Teal is a precision signal. Carbon creates authority. Ivory creates editorial space. Semantic colors communicate state, not branding. Brand Teal must not make unknown, unavailable, pending, or failed state look active or successful.
+Teal is a precision signal. Carbon creates authority. Ivory creates editorial space. Semantic colors communicate state, not branding. Brand color must never make unknown, unavailable, pending, or failed state look active or successful.
 
-Operational precision-blue tokens may remain within App/Admin where current implementation establishes them; they are not the canonical marketing accent.
+Operational precision-blue tokens may remain in App/Admin where implementation establishes them; they are not the canonical marketing accent.
 
-## 5. Theme system
+## 4. Typography, spacing, and hierarchy
 
-Marketing is light-first: Warm Ivory/white dominates, Carbon establishes authority, and Mineral Teal is selective. Carbon/Graphite full-bleed sections are reserved for deliberate authority or conceptual depth.
+Marketing combines restrained editorial display/serif expression with precise sans-serif utility/body typography. Public Web is **medium scale**: authority comes from hierarchy, space, composition, product relationships, and information rather than giant poster typography.
 
-Application and Admin themes optimize operational state, data legibility, and task comprehension rather than mirroring Marketing composition.
+Application/Admin prioritize stable operational typography, tabular numerals, explicit units, and dense-but-readable data presentation.
 
-## 6. Typography
-
-Marketing combines restrained editorial display/serif expression with precise sans-serif utility/body typography. The public Web is **medium scale**: authority comes from hierarchy, space, composition, product relationships, and information rather than giant poster typography.
-
-Application and Admin prioritize stable operational typography, tabular numerals, explicit units, and dense-but-readable data presentation.
-
-Each role—Display, H1, H2, H3, Lead, Body, Utility, Navigation, Button, Data/Numeric—must have a clear job. Do not manufacture hierarchy by applying uppercase microcopy everywhere.
-
-## 7. Spacing, grid, and hierarchy
-
-Use a 4/8-derived scale and existing repository tokens where possible. The conceptual progression is `4, 8, 12, 16, 24, 32, 48, 64, 80, 96, 128, 160`.
-
-Build hierarchy in this order:
+Use a 4/8-derived spacing philosophy and existing repository tokens where possible. Build hierarchy through:
 
 1. Typography
 2. Whitespace
@@ -86,15 +60,13 @@ Build hierarchy in this order:
 7. Border
 8. Elevation
 
-Marketing favors strong left alignment, meaningful editorial asymmetry, purposeful negative space, controlled maximum widths, and selective full-bleed authority sections. Application favors predictable working widths and stable action placement. Admin favors operational scanning and evidence density.
+Do not default to card grids. Prefer rows, lists, relationships, structural rules, and whitespace where they explain more clearly.
 
-Do not default page structure to card grids. Prefer rows, lists, relationships, structural rules, and whitespace when they explain more clearly.
+## 5. Marketing architecture
 
-## 8. Marketing architecture
+Canonical direction is **warm architectural light + Carbon authority + Mineral Teal precision**.
 
-Canonical direction: **warm architectural light + Carbon authority + Mineral Teal precision**.
-
-The public site is one coherent system rather than a collection of feature pages. Its five top-level domains are:
+The public site is one coherent system. Its top-level architecture is exactly:
 
 1. **Platform** — how Neptlium works as one capital operating environment.
 2. **Products** — the components that form the system.
@@ -113,45 +85,39 @@ Canonical product family:
 
 Canonical product URLs live under `/products/*`. Superseded root product URLs converge permanently and must not compete as search authority.
 
-The homepage establishes the proposition and routes visitors into this architecture. It is not the entire website.
+The homepage establishes Neptlium and routes visitors into this architecture; it is not the entire website.
 
-Marketing must not use token walls, candlesticks, exchange order books, glowing crypto spheres, random blockchain imagery, fake dashboards, speculative cues, generic SaaS hero art, stock photography, glassmorphism, decorative blur, unsupported product/provider imagery, or excessive rounded cards.
+Marketing must not use token walls, exchange order books, glowing crypto imagery, fake dashboards, speculative cues, generic SaaS hero art, stock photography, glassmorphism, decorative blur, unsupported product/provider imagery, or excessive rounded cards.
 
-Marketing is free to tell a strategic product story without exposing current engineering state. Factual claims such as named customers, provider relationships, licences, performance, custody, live execution, settlement, or availability remain evidence-bound.
+Marketing may tell a strategic product story without exposing current engineering state. Named customers, provider relationships, licences, performance, custody, live execution, settlement, and availability remain evidence-bound claims.
 
-## 9. Product visual language
+## 6. Product visual language
 
-Where visual explanation is useful, derive it from real Neptlium concepts: capital relationships, account structure, treasury context, allocation relationships, portfolio organization, performance context, capital-universe roles, and governance states.
+Visual explanations derive from real Neptlium concepts: capital relationships, account structure, treasury context, allocation relationships, portfolio organization, performance context, capital-universe roles, and governance states.
 
-These representations should resemble an operating language, not decorative illustrations. Never fabricate balances, returns, transactions, AUM, customers, asset availability, integrations, or execution readiness. Use neutral/unavailable states where evidence does not exist.
+They should resemble an operating language, not pasted-on illustration. Never fabricate balances, returns, transactions, AUM, customers, asset availability, integrations, or execution readiness. Use neutral/unavailable states where evidence does not exist.
 
-## 10. Application composition
+## 7. Application and Admin composition
 
-Application prioritizes information hierarchy, stable navigation, explicit state, low cognitive overhead, predictable controls, tabular data, and controlled density. It is not Marketing reduced into cards and not a retail exchange interface.
+Application prioritizes information hierarchy, stable navigation, explicit state, low cognitive overhead, predictable controls, tabular data, and controlled density. Canonical authenticated desktop navigation remains Overview, Portfolio, Capital Account, Treasury, and Allocation.
 
-Canonical authenticated desktop navigation remains Overview, Portfolio, Capital Account, Treasury, and Allocation. Mobile navigation remains separately governed by authenticated-application authority.
+Admin prioritizes auditability, exceptions, statuses, risk, approvals, and evidence. Distinguish request, approval, submission, settlement, ledger consequence, and reconciliation.
 
-## 11. Admin composition
+## 8. Interaction controls
 
-Admin prioritizes auditability, operator comprehension, errors, statuses, exceptions, queues, risk, approvals, and evidence. Aesthetics never obscure operational meaning. Distinguish request, approval, submission, settlement, ledger consequence, and reconciliation.
+Primary actions express the single dominant action in context; Marketing primary uses Mineral Teal. Secondary/tertiary actions remain subordinate. Destructive actions require explicit semantic styling and confirmation.
 
-## 12. Buttons, links, and forms
+Links remain visibly interactive and keyboard-focusable. External links require accurate accessible names where they open a new context.
 
-Primary actions express the single dominant action in context. Marketing primary uses Mineral Teal. Secondary and tertiary actions remain visibly subordinate. Destructive actions require explicit semantic styling and confirmation.
+Fields have persistent labels. Errors explain the problem and recovery. Placeholder text is never the only label. Consequential workflows preserve input → review → authorization → outcome.
 
-Links remain visibly interactive with keyboard focus. External links require accurate accessible names where they open a new context.
-
-Every field has a persistent label. Errors explain the problem and recovery. Placeholder text is never the only label. Consequential workflows preserve input → review → authorization → outcome and never imply success before domain confirmation.
-
-## 13. Tables and financial data
+## 9. Financial truth
 
 Use tabular numerals and explicit units/provenance where appropriate. Distinguish confirmed zero, unknown, stale, error, unavailable, loading, pending, reserved, restricted, provider-observed, canonical, and reconciled values.
 
 `UNKNOWN != ZERO`.
 
-Never substitute `$0`, `$0.00`, `0%`, `0 units`, or an ambiguous dash when zero is not confirmed for the stated scope.
-
-## 14. Financial-truth UI
+Do not substitute `$0`, `$0.00`, `0%`, `0 units`, or an ambiguous dash when zero is not confirmed.
 
 | State | Meaning |
 | --- | --- |
@@ -164,61 +130,57 @@ Never substitute `$0`, `$0.00`, `0%`, `0 units`, or an ambiguous dash when zero 
 | Error | Retrieval or processing failed. |
 | Pending | A lifecycle operation has begun but has not reached its next authoritative state. |
 
-Provider evidence never masquerades as canonical state. Empty does not mean zero; unavailable does not mean empty; loading does not mean unknown; unknown does not mean failed.
+Provider evidence never masquerades as canonical state. These semantics govern operational/data-bearing surfaces and do not require ordinary Marketing copy to publish internal product readiness.
 
-These semantics govern operational/data-bearing surfaces. They do not require ordinary Marketing copy to publish internal product readiness.
+## 10. State semantics
 
-## 15. State semantics
-
-Preserve configured, available, planned, modeled, approved, submitted, settled, reconciled, failed, reversed, and cancelled as distinct states inside App/Admin/API and any intentional operational public content.
+Configured, available, planned, modeled, approved, submitted, settled, reconciled, failed, reversed, and cancelled remain distinct states in operational surfaces.
 
 Configured does not prove available. Planned does not prove available. Modeled does not prove executed. Approved does not prove submitted. Submitted does not prove settled. Settled does not prove reconciled.
 
-## 16. Navigation
+## 11. Navigation
 
 ### Marketing desktop
 
-Canonical groups are **Platform, Products, Solutions, Resources, Company**. Every group has a real hub destination. Disclosures expose hierarchy but do not replace the hub link. They are concise, keyboard accessible, and support visible focus, Escape/outside close, and focus return.
+Canonical groups are **Platform, Products, Solutions, Resources, Company**. Every group has a real hub destination. Disclosures expose hierarchy but do not replace hub links. They are concise, keyboard accessible, and support visible focus, Escape/outside close, and focus return.
 
 ### Marketing mobile
 
 Mobile is designed independently. Use direct hub links plus accessible child disclosures, large touch targets, children beneath parents, body scroll lock, focus containment/restoration, Escape close, and route-close behavior.
 
-### Application and Admin
+### Application/Admin
 
 Do not mix marketing IA into authenticated or operator shells. Their navigation follows their own workflow authority.
 
-## 17. Motion
+## 12. Motion and responsive design
 
-Motion communicates micro-interaction, disclosure state, justified content entrance, or real system-state change. Reduced motion is first-class. Essential content never depends on animation. Decorative motion must never imply financial execution, progress, settlement, or success.
+Motion communicates interaction, disclosure state, justified content entrance, or real state change. Reduced motion is first-class. Essential content never depends on animation and decorative motion never implies financial execution, settlement, or success.
 
-## 18. Responsive design
+Responsive behavior is content-driven. Mobile is not compressed desktop. Validate representative widths `320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440, 1600+` and transitions between them.
 
-Responsive behavior is content-driven. Mobile is not compressed desktop. Validate representative widths `320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440, 1600+` and the transitions between them. Preserve content priority, readable measure, gutters, navigation behavior, action clarity, data legibility, safe areas, and touch targets.
-
-## 19. Accessibility
+## 13. Accessibility
 
 WCAG 2.2 AA is the minimum target. Preserve semantic HTML, landmarks, one clear H1, coherent heading order, keyboard operation, visible focus, screen-reader naming, correct disclosure semantics, sufficient contrast, large touch targets, reduced motion, meaningful error messaging, and non-color state cues. Use ARIA only when native semantics are insufficient.
 
-## 20. Empty, loading, and error
+## 14. Empty, loading, and error
 
 Empty, loading, unknown, unavailable, and error are different states. Each requires distinct copy, visual treatment, and safe next action on operational/data-bearing surfaces. Never fabricate financial/data content to make a composition feel complete.
 
-## 21. Brand prohibitions
+## 15. Brand prohibitions
 
-Prohibit excessive blue or teal, decorative gradients, neon, token imagery, crypto trading visuals, bank crests, generic “N” variants, cards everywhere, generic SaaS heroes, fake dashboards, fabricated data, fake logos/testimonials, unsupported partnerships, unsupported regulatory claims, and visual language that falsely implies speculative performance.
+Prohibit excessive blue/teal, decorative gradients, neon, token imagery, crypto trading visuals, bank crests, generic “N” variants, cards everywhere, generic SaaS heroes, fake dashboards, fabricated data, fake logos/testimonials, unsupported partnerships, unsupported regulatory claims, and visual language that falsely implies speculative performance.
 
-## 22. Validation
+## 16. Validation
 
-Design correctness requires source/implementation comparison, responsive validation, accessibility and keyboard validation, actual typecheck/lint/test/build execution, route/link/canonical/asset integrity for Web, browser rendering where tooling is available, and open-PR overlap review.
+Design correctness requires source/implementation comparison, responsive validation, accessibility/keyboard validation, actual typecheck/lint/test/build execution, route/link/canonical/asset integrity for Web, browser rendering where tooling is available, and open-PR overlap review.
 
 Report checks as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Never infer build, render, accessibility, SEO, link-integrity, or production success from source inspection.
 
-## 23. Governing expression
+## 17. Governing expression
 
-> Marketing establishes authority, category, narrative, and meaning.  
-> The application establishes control and operation.  
-> Admin establishes operator comprehension, risk visibility, and auditability.  
+> Marketing establishes authority, category, narrative, and meaning.
+> The application establishes control and operation.
+> Admin establishes operator comprehension, risk visibility, and auditability.
 > API establishes domain truth, authorization, durability, and financial state.
 
 > Ivory creates editorial space. Carbon creates authority. Teal signals precision. Operational truth creates trust where financial state is shown.
