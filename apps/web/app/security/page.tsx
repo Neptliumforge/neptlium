@@ -1,27 +1,29 @@
-import type { Metadata } from 'next';
 import { DetailPage } from '@/components/detail-page';
 import { SecurityFlowVisual } from '@/components/product-visuals';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Security | Neptlium',
-  description: 'Verified access, explicit authorization and controlled server-side boundaries at Neptlium.',
-  alternates: { canonical: '/security' },
-};
+export const metadata = createPageMetadata({
+  title: 'Security and Control Architecture',
+  description:
+    'Explore Neptlium’s public security principles for identity, authorization, server-side privilege, data boundaries, idempotency, auditability and fail-closed behavior.',
+  path: '/security',
+});
 
 export default function Page() {
   return (
     <DetailPage
-      title="Control is part of the system."
-      intro="Access, authorization and privileged operations remain separate concerns. These are architecture principles—not claims of certification, insurance or regulatory approval."
+      eyebrow="Security and controls"
+      title="Control is part of the operating architecture."
+      intro="Neptlium separates identity, authorization, privileged operations, financial state and provider evidence. These are architecture principles—not claims of certification, insurance, regulatory approval or perfect security."
       visual={<SecurityFlowVisual />}
       sections={[
-        ['Authentication', 'Verified identity establishes access before account operations.'],
-        ['Authorization', 'Consequential actions remain explicit, attributable and distinct from execution.'],
-        ['Server-side privilege', 'Privileged credentials and service-role operations remain behind controlled server boundaries.'],
-        ['Data isolation', 'Row-level security and ownership boundaries constrain access to account information.'],
-        ['Idempotency', 'Financial operations are designed against accidental duplication.'],
-        ['Auditability', 'Operational events and state transitions are designed to remain traceable.'],
-        ['Fail-closed behavior', 'Unavailable dependencies do not become simulated success.'],
+        ['Authentication', 'Identity proof establishes who is present; it does not by itself authorize a consequential operation.'],
+        ['Authorization', 'Roles, ownership, policy and resource state remain server-enforced boundaries for privileged actions.'],
+        ['Server-side privilege', 'Service-role credentials, provider secrets and privileged commands remain outside public browser authority.'],
+        ['Data boundaries', 'Row-level security, ownership and service boundaries are used to constrain access according to the responsible subsystem.'],
+        ['Idempotency and replay protection', 'Consequential operations are designed to resist accidental duplication and unsafe replay.'],
+        ['Auditability', 'Identity, authorization and operational transitions are designed to remain attributable and reviewable.'],
+        ['Fail-closed behavior', 'Missing credentials, unavailable dependencies or unverified capability must not become simulated success.'],
       ]}
     />
   );

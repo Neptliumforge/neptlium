@@ -1,16 +1,34 @@
-import type { Metadata } from 'next';
 import { DetailPage } from '@/components/detail-page';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Neptlium Link | Infrastructure Connectivity',
-  description: 'The controlled connectivity layer between Neptlium and supported capital infrastructure.',
-  alternates: { canonical: '/neptlium-link' },
-};
+export const metadata = createPageMetadata({
+  title: 'Infrastructure Connectivity Context',
+  description:
+    'Supporting product context for how Neptlium separates identity, authorization and external infrastructure operations.',
+  path: '/neptlium-link',
+  index: false,
+});
 
 export default function NeptliumLinkPage() {
-  return <DetailPage eyebrow="Infrastructure" title="Connectivity with clear boundaries." intro="Neptlium Link coordinates supported capital infrastructure while keeping identity, authorization and external operations distinct." sections={[
-    ['Account connectivity', 'Connect supported account infrastructure through governed boundaries.'],
-    ['Network context', 'Keep verified network information attached to the capital it represents.'],
-    ['Identity boundaries', 'Keep authenticated identity and authorization distinct from external operations.'],
-  ]} />;
+  return (
+    <DetailPage
+      eyebrow="Supporting product context"
+      title="Connectivity requires explicit boundaries."
+      intro="Neptlium source contains infrastructure-integration patterns, but public marketing does not convert implementation or configuration into a claim of live provider, network or account availability."
+      sections={[
+        [
+          'Infrastructure context',
+          'External systems remain separate from Neptlium identity, authorization and canonical financial state.',
+        ],
+        [
+          'Provider evidence',
+          'External observations remain evidence until the required validation, posting, settlement and reconciliation conditions are satisfied.',
+        ],
+        [
+          'Availability truth',
+          'Configured integration, verified capability and live execution are intentionally different states.',
+        ],
+      ]}
+    />
+  );
 }

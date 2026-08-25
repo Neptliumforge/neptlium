@@ -1,34 +1,21 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './marketing-shell.css';
-import './navigation-depth.css';
-import './navigation-integration.css';
 import './footer-depth.css';
-import './hero-platform.css';
-import './platform-calibration.css';
 import './production-hardening.css';
 import './apple-calibration.css';
 import './product-showcase-calibration.css';
 import './route-product-consolidation.css';
 import './detail-product-consolidation.css';
-import './home-composition.css';
 import './marketing-production.css';
-import './marketing-home.css';
 import './unified-design.css';
-import './production-experience.css';
 import './neptlium-visual-direction.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
 import { SITE } from '@/lib/content/site';
 
-const socialDestinations = [
-  'https://bsky.app/profile/neptlium.bsky.social',
-  'https://x.com/Neptlium',
-  'https://youtube.com/@neptlium',
-  'https://www.tiktok.com/@neptlium',
-  'https://github.com/Neptliumlabs',
-] as const;
+const socialDestinations = ['https://github.com/Neptliumforge'] as const;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -37,7 +24,10 @@ export const metadata: Metadata = {
   applicationName: SITE.name,
   creator: SITE.name,
   alternates: { canonical: '/' },
-  icons: { icon: '/icon.svg', apple: '/icon.svg' },
+  icons: {
+    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+    apple: [{ url: '/apple-icon', sizes: '180x180', type: 'image/png' }],
+  },
   openGraph: {
     type: 'website',
     siteName: SITE.name,
@@ -45,7 +35,14 @@ export const metadata: Metadata = {
     description: SITE.description,
     url: SITE.url,
     locale: 'en_US',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Neptlium' }],
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Neptlium — Capital Operating Platform',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -58,7 +55,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light',
-  themeColor: '#FFFFFF',
+  themeColor: '#F5F3EE',
   width: 'device-width',
   initialScale: 1,
 };

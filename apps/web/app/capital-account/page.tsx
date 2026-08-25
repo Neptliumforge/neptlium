@@ -1,79 +1,47 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { AssetIdentity } from '@neptlium/ui';
-import { PageHeader } from '@/components/page-header';
-import { SITE } from '@/lib/content/site';
+import { FoundationPage } from '@/components/foundation-page';
 import { CapitalAccountVisual } from '@/components/product-visuals';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Capital Account | Neptlium',
-  description: 'Organize supported assets within explicit account, network and funding boundaries.',
-  alternates: { canonical: '/capital-account' },
-};
-
-const assets = [
-  ['USDC', 'Base'],
-  ['ETH', 'Base'],
-  ['BTC', 'Bitcoin'],
-] as const;
+export const metadata = createPageMetadata({
+  title: 'Institutional Capital Account',
+  description:
+    'Explore Neptlium’s capital-account operating model for capital context, funding intent and controlled movement within explicit authority boundaries.',
+  path: '/capital-account',
+});
 
 export default function Page() {
   return (
-    <div className="route-product-page capital-account-route">
-      <PageHeader
-        eyebrow="Capital Account"
-        title="Capital needs an operating layer."
-        intro="Organize supported digital capital within explicit account, network and authorization boundaries."
-        crumbs={[{ label: 'Home', href: '/' }, { label: 'Capital Account' }]}
-      />
-
-      <section className="route-product-showcase">
-        <div className="container-page route-product-showcase-grid">
-          <div className="route-product-copy">
-            <span className="route-product-kicker">Account infrastructure</span>
-            <h2>One governed account view.</h2>
-            <p>
-              Funding, asset context and account activity remain connected to the wider portfolio without turning the account into a trading screen.
-            </p>
-            <div className="route-product-asset-strip" aria-label="Supported capital direction">
-              {assets.map(([asset, network]) => (
-                <AssetIdentity key={asset} asset={asset} network={network} size="md" detailed />
-              ))}
-            </div>
-            <div className="route-product-actions">
-              <a className="button" href={SITE.accessUrl}>
-                Open Neptlium <ArrowRight aria-hidden="true" />
-              </a>
-              <Link href="/platform">Explore platform</Link>
-            </div>
-          </div>
-
-          <div className="route-product-visual">
-            <CapitalAccountVisual />
-          </div>
-        </div>
-      </section>
-
-      <section className="route-product-capabilities">
-        <div className="container-page route-product-capability-grid">
-          <article>
-            <h3>Account context</h3>
-            <p>Supported capital organized in one account view.</p>
-          </article>
-          <article>
-            <h3>Network context</h3>
-            <p>Asset and network boundaries remain visible.</p>
-          </article>
-          <article>
-            <h3>Operational control</h3>
-            <p>Consequential actions remain explicit and reviewable.</p>
-          </article>
-        </div>
-        <p className="container-page route-product-disclosure">
-          Asset and network availability depends on production integrations and account eligibility.
-        </p>
-      </section>
-    </div>
+    <FoundationPage
+      eyebrow="Capital Account"
+      title="Capital needs a clear operating boundary."
+      intro="Neptlium is designed to organize capital context, funding intent and controlled movement without turning infrastructure configuration into a promise of asset, network or provider availability."
+      anchors={['Account context', 'Operating boundaries', 'Availability']}
+      lead={[
+        'A governed account view, not a trading screen.',
+        'Capital-account information stays connected to the wider portfolio while account state, network context, eligibility and authorization remain explicit.',
+      ]}
+      visual={<CapitalAccountVisual />}
+      cards={[
+        {
+          title: 'Capital context',
+          body: 'Understand account state in relation to portfolio and treasury context.',
+        },
+        {
+          title: 'Funding intent',
+          body: 'Represent planned or requested capital movement without presenting it as completed funding.',
+        },
+        {
+          title: 'Operating boundaries',
+          body: 'Keep network, account, eligibility and authorization boundaries visible when they matter.',
+        },
+        {
+          title: 'Availability truth',
+          body: 'Configured infrastructure, supported source code and production availability remain separate claims.',
+        },
+      ]}
+      principle="Configured does not mean available. Requested does not mean settled."
+      cta="Request access"
+      ctaHref="/contact"
+    />
   );
 }

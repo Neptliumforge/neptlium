@@ -32,7 +32,6 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
   {
     label: 'Resources',
     links: [
-      { label: 'Research & Perspectives', href: '/research' },
       { label: 'Learn', href: '/learn' },
       { label: 'Security', href: '/security' },
     ],
@@ -50,40 +49,18 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
       { label: 'Privacy', href: '/privacy' },
       { label: 'Terms', href: '/terms' },
       { label: 'Risk Disclosure', href: '/risk-disclosure' },
+      { label: 'Accessibility', href: '/accessibility' },
     ],
   },
   {
     label: 'Connect',
     links: [
-      {
-        label: 'Bluesky',
-        href: 'https://bsky.app/profile/neptlium.bsky.social',
-        external: true,
-        accessibleLabel: 'Neptlium on Bluesky (opens in a new tab)',
-      },
-      {
-        label: 'X',
-        href: 'https://x.com/Neptlium',
-        external: true,
-        accessibleLabel: 'Neptlium on X (opens in a new tab)',
-      },
-      {
-        label: 'YouTube',
-        href: 'https://youtube.com/@neptlium',
-        external: true,
-        accessibleLabel: 'Neptlium on YouTube (opens in a new tab)',
-      },
-      {
-        label: 'TikTok',
-        href: 'https://www.tiktok.com/@neptlium',
-        external: true,
-        accessibleLabel: 'Neptlium on TikTok (opens in a new tab)',
-      },
+      { label: 'Contact', href: '/contact' },
       {
         label: 'GitHub',
-        href: 'https://github.com/Neptliumlabs',
+        href: 'https://github.com/Neptliumforge',
         external: true,
-        accessibleLabel: 'Neptlium Labs on GitHub (opens in a new tab)',
+        accessibleLabel: 'Neptliumforge on GitHub (opens in a new tab)',
       },
     ],
   },
@@ -115,15 +92,15 @@ export function SiteFooter() {
           <div className="footer-brand-column">
             <Brand />
             <p className="footer-brand-statement">
-              Capital operating infrastructure for modern digital capital.
+              A capital operating platform for modern investment organizations.
             </p>
             <p className="footer-brand-copy">
-              Explore Neptlium’s public platform, research and operating principles without treating
-              the public website as financial authority.
+              Portfolio context, capital operations, treasury and governed allocation in one coherent
+              institutional environment.
             </p>
-            <a className="footer-platform-link" href={SITE.signInUrl}>
-              Open Neptlium <ArrowUpRight aria-hidden="true" />
-            </a>
+            <Link className="footer-platform-link" href={SITE.publicAccessUrl}>
+              {SITE.publicAccessLabel} <ArrowUpRight aria-hidden="true" />
+            </Link>
           </div>
 
           <div className="footer-navigation-grid" aria-label="Footer navigation groups">
@@ -132,7 +109,7 @@ export function SiteFooter() {
                 <h2>{group.label}</h2>
                 <div>
                   {group.links.map((destination) => (
-                    <FooterDestination key={destination.label} destination={destination} />
+                    <FooterDestination key={`${group.label}-${destination.label}`} destination={destination} />
                   ))}
                 </div>
               </nav>
@@ -142,12 +119,11 @@ export function SiteFooter() {
 
         <div className="footer-closing">
           <div>
-            <span className="footer-kicker">Capital precision</span>
+            <span className="footer-kicker">Capital operating infrastructure</span>
             <h2>Capital, organized with precision.</h2>
           </div>
           <p>
-            Understand the system, its operating boundaries and the principles that govern how
-            Neptlium presents capital state.
+            A shared operating language for portfolio context, treasury, capital movement and allocation.
           </p>
         </div>
 
@@ -157,6 +133,7 @@ export function SiteFooter() {
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
             <Link href="/risk-disclosure">Risk Disclosure</Link>
+            <Link href="/accessibility">Accessibility</Link>
           </nav>
         </div>
       </div>

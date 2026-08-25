@@ -4,6 +4,9 @@ import { PageHeader } from '@/components/page-header';
 
 export type FoundationCard = { title: string; body: string; href?: string };
 
+const anchorId = (anchor: string | undefined, fallback: string) =>
+  anchor?.toLowerCase().replaceAll(' ', '-') || fallback;
+
 export function FoundationPage({
   eyebrow,
   title,
@@ -27,8 +30,9 @@ export function FoundationPage({
   cta?: string;
   ctaHref?: string;
 }) {
-  const overviewId = anchors[0]?.toLowerCase().replaceAll(' ', '-') || 'overview';
-  const systemsId = anchors[1]?.toLowerCase().replaceAll(' ', '-') || 'systems';
+  const overviewId = anchorId(anchors[0], 'overview');
+  const systemsId = anchorId(anchors[1], 'systems');
+  const principleId = anchorId(anchors[2], 'principle');
 
   return (
     <div className="route-product-page">
@@ -42,7 +46,7 @@ export function FoundationPage({
       <nav className="route-product-nav" aria-label="Page sections">
         <div className="container-page">
           {anchors.map((anchor) => (
-            <a key={anchor} href={`#${anchor.toLowerCase().replaceAll(' ', '-')}`}>
+            <a key={anchor} href={`#${anchorId(anchor, 'section')}`}>
               {anchor}
             </a>
           ))}
@@ -55,7 +59,11 @@ export function FoundationPage({
             <span className="route-product-kicker">Product overview</span>
             <h2>{lead?.[0] ?? cards[0]?.title}</h2>
             <p>{lead?.[1] ?? cards[0]?.body}</p>
-            {principle && <strong className="route-product-principle">{principle}</strong>}
+            {principle && (
+              <strong className="route-product-principle" id={principleId}>
+                {principle}
+              </strong>
+            )}
             <Link className="route-product-link" href={ctaHref}>
               {cta} <ArrowRight aria-hidden="true" />
             </Link>

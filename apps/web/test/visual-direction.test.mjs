@@ -6,17 +6,20 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const page = read('app/page.tsx');
 const header = read('components/site-header.tsx');
 const css = read('app/neptlium-visual-direction.css');
+const site = read('lib/content/site.ts');
 
 test('homepage implements the canonical editorial hero', () => {
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   for (const copy of [
-    'Digital capital,',
-    'organized',
-    'around you.',
-    'Open Neptlium',
-    'Explore platform',
+    'Capital operating infrastructure',
+    'A capital operating',
+    'platform for modern',
+    'investment organizations.',
+    'Explore the platform',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+  assert.match(page, /SITE\.publicAccessLabel/);
+  assert.match(site, /publicAccessLabel:\s*'Request access'/);
   assert.match(page, /CapitalArchitecture/);
   assert.doesNotMatch(page, /\.png|\.webp|1000209629/);
 });
@@ -42,8 +45,11 @@ test('navigation uses four canonical groups and accessible disclosures', () => {
     'trigger.current?.focus()',
   ])
     assert.match(header, new RegExp(token.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
-  assert.match(header, />\s*Sign in\s*</);
-  assert.match(header, />\s*Open Neptlium\s*</);
+  assert.match(header, />\s*Contact\s*</);
+  assert.match(header, /SITE\.publicAccessLabel/);
+  assert.match(header, /SITE\.publicAccessUrl/);
+  assert.doesNotMatch(header, />\s*Sign in\s*</);
+  assert.doesNotMatch(header, />\s*Open Neptlium\s*</);
 });
 
 test('homepage makes no fabricated financial claims or values', () => {

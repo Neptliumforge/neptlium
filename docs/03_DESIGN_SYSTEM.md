@@ -10,13 +10,15 @@ This is the central design authority for Neptlium. It defines durable principles
 
 Neptlium is a capital operating platform. Its design system communicates institutional authority, operational clarity, financial truth, controlled complexity, and confidence without spectacle.
 
-The shared identity is governed by **precision, restraint, depth, and certainty**. Visual sophistication must increase comprehension. It must never decorate ambiguity, imply unsupported capability, or obscure consequential state.
+The shared identity is governed by **precision, restraint, depth, and certainty**. Visual sophistication must increase comprehension. It must never decorate ambiguity, imply unsupported factual claims, or obscure consequential state.
 
 ## 2. Surface responsibilities
 
 ### Marketing
 
-Marketing establishes authority and meaning. It defines the category, frames customer relevance, explains the operating thesis, and creates institutional confidence. It is not a financial authority or an authenticated dashboard.
+Marketing establishes authority and meaning. It defines the category, frames customer relevance, explains the operating thesis, creates institutional confidence, and owns public editorial/visual expression. Marketing is intentionally independent from repository, deployment, migration, provider, and runtime implementation chronology. It is not a financial authority, authenticated dashboard, or build-status surface.
+
+Marketing may describe the Neptlium product model, strategic category, audience, concepts, principles, and intended operating experience without narrating which engineering milestones are currently complete. Factual external claims still require evidence.
 
 ### Application
 
@@ -42,6 +44,7 @@ Use only repository-authoritative canonical Neptlium mark geometry. The mark is 
 - Select light/dark mark treatment from actual surface contrast.
 - Derive favicon and application-icon expression from the same canonical geometry.
 - Control color through semantic implementation where technically appropriate.
+- Maintain one canonical geometry source for favicon, browser icons, Apple/PWA icons, social mark, and Open Graph identity.
 
 Prohibited treatments include redrawing from prompts/screenshots, stretching, rotating, adding effects, gradients, shadows, outlines, enclosing crests, token/coin forms, decorative animation, and alternate “N” geometries. Do not create multiple competing SVG sources.
 
@@ -176,7 +179,9 @@ Marketing may use large editorial statements, controlled full-bleed sections, ab
 
 Marketing must not use token walls, candlesticks, exchange order books, glowing crypto spheres, random blockchain imagery, fake financial dashboards, speculative cues, generic SaaS hero layouts, or unsupported product/provider imagery.
 
-The homepage explains what Neptlium is, why it matters, its customer-facing operating environment, verified capability, institutional trust, and the next action. It should not teach internal provider, ledger, provisioning, or reconciliation machinery unless necessary and customer-relevant.
+The homepage explains what Neptlium is, why it matters, the capital operating model, Portfolio, Capital Account, Treasury, Allocation, institutional audiences, trust principles, and the next action. It should not report App/Admin/API build completion, provider configuration, migrations, environment readiness, testnet groundwork, deployment health, or internal implementation chronology.
+
+Marketing is free to tell a strategic product story without exposing current engineering state. Factual claims such as named customers, provider relationships, licences, performance, custody, live execution, settlement, or availability remain evidence-bound.
 
 ## 12. Application composition
 
@@ -233,9 +238,11 @@ Canonical presentation states are:
 
 Do not render `$0`, `$0.00`, `0%`, or `0 units` unless zero is confirmed for the stated scope. Provider evidence never masquerades as canonical state. Empty does not mean zero; unavailable does not mean empty; loading does not mean unknown; unknown does not mean failed.
 
+These state semantics govern operational/data-bearing surfaces. They are not a requirement for ordinary Marketing copy to publish internal product readiness.
+
 ## 19. State semantics
 
-Preserve configured, available, planned, modeled, approved, submitted, settled, reconciled, failed, reversed, and cancelled as distinct states.
+Preserve configured, available, planned, modeled, approved, submitted, settled, reconciled, failed, reversed, and cancelled as distinct states inside App/Admin/API and any public content that intentionally presents such operational state.
 
 - Configured does not prove eligible, healthy, or live.
 - Planned does not prove available.
@@ -245,7 +252,7 @@ Preserve configured, available, planned, modeled, approved, submitted, settled, 
 - Settled does not prove reconciled.
 - Failed, reversed, and cancelled preserve different evidence and consequences.
 
-Labels, color, iconography, motion, and calls to action must not collapse these distinctions.
+Labels, color, iconography, motion, and calls to action on operational surfaces must not collapse these distinctions.
 
 ## 20. Navigation
 
@@ -275,7 +282,7 @@ Responsive behavior is content-driven. Mobile is not compressed desktop. Validat
 
 ## 23. Accessibility
 
-WCAG AA is the minimum target. Preserve semantic HTML, landmarks, one clear H1, coherent heading order, keyboard operation, visible focus, screen-reader naming, correct disclosure semantics, sufficient contrast, large touch targets, reduced motion, meaningful error messaging, and non-color state cues. Use ARIA only when native semantics are insufficient.
+WCAG 2.2 AA is the minimum target. Preserve semantic HTML, landmarks, one clear H1, coherent heading order, keyboard operation, visible focus, screen-reader naming, correct disclosure semantics, sufficient contrast, large touch targets, reduced motion, meaningful error messaging, and non-color state cues. Use ARIA only when native semantics are insufficient.
 
 ## 24. Empty, loading, and error
 
@@ -285,11 +292,11 @@ WCAG AA is the minimum target. Preserve semantic HTML, landmarks, one clear H1, 
 - **Unavailable:** capability or data cannot currently be provided.
 - **Error:** an attempted operation or retrieval failed.
 
-Each state has distinct copy, visual treatment, and safe next action. Never fabricate content to make a composition feel complete.
+Each state has distinct copy, visual treatment, and safe next action on operational/data-bearing surfaces. Never fabricate financial/data content to make a composition feel complete.
 
 ## 25. Brand prohibitions
 
-Prohibit excessive blue or teal, decorative gradients, neon, token imagery, crypto trading visuals, bank crests, generic “N” variants, cards everywhere, generic SaaS heroes, fake dashboards, fabricated data, fake logos/testimonials, unsupported partnerships, unsupported regulatory claims, and visual language that implies speculative performance.
+Prohibit excessive blue or teal, decorative gradients, neon, token imagery, crypto trading visuals, bank crests, generic “N” variants, cards everywhere, generic SaaS heroes, fake dashboards, fabricated data, fake logos/testimonials, unsupported partnerships, unsupported regulatory claims, and visual language that falsely implies speculative performance.
 
 ## 26. Validation
 
@@ -300,16 +307,17 @@ Design correctness requires:
 - accessibility and keyboard validation;
 - actual typecheck, lint, test, and build execution where scripts exist;
 - browser rendering and console inspection where tooling is available;
+- route/link/canonical/asset integrity for Web;
 - source/live comparison when the task concerns production;
 - open-PR overlap review.
 
-Report checks as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Never infer build, render, accessibility, or production success from source inspection.
+Report checks as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Never infer build, render, accessibility, SEO, link-integrity, or production success from source inspection.
 
 ## 27. Governing expression
 
-> Marketing establishes authority and meaning.  
+> Marketing establishes authority, category, narrative, and meaning.
 > The application establishes control and operation.  
 > Admin establishes operator comprehension, risk visibility, and auditability.  
 > API establishes domain truth, authorization, durability, and financial state.
 
-> Ivory creates editorial space. Carbon creates authority. Teal signals precision. Verified state creates trust.
+> Ivory creates editorial space. Carbon creates authority. Teal signals precision. Operational truth creates trust where financial state is shown.
