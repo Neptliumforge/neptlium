@@ -2,27 +2,39 @@
 
 Authenticated customer application for `app.neptlium.com`.
 
-## CURRENT
+## CURRENT source architecture
 
-- Supabase Auth remains the current session/identity mechanism.
+- Clerk is the browser authentication/session authority in `apps/app` source.
+- `ClerkProvider` owns the application auth context; `/auth/sign-in` and `/auth/sign-up` use Clerk components; `/dashboard` and `/onboarding` are protected by Clerk middleware.
+- First authenticated entry flows through `/auth/complete`, which calls `POST /v1/auth/bootstrap` and resolves Neptlium account context before routing to onboarding or the provisioned dashboard.
 - `api.neptlium.com` is the only customer product/financial data authority consumed by this application.
-- The server-only API client validates the current Supabase session, forwards its bearer token, adds a request ID, applies an eight-second timeout, retries GET requests once, and never automatically retries mutations.
+- The server-only API client obtains the current Clerk session token, forwards it as a bearer token, adds a request ID, applies an eight-second timeout, retries GET requests once, and never automatically retries mutations.
 - Overview, Portfolio, Capital Account, Treasury, Allocation, Capital Activity, notifications, documents, onboarding business state, account context, and role presentation are read through `apps/api`.
 - Customer product mutations such as onboarding draft persistence and notification/document operations also cross `apps/api`.
 - Circle-backed testnet Capital Account observation remains provider evidence and is kept separate from canonical financial state.
 - Missing canonical state is returned explicitly by the API as `EMPTY`, `NOT_CONFIGURED`, `UNAVAILABLE`, or `PENDING`; the UI does not manufacture zero balances or numeric placeholders.
 
-## Supabase exception
+## Production transition boundary
 
-Direct Supabase usage in `apps/app` is temporary and limited to the current authentication/session system where the Supabase Auth SDK is required, including sign-in/sign-up, OTP/session exchange, password recovery/update, MFA, session revocation, bearer-token extraction, and closely coupled session-security recording.
+Source implementation does not by itself prove production identity cutover.
 
-`apps/app` must not query or mutate financial/product tables directly, use Supabase Storage directly for customer documents, or receive privileged Supabase/provider credentials. Those operations belong behind `apps/api`.
+Production remains in a mixed identity state until the provider-independent identity migrations, App/Admin Clerk runtime configuration, API durable Supabase configuration, and compatible API auth mode are all verified together. The API must not be switched to `DUAL` or `CLERK` against a schema that lacks the provider-independent principal and provider-subject mappings.
 
-Clerk identity and additional funding providers are TARGET only. The browser is not the financial control plane, and modeling or UI status never proves execution.
+Existing Supabase-era profile UUIDs and every financial ownership/audit relationship must be preserved through the transition. Clerk authenticates the browser session; it does not become the canonical financial owner, role database, compliance authority, or ledger authority.
+
+## Supabase boundary
+
+`apps/app` does not use the Supabase browser SDK for customer authentication or product data.
+
+Supabase remains the production data platform behind `apps/api` and may still contain the active legacy authentication schema and identity coupling until the reviewed migrations are applied. `apps/app` must not query or mutate financial/product tables directly, use Supabase Storage directly for customer documents, or receive privileged Supabase/provider credentials.
+
+The browser is not the financial control plane, and modeling or UI status never proves execution.
 
 ## Environment
 
-See `.env.example`. `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL` are browser-safe authentication configuration. `NEPTLIUM_API_URL` is server-side API routing. This app must not receive the Supabase service-role key or provider secrets.
+See `.env.example`.
+
+Required application-side identity/runtime variables are Clerk configuration plus server-side `NEPTLIUM_API_URL` and `NEXT_PUBLIC_SITE_URL`. This app must never receive the Supabase service-role key, provider secrets, or other privileged financial credentials.
 
 ## Commands
 
