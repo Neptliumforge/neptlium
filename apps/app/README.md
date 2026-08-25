@@ -26,7 +26,7 @@ The provider-independent identity foundation and Clerk application identity cuto
 - The existing-email bootstrap guard returns `link_required` instead of creating a second principal when a verified Clerk email already belongs to an existing account.
 - No Clerk mapping is manufactured automatically; existing users must prove both sessions before the mapping is created.
 
-Production runtime activation remains separate from schema readiness. App/Admin require valid Clerk runtime configuration, and API requires durable Supabase server credentials plus a compatible `API_AUTH_MODE`. Missing runtime configuration must fail closed.
+Production runtime activation remains separate from schema readiness. App/Admin require valid Clerk runtime configuration, and API requires durable Supabase server credentials plus Clerk verification configuration and `API_AUTH_MODE=DUAL`. Missing runtime configuration must fail closed.
 
 ## Identity transition boundary
 
