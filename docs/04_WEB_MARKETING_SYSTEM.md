@@ -1,7 +1,7 @@
 # Neptlium Web Marketing System
 
-**Status:** Authoritative for `apps/web`  
-**Scope:** Public information architecture, content roles, navigation, conversion, SEO, responsive behavior, and visual direction  
+**Status:** Authoritative for `apps/web`
+**Scope:** Public information architecture, content roles, navigation, conversion, SEO, responsive behavior, and visual direction
 **Category:** Capital Operating Platform
 
 This document refines `docs/03_DESIGN_SYSTEM.md` for the public Web. Repository implementation and tests must converge on this architecture rather than preserve superseded route organization.
@@ -22,13 +22,7 @@ The five public domains are exactly:
 4. **Resources** — product understanding, security, trust, and substantive research when available.
 5. **Company** — the organization and principles behind Neptlium.
 
-Each domain has a real hub destination:
-
-- `/platform`
-- `/products`
-- `/solutions`
-- `/resources`
-- `/company`
+Each domain has a real hub destination: `/platform`, `/products`, `/solutions`, `/resources`, `/company`.
 
 A top-level label must not exist only as a dropdown trigger.
 
@@ -36,9 +30,7 @@ A top-level label must not exist only as a dropdown trigger.
 
 Platform answers **“What is Neptlium as a whole?”**
 
-It explains the unified capital operating environment, system model, visibility, organization, product relationships, intelligence, governance, operating lifecycle, and architectural principles.
-
-Platform must not become a duplicate Products directory.
+It explains the unified capital operating environment, system model, visibility, organization, product relationships, intelligence, governance, operating lifecycle, and architectural principles. Platform must not become a duplicate Products directory.
 
 ## 4. Products
 
@@ -61,14 +53,9 @@ Superseded root product URLs permanently converge to the nested canonical family
 
 Solutions answers **“What operating problem does Neptlium help me reason about?”**
 
-Current taxonomy is need-based rather than persona-based because repository authority does not support invented customer segmentation:
+Current need-based taxonomy is Capital visibility, Treasury coordination, Allocation workflows, and Governance and control. Do not invent customer/persona segmentation without evidence.
 
-- Capital visibility
-- Treasury coordination
-- Allocation workflows
-- Governance and control
-
-Solutions should connect problems to relevant products and resources without simply renaming product features.
+Solutions connects problems to relevant products and resources without simply renaming product features.
 
 ## 6. Resources
 
@@ -106,27 +93,21 @@ The homepage establishes Neptlium and routes visitors into the wider architectur
 
 Canonical proposition remains:
 
-> Digital capital,  
-> organized  
+> Digital capital,
+> organized
 > around you.
 
-The homepage should move through proposition → operating model → products → solution relevance → intelligence/governance/trust → company rationale → next action.
+The homepage moves through proposition → operating model → products → solution relevance → intelligence/governance/trust → company rationale → next action.
 
-It must remain image-independent: brand authority comes from typography, space, system relationships, product concepts, information, and controlled motion rather than decorative hero art.
+It remains image-independent: brand authority comes from typography, space, system relationships, product concepts, information, and controlled motion rather than decorative hero art.
 
 ## 10. CTA system
 
-Primary global action:
+Primary global action: **Enter Neptlium** → authenticated application sign-in.
 
-- **Enter Neptlium** → authenticated application sign-in.
+Broad exploration action: **Explore platform** → `/platform`.
 
-Broad exploration action:
-
-- **Explore platform** → `/platform`.
-
-Contextual pages may use more precise next actions such as Explore products, Explore Security, or About Neptlium.
-
-Contact is a Company destination, not the default product-entry CTA.
+Contextual pages may use more precise next actions such as Explore products, Explore Security, or About Neptlium. Contact is a Company destination, not the default product-entry CTA.
 
 ## 11. Navigation
 
@@ -140,14 +121,7 @@ Mobile navigation is designed independently as a top-origin full-height structur
 
 ## 12. Footer
 
-Footer hierarchy mirrors the public information model:
-
-- Platform
-- Products
-- Solutions
-- Resources
-- Company
-- Legal
+Footer hierarchy mirrors Platform, Products, Solutions, Resources, Company, and Legal.
 
 Do not retain dead destinations for symmetry. Do not add unverified social links. GitHub may be exposed as the verified repository destination.
 
@@ -163,18 +137,7 @@ Marketing remains independent from repository progress, App/Admin/API completion
 
 ## 14. Visual system
 
-Canonical public identity:
-
-- Warm Ivory
-- Carbon / near-black
-- Mineral Teal as a precision signal
-- editorial serif where useful
-- precise sans-serif interface typography
-- medium-scale hierarchy
-- generous but purposeful negative space
-- thin structural rules
-- restrained geometry
-- minimal elevation
+Canonical public identity: Warm Ivory, Carbon/near-black, Mineral Teal as a precision signal, editorial serif where useful, precise sans-serif interface typography, medium-scale hierarchy, purposeful negative space, thin structural rules, restrained geometry, and minimal elevation.
 
 Do not use neon crypto visuals, generic gradients, glassmorphism, floating card stacks, fake dashboards, decorative coins, stock photography, random 3D forms, blur-heavy atmosphere, or card grids as the default solution to every section.
 
@@ -198,7 +161,7 @@ Only pages with independent public search value belong in the sitemap.
 
 Canonical product URLs are the nested `/products/*` family. Legacy root product URLs must not compete with them and permanently redirect in one hop.
 
-Every canonical page requires purpose-specific metadata and canonical URL. Supporting noindex pages must stay out of sitemap authority. Do not fabricate `lastModified` timestamps from build/request time.
+Every canonical page requires purpose-specific metadata and canonical URL. Supporting noindex pages stay out of sitemap authority. Do not fabricate `lastModified` timestamps from build/request time.
 
 `robots.txt`, sitemap, route policy, redirects, metadata, navigation, and internal links must describe the same architecture.
 
