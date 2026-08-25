@@ -50,6 +50,17 @@ test('all static internal Web links resolve to real App Router pages', () => {
   }
 });
 
+test('foundation page section links resolve to rendered fragment targets', () => {
+  const source = readFileSync(join(webRoot, 'components/foundation-page.tsx'), 'utf8');
+  assert.match(source, /const overviewId = anchorId\(anchors\[0\]/);
+  assert.match(source, /const systemsId = anchorId\(anchors\[1\]/);
+  assert.match(source, /const principleId = anchorId\(anchors\[2\]/);
+  assert.match(source, /id=\{overviewId\}/);
+  assert.match(source, /id=\{systemsId\}/);
+  assert.match(source, /id=\{principleId\}/);
+  assert.match(source, /href=\{`#\$\{anchorId\(anchor, 'section'\)\}`\}/);
+});
+
 test('public access CTA resolves inside the certified marketing surface', () => {
   const site = readFileSync(join(webRoot, 'lib/content/site.ts'), 'utf8');
   const match = site.match(/publicAccessUrl:\s*['"]([^'"]+)['"]/);
