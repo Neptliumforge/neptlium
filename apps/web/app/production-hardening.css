@@ -1,4 +1,4 @@
-/* Cross-route accessibility and rendering hardening for the public Web. */
+/* Cross-route accessibility, motion, scroll, and rendering hardening for the public Web. */
 
 html,
 body {
@@ -7,12 +7,53 @@ body {
 
 html {
   background: var(--np-paper, #f5f3ee);
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 .site-header,
 .authority-hero,
 .institutional-footer {
   contain: paint;
+}
+
+/* Motion is quiet and instructive: controls acknowledge intent; content never performs. */
+:where(a, button, summary) {
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+:where(.text-arrow-link, .capability-row, .homepage-solution-list > a, .architecture-link-list > a, .resource-ledger > a) svg {
+  transition: transform 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+:where(.text-arrow-link, .capability-row, .homepage-solution-list > a, .architecture-link-list > a, .resource-ledger > a):hover svg,
+:where(.text-arrow-link, .capability-row, .homepage-solution-list > a, .architecture-link-list > a, .resource-ledger > a):focus-visible svg {
+  transform: translateX(0.18rem);
+}
+
+/* Section endings should read as continuation, not a stack of disconnected panels. */
+:where(.operating-environment, .capital-organization, .reason-section, .architecture-section) {
+  position: relative;
+}
+
+:where(.operating-environment, .capital-organization, .reason-section, .architecture-section)::after {
+  position: absolute;
+  right: max(1rem, calc((100% - 78rem) / 2));
+  bottom: 0;
+  left: max(1rem, calc((100% - 78rem) / 2));
+  height: 1px;
+  background: rgb(16 18 20 / 10%);
+  content: '';
+  pointer-events: none;
+}
+
+:where(.homepage-solutions, .intelligence-section, .final-authority, .architecture-dark)::after {
+  background: rgb(245 243 238 / 12%);
+}
+
+/* Adjacent sections share a deliberate handoff. No ornamental parallax or scroll-jacking. */
+:where(.neptlium-home > section, .architecture-page > section) {
+  scroll-margin-top: 5.5rem;
 }
 
 :where(a, button, summary):focus-visible {
