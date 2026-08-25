@@ -78,6 +78,57 @@ html {
   color: #f5f3ee;
 }
 
+/* Hero field: Carbon authority with quiet white structural waves. */
+.authority-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: #101214;
+}
+
+.authority-wave-field {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.authority-wave-field path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.authority-wave-field-primary path {
+  stroke: rgb(245 243 238 / 14%);
+  stroke-width: 1.05;
+}
+
+.authority-wave-field-secondary path {
+  stroke: rgb(245 243 238 / 7%);
+  stroke-width: 0.8;
+}
+
+.authority-wave-field-signal {
+  stroke: rgb(245 243 238 / 25%);
+  stroke-width: 1.2;
+}
+
+.authority-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Headline is category-defining, not poster-scale. */
+.authority-hero h1 {
+  max-width: 13.5ch;
+  margin-top: 1.25rem;
+  font-size: clamp(2.35rem, 3.65vw, 3.35rem);
+  line-height: 1.01;
+  letter-spacing: -0.035em;
+}
+
 /* Motion is quiet and instructive: controls acknowledge intent; content never performs. */
 :where(a, button, summary) {
   transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
@@ -117,6 +168,7 @@ html {
   margin-top: clamp(4.5rem, 8vw, 7.25rem);
   border-top: 1px solid rgb(245 243 238 / 16%);
   border-bottom: 1px solid rgb(245 243 238 / 12%);
+  background: rgb(16 18 20 / 28%);
 }
 
 .hero-architecture-plane,
@@ -312,6 +364,15 @@ html {
 }
 
 @media (max-width: 56rem) {
+  .authority-wave-field {
+    width: 125%;
+    left: -12%;
+  }
+
+  .authority-wave-field-secondary {
+    opacity: 0.55;
+  }
+
   .hero-architecture {
     grid-template-columns: 1fr;
   }
@@ -365,6 +426,27 @@ html {
     height: 3.75rem;
   }
 
+  .authority-hero h1 {
+    max-width: 12.5ch;
+    font-size: clamp(2.15rem, 10.4vw, 2.72rem);
+    line-height: 1.02;
+  }
+
+  .authority-wave-field {
+    top: 5rem;
+    height: calc(100% - 5rem);
+    width: 155%;
+    left: -33%;
+  }
+
+  .authority-wave-field-primary path {
+    stroke: rgb(245 243 238 / 12%);
+  }
+
+  .authority-wave-field-signal {
+    stroke: rgb(245 243 238 / 20%);
+  }
+
   .hero-architecture {
     margin-top: 3.5rem;
   }
@@ -404,6 +486,10 @@ html {
   .precision-line,
   .architecture-axis {
     background: Highlight;
+  }
+
+  .authority-wave-field {
+    display: none;
   }
 }
 

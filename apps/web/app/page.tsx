@@ -21,10 +21,34 @@ const trustLayers = [
   ['Security', 'Keep privileged operations and sensitive authority outside public browser control.'],
 ] as const;
 
+function AuthorityWaveField() {
+  return (
+    <svg
+      className="authority-wave-field"
+      viewBox="0 0 1600 760"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g className="authority-wave-field-primary">
+        <path d="M-80 575 C 230 355, 430 330, 700 468 S 1160 672, 1690 328" />
+        <path d="M-90 625 C 220 405, 430 375, 700 515 S 1165 720, 1700 378" />
+        <path d="M-110 680 C 205 455, 420 425, 700 566 S 1175 770, 1710 430" />
+      </g>
+      <g className="authority-wave-field-secondary">
+        <path d="M785 -55 C 960 165, 1008 280, 955 404 S 910 638, 1160 820" />
+        <path d="M885 -70 C 1045 142, 1098 270, 1040 405 S 1010 654, 1270 820" />
+      </g>
+      <path className="authority-wave-field-signal" d="M-40 513 C 265 308, 455 300, 715 432 S 1170 623, 1650 300" />
+    </svg>
+  );
+}
+
 export default function HomePage() {
   return (
     <div className="neptlium-home">
       <section className="authority-hero" aria-labelledby="home-hero-title">
+        <AuthorityWaveField />
         <div className="web-shell authority-hero-inner">
           <div className="authority-hero-copy">
             <h1 id="home-hero-title">The operating system for capital.</h1>
