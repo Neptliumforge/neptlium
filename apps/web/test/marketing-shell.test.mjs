@@ -15,11 +15,8 @@ const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${sit
 
 test('hero preserves the Neptlium-native proposition with exactly one H1 and no decorative artwork dependency', () => {
   for (const copy of [
-    'Capital operating platform',
-    'Digital capital,',
-    'organized',
-    'around you.',
-    'capital movement, treasury, allocation and portfolio context',
+    'The operating system for capital.',
+    'See, coordinate and govern capital across treasury, allocation and portfolio context.',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
