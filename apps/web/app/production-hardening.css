@@ -87,8 +87,82 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   text-decoration: none;
 }
 
-.authority-actions .text-arrow-link::after {
+/* Hero evidence rail: one connected operating relationship, not four isolated boxes. */
+.hero-system {
+  margin-top: clamp(4.25rem, 8vw, 7rem);
+  padding-top: 0;
+}
+
+.hero-system-rule {
+  display: none;
+}
+
+.hero-system ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgb(245 243 238 / 18%);
+}
+
+.hero-system ol::before {
   position: absolute;
+  top: -1px;
+  left: 0;
+  width: clamp(3.5rem, 6vw, 5rem);
+  height: 1px;
+  background: #20afa3;
+  content: '';
+}
+
+.hero-system li,
+.hero-system li + li {
+  position: relative;
+  min-height: 0;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0 1.4rem 0 0;
+  border: 0;
+}
+
+.hero-system li + li {
+  padding-left: 1.4rem;
+}
+
+.hero-system li:not(:last-child)::after {
+  position: absolute;
+  top: 0.35rem;
+  right: 0;
+  width: 1px;
+  height: 2.25rem;
+  background: rgb(245 243 238 / 12%);
+  content: '';
+}
+
+.hero-system-index {
+  display: block;
+  margin-bottom: 0.85rem;
+  color: rgb(245 243 238 / 44%);
+}
+
+.hero-system strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.hero-system li p {
+  max-width: 15rem;
+  margin-top: 0.42rem;
+  color: rgb(245 243 238 / 52%);
+}
+
+.hero-system-note {
+  margin-top: 1.35rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgb(245 243 238 / 8%);
+  color: rgb(245 243 238 / 38%);
+  letter-spacing: 0.01em;
 }
 
 /* Section endings should read as continuation, not a stack of disconnected panels. */
@@ -172,9 +246,50 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   border-radius: 0.5rem;
 }
 
+@media (max-width: 56rem) {
+  .hero-system ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.8rem;
+  }
+
+  .hero-system li:nth-child(2n)::after {
+    display: none;
+  }
+
+  .hero-system li:nth-child(n + 3) {
+    padding-top: 1.25rem;
+    border-top: 1px solid rgb(245 243 238 / 10%);
+  }
+}
+
 @media (max-width: 40rem) {
   body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] {
     height: 3.75rem;
+  }
+
+  .hero-system ol {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+    padding-top: 0.9rem;
+  }
+
+  .hero-system li,
+  .hero-system li + li,
+  .hero-system li:nth-child(n + 3) {
+    padding: 1rem 0;
+    border-top: 1px solid rgb(245 243 238 / 10%);
+  }
+
+  .hero-system li:first-child {
+    border-top: 0;
+  }
+
+  .hero-system li::after {
+    display: none;
+  }
+
+  .hero-system-index {
+    margin-bottom: 0.45rem;
   }
 }
 
