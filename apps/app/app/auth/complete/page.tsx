@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
-import { ApiClientError, bootstrapClerkAccount, getAccountContext } from '@/lib/api/client';
+import { ApiClientError, getAccountContext } from '@/lib/api/client';
+import { bootstrapClerkIdentity } from '@/lib/api/bootstrap';
 import { AuthShell } from '@/app/(auth)/components/AuthShell';
 
 export default async function CompleteAuthenticationPage() {
@@ -8,7 +9,9 @@ export default async function CompleteAuthenticationPage() {
   if (!userId) redirect('/auth/sign-in');
 
   try {
-    await bootstrapClerkAccount();
+    const bootstrap = await bootstrapClerkIdentity();
+    if (bootstrap.status === 'link_required') redirect('/auth/link-existing');
+
     const context = await getAccountContext();
     redirect(context.provisionedAt ? '/dashboard' : '/onboarding');
   } catch (error) {
