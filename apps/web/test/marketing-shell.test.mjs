@@ -14,7 +14,7 @@ const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
 const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${hardening}\n${site}`;
 
-test('hero preserves the Neptlium-native proposition with exactly one H1 and a structural operating diagram', () => {
+test('hero preserves the Neptlium-native proposition with exactly one H1, white wave field and structural operating diagram', () => {
   for (const copy of [
     'The operating system for capital.',
     'See, coordinate and govern capital across treasury, allocation and portfolio context.',
@@ -24,7 +24,10 @@ test('hero preserves the Neptlium-native proposition with exactly one H1 and a s
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
+  assert.match(page, /className="authority-wave-field"/);
   assert.match(page, /className="hero-architecture"/);
+  assert.match(hardening, /\.authority-wave-field-primary path[\s\S]*stroke:\s*rgb\(245 243 238/);
+  assert.match(hardening, /\.authority-hero h1[\s\S]*font-size:\s*clamp\(2\.35rem, 3\.65vw, 3\.35rem\)/);
   assert.doesNotMatch(page, /ProductContextIllustration|<Image|<img|\.png|\.webp|1000209629/i);
 });
 
