@@ -17,11 +17,14 @@ test('customer application sessions and API bearer tokens are Clerk-only in sour
   assert.doesNotMatch(read('.env.example'), /NEXT_PUBLIC_SUPABASE_URL|NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
 });
 
-test('first authenticated app entry bootstraps only through the API', () => {
+test('first authenticated app entry bootstraps only through the API and preserves existing-account continuity', () => {
   const complete = read('app/auth/complete/page.tsx');
-  assert.match(complete, /bootstrapClerkAccount/);
-  assert.match(read('lib/api/client.ts'), /\/v1\/auth\/bootstrap/);
-  assert.doesNotMatch(complete, /email|owner_id|supabase/i);
+  const bootstrap = read('lib/api/bootstrap.ts');
+  assert.match(complete, /bootstrapClerkIdentity/);
+  assert.match(bootstrap, /\/v1\/auth\/bootstrap/);
+  assert.match(bootstrap, /link_required/);
+  assert.match(complete, /redirect\('\/auth\/link-existing'\)/);
+  assert.doesNotMatch(complete, /owner_id|supabase/i);
 });
 
 test('application documentation distinguishes Clerk source authority from production cutover state', () => {
