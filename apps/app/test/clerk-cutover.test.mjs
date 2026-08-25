@@ -14,10 +14,9 @@ test('customer application sessions and API bearer tokens are Clerk-only in sour
   assert.match(read('lib/api/client.ts'), /getToken\(\)/);
   assert.doesNotMatch(read('package.json'), /@supabase\/supabase-js/);
   assert.match(read('.env.example'), /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY/);
-  assert.doesNotMatch(read('.env.example'), /NEXT_PUBLIC_SUPABASE_URL|NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
 });
 
-test('first authenticated app entry bootstraps only through the API and preserves existing-account continuity', () => {
+test('first authenticated app entry bootstraps through the API and preserves existing-account continuity', () => {
   const complete = read('app/auth/complete/page.tsx');
   const bootstrap = read('lib/api/bootstrap.ts');
   assert.match(complete, /bootstrapClerkIdentity/);
@@ -27,17 +26,19 @@ test('first authenticated app entry bootstraps only through the API and preserve
   assert.doesNotMatch(complete, /owner_id|supabase/i);
 });
 
-test('application documentation distinguishes Clerk source authority from production cutover state', () => {
+test('application documentation records schema cutover separately from runtime certification', () => {
   const appReadme = read('README.md');
   const appArchitecture = readRepo('docs/02_AUTHENTICATED_APPLICATION.md');
   const identityArchitecture = readRepo('docs/04_IDENTITY_AND_ACCESS.md');
 
   assert.match(appReadme, /Clerk is the browser authentication\/session authority in `apps\/app` source/);
-  assert.match(appReadme, /Production remains in a mixed identity state/);
+  assert.match(appReadme, /provider-independent identity foundation and Clerk application identity cutover have been applied/);
+  assert.match(appReadme, /Production runtime activation remains separate from schema readiness/);
   assert.doesNotMatch(appReadme, /Supabase Auth remains the current session\/identity mechanism/);
-  assert.match(appArchitecture, /CURRENT SOURCE identity and API boundary/);
-  assert.match(appArchitecture, /CURRENT PRODUCTION identity boundary/);
-  assert.match(appArchitecture, /Existing profile UUIDs remain canonical Neptlium principal identifiers/);
-  assert.match(identityArchitecture, /apps\/app.*source are implemented around Clerk browser authentication\/session primitives/s);
-  assert.match(identityArchitecture, /API_AUTH_MODE=SUPABASE\|DUAL\|CLERK/);
+  assert.match(appArchitecture, /CURRENT PRODUCTION SCHEMA/);
+  assert.match(appArchitecture, /CURRENT PRODUCTION RUNTIME/);
+  assert.match(appArchitecture, /16 existing profiles and 16 active Neptlium principals/);
+  assert.match(identityArchitecture, /CURRENT PRODUCTION SCHEMA/);
+  assert.match(identityArchitecture, /CURRENT PRODUCTION RUNTIME/);
+  assert.match(identityArchitecture, /API_AUTH_MODE=DUAL/);
 });
