@@ -11,12 +11,9 @@ export const metadata = createPageMetadata({
   path: '/',
 });
 
-const operatingSequence = [
-  ['01', 'Capital Account', 'Capital enters the operating context.'],
-  ['02', 'Treasury', 'Liquidity stays visible in context.'],
-  ['03', 'Allocation', 'Intent is shaped before action.'],
-  ['04', 'Portfolio Intelligence', 'Decisions return to the whole picture.'],
-] as const;
+const capitalState = ['Portfolio context', 'Liquidity & treasury', 'Capital account'] as const;
+const operatingCore = ['Observe', 'Understand', 'Govern'] as const;
+const governedWork = ['Treasury coordination', 'Allocation workflows', 'Portfolio intelligence'] as const;
 
 const trustLayers = [
   ['Clarity', 'Keep what is visible, modeled, authorized and authoritative conceptually distinct.'],
@@ -44,21 +41,38 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="hero-system" aria-label="Illustrative Neptlium operating sequence">
-            <div className="hero-system-rule" aria-hidden="true" />
-            <ol>
-              {operatingSequence.map(([index, title, copy]) => (
-                <li key={title}>
-                  <span className="hero-system-index">{index}</span>
-                  <div>
-                    <strong>{title}</strong>
-                    <p>{copy}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <p className="hero-system-note">Illustrative operating relationship. No customer financial data shown.</p>
+          <div className="hero-architecture" aria-label="Illustrative Neptlium capital operating architecture">
+            <section className="hero-architecture-plane" aria-labelledby="hero-capital-state">
+              <span className="hero-architecture-kicker">01 / Capital state</span>
+              <h2 id="hero-capital-state">Keep the whole position in context.</h2>
+              <ul>
+                {capitalState.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </section>
+
+            <div className="hero-architecture-connector" aria-hidden="true"><span /></div>
+
+            <section className="hero-architecture-core" aria-labelledby="hero-operating-core">
+              <span className="hero-architecture-kicker">02 / Neptlium</span>
+              <h2 id="hero-operating-core">One operating context.</h2>
+              <ol>
+                {operatingCore.map((item, index) => (
+                  <li key={item}><span>{String(index + 1).padStart(2, '0')}</span>{item}</li>
+                ))}
+              </ol>
+            </section>
+
+            <div className="hero-architecture-connector" aria-hidden="true"><span /></div>
+
+            <section className="hero-architecture-plane" aria-labelledby="hero-governed-work">
+              <span className="hero-architecture-kicker">03 / Governed work</span>
+              <h2 id="hero-governed-work">Move forward without losing state.</h2>
+              <ul>
+                {governedWork.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </section>
           </div>
+          <p className="hero-system-note">Illustrative operating architecture. No customer financial data shown.</p>
         </div>
       </section>
 
