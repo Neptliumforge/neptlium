@@ -17,6 +17,44 @@ html {
   contain: paint;
 }
 
+/* Header: integrated at rest, quieter and more operational after scroll. */
+.site-header.capital-command-bar {
+  transition:
+    height 180ms cubic-bezier(0.2, 0, 0, 1),
+    background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    color 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 3.875rem;
+  border-bottom-color: rgb(16 18 20 / 12%);
+  background: rgb(251 250 247 / 96%);
+  color: #101214;
+}
+
+body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] :where(
+  .brand,
+  .desktop-domain-link,
+  .desktop-domain-control > a,
+  .desktop-domain-control > button,
+  .command-actions > a:first-child,
+  .command-mobile-trigger
+) {
+  color: #101214;
+}
+
+body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] .command-mobile-trigger {
+  border-color: rgb(16 18 20 / 14%);
+}
+
+body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] .command-primary-action {
+  background: #101214;
+  color: #f5f3ee;
+}
+
 /* Motion is quiet and instructive: controls acknowledge intent; content never performs. */
 :where(a, button, summary) {
   transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
@@ -29,6 +67,28 @@ html {
 :where(.text-arrow-link, .capability-row, .homepage-solution-list > a, .architecture-link-list > a, .resource-ledger > a):hover svg,
 :where(.text-arrow-link, .capability-row, .homepage-solution-list > a, .architecture-link-list > a, .resource-ledger > a):focus-visible svg {
   transform: translateX(0.18rem);
+}
+
+.capability-row,
+.homepage-solution-list > a,
+.architecture-link-list > a,
+.resource-ledger > a {
+  transition:
+    background-color 160ms cubic-bezier(0.2, 0, 0, 1),
+    color 160ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 160ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* One dominant action. Secondary routes read as navigation rather than competing buttons. */
+.authority-actions .text-arrow-link {
+  min-height: 3rem;
+  align-items: center;
+  padding-inline: 0.15rem;
+  text-decoration: none;
+}
+
+.authority-actions .text-arrow-link::after {
+  position: absolute;
 }
 
 /* Section endings should read as continuation, not a stack of disconnected panels. */
@@ -47,8 +107,19 @@ html {
   pointer-events: none;
 }
 
+:where(.homepage-solutions, .intelligence-section, .final-authority, .architecture-dark) {
+  position: relative;
+}
+
 :where(.homepage-solutions, .intelligence-section, .final-authority, .architecture-dark)::after {
+  position: absolute;
+  right: max(1rem, calc((100% - 78rem) / 2));
+  bottom: 0;
+  left: max(1rem, calc((100% - 78rem) / 2));
+  height: 1px;
   background: rgb(245 243 238 / 12%);
+  content: '';
+  pointer-events: none;
 }
 
 /* Adjacent sections share a deliberate handoff. No ornamental parallax or scroll-jacking. */
@@ -56,6 +127,40 @@ html {
   scroll-margin-top: 5.5rem;
 }
 
+.neptlium-home > section + section {
+  isolation: isolate;
+}
+
+/* The final authority resolves into the footer instead of ending as a detached dark block. */
+.final-authority {
+  padding-bottom: clamp(5.5rem, 8vw, 7.5rem);
+}
+
+.institutional-footer {
+  border-top: 0;
+}
+
+.final-authority + .institutional-footer,
+#main-content + .institutional-footer {
+  position: relative;
+}
+
+#main-content + .institutional-footer::before {
+  position: absolute;
+  top: 0;
+  right: max(1rem, calc((100% - 78rem) / 2));
+  left: max(1rem, calc((100% - 78rem) / 2));
+  height: 1px;
+  background: rgb(16 18 20 / 12%);
+  content: '';
+}
+
+/* Eyebrows orient; they should not overpower headings. */
+.web-eyebrow {
+  opacity: 0.88;
+}
+
+/* Focus remains explicit and consistent across surfaces. */
 :where(a, button, summary):focus-visible {
   outline: 2px solid var(--np-action, #0f8f86);
   outline-offset: 3px;
@@ -65,6 +170,12 @@ html {
 .drawer a:focus-visible,
 .drawer button:focus-visible {
   border-radius: 0.5rem;
+}
+
+@media (max-width: 40rem) {
+  body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] {
+    height: 3.75rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,7 +190,8 @@ html {
 
   .mega-menu,
   .drawer,
-  .capital-architecture {
+  .capital-architecture,
+  :where(.text-arrow-link, .capability-row, .homepage-solution-list > a, .architecture-link-list > a, .resource-ledger > a) svg {
     transform: none !important;
   }
 }
@@ -108,5 +220,9 @@ html {
   .authority-actions .web-button {
     width: 100%;
     justify-content: center;
+  }
+
+  .authority-actions .text-arrow-link {
+    justify-content: flex-start;
   }
 }
