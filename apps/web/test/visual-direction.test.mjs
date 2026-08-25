@@ -8,6 +8,7 @@ const header = read('components/site-header.tsx');
 const footer = read('components/site-footer.tsx');
 const css = read('app/neptlium-visual-direction.css');
 const site = read('lib/content/site.ts');
+const architecture = read('lib/content/public-architecture.ts');
 
 test('homepage implements an image-independent Neptlium-native hero', () => {
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
@@ -19,73 +20,64 @@ test('homepage implements an image-independent Neptlium-native hero', () => {
     'capital movement, treasury, allocation and portfolio context',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
-
   assert.match(page, /SITE\.publicAccessLabel/);
-  assert.match(page, /SITE\.exploreLabel/);
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
-  assert.match(site, /exploreLabel:\s*'Explore platforms'/);
+  assert.match(site, /exploreLabel:\s*'Explore platform'/);
   assert.match(page, /className="hero-system"/);
-  assert.match(page, /Capital Account/);
-  assert.match(page, /Treasury/);
-  assert.match(page, /Allocation/);
-  assert.match(page, /Portfolio Intelligence/);
+  for (const product of ['Capital Account', 'Treasury', 'Allocation', 'Portfolio Intelligence'])
+    assert.match(page, new RegExp(product));
   assert.doesNotMatch(page, /ProductContextIllustration|HeroArchitecture|<Image|<img|\.png|\.webp|\.jpe?g/i);
 });
 
-test('homepage is a continuous operating narrative rather than disconnected marketing art', () => {
+test('homepage is a continuous route into the wider public system rather than the entire website', () => {
   for (const className of [
     'operating-environment',
     'capital-organization',
+    'homepage-solutions',
     'intelligence-section',
     'reason-section',
     'final-authority',
   ])
     assert.match(page, new RegExp(`className="${className}`));
-
-  for (const copy of [
-    'The operating environment',
-    'How capital is organized',
-    'Intelligence and governance',
-    'Why Neptlium exists',
-  ])
-    assert.match(page, new RegExp(copy));
+  for (const route of ['/platform', '/products', '/solutions', '/resources', '/company'])
+    assert.match(page, new RegExp(route.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
 });
 
-test('marketing palette, structural hero and responsive contracts are explicit', () => {
+test('marketing palette, structural composition and responsive contracts are explicit', () => {
   for (const value of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
     assert.match(css, new RegExp(value));
-  assert.match(css, /clamp\(3\.1rem, 5vw, 4\.5rem\)/);
   assert.match(css, /\.hero-system-rule/);
-  assert.match(css, /\.capability-system/);
-  assert.doesNotMatch(css, /radial-gradient|linear-gradient|filter:\s*blur/i);
-  assert.match(css, /@media\s*\(max-width:\s*900px\)/);
-  assert.match(css, /@media\s*\(max-width:\s*600px\)/);
+  assert.match(css, /\.architecture-page/);
+  assert.match(css, /\.solution-essays/);
+  assert.doesNotMatch(css, /radial-gradient|linear-gradient|filter:\s*blur|backdrop-filter:\s*blur/i);
+  for (const media of ['68rem', '56rem', '40rem', '24.5rem'])
+    assert.match(css, new RegExp(`max-width:\\s*${media.replace('.', '\\.')}`));
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
 
-test('navigation uses four canonical groups and accessible disclosures', () => {
-  for (const label of ['Platform', 'Solutions', 'Resources', 'Company'])
-    assert.match(header, new RegExp(`label: '${label}'`));
+test('navigation uses five canonical domains with direct destinations plus accessible disclosures', () => {
+  for (const label of ['Platform', 'Products', 'Solutions', 'Resources', 'Company'])
+    assert.match(architecture, new RegExp(`label: '${label}'`));
   for (const token of [
     'aria-expanded',
     'aria-controls',
+    'aria-haspopup="true"',
     'aria-modal="true"',
     "event.key === 'Escape'",
     "document.body.style.overflow = 'hidden'",
     'trigger.current?.focus()',
   ])
     assert.match(header, new RegExp(token.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
-  assert.match(header, /SITE\.publicAccessLabel/);
-  assert.match(header, /SITE\.exploreLabel/);
-  assert.match(header, /SITE\.publicAccessUrl/);
-  assert.match(header, /SITE\.exploreUrl/);
+  assert.match(header, /<Link href=\{item\.href\}/);
+  assert.match(header, /mobile-domain-row/);
   assert.doesNotMatch(header, />\s*Request access\s*</i);
 });
 
-test('footer carries the canonical CTA pair and conversational closing', () => {
+test('footer mirrors the public architecture and conversational closing', () => {
   assert.match(footer, /Keep your capital work connected\./);
   assert.match(footer, /SITE\.publicAccessLabel/);
-  assert.match(footer, /SITE\.exploreLabel/);
+  for (const label of ['Platform', 'Products', 'Solutions', 'Resources', 'Company', 'Legal'])
+    assert.match(footer, new RegExp(`label: '${label}'`));
   assert.doesNotMatch(footer, /Capital, organized with precision\./);
 });
 
