@@ -1,12 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import './marketing-shell.css';
-import './apple-calibration.css';
-import './product-showcase-calibration.css';
-import './route-product-consolidation.css';
-import './detail-product-consolidation.css';
-import './marketing-production.css';
-import './unified-design.css';
 import './neptlium-visual-direction.css';
 import './production-hardening.css';
 import { SiteHeader } from '@/components/site-header';
@@ -54,7 +47,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light',
-  themeColor: '#F5F3EE',
+  themeColor: '#101214',
   width: 'device-width',
   initialScale: 1,
 };
