@@ -181,7 +181,6 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="command-actions">
-          <Link href="/products">Products</Link>
           <Link className="button command-primary-action" href={SITE.publicAccessUrl}>
             {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
           </Link>
@@ -248,7 +247,6 @@ export function SiteHeader() {
               <Link className="button" href={SITE.publicAccessUrl}>
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
-              <Link href="/platform">Explore platform</Link>
             </div>
           </div>
         </div>

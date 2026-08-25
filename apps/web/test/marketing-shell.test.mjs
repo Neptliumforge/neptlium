@@ -51,18 +51,22 @@ test('homepage routes visitors through platform, products, solutions, trust and 
     assert.doesNotMatch(page, new RegExp(obsolete, 'i'));
 });
 
-test('public CTA authority keeps Enter Neptlium as the product-entry action', () => {
+test('public CTA authority keeps Enter Neptlium isolated as the product-entry action', () => {
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
   assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
-  for (const source of [page, header, footer]) assert.match(source, /SITE\.publicAccess/);
+  for (const source of [page, header]) assert.match(source, /SITE\.publicAccess/);
+  assert.doesNotMatch(header, /<Link href="\/products">Products<\/Link>/);
+  assert.doesNotMatch(header, />Explore platform<\/Link>/);
   assert.doesNotMatch(`${page}\n${header}\n${footer}`, /Request access|Open Neptlium/);
 });
 
-test('navigation is exactly the five canonical domains and every label has a real hub destination', () => {
+test('navigation is exactly five canonical domains with contracted expert discovery', () => {
   const domains = ['Platform', 'Products', 'Solutions', 'Resources', 'Company'];
   for (const domain of domains) assert.match(architecture, new RegExp(`label: '${domain}'`));
   for (const route of ['/platform', '/products', '/solutions', '/resources', '/company'])
     assert.match(architecture, new RegExp(`href: '${route.replace('/', '\\/')}'`));
+  assert.match(architecture, /PRIMARY_PRODUCTS = PRODUCTS\.slice\(0, 4\)/);
+  assert.match(architecture, /PRIMARY_COMPANY = COMPANY\.slice\(0, 2\)/);
   assert.match(header, /NAVIGATION\.map/);
   assert.match(header, /<Link href=\{item\.href\}/);
   assert.doesNotMatch(architecture, /label: 'Capital'|label: 'Connectivity'/);
@@ -86,11 +90,16 @@ test('navigation preserves desktop and independently designed mobile accessibili
     assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
 });
 
-test('footer expresses the same five-domain architecture plus legal', () => {
-  for (const label of ['Platform', 'Products', 'Solutions', 'Resources', 'Company', 'Legal'])
+test('footer is the complete institutional map with legal separated from product navigation', () => {
+  for (const label of ['Platform', 'Products', 'Solutions', 'Resources', 'Company'])
     assert.match(footer, new RegExp(`label: '${label}'`));
+  for (const legal of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility'])
+    assert.match(footer, new RegExp(`label: '${legal}'`));
+  assert.match(footer, /aria-label="Legal"/);
   assert.match(footer, /https:\/\/github\.com\/Neptliumforge/);
   assert.match(footer, /Keep your capital work connected\./);
+  assert.doesNotMatch(footer, /All products|Solutions overview|Resources overview|Company overview/);
+  assert.doesNotMatch(footer, /SITE\.publicAccess|Explore platform/);
   for (const unverified of ['bsky.app', 'x.com/Neptlium', 'youtube.com/@neptlium', 'tiktok.com/@neptlium'])
     assert.doesNotMatch(footer, new RegExp(unverified.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.doesNotMatch(footer, /Neptliumlabs|href=["']#["']/i);
