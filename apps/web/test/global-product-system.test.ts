@@ -64,8 +64,9 @@ test('public product visuals never format unavailable state as money', async () 
 test('Capital Universe is canonical strategic product context without asset-availability claims', async () => {
   const universe = await webFile('app/products/capital-universe/page.tsx');
   assert.equal(universe.includes("path: '/products/capital-universe'"), true);
-  assert.equal(universe.includes('Strategic architecture does not'), true);
+  assert.equal(universe.includes('Classification is not availability.'), true);
   assert.equal(universe.includes('asset, network, custody, market or execution availability'), true);
+  assert.match(universe, /provider|infrastructure/i);
   assert.equal(universe.includes('USDC'), false);
   assert.equal(universe.includes('BTC'), false);
   assert.equal(universe.includes('ETH'), false);
