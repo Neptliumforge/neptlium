@@ -9,70 +9,69 @@ export const metadata = createPageMetadata({
   path: '/products/performance',
 });
 
-const requirements = [
-  ['Authoritative source', 'Performance starts with evidence that can support the stated portfolio scope.'],
-  ['Explicit period', 'Every outcome needs a defined time horizon before it can be interpreted responsibly.'],
-  ['Methodology', 'The calculation method and assumptions belong with the result rather than behind it.'],
-  ['Capital activity separation', 'Deposits, withdrawals and transfers must remain distinguishable from investment outcome.'],
+const evidenceQuestions = [
+  ['Source', 'What evidence supports the stated portfolio scope?'],
+  ['Period', 'What exact interval does the result describe?'],
+  ['Method', 'How was the result calculated and what assumptions matter?'],
+  ['Activity', 'Which deposits, withdrawals or transfers must be separated from investment outcome?'],
 ] as const;
 
 export default function PerformancePage() {
   return (
-    <div className="architecture-page product-deep-page">
-      <section className="architecture-hero">
-        <div className="web-shell architecture-hero-grid">
-          <div>
-            <p className="web-eyebrow on-light">Products · Performance</p>
-            <h1>Performance only means something when the context is trustworthy.</h1>
-          </div>
-          <p className="architecture-lead">
-            Neptlium treats performance as an evidence-bound interpretation layer. The public site does
-            not present returns or portfolio outcomes, and this product page does not imply that a live
-            performance-reporting capability is available for any account.
+    <div className="product-story performance-story">
+      <section className="performance-hero">
+        <div className="web-shell performance-hero-inner">
+          <p className="web-eyebrow on-light">Products · Performance</p>
+          <h1>Performance is an interpretation, not a decorative number.</h1>
+          <p>
+            A result only becomes useful when source evidence, period, methodology and capital activity
+            travel with it. The public site presents no returns or account performance.
           </p>
         </div>
       </section>
 
-      <section className="architecture-section" aria-labelledby="performance-requires-title">
-        <div className="web-shell architecture-split">
+      <section className="performance-evidence" aria-labelledby="performance-evidence-title">
+        <div className="web-shell">
+          <div className="performance-evidence-heading">
+            <span>Before reading any result</span>
+            <h2 id="performance-evidence-title">Ask four questions.</h2>
+          </div>
+          <dl className="performance-question-list">
+            {evidenceQuestions.map(([term, description], index) => (
+              <div key={term}>
+                <dt><span>{String(index + 1).padStart(2, '0')}</span>{term}</dt>
+                <dd>{description}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="performance-boundary architecture-dark">
+        <div className="web-shell performance-boundary-grid">
           <div>
-            <p className="web-eyebrow on-light">Interpretation model</p>
-            <h2 id="performance-requires-title">Four things must travel with the number.</h2>
+            <p className="web-eyebrow">Interpretation boundary</p>
+            <h2>Observed, modeled and inferred outcomes need different labels.</h2>
+          </div>
+          <p>
+            Neptlium is designed to preserve those distinctions wherever performance becomes supported.
+            An estimate should not inherit the authority of an observed result merely because both can
+            be displayed as a percentage.
+          </p>
+        </div>
+      </section>
+
+      <section className="performance-return-context">
+        <div className="web-shell performance-return-grid">
+          <div>
+            <h2>Return the result to the portfolio that gives it meaning.</h2>
             <p>
-              A performance figure without provenance, period, methodology and capital-activity context
-              can create more certainty than the evidence supports.
+              Performance belongs beside composition, concentration, liquidity and capital activity,
+              not in isolation from them.
             </p>
           </div>
-          <div className="architecture-numbered-list">
-            {requirements.map(([title, body], index) => (
-              <article key={title}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{body}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="architecture-section architecture-dark">
-        <div className="web-shell architecture-statement">
-          <p className="web-eyebrow">Product principle</p>
-          <h2>Observed, modeled and inferred outcomes should never collapse into one label.</h2>
-          <p>
-            Neptlium is designed to keep those distinctions visible wherever performance becomes a
-            supported product experience.
-          </p>
-        </div>
-      </section>
-
-      <section className="architecture-cta">
-        <div className="web-shell architecture-cta-inner">
-          <h2>Return performance context to the wider portfolio picture.</h2>
           <Link className="web-button primary" href="/products/portfolio-intelligence">
-            Explore Portfolio Intelligence <ArrowRight aria-hidden="true" />
+            Portfolio Intelligence <ArrowRight aria-hidden="true" />
           </Link>
         </div>
       </section>
