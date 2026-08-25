@@ -1,24 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "[ -n \"$VERCEL_GIT_PREVIOUS_SHA\" ] && turbo query affected --base=$VERCEL_GIT_PREVIOUS_SHA --packages @neptlium/web --exit-code",
-  "buildCommand": "cd ../.. && pnpm --filter @neptlium/ui typecheck && pnpm --filter @neptlium/ui lint && pnpm --filter @neptlium/web typecheck && pnpm --filter @neptlium/web lint && pnpm --filter @neptlium/web test && pnpm --filter @neptlium/web build",
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        }
-      ]
-    }
-  ]
+  "ignoreCommand": "exit 1",
+  "buildCommand": "pnpm --filter @neptlium/web build"
 }
