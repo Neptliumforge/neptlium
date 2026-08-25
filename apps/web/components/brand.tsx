@@ -3,7 +3,7 @@ import { NeptliumMark, type NeptliumMarkTone } from '@neptlium/ui';
 
 export function BrandMark({
   className = '',
-  tone = 'blue',
+  tone = 'current',
 }: {
   className?: string;
   tone?: NeptliumMarkTone;
@@ -13,15 +13,15 @@ export function BrandMark({
 
 export function Brand({
   compact = false,
-  tone = 'ink',
+  tone = 'current',
 }: {
   compact?: boolean;
   tone?: NeptliumMarkTone;
 }) {
   return (
     <Link href="/" className="brand" aria-label="Neptlium home">
-      <BrandMark className="brand-mark" tone={tone} />
       {!compact && <span>Neptlium</span>}
+      <BrandMark className="brand-mark" tone={tone} />
     </Link>
   );
 }

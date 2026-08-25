@@ -5,9 +5,9 @@ import { SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata = createPageMetadata({
-  title: 'Capital Operating Platform for Investment Organizations',
+  title: 'The Operating System for Capital',
   description:
-    'Neptlium brings portfolio context, capital movement, treasury and allocation into one clear capital operating environment.',
+    'Neptlium brings treasury, allocation, capital movement and portfolio context into one operating system.',
   path: '/',
 });
 
@@ -30,16 +30,9 @@ export default function HomePage() {
       <section className="authority-hero" aria-labelledby="home-hero-title">
         <div className="web-shell authority-hero-inner">
           <div className="authority-hero-copy">
-            <p className="web-eyebrow">Capital operating platform</p>
-            <h1 id="home-hero-title">
-              <span>Digital capital,</span>
-              <span>organized</span>
-              <span>around you.</span>
-            </h1>
+            <h1 id="home-hero-title">The operating system for capital.</h1>
             <p className="authority-hero-lead">
-              Neptlium brings capital movement, treasury, allocation and portfolio context into one
-              operating environment — so your team can understand what matters before deciding what
-              happens next.
+              See, coordinate and govern capital across treasury, allocation and portfolio context.
             </p>
             <div className="authority-actions">
               <Link className="web-button primary" href={SITE.publicAccessUrl}>
