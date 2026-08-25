@@ -2,14 +2,16 @@ export const SITE = {
   name: 'Neptlium',
   url: 'https://neptlium.com',
   domain: 'neptlium.com',
-  positioning: 'A capital operating platform for modern investment organizations.',
+  positioning: 'Keep your capital work connected.',
   description:
-    'Neptlium brings portfolio context, capital operations, treasury and governed allocation into one institutional operating environment.',
+    'Neptlium brings portfolio context, capital movement, treasury and allocation into one clear capital operating platform.',
   supportEmail: 'support@neptlium.com',
   accessUrl: 'https://app.neptlium.com/auth/sign-up',
   signInUrl: 'https://app.neptlium.com/auth/sign-in',
-  publicAccessUrl: '/contact',
-  publicAccessLabel: 'Request access',
+  publicAccessUrl: 'https://app.neptlium.com/auth/sign-in',
+  publicAccessLabel: 'Enter Neptlium',
+  exploreUrl: '/platform',
+  exploreLabel: 'Explore platforms',
   copyright: '© 2026 Neptlium. All rights reserved.',
 } as const;
 
