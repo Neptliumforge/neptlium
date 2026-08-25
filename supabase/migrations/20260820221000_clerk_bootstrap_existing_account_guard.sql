@@ -51,7 +51,7 @@ begin
     );
   end if;
 
-  select count(*)::integer, min(profile.id)
+  select count(*)::integer, min(profile.id::text)::uuid
   into v_existing_email_count, v_existing_email_principal
   from public.profiles profile
   join public.identity_principals principal on principal.id = profile.id
