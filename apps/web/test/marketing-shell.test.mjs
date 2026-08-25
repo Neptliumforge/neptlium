@@ -9,19 +9,23 @@ const header = read('components/site-header.tsx');
 const footer = read('components/site-footer.tsx');
 const brand = read('components/brand.tsx');
 const css = read('app/neptlium-visual-direction.css');
+const hardening = read('app/production-hardening.css');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
-const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${site}`;
+const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${hardening}\n${site}`;
 
-test('hero preserves the Neptlium-native proposition with exactly one H1 and no decorative artwork dependency', () => {
+test('hero preserves the Neptlium-native proposition with exactly one H1 and a structural operating diagram', () => {
   for (const copy of [
     'The operating system for capital.',
     'See, coordinate and govern capital across treasury, allocation and portfolio context.',
+    'Capital state',
+    'One operating context.',
+    'Governed work',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /className="hero-system"/);
-  assert.doesNotMatch(page, /ProductContextIllustration|HeroArchitecture|CapitalArchitecture|<Image|<img|\.png|\.webp|1000209629/i);
+  assert.match(page, /className="hero-architecture"/);
+  assert.doesNotMatch(page, /ProductContextIllustration|<Image|<img|\.png|\.webp|1000209629/i);
 });
 
 test('homepage routes visitors through platform, products, solutions, trust and company context', () => {
@@ -74,6 +78,7 @@ test('navigation preserves desktop and independently designed mobile accessibili
     'relatedTarget',
     'mobile-domain-row',
     'mobile-domain-children',
+    "data-home={isHome ? 'true' : 'false'}",
   ])
     assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
 });
@@ -95,6 +100,17 @@ test('canonical brand and palette remain authoritative', () => {
   for (const token of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
     assert.match(css, new RegExp(token, 'i'));
   assert.match(layout, /neptlium-visual-direction\.css/);
+  assert.match(layout, /production-hardening\.css/);
+  for (const retiredImport of [
+    'marketing-shell.css',
+    'apple-calibration.css',
+    'product-showcase-calibration.css',
+    'route-product-consolidation.css',
+    'detail-product-consolidation.css',
+    'marketing-production.css',
+    'unified-design.css',
+  ]) assert.doesNotMatch(layout, new RegExp(retiredImport.replace('.', '\\.')));
+  assert.match(hardening, /data-home='true'/);
   assert.doesNotMatch(css, /radial-gradient|backdrop-filter:\s*blur\(|filter:\s*blur\(/i);
 });
 
