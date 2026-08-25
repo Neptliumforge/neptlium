@@ -6,7 +6,7 @@ body {
 }
 
 html {
-  background: var(--np-paper, #f5f3ee);
+  background: #101214;
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
 }
@@ -17,7 +17,7 @@ html {
   contain: paint;
 }
 
-/* Header: integrated at rest, quieter and more operational after scroll. */
+/* Homepage authority is explicit route state, never inferred through :has(). */
 .site-header.capital-command-bar {
   transition:
     height 180ms cubic-bezier(0.2, 0, 0, 1),
@@ -26,16 +26,39 @@ html {
     color 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] {
+.site-header.capital-command-bar[data-home='true'][data-scrolled='false'] {
+  position: absolute;
+  inset: 0 0 auto;
+  border-bottom-color: rgb(245 243 238 / 14%);
+  background: #101214;
+  color: #f5f3ee;
+}
+
+.site-header.capital-command-bar[data-home='true'][data-scrolled='false'] :where(
+  .brand,
+  .desktop-domain-link,
+  .desktop-domain-control > a,
+  .desktop-domain-control > button,
+  .command-actions > a:first-child,
+  .command-mobile-trigger
+) {
+  color: #f5f3ee;
+}
+
+.site-header.capital-command-bar[data-home='true'][data-scrolled='false'] .command-mobile-trigger {
+  border-color: rgb(245 243 238 / 18%);
+}
+
+.site-header.capital-command-bar[data-home='true'][data-scrolled='true'] {
   position: fixed;
   inset: 0 0 auto;
   height: 3.875rem;
   border-bottom-color: rgb(16 18 20 / 12%);
-  background: rgb(251 250 247 / 96%);
+  background: rgb(251 250 247 / 98%);
   color: #101214;
 }
 
-body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] :where(
+.site-header.capital-command-bar[data-home='true'][data-scrolled='true'] :where(
   .brand,
   .desktop-domain-link,
   .desktop-domain-control > a,
@@ -46,11 +69,11 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   color: #101214;
 }
 
-body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] .command-mobile-trigger {
+.site-header.capital-command-bar[data-home='true'][data-scrolled='true'] .command-mobile-trigger {
   border-color: rgb(16 18 20 / 14%);
 }
 
-body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] .command-primary-action {
+.site-header.capital-command-bar[data-home='true'][data-scrolled='true'] .command-primary-action {
   background: #101214;
   color: #f5f3ee;
 }
@@ -79,7 +102,6 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
     border-color 160ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* One dominant action. Secondary routes read as navigation rather than competing buttons. */
 .authority-actions .text-arrow-link {
   min-height: 3rem;
   align-items: center;
@@ -87,7 +109,7 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   text-decoration: none;
 }
 
-/* Hero evidence rail: one connected operating relationship, not four isolated boxes. */
+/* Hero architecture reads as one governed system, not a feature-card row. */
 .hero-system {
   margin-top: clamp(4.25rem, 8vw, 7rem);
   padding-top: 0;
@@ -165,7 +187,6 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   letter-spacing: 0.01em;
 }
 
-/* Section endings should read as continuation, not a stack of disconnected panels. */
 :where(.operating-environment, .capital-organization, .reason-section, .architecture-section) {
   position: relative;
 }
@@ -196,7 +217,6 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   pointer-events: none;
 }
 
-/* Adjacent sections share a deliberate handoff. No ornamental parallax or scroll-jacking. */
 :where(.neptlium-home > section, .architecture-page > section) {
   scroll-margin-top: 5.5rem;
 }
@@ -205,7 +225,6 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   isolation: isolate;
 }
 
-/* The final authority resolves into the footer instead of ending as a detached dark block. */
 .final-authority {
   padding-bottom: clamp(5.5rem, 8vw, 7.5rem);
 }
@@ -214,7 +233,6 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   border-top: 0;
 }
 
-.final-authority + .institutional-footer,
 #main-content + .institutional-footer {
   position: relative;
 }
@@ -229,12 +247,10 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
   content: '';
 }
 
-/* Eyebrows orient; they should not overpower headings. */
 .web-eyebrow {
   opacity: 0.88;
 }
 
-/* Focus remains explicit and consistent across surfaces. */
 :where(a, button, summary):focus-visible {
   outline: 2px solid var(--np-action, #0f8f86);
   outline-offset: 3px;
@@ -263,7 +279,7 @@ body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] 
 }
 
 @media (max-width: 40rem) {
-  body:has(.neptlium-home) .site-header.capital-command-bar[data-scrolled='true'] {
+  .site-header.capital-command-bar[data-home='true'][data-scrolled='true'] {
     height: 3.75rem;
   }
 
