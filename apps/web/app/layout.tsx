@@ -15,13 +15,7 @@ import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
 import { SITE } from '@/lib/content/site';
 
-const socialDestinations = [
-  'https://bsky.app/profile/neptlium.bsky.social',
-  'https://x.com/Neptlium',
-  'https://youtube.com/@neptlium',
-  'https://www.tiktok.com/@neptlium',
-  'https://github.com/Neptliumforge',
-] as const;
+const socialDestinations = ['https://github.com/Neptliumforge'] as const;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
