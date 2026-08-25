@@ -16,15 +16,11 @@ const navigation: readonly NavSection[] = [
   {
     label: 'Platform',
     links: [
+      { label: 'Overview', href: '/platform', description: 'See how Neptlium fits together.' },
       {
-        label: 'Platform overview',
-        href: '/platform',
-        description: 'The coordinated capital operating environment.',
-      },
-      {
-        label: 'Portfolio Intelligence',
+        label: 'Portfolio',
         href: '/portfolio-intelligence',
-        description: 'Portfolio context for institutional oversight.',
+        description: 'Understand what you own and where it sits.',
       },
     ],
   },
@@ -34,28 +30,24 @@ const navigation: readonly NavSection[] = [
       {
         label: 'Capital Account',
         href: '/capital-account',
-        description: 'Capital context and controlled movement.',
+        description: 'Keep capital movement organized.',
       },
-      { label: 'Treasury', href: '/treasury', description: 'Liquidity and operating context.' },
-      {
-        label: 'Allocation',
-        href: '/allocation',
-        description: 'Model and govern allocation intent.',
-      },
+      { label: 'Treasury', href: '/treasury', description: 'See liquidity in context.' },
+      { label: 'Allocation', href: '/allocation', description: 'Shape where capital should go.' },
     ],
   },
   {
     label: 'Resources',
     links: [
-      { label: 'Learn', href: '/learn', description: 'Explore the Neptlium operating model.' },
-      { label: 'Security', href: '/security', description: 'Security and control principles.' },
+      { label: 'Learn', href: '/learn', description: 'Learn how the platform works.' },
+      { label: 'Security', href: '/security', description: 'See how control stays explicit.' },
     ],
   },
   {
     label: 'Company',
     links: [
-      { label: 'About Neptlium', href: '/about', description: 'Purpose and operating thesis.' },
-      { label: 'Contact', href: '/contact', description: 'Start a conversation with Neptlium.' },
+      { label: 'About', href: '/about', description: 'Why Neptlium exists.' },
+      { label: 'Contact', href: '/contact', description: 'Start a conversation with us.' },
     ],
   },
 ] as const;
@@ -65,6 +57,7 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+
   useEffect(() => setOpen(false), [path]);
   useEffect(() => {
     if (!open) return;
@@ -84,6 +77,7 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
       document.removeEventListener('keydown', escape);
     };
   }, [open]);
+
   return (
     <div
       className="command-menu-root"
@@ -117,7 +111,6 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
         aria-hidden={!open}
         inert={!open ? true : undefined}
       >
-        <p>{item.label}</p>
         {item.links.map((link) => (
           <Link
             href={link.href}
@@ -143,10 +136,12 @@ export function SiteHeader() {
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setMobileOpen(false);
     setMobileSection(null);
   }, [path]);
+
   useEffect(() => {
     if (!mobileOpen) return;
     const previousOverflow = document.body.style.overflow;
@@ -160,8 +155,8 @@ export function SiteHeader() {
       if (event.key !== 'Tab') return;
       const nodes = panel.current?.querySelectorAll<HTMLElement>('a[href],button:not([disabled])');
       if (!nodes?.length) return;
-      const first = nodes[0],
-        last = nodes[nodes.length - 1];
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
@@ -188,7 +183,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="command-actions">
-          <Link href="/contact">Contact</Link>
+          <Link href={SITE.exploreUrl}>{SITE.exploreLabel}</Link>
           <Link className="button command-primary-action" href={SITE.publicAccessUrl}>
             {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
           </Link>
@@ -204,6 +199,7 @@ export function SiteHeader() {
           <Menu aria-hidden="true" />
         </button>
       </div>
+
       {mobileOpen && (
         <div
           className="mobile-command-wrap"
@@ -250,10 +246,10 @@ export function SiteHeader() {
               })}
             </nav>
             <div className="mobile-command-actions">
-              <Link href="/contact">Contact</Link>
               <Link className="button" href={SITE.publicAccessUrl}>
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
+              <Link href={SITE.exploreUrl}>{SITE.exploreLabel}</Link>
             </div>
           </div>
         </div>
