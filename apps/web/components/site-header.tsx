@@ -116,6 +116,7 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
 
 export function SiteHeader() {
   const path = usePathname();
+  const isHome = path === '/';
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSection, setMobileSection] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -167,7 +168,11 @@ export function SiteHeader() {
   }, [mobileOpen]);
 
   return (
-    <header className="site-header capital-command-bar" data-scrolled={scrolled ? 'true' : 'false'}>
+    <header
+      className="site-header capital-command-bar"
+      data-home={isHome ? 'true' : 'false'}
+      data-scrolled={scrolled ? 'true' : 'false'}
+    >
       <div className="nav-shell">
         <Brand tone="current" />
         <nav className="desktop-command-nav" aria-label="Primary navigation">
