@@ -1,38 +1,29 @@
-/* Final production hardening for the Neptlium marketing shell. */
+/* Cross-route accessibility and rendering hardening for the public Web. */
 
-html {
-  overflow-x: clip;
-  background: var(--marketing-bg-deep);
-}
-
+html,
 body {
   overflow-x: clip;
 }
 
+html {
+  background: var(--np-paper, #f5f3ee);
+}
+
 .site-header,
-.neptlium-hero,
-.site-footer {
+.authority-hero,
+.institutional-footer {
   contain: paint;
 }
 
 :where(a, button, summary):focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--marketing-blue) 78%, white 10%);
+  outline: 2px solid var(--np-action, #0f8f86);
   outline-offset: 3px;
 }
 
 .mega-menu a:focus-visible,
 .drawer a:focus-visible,
-.drawer button:focus-visible,
-.platform-window a:focus-visible {
+.drawer button:focus-visible {
   border-radius: 0.5rem;
-}
-
-.platform-window [aria-current='page'] {
-  color: var(--marketing-text);
-}
-
-.platform-window strong[aria-label$='unavailable'] {
-  speak: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -47,9 +38,7 @@ body {
 
   .mega-menu,
   .drawer,
-  .neptlium-hero-visual,
-  .platform-window,
-  .platform-window-glow {
+  .capital-architecture {
     transform: none !important;
   }
 }
@@ -58,25 +47,24 @@ body {
   .site-header,
   .mega-menu,
   .drawer,
-  .platform-window,
-  .site-footer {
+  .institutional-footer {
     border-color: CanvasText;
   }
 
   .nav-menu > button::after,
-  .platform-window-nav-item.is-active::before,
-  .platform-window-sidebar-foot i {
+  .precision-line,
+  .architecture-axis {
     background: Highlight;
   }
 }
 
 @media (max-width: 23.4375rem) {
-  .neptlium-hero-actions {
+  .authority-actions {
     align-items: stretch;
+    flex-direction: column;
   }
 
-  .neptlium-hero-actions .button,
-  .neptlium-hero-actions .text-link {
+  .authority-actions .web-button {
     width: 100%;
     justify-content: center;
   }
