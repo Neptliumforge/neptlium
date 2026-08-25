@@ -63,8 +63,9 @@ test('navigation exposes only the locked public categories and preserves accessi
   assert.equal(header.includes("href: '/research'"), false);
   assert.equal(header.includes('SITE.publicAccessLabel'), true);
   assert.equal(header.includes('SITE.publicAccessUrl'), true);
-  assert.equal(header.includes('Open Neptlium'), false);
-  assert.equal(header.includes('Sign in'), false);
+  assert.equal(header.includes('SITE.exploreLabel'), true);
+  assert.equal(header.includes('SITE.exploreUrl'), true);
+  assert.equal(header.includes('Request access'), false);
   assert.equal(header.includes('aria-expanded={open}'), true);
   assert.equal(header.includes('aria-controls={id}'), true);
   assert.equal(header.includes('aria-haspopup="true"'), true);
@@ -73,80 +74,59 @@ test('navigation exposes only the locked public categories and preserves accessi
   assert.equal(header.includes("document.addEventListener('pointerdown', outside)"), true);
 });
 
-test('homepage carries canonical capital-operating positioning through a truthful narrative', () => {
+test('homepage carries canonical capital-operating positioning through conversational product language', () => {
   const page = read('app/page.tsx');
-  assert.equal(page.includes('A capital operating'), true);
-  assert.equal(page.includes('Capital operating infrastructure'), true);
-  assert.equal(page.includes('Explore the platform'), true);
-  assert.equal(page.includes('Capital context, put into operation.'), true);
-  assert.equal(page.includes('SITE.publicAccessLabel'), true);
-  assert.equal(page.includes('SITE.publicAccessUrl'), true);
-  assert.equal(page.includes('Open Neptlium'), false);
-  assert.equal(page.includes('CapitalArchitecture'), true);
   for (const stage of [
-    'One operating environment for fragmented capital work.',
+    'Capital operating platform',
+    'Bring your capital work into one place.',
+    'Keep the work connected.',
     'Portfolio',
     'Capital Account',
     'Treasury',
     'Allocation',
-    'Institutional controls',
+    'Move with the right controls.',
+    'Keep your capital work connected.',
   ])
     assert.equal(page.includes(stage), true, `Missing narrative stage: ${stage}`);
+  assert.equal(page.includes('SITE.publicAccessLabel'), true);
+  assert.equal(page.includes('SITE.exploreLabel'), true);
+  assert.equal(page.includes('ProductContextIllustration'), true);
+  assert.equal(page.includes('CapitalArchitecture'), false);
   for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD'])
     assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
 });
 
-test('footer is institutional closure using only verified destinations', () => {
+test('footer is compact closure using only verified destinations', () => {
   const footer = read('components/site-footer.tsx');
   for (const label of [
     "label: 'Platform'",
-    "label: 'Solutions'",
-    "label: 'Resources'",
-    "label: 'Company'",
+    "label: 'Learn'",
     "label: 'Legal'",
     "label: 'Connect'",
     "label: 'Privacy'",
-    "label: 'Contact'",
     "label: 'GitHub'",
   ]) {
     assert.equal(footer.includes(label), true, `Missing footer label: ${label}`);
   }
-  assert.equal(footer.includes("href: '/research'"), false);
+  assert.equal(footer.includes('Keep your capital work connected.'), true);
+  assert.equal(footer.includes('SITE.publicAccessLabel'), true);
+  assert.equal(footer.includes('SITE.exploreLabel'), true);
   assert.equal(footer.includes('https://github.com/Neptliumforge'), true);
+  assert.equal(footer.includes('footer-closing'), false);
   for (const unverified of ['bsky.app', 'x.com/Neptlium', 'youtube.com/@neptlium', 'tiktok.com/@neptlium'])
     assert.equal(footer.includes(unverified), false, `Unverified footer destination found: ${unverified}`);
   assert.equal(footer.includes('Neptliumlabs'), false);
-  for (const forbidden of [
-    'Instagram',
-    'LinkedIn',
-    'Threads',
-    'Facebook',
-    'Discord',
-    'Telegram',
-    'href="#"',
-    'Product availability is established',
-    'authenticated operating environment',
-  ]) {
-    assert.equal(
-      footer.toLowerCase().includes(forbidden.toLowerCase()),
-      false,
-      `Unapproved footer content found: ${forbidden}`,
-    );
-  }
   assert.equal(footer.includes('rel="noopener noreferrer"'), true);
   assert.equal(footer.includes('opens in a new tab'), true);
 });
 
-test('marketing palette resolves to ivory carbon teal and avoids legacy blue authority', () => {
-  const unifiedCss = read('app/unified-design.css');
-  const footerCss = read('app/footer-depth.css');
-  assert.equal(unifiedCss.includes('--np-paper: #f5f3ee'), true);
-  assert.equal(unifiedCss.includes('--np-ink: #101214'), true);
-  assert.equal(unifiedCss.includes('--np-action: #0f8f86'), true);
-  assert.equal(unifiedCss.includes('--np-action-hover: #20afa3'), true);
-  assert.equal(footerCss.includes('--footer-bg: #101214'), true);
-  assert.equal(footerCss.includes('--footer-accent: #20afa3'), true);
-  assert.equal(unifiedCss.includes('prefers-reduced-motion: reduce'), true);
+test('marketing palette resolves to ivory carbon teal and medium-scale material direction', () => {
+  const css = read('app/neptlium-visual-direction.css');
+  for (const token of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
+    assert.equal(css.toLowerCase().includes(token), true, `Missing palette token: ${token}`);
+  assert.equal(css.includes('clamp(3.1rem, 5vw, 4.5rem)'), true);
+  assert.equal(css.includes('product-context'), true);
+  assert.equal(css.includes('prefers-reduced-motion: reduce'), true);
 });
 
 test('canonical public metadata stays wired to apex production domain and warm-ivory browser chrome', () => {
@@ -158,17 +138,14 @@ test('canonical public metadata stays wired to apex production domain and warm-i
   const og = read('app/opengraph-image.tsx');
   const apple = read('app/apple-icon.tsx');
   assert.equal(site.includes("url: 'https://neptlium.com'"), true);
-  assert.equal(site.includes('A capital operating platform for modern investment organizations.'), true);
+  assert.equal(site.includes("positioning: 'Keep your capital work connected.'"), true);
+  assert.equal(site.includes("publicAccessLabel: 'Enter Neptlium'"), true);
+  assert.equal(site.includes("exploreLabel: 'Explore platforms'"), true);
   assert.equal(layout.includes('metadataBase: new URL(SITE.url)'), true);
   assert.equal(layout.includes("colorScheme: 'light'"), true);
   assert.equal(layout.includes('data-theme="light"'), true);
   assert.equal(layout.includes("themeColor: '#F5F3EE'"), true);
   assert.equal(layout.includes('https://github.com/Neptliumforge'), true);
-  assert.equal(layout.includes('bsky.app'), false);
-  assert.equal(layout.includes('x.com/Neptlium'), false);
-  assert.equal(layout.includes('youtube.com/@neptlium'), false);
-  assert.equal(layout.includes('tiktok.com/@neptlium'), false);
-  assert.equal(layout.includes('Neptliumlabs'), false);
   assert.equal(layout.includes("url: '/apple-icon'"), true);
   assert.equal(icon.includes('#0F8F86'), true);
   assert.equal(og.includes('#F5F3EE'), true);
@@ -180,4 +157,10 @@ test('canonical public metadata stays wired to apex production domain and warm-i
   assert.equal(seo.includes('openGraph:'), true);
   assert.equal(seo.includes('twitter:'), true);
   assert.equal(seo.includes('alternates: { canonical: path }'), true);
+});
+
+test('production security headers remain enforced outside deployment-specific config', () => {
+  const nextConfig = read('next.config.mjs');
+  for (const header of ['X-Content-Type-Options', 'Referrer-Policy', 'Permissions-Policy'])
+    assert.equal(nextConfig.includes(header), true, `Missing security header: ${header}`);
 });

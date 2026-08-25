@@ -28,5 +28,8 @@ test('responsive and reduced-motion behavior are first-class', () => {
   assert.match(css, /@media\s*\(max-width:\s*900px\)/);
   assert.match(css, /@media\s*\(max-width:\s*600px\)/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.match(css, /\.authority-actions\s*\{[^}]*align-items:\s*stretch;[^}]*flex-direction:\s*column/s);
+  assert.match(
+    css,
+    /\.authority-actions,\s*\.footer-actions\s*\{[^}]*align-items:\s*stretch;[^}]*flex-direction:\s*column/s,
+  );
 });

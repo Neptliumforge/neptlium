@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
+import { SITE } from '@/lib/content/site';
 
 export type FoundationCard = { title: string; body: string; href?: string };
 
@@ -16,8 +17,8 @@ export function FoundationPage({
   lead,
   principle,
   visual,
-  cta = 'Explore Neptlium',
-  ctaHref = '/contact',
+  cta = SITE.publicAccessLabel,
+  ctaHref = SITE.publicAccessUrl,
 }: {
   eyebrow?: string;
   title: string;

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { Brand } from './brand';
 import { SITE } from '@/lib/content/site';
 
@@ -14,32 +14,19 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
   {
     label: 'Platform',
     links: [
-      { label: 'Platform Overview', href: '/platform' },
-      { label: 'Portfolio Intelligence', href: '/portfolio-intelligence' },
+      { label: 'Overview', href: '/platform' },
+      { label: 'Portfolio', href: '/portfolio-intelligence' },
       { label: 'Capital Account', href: '/capital-account' },
       { label: 'Treasury', href: '/treasury' },
       { label: 'Allocation', href: '/allocation' },
     ],
   },
   {
-    label: 'Solutions',
-    links: [
-      { label: 'Capital Account', href: '/capital-account' },
-      { label: 'Treasury', href: '/treasury' },
-      { label: 'Allocation', href: '/allocation' },
-    ],
-  },
-  {
-    label: 'Resources',
+    label: 'Learn',
     links: [
       { label: 'Learn', href: '/learn' },
       { label: 'Security', href: '/security' },
-    ],
-  },
-  {
-    label: 'Company',
-    links: [
-      { label: 'About Neptlium', href: '/about' },
+      { label: 'About', href: '/about' },
       { label: 'Contact', href: '/contact' },
     ],
   },
@@ -55,7 +42,6 @@ const footerGroups: readonly { readonly label: string; readonly links: readonly 
   {
     label: 'Connect',
     links: [
-      { label: 'Contact', href: '/contact' },
       {
         label: 'GitHub',
         href: 'https://github.com/Neptliumforge',
@@ -75,7 +61,7 @@ function FooterDestination({ destination }: { readonly destination: FooterLink }
         rel="noopener noreferrer"
         aria-label={destination.accessibleLabel}
       >
-        {destination.label}
+        {destination.label} <ArrowUpRight aria-hidden="true" />
       </a>
     );
   }
@@ -86,27 +72,28 @@ function FooterDestination({ destination }: { readonly destination: FooterLink }
 export function SiteFooter() {
   return (
     <footer className="institutional-footer" aria-label="Neptlium footer">
-      <div className="footer-atmosphere" aria-hidden="true" />
       <div className="footer-shell">
         <div className="footer-primary">
           <div className="footer-brand-column">
             <Brand />
-            <p className="footer-brand-statement">
-              A capital operating platform for modern investment organizations.
-            </p>
+            <h2>Keep your capital work connected.</h2>
             <p className="footer-brand-copy">
-              Portfolio context, capital operations, treasury and governed allocation in one coherent
-              institutional environment.
+              Bring portfolio context, treasury and allocation into one clear operating platform.
             </p>
-            <Link className="footer-platform-link" href={SITE.publicAccessUrl}>
-              {SITE.publicAccessLabel} <ArrowUpRight aria-hidden="true" />
-            </Link>
+            <div className="footer-actions">
+              <Link className="footer-primary-action" href={SITE.publicAccessUrl}>
+                {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
+              </Link>
+              <Link className="footer-secondary-action" href={SITE.exploreUrl}>
+                {SITE.exploreLabel}
+              </Link>
+            </div>
           </div>
 
           <div className="footer-navigation-grid" aria-label="Footer navigation groups">
             {footerGroups.map((group) => (
               <nav key={group.label} aria-label={group.label}>
-                <h2>{group.label}</h2>
+                <h3>{group.label}</h3>
                 <div>
                   {group.links.map((destination) => (
                     <FooterDestination key={`${group.label}-${destination.label}`} destination={destination} />
@@ -117,24 +104,9 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="footer-closing">
-          <div>
-            <span className="footer-kicker">Capital operating infrastructure</span>
-            <h2>Capital, organized with precision.</h2>
-          </div>
-          <p>
-            A shared operating language for portfolio context, treasury, capital movement and allocation.
-          </p>
-        </div>
-
         <div className="footer-base">
           <span>© {new Date().getFullYear()} Neptlium</span>
-          <nav aria-label="Footer legal links">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/risk-disclosure">Risk Disclosure</Link>
-            <Link href="/accessibility">Accessibility</Link>
-          </nav>
+          <span>Capital operating platform</span>
         </div>
       </div>
     </footer>

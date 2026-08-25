@@ -13,29 +13,27 @@ const css = read('app/neptlium-visual-direction.css');
 const site = read('lib/content/site.ts');
 const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${site}`;
 
-test('hero preserves canonical capital-operating proposition and exactly one H1', () => {
+test('hero preserves capital-operating meaning with conversational copy and exactly one H1', () => {
   for (const copy of [
-    'Capital operating infrastructure',
-    'A capital operating',
-    'platform for modern',
-    'investment organizations.',
-    'portfolio context, capital operations, treasury and governed allocation',
+    'Capital operating platform',
+    'Bring your capital work into one place.',
+    'portfolio context, capital movement, treasury and allocation',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /CapitalArchitecture/);
-  assert.doesNotMatch(page, /\.png|\.webp|1000209629/);
+  assert.match(page, /ProductContextIllustration/);
+  assert.doesNotMatch(page, /CapitalArchitecture|\.png|\.webp|1000209629/);
 });
 
-test('homepage carries the institutional operating narrative', () => {
+test('homepage carries the connected capital narrative', () => {
   for (const copy of [
-    'One operating environment for fragmented capital work.',
+    'Keep the work connected.',
     'Portfolio',
     'Capital Account',
     'Treasury',
     'Allocation',
-    'Institutional controls',
-    'Capital context, put into operation.',
+    'Move with the right controls.',
+    'Keep your capital work connected.',
     'Investment firms',
     'Family offices',
     'Treasury teams',
@@ -45,21 +43,21 @@ test('homepage carries the institutional operating narrative', () => {
     assert.doesNotMatch(page, new RegExp(obsolete, 'i'));
 });
 
-test('public CTAs stay within the certified marketing surface', () => {
-  assert.match(page, /Explore the platform/);
-  assert.match(header, />\s*Contact\s*</);
-  assert.match(site, /publicAccessLabel:\s*'Request access'/);
-  assert.match(site, /publicAccessUrl:\s*'\/contact'/);
-  assert.doesNotMatch(`${page}\n${header}\n${footer}`, /Open Neptlium|Sign in/);
-  assert.match(header, /SITE\.publicAccessUrl/);
-  assert.match(footer, /SITE\.publicAccessUrl/);
+test('public CTAs use the canonical product-entry pair', () => {
+  assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
+  assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
+  assert.match(site, /exploreLabel:\s*'Explore platforms'/);
+  assert.match(site, /exploreUrl:\s*'\/platform'/);
+  for (const source of [page, header, footer]) {
+    assert.match(source, /SITE\.publicAccess/);
+    assert.match(source, /SITE\.explore/);
+  }
+  assert.doesNotMatch(`${page}\n${header}\n${footer}`, /Request access|Open Neptlium/);
 });
 
 test('navigation is exactly the four canonical groups with real routes', () => {
   for (const section of ['Platform', 'Solutions', 'Resources', 'Company'])
     assert.match(header, new RegExp(`label: '${section}'`));
-  for (const obsolete of ['Operating progression', 'Capability follows verified architecture'])
-    assert.doesNotMatch(header, new RegExp(obsolete));
   const routes = [...header.matchAll(/href: '([^']+)'/g)].map((match) => match[1]);
   assert.ok(routes.length > 0);
   for (const route of routes) {
@@ -83,15 +81,16 @@ test('navigation preserves desktop and mobile accessibility', () => {
     assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
 });
 
-test('footer closes the shell with six groups and verified destinations', () => {
-  for (const label of ['Platform', 'Solutions', 'Resources', 'Company', 'Legal', 'Connect'])
+test('footer is compact closure with verified destinations', () => {
+  for (const label of ['Platform', 'Learn', 'Legal', 'Connect'])
     assert.match(footer, new RegExp(`label: '${label}'`));
   assert.match(footer, /https:\/\/github\.com\/Neptliumforge/);
+  assert.match(footer, /Keep your capital work connected\./);
+  assert.doesNotMatch(footer, /Capital, organized with precision\.|footer-closing/);
   for (const unverified of ['bsky.app', 'x.com/Neptlium', 'youtube.com/@neptlium', 'tiktok.com/@neptlium'])
     assert.doesNotMatch(footer, new RegExp(unverified.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.doesNotMatch(footer, /Neptliumlabs/i);
   assert.doesNotMatch(footer, /href=["']#["']/);
-  assert.doesNotMatch(footer, /Product availability is established|authenticated operating environment/i);
 });
 
 test('canonical brand and palette remain authoritative', () => {

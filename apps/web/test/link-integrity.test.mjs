@@ -61,12 +61,14 @@ test('foundation page section links resolve to rendered fragment targets', () =>
   assert.match(source, /href=\{`#\$\{anchorId\(anchor, 'section'\)\}`\}/);
 });
 
-test('public access CTA resolves inside the certified marketing surface', () => {
+test('public access CTA resolves to the authenticated Neptlium application', () => {
   const site = readFileSync(join(webRoot, 'lib/content/site.ts'), 'utf8');
   const match = site.match(/publicAccessUrl:\s*['"]([^'"]+)['"]/);
   assert.ok(match, 'SITE.publicAccessUrl must be statically declared');
-  assert.match(match[1], /^\//, 'Public access CTA must remain an internal Web route during Web execution');
-  assert.equal(routeExists(match[1]), true, `SITE.publicAccessUrl has no route: ${match[1]}`);
+  const url = new URL(match[1]);
+  assert.equal(url.protocol, 'https:');
+  assert.equal(url.hostname, 'app.neptlium.com');
+  assert.equal(url.pathname, '/auth/sign-in');
 });
 
 test('sitemap entries resolve to real pages and never fabricate freshness', () => {

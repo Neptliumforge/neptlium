@@ -5,7 +5,7 @@ import { createPageMetadata } from '@/lib/seo';
 export const metadata = createPageMetadata({
   title: 'Institutional Treasury Operating Platform',
   description:
-    'Explore how Neptlium structures liquidity, reserves and operational readiness as distinct treasury states for institutional capital teams.',
+    'Explore how Neptlium keeps liquidity, reserves and capital readiness connected to the wider portfolio context.',
   path: '/treasury',
 });
 
@@ -13,35 +13,33 @@ export default function Page() {
   return (
     <FoundationPage
       eyebrow="Treasury"
-      title="Liquidity is more than a balance."
-      intro="Treasury context should distinguish capital that is observed, reserved, available, planned or operationally ready rather than flattening those states into one number."
-      anchors={['Treasury context', 'Capital readiness', 'Control model']}
+      title="See liquidity in context."
+      intro="Treasury becomes more useful when liquidity, reserves and capital readiness stay connected to the rest of the portfolio instead of living in a separate view."
+      anchors={['Treasury context', 'Capital readiness', 'Control']}
       lead={[
-        'Connect liquidity context to the next decision.',
-        'Neptlium is designed to show treasury state in relation to portfolio and allocation intent while preserving the evidence required before consequential capital movement.',
+        'Know where capital stands before deciding what comes next.',
+        'Neptlium brings treasury context into the same operating picture as portfolio and allocation work while keeping important state boundaries clear.',
       ]}
       visual={<TreasuryVisual />}
       cards={[
         {
           title: 'Liquidity context',
-          body: 'Understand observed capital without automatically treating observation as available balance.',
+          body: 'See liquidity alongside the rest of the capital picture.',
         },
         {
-          title: 'Reserve context',
-          body: 'Keep intentionally preserved capital distinguishable from capital intended for another operating role.',
+          title: 'Reserves',
+          body: 'Keep intentionally preserved capital easy to distinguish.',
         },
         {
-          title: 'Operational readiness',
-          body: 'Represent readiness only when the required account, policy, authorization and infrastructure evidence exists.',
+          title: 'Readiness',
+          body: 'Understand when capital is ready for the next step and when it is not.',
         },
         {
-          title: 'Governed action',
-          body: 'Keep modeled, requested, approved, submitted, settled and reconciled states explicit throughout the workflow.',
+          title: 'Control',
+          body: 'Keep review and authority visible as treasury intent moves forward.',
         },
       ]}
-      principle="Observed does not mean available. Approved does not mean settled."
-      cta="Request access"
-      ctaHref="/contact"
+      principle="Liquidity is useful when its context is clear."
     />
   );
 }
