@@ -74,24 +74,29 @@ test('navigation exposes only the locked public categories and preserves accessi
   assert.equal(header.includes("document.addEventListener('pointerdown', outside)"), true);
 });
 
-test('homepage carries canonical capital-operating positioning through conversational product language', () => {
+test('homepage carries canonical capital-operating positioning through native system language', () => {
   const page = read('app/page.tsx');
   for (const stage of [
     'Capital operating platform',
-    'Bring your capital work into one place.',
-    'Keep the work connected.',
-    'Portfolio',
+    'Digital capital,',
+    'organized',
+    'around you.',
+    'The operating environment',
+    'How capital is organized',
+    'Portfolio Intelligence',
     'Capital Account',
     'Treasury',
     'Allocation',
-    'Move with the right controls.',
-    'Keep your capital work connected.',
+    'Intelligence and governance',
+    'Why Neptlium exists',
+    'See capital as one connected system.',
   ])
     assert.equal(page.includes(stage), true, `Missing narrative stage: ${stage}`);
   assert.equal(page.includes('SITE.publicAccessLabel'), true);
   assert.equal(page.includes('SITE.exploreLabel'), true);
-  assert.equal(page.includes('ProductContextIllustration'), true);
-  assert.equal(page.includes('CapitalArchitecture'), false);
+  assert.equal(page.includes('className="hero-system"'), true);
+  for (const obsoleteVisual of ['ProductContextIllustration', 'HeroArchitecture', 'CapitalArchitecture'])
+    assert.equal(page.includes(obsoleteVisual), false, `Obsolete hero visual found: ${obsoleteVisual}`);
   for (const fabricatedValue of ['$128', '$42.6', '+8.42%', '+6.21%', '$—', '0 USD'])
     assert.equal(page.includes(fabricatedValue), false, `Fabricated value found: ${fabricatedValue}`);
 });
@@ -120,12 +125,14 @@ test('footer is compact closure using only verified destinations', () => {
   assert.equal(footer.includes('opens in a new tab'), true);
 });
 
-test('marketing palette resolves to ivory carbon teal and medium-scale material direction', () => {
+test('marketing palette resolves to ivory carbon teal and structural medium-scale direction', () => {
   const css = read('app/neptlium-visual-direction.css');
   for (const token of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
     assert.equal(css.toLowerCase().includes(token), true, `Missing palette token: ${token}`);
   assert.equal(css.includes('clamp(3.1rem, 5vw, 4.5rem)'), true);
-  assert.equal(css.includes('product-context'), true);
+  assert.equal(css.includes('.hero-system'), true);
+  assert.equal(css.includes('.capability-system'), true);
+  assert.equal(css.includes('product-context'), false);
   assert.equal(css.includes('prefers-reduced-motion: reduce'), true);
 });
 
