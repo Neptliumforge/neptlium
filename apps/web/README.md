@@ -1,16 +1,39 @@
 # @neptlium/web
 
-Public product and company website for `neptlium.com`. It owns no authenticated session, privileged operation, or canonical financial state.
+Public product and company website for `neptlium.com`.
 
-## CURRENT
+`apps/web` establishes Neptlium's public category, narrative, product meaning, editorial authority, discoverability, and path into the operating application. It owns no authenticated customer session, privileged financial operation, or canonical financial state.
 
-The site presents Neptlium's capital operating platform, Capital Account, Treasury, Allocation, capital universe, security/trust, company, research, and draft legal content. It must distinguish implemented foundation from target capability.
+## Public direction
 
-Current provider foundation is Supabase plus Circle testnet Capital Account observation. Clerk identity, Stripe fiat funding/Onramp, future equities providers, and other target capabilities must not be represented as live.
+Neptlium Web is a medium-scale, conversational, product-led institutional experience.
+
+Canonical global CTA pair:
+
+- `Enter Neptlium` → authenticated application entry
+- `Explore platforms` → `/platform`
+
+The public surface should explain how Portfolio, Capital Account, Treasury, and Allocation fit together without narrating repository progress, provider setup, migrations, environment readiness, or deployment state.
+
+Marketing may communicate the intended product model and customer value strongly, but it must not fabricate customers, balances, AUM, performance, execution, settlement, custody, provider relationships, licences, regulatory status, or live capability.
+
+## Visual system
+
+Current Web authority:
+
+- Warm Ivory / Carbon / Mineral Teal
+- medium typography rather than oversized poster scale
+- soft digital material rather than flat paper
+- concise conversational copy
+- compact desktop disclosures
+- accessible mobile accordion navigation
+- restrained illustrative product compositions rather than fake dashboards
+
+See [`docs/04_WEB_MARKETING_SYSTEM.md`](../../docs/04_WEB_MARKETING_SYSTEM.md).
 
 ## Environment
 
-No environment variable is currently required. Any future browser-safe value must use `NEXT_PUBLIC_*`; server credentials never belong in this app.
+No environment variable is required for ordinary public rendering. Browser-safe values must use `NEXT_PUBLIC_*`; privileged credentials never belong in this app.
 
 ## Commands
 
@@ -18,11 +41,10 @@ No environment variable is currently required. Any future browser-safe value mus
 pnpm --filter @neptlium/web dev
 pnpm --filter @neptlium/web typecheck
 pnpm --filter @neptlium/web lint
+pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-Never imply provider availability, custody/execution readiness, financial results, customers, pricing, certification, or regulatory approval without verified evidence.
-
-Architecture: [`docs/00_PRODUCT_CONSTITUTION.md`](../../docs/00_PRODUCT_CONSTITUTION.md).
-
-<!-- production-deployment-refresh: 2026-08-24 -->
+Architecture: [`docs/00_PRODUCT_CONSTITUTION.md`](../../docs/00_PRODUCT_CONSTITUTION.md)  
+Design: [`docs/03_DESIGN_SYSTEM.md`](../../docs/03_DESIGN_SYSTEM.md)  
+Web system: [`docs/04_WEB_MARKETING_SYSTEM.md`](../../docs/04_WEB_MARKETING_SYSTEM.md)
