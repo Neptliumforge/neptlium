@@ -57,9 +57,7 @@ export default function HomePage() {
                 </li>
               ))}
             </ol>
-            <p className="hero-system-note">
-              System relationship only. No customer balances, transactions or performance data are shown.
-            </p>
+            <p className="hero-system-note">Illustrative operating relationship. No customer financial data shown.</p>
           </div>
         </div>
       </section>
