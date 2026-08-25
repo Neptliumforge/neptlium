@@ -158,21 +158,44 @@ export class SupabaseIdentityCommandRepository {
     return (await response.json()) as Record<string, unknown>;
   }
 
-  linkClerkSubject(input: {
+  private async verifiedSupabaseSubject(accessToken: string): Promise<string> {
+    let response: Response;
+    try {
+      response = await this.request(`${this.url}/auth/v1/user`, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+          apikey: this.anonKey,
+        },
+        signal: AbortSignal.timeout(5_000),
+      });
+    } catch {
+      throw new ApiError(503, 'authentication_unavailable', 'Authentication service is unavailable');
+    }
+    if (!response.ok)
+      throw new ApiError(401, 'authentication_required', 'The legacy session is invalid');
+    const user = (await response.json()) as { id?: string };
+    if (!user.id)
+      throw new ApiError(401, 'authentication_required', 'The legacy session is invalid');
+    return user.id;
+  }
+
+  async linkClerkSubject(input: {
     supabaseAccessToken: string;
     clerkSubject: string;
     idempotencyKey: string;
     requestId: string;
   }) {
+    const supabaseSubject = await this.verifiedSupabaseSubject(input.supabaseAccessToken);
     return this.rpc(
-      'link_clerk_identity_subject',
+      'link_clerk_identity_subject_service',
       {
+        p_supabase_subject: supabaseSubject,
         p_clerk_subject: input.clerkSubject,
         p_idempotency_key: input.idempotencyKey,
         p_request_id: input.requestId,
       },
-      input.supabaseAccessToken,
-      this.anonKey,
+      this.serviceRoleKey,
+      this.serviceRoleKey,
     );
   }
 
