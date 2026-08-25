@@ -1,65 +1,87 @@
 import Link from 'next/link';
-import { PageHeader } from '@/components/page-header';
-import { Section } from '@/components/section';
+import { ArrowRight } from 'lucide-react';
+import { COMPANY } from '@/lib/content/public-architecture';
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata = createPageMetadata({
-  title: 'Neptlium Company and Operating Principles',
+  title: 'Company — Neptlium',
   description:
-    'Learn the operating principles behind Neptlium: truthful presentation, explicit control, capital context, liquidity discipline and security by design.',
+    'Understand the organization, product thesis and operating principles behind Neptlium, with direct paths to About, Contact and verified press information.',
   path: '/company',
 });
 
 const principles = [
   ['Truthful presentation', 'Capabilities, risks, uncertainty and availability should be communicated without manufactured certainty.'],
   ['Explicit control', 'Consequential decisions should remain understandable, attributable and intentional.'],
-  ['Capital context', 'Portfolio, treasury and allocation decisions are more useful when their operating context remains connected.'],
-  ['Liquidity discipline', 'Observed, reserved, available and operationally ready capital are not interchangeable states.'],
+  ['Capital context', 'Portfolio, treasury and allocation decisions become more useful when their relationships remain visible.'],
   ['Security by design', 'Identity, authorization, server privilege and auditability are architectural boundaries rather than decorative trust language.'],
 ] as const;
 
 export default function CompanyPage() {
   return (
-    <>
-      <PageHeader
-        eyebrow="Company"
-        title="Building infrastructure for a more coherent capital operating model."
-        intro="Neptlium is building a capital operating platform around clarity, deliberate authority and durable financial state—not constant transaction activity."
-        crumbs={[{ label: 'Home', href: '/' }, { label: 'Company' }]}
-      />
-      <Section>
-        <div className="route-split">
+    <div className="architecture-page company-hub">
+      <section className="architecture-hero">
+        <div className="web-shell architecture-hero-grid">
           <div>
-            <h2>Modern capital needs more than disconnected views and execution endpoints.</h2>
+            <p className="web-eyebrow on-light">Company</p>
+            <h1>Building a clearer operating model for complex capital.</h1>
           </div>
-          <p>
-            Portfolio context, capital operations, treasury and allocation belong in one operating
-            environment while identity, authorization, provider evidence and canonical financial state
-            retain their proper boundaries.
+          <p className="architecture-lead">
+            Neptlium is building a capital operating platform around context, deliberate authority and
+            durable product meaning rather than transaction theatre or manufactured certainty.
           </p>
         </div>
-      </Section>
-      <Section tone="surface">
-        <div id="principles" className="principles-editorial">
-          <h2>Principles that shape Neptlium.</h2>
+      </section>
+
+      <section className="architecture-section" aria-labelledby="company-principles-title">
+        <div className="web-shell architecture-split">
           <div>
-            {principles.map(([title, body]) => (
+            <p className="web-eyebrow on-light">Operating principles</p>
+            <h2 id="company-principles-title">The company should communicate with the same discipline as the product.</h2>
+          </div>
+          <div className="architecture-numbered-list" id="principles">
+            {principles.map(([title, body], index) => (
               <article key={title}>
-                <h3>{title}</h3>
-                <p>{body}</p>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{body}</p>
+                </div>
               </article>
             ))}
           </div>
         </div>
-      </Section>
-      <Section>
-        <div className="route-action">
-          <Link className="button" href="/contact">
-            Contact Neptlium
-          </Link>
-          <Link href="/about">Read the Neptlium thesis</Link>
+      </section>
+
+      <section className="architecture-section architecture-dark" aria-labelledby="company-destinations-title">
+        <div className="web-shell">
+          <div className="architecture-section-heading">
+            <p className="web-eyebrow">Company information</p>
+            <h2 id="company-destinations-title">Go deeper only where there is something real to say.</h2>
+          </div>
+          <div className="architecture-link-list dark-links">
+            {COMPANY.map((destination, index) => (
+              <Link href={destination.href} key={destination.href}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{destination.label}</h3>
+                  <p>{destination.description}</p>
+                </div>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
         </div>
-      </Section>
-    </>
+      </section>
+
+      <section className="architecture-cta">
+        <div className="web-shell architecture-cta-inner">
+          <h2>Read why Neptlium exists.</h2>
+          <Link className="web-button primary" href="/about">
+            About Neptlium <ArrowRight aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }
