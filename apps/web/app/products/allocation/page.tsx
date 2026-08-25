@@ -1,4 +1,5 @@
-import { FoundationPage } from '@/components/foundation-page';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { AllocationVisual, OperatingModelVisual } from '@/components/product-visuals';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -9,32 +10,70 @@ export const metadata = createPageMetadata({
   path: '/products/allocation',
 });
 
-export default function Page() {
+const decisionStages = [
+  ['Intent', 'Describe how capital could be positioned.'],
+  ['Constraints', 'Keep capital roles and operating limits visible in the model.'],
+  ['Review', 'Make the proposed structure legible before it becomes consequential.'],
+  ['Outcome', 'Keep any later financial result distinct from the model that preceded it.'],
+] as const;
+
+export default function AllocationPage() {
   return (
-    <FoundationPage
-      eyebrow="Products · Allocation"
-      title="Shape the plan before capital moves."
-      intro="Allocation is the Neptlium product for expressing capital intent, organizing capital roles and reviewing a proposed structure before it becomes an action."
-      anchors={['Intent', 'Capital roles', 'Review']}
-      lead={[
-        'A model is useful because it can be examined before it becomes consequential.',
-        'Allocation keeps modeling, review, authority and downstream financial outcome understandable as separate stages in one operating process.',
-      ]}
-      visual={
-        <>
-          <OperatingModelVisual />
-          <AllocationVisual />
-        </>
-      }
-      cards={[
-        { title: 'Allocation intent', body: 'Express how capital could be organized without presenting a model as an executed result.' },
-        { title: 'Capital roles', body: 'Keep the intended purpose of different pools of capital visible in the decision.' },
-        { title: 'Review', body: 'Give the relevant people a clear view of what is proposed and why.' },
-        { title: 'Action boundaries', body: 'Preserve the distinction between planning, approval and financial outcome.' },
-      ]}
-      principle="Model clearly. Review deliberately. Keep intent separate from outcome."
-      cta="Explore all products"
-      ctaHref="/products"
-    />
+    <div className="product-story allocation-story">
+      <section className="allocation-hero">
+        <div className="web-shell allocation-hero-grid">
+          <div>
+            <p className="web-eyebrow on-light">Products · Allocation</p>
+            <h1>Shape the decision before capital moves.</h1>
+            <p>
+              Allocation is where intent becomes explicit enough to inspect, challenge and review
+              without pretending that a model is already an outcome.
+            </p>
+          </div>
+          <div className="product-story-visual allocation-model-visual"><OperatingModelVisual /></div>
+        </div>
+      </section>
+
+      <section className="allocation-decision-sequence" aria-labelledby="allocation-sequence-title">
+        <div className="web-shell">
+          <p className="web-eyebrow on-light">Decision structure</p>
+          <h2 id="allocation-sequence-title">A useful allocation process preserves the distance between idea and consequence.</h2>
+          <ol>
+            {decisionStages.map(([title, body], index) => (
+              <li key={title}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div><h3>{title}</h3><p>{body}</p></div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="allocation-workbench architecture-dark">
+        <div className="web-shell allocation-workbench-grid">
+          <div>
+            <p className="web-eyebrow">Modeling</p>
+            <h2>Capital roles make the model easier to reason about.</h2>
+            <p>
+              Allocation can express reserve, core, growth or other strategic roles without implying
+              that an asset, provider or execution path is available.
+            </p>
+            <Link className="text-arrow-link on-dark" href="/products/capital-universe">
+              Explore Capital Universe <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="product-story-visual"><AllocationVisual /></div>
+        </div>
+      </section>
+
+      <section className="product-story-close">
+        <div className="web-shell product-story-close-grid">
+          <h2>Model clearly. Review deliberately. Keep intent separate from outcome.</h2>
+          <Link className="text-arrow-link" href="/products/portfolio-intelligence">
+            Continue to Portfolio Intelligence <ArrowRight aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }
