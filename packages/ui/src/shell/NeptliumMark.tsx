@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactElement } from "react";
 
-export type NeptliumMarkTone = "blue" | "ink" | "paper" | "current";
+export type NeptliumMarkTone = "teal" | "ink" | "paper" | "current";
 
 export interface NeptliumMarkProps {
   readonly size?: number;
@@ -10,24 +10,24 @@ export interface NeptliumMarkProps {
 }
 
 const toneColor: Record<NeptliumMarkTone, string> = {
-  blue: "#0141F3",
-  ink: "#08111F",
-  paper: "#FFFFFF",
+  teal: "#0F8F86",
+  ink: "#101214",
+  paper: "#F5F3EE",
   current: "currentColor",
 };
 
 /**
  * Canonical production Neptlium mark.
  *
- * Geometry is derived from the approved abstract capital-structure identity.
- * Routine product chrome uses a flat, transparent rendering. Expressive
- * dimensional artwork remains reserved for selective brand contexts.
+ * The repository owns one flat geometry. Marketing may use the teal precision
+ * treatment; authenticated and operator surfaces should normally inherit
+ * monochrome foreground through `current`, `ink`, or `paper`.
  */
 export function NeptliumMark({
   size = 22,
   className,
   animated = false,
-  tone = "blue",
+  tone = "current",
 }: NeptliumMarkProps): ReactElement {
   const style: CSSProperties = {
     color: toneColor[tone],
