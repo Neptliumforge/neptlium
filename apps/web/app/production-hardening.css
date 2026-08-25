@@ -109,81 +109,130 @@ html {
   text-decoration: none;
 }
 
-/* Hero architecture reads as one governed system, not a feature-card row. */
-.hero-system {
-  margin-top: clamp(4.25rem, 8vw, 7rem);
-  padding-top: 0;
-}
-
-.hero-system-rule {
-  display: none;
-}
-
-.hero-system ol {
-  position: relative;
+/* Hero architecture: capital state -> operating context -> governed work. */
+.hero-architecture {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  padding-top: 1.4rem;
-  border-top: 1px solid rgb(245 243 238 / 18%);
+  grid-template-columns: minmax(0, 1fr) minmax(4rem, 0.2fr) minmax(0, 1.05fr) minmax(4rem, 0.2fr) minmax(0, 1fr);
+  align-items: stretch;
+  margin-top: clamp(4.5rem, 8vw, 7.25rem);
+  border-top: 1px solid rgb(245 243 238 / 16%);
+  border-bottom: 1px solid rgb(245 243 238 / 12%);
 }
 
-.hero-system ol::before {
+.hero-architecture-plane,
+.hero-architecture-core {
+  min-width: 0;
+  padding: 1.45rem 0 1.55rem;
+}
+
+.hero-architecture-core {
+  position: relative;
+  padding-inline: 1.45rem;
+  border-inline: 1px solid rgb(245 243 238 / 14%);
+}
+
+.hero-architecture-core::before {
   position: absolute;
   top: -1px;
-  left: 0;
-  width: clamp(3.5rem, 6vw, 5rem);
+  right: 1.45rem;
+  left: 1.45rem;
   height: 1px;
   background: #20afa3;
   content: '';
 }
 
-.hero-system li,
-.hero-system li + li {
-  position: relative;
-  min-height: 0;
-  grid-template-columns: 1fr;
+.hero-architecture-kicker {
+  display: block;
+  color: rgb(245 243 238 / 44%);
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.hero-architecture h2 {
+  max-width: 18ch;
+  margin: 0.85rem 0 1.35rem;
+  color: #f5f3ee;
+  font-family: inherit;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+}
+
+.hero-architecture ul,
+.hero-architecture ol {
+  display: grid;
   gap: 0;
-  padding: 0 1.4rem 0 0;
-  border: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgb(245 243 238 / 10%);
 }
 
-.hero-system li + li {
-  padding-left: 1.4rem;
+.hero-architecture li {
+  display: flex;
+  min-height: 2.7rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgb(245 243 238 / 8%);
+  color: rgb(245 243 238 / 64%);
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
-.hero-system li:not(:last-child)::after {
+.hero-architecture-core li {
+  color: rgb(245 243 238 / 82%);
+}
+
+.hero-architecture-core li span {
+  color: #20afa3;
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-architecture-connector {
+  position: relative;
+  min-width: 0;
+}
+
+.hero-architecture-connector::before {
   position: absolute;
-  top: 0.35rem;
-  right: 0;
-  width: 1px;
-  height: 2.25rem;
-  background: rgb(245 243 238 / 12%);
+  top: 50%;
+  right: 0.8rem;
+  left: 0.8rem;
+  height: 1px;
+  background: rgb(245 243 238 / 20%);
   content: '';
 }
 
-.hero-system-index {
-  display: block;
-  margin-bottom: 0.85rem;
-  color: rgb(245 243 238 / 44%);
+.hero-architecture-connector::after {
+  position: absolute;
+  top: calc(50% - 3px);
+  right: 0.75rem;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid rgb(245 243 238 / 42%);
+  border-right: 1px solid rgb(245 243 238 / 42%);
+  content: '';
+  transform: rotate(45deg);
 }
 
-.hero-system strong {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.hero-system li p {
-  max-width: 15rem;
-  margin-top: 0.42rem;
-  color: rgb(245 243 238 / 52%);
+.hero-architecture-connector span {
+  position: absolute;
+  top: calc(50% - 2px);
+  left: calc(50% - 2px);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #20afa3;
 }
 
 .hero-system-note {
-  margin-top: 1.35rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid rgb(245 243 238 / 8%);
+  margin-top: 1rem;
   color: rgb(245 243 238 / 38%);
+  font-size: 0.68rem;
   letter-spacing: 0.01em;
 }
 
@@ -263,18 +312,51 @@ html {
 }
 
 @media (max-width: 56rem) {
-  .hero-system ol {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 1.8rem;
+  .hero-architecture {
+    grid-template-columns: 1fr;
   }
 
-  .hero-system li:nth-child(2n)::after {
-    display: none;
+  .hero-architecture-plane,
+  .hero-architecture-core {
+    padding: 1.25rem 0 1.35rem;
   }
 
-  .hero-system li:nth-child(n + 3) {
-    padding-top: 1.25rem;
-    border-top: 1px solid rgb(245 243 238 / 10%);
+  .hero-architecture-core {
+    padding-inline: 0;
+    border: 0;
+    border-top: 1px solid rgb(245 243 238 / 12%);
+    border-bottom: 1px solid rgb(245 243 238 / 12%);
+  }
+
+  .hero-architecture-core::before {
+    right: auto;
+    left: 0;
+    width: 4rem;
+  }
+
+  .hero-architecture-connector {
+    min-height: 2.25rem;
+  }
+
+  .hero-architecture-connector::before {
+    top: 0;
+    bottom: 0;
+    left: 1.15rem;
+    width: 1px;
+    height: auto;
+  }
+
+  .hero-architecture-connector::after {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: calc(1.15rem - 3px);
+    transform: rotate(135deg);
+  }
+
+  .hero-architecture-connector span {
+    top: calc(50% - 2px);
+    left: calc(1.15rem - 2px);
   }
 }
 
@@ -283,29 +365,12 @@ html {
     height: 3.75rem;
   }
 
-  .hero-system ol {
-    grid-template-columns: 1fr;
-    row-gap: 0;
-    padding-top: 0.9rem;
+  .hero-architecture {
+    margin-top: 3.5rem;
   }
 
-  .hero-system li,
-  .hero-system li + li,
-  .hero-system li:nth-child(n + 3) {
-    padding: 1rem 0;
-    border-top: 1px solid rgb(245 243 238 / 10%);
-  }
-
-  .hero-system li:first-child {
-    border-top: 0;
-  }
-
-  .hero-system li::after {
-    display: none;
-  }
-
-  .hero-system-index {
-    margin-bottom: 0.45rem;
+  .hero-architecture h2 {
+    max-width: 24ch;
   }
 }
 
