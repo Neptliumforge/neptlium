@@ -3,92 +3,19 @@ import { ArrowRight } from 'lucide-react';
 import { PRODUCTS } from '@/lib/content/public-architecture';
 import { createPageMetadata } from '@/lib/seo';
 
-export const metadata = createPageMetadata({
-  title: 'Neptlium Products — Capital Operating System',
-  description:
-    'Explore the Neptlium product family: Capital Account, Treasury, Allocation, Portfolio Intelligence, Performance and Capital Universe.',
-  path: '/products',
-});
+export const metadata = createPageMetadata({ title: 'Products — Capital Operating Architecture | Neptlium', description: 'Explore the defined responsibilities of Capital Account, Treasury, Allocation, Portfolio Intelligence, Performance and Capital Universe within the Neptlium capital operating model.', path: '/products' });
 
 const relationships = [
-  ['Capital Account', 'Organize capital movement and account context.'],
-  ['Treasury', 'Understand liquidity, reserves and readiness.'],
-  ['Allocation', 'Shape intent and review capital roles.'],
-  ['Portfolio Intelligence', 'Return decisions to the whole portfolio picture.'],
+  ['Capital Account', 'Carries account-level funding and movement context into the operating picture.'],
+  ['Treasury', 'Interprets liquidity, reserves, requirements and readiness against that context.'],
+  ['Allocation', 'Represents capital intent and target state while preserving review and authorization boundaries.'],
+  ['Portfolio Intelligence', 'Returns composition, exposure and liquidity relationships to the wider portfolio view.'],
 ] as const;
 
-export default function ProductsPage() {
-  return (
-    <div className="architecture-page products-hub">
-      <section className="architecture-hero">
-        <div className="web-shell architecture-hero-grid">
-          <div>
-            <p className="web-eyebrow on-light">Products</p>
-            <h1>The parts of Neptlium, designed to work as one system.</h1>
-          </div>
-          <p className="architecture-lead">
-            Each Neptlium product has a distinct job. Together they keep capital context, movement,
-            liquidity, allocation and intelligence connected without collapsing their responsibilities.
-          </p>
-        </div>
-      </section>
-
-      <section className="architecture-section" aria-labelledby="products-family-title">
-        <div className="web-shell">
-          <div className="architecture-section-heading">
-            <p className="web-eyebrow on-light">Product family</p>
-            <h2 id="products-family-title">Six products. One operating language.</h2>
-          </div>
-          <div className="architecture-link-list">
-            {PRODUCTS.map((product, index) => (
-              <Link href={product.href} key={product.href}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3>{product.label}</h3>
-                  <p>{product.description}</p>
-                </div>
-                <ArrowRight aria-hidden="true" />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="architecture-section architecture-dark" aria-labelledby="products-system-title">
-        <div className="web-shell architecture-split">
-          <div>
-            <p className="web-eyebrow">Operating relationship</p>
-            <h2 id="products-system-title">Products become useful through their relationships.</h2>
-            <p>
-              Capital context should remain legible as it moves from account activity to treasury,
-              from treasury to allocation, and back into portfolio understanding.
-            </p>
-          </div>
-          <ol className="architecture-sequence">
-            {relationships.map(([title, copy], index) => (
-              <li key={title}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div>
-                  <strong>{title}</strong>
-                  <p>{copy}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section className="architecture-cta">
-        <div className="web-shell architecture-cta-inner">
-          <div>
-            <p className="web-eyebrow on-light">The whole system</p>
-            <h2>See how the products become a capital operating environment.</h2>
-          </div>
-          <Link className="web-button primary" href="/platform">
-            Explore platform <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}
+export default function ProductsPage() { return <div className="architecture-page products-hub">
+  <section className="architecture-hero"><div className="web-shell architecture-hero-grid"><div><p className="web-eyebrow on-light">Products</p><h1>Defined responsibilities within one capital operating model.</h1></div><div className="architecture-lead"><p>Neptlium products are not interchangeable feature bundles. Each addresses a specific part of capital work and preserves the state required by the products around it.</p><p>The product architecture is designed so that account context can inform treasury, treasury can constrain allocation, and portfolio intelligence can interpret the resulting capital picture without turning observation, modeling or review into implied execution authority.</p></div></div></section>
+  <section className="architecture-section" aria-labelledby="family-title"><div className="web-shell"><div className="architecture-section-heading"><p className="web-eyebrow on-light">Product responsibilities</p><h2 id="family-title">One system does not require one source of authority.</h2><p>Each surface consumes context from the wider operating model while retaining the provenance and lifecycle meaning of the information it presents.</p></div><div className="architecture-link-list">{PRODUCTS.map((product,index)=><Link href={product.href} key={product.href}><span>{String(index+1).padStart(2,'0')}</span><div><h3>{product.label}</h3><p>{product.description}</p></div><ArrowRight aria-hidden="true" /></Link>)}</div></div></section>
+  <section className="architecture-section architecture-dark" aria-labelledby="relationship-title"><div className="web-shell architecture-split"><div><p className="web-eyebrow">Operating relationship</p><h2 id="relationship-title">Context should survive the handoff.</h2><p>Capital work becomes harder to govern when each workflow begins with a partial reconstruction of what happened before it. Neptlium is designed to carry relevant state forward while keeping product responsibilities and authority boundaries explicit.</p></div><ol className="architecture-sequence">{relationships.map(([title,copy],index)=><li key={title}><span>{String(index+1).padStart(2,'0')}</span><div><strong>{title}</strong><p>{copy}</p></div></li>)}</ol></div></section>
+  <section className="architecture-section"><div className="web-shell architecture-split"><div><p className="web-eyebrow on-light">Boundary discipline</p><h2>Context is not custody, execution or advice.</h2></div><div><p>Product visibility can describe capital state, organize evidence and support review. It does not by itself establish that Neptlium holds assets, acts as a bank or custodian, executes investments, settles transactions or provides investment advice. Consequential capabilities depend on the explicit operating and provider boundaries represented by the system.</p></div></div></section>
+  <section className="architecture-cta"><div className="web-shell architecture-cta-inner"><div><p className="web-eyebrow on-light">The whole system</p><h2>Understand how product responsibilities become one operating context.</h2></div><Link className="web-button primary" href="/platform">Explore platform <ArrowRight aria-hidden="true" /></Link></div></section>
+</div>; }
