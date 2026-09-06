@@ -13,11 +13,7 @@ const footerGroups: readonly {
   readonly href: string;
   readonly links: readonly FooterLink[];
 }[] = [
-  {
-    label: 'Platform',
-    href: '/platform',
-    links: [],
-  },
+  { label: 'Platform', href: '/platform', links: [] },
   {
     label: 'Products',
     href: '/products',
@@ -57,8 +53,8 @@ export function SiteFooter() {
             <Brand />
             <h2>Keep your capital work connected.</h2>
             <p className="footer-brand-copy">
-              Neptlium organizes capital context, movement, treasury, allocation and intelligence through
-              one operating model.
+              Neptlium organizes capital context, treasury, allocation and intelligence through one
+              operating model.
             </p>
           </div>
 
@@ -83,24 +79,23 @@ export function SiteFooter() {
         </div>
 
         <div className="footer-base">
-          <span>© {new Date().getFullYear()} Neptlium</span>
-          <span>Capital operating platform</span>
-          <nav
-            aria-label="Legal"
-            style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem 1rem', marginLeft: 'auto' }}
-          >
+          <div className="footer-meta">
+            <span>© {new Date().getFullYear()} Neptlium</span>
+            <span>Capital operating platform</span>
+          </div>
+          <nav className="footer-legal" aria-label="Legal">
             {legalLinks.map((link) => (
-              <Link key={link.href} href={link.href} style={{ marginLeft: 0 }}>
+              <Link key={link.href} href={link.href}>
                 {link.label}
               </Link>
             ))}
           </nav>
           <a
+            className="footer-external"
             href="https://github.com/Neptliumforge"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Neptliumforge on GitHub (opens in a new tab)"
-            style={{ marginLeft: 0 }}
           >
             GitHub <ArrowUpRight aria-hidden="true" />
           </a>
