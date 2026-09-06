@@ -4,41 +4,6 @@ import { Section } from '@/components/section';
 import { DisclosureNote } from '@/components/ui/disclosure-note';
 import { SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
-
-export const metadata = createPageMetadata({
-  title: 'Contact Neptlium',
-  description: 'Contact Neptlium for platform, company and institutional enquiries.',
-  path: '/contact',
-});
-
-export default function ContactPage() {
-  return (
-    <>
-      <PageHeader
-        eyebrow="Contact"
-        title="Start a conversation with Neptlium."
-        intro="Questions about the platform, company or how Neptlium could fit your organization? Use the contact channel below."
-        crumbs={[{ label: 'Home', href: '/' }, { label: 'Contact' }]}
-      />
-      <Section tone="surface">
-        <div className="max-w-2xl">
-          <h2 className="text-xl font-semibold text-ink">Contact Neptlium</h2>
-          <p className="mt-3 text-base leading-relaxed text-muted">
-            Email is our direct public contact channel. Please do not send passwords, private keys,
-            recovery material or other sensitive authentication information by email.
-          </p>
-          <a href={`mailto:${SITE.supportEmail}`} className="button mt-6">
-            <Mail className="h-4 w-4" aria-hidden="true" />
-            {SITE.supportEmail}
-          </a>
-          <div className="mt-10">
-            <DisclosureNote>
-              Information presented by Neptlium is for informational purposes and does not constitute
-              investment advice.
-            </DisclosureNote>
-          </div>
-        </div>
-      </Section>
-    </>
-  );
-}
+export const metadata=createPageMetadata({title:'Contact Neptlium',description:'Contact Neptlium about the product and platform, institutional matters, security, press or general company inquiries.',path:'/contact'});
+const categories=[['Product and platform','Questions about the Neptlium operating model, product architecture or public product information.'],['Institutional inquiries','Conversations about organizational capital workflows and the operating problems Neptlium is designed to address.'],['Security','Responsible questions about supported security boundaries or security-related matters.'],['Press','Requests for verified company information or media inquiries.'],['General inquiries','Company and public-information matters that do not fit the categories above.']] as const;
+export default function ContactPage(){return <><PageHeader eyebrow="Contact" title="Contact Neptlium." intro="Use the public contact channel for product and platform, institutional, security, press or general company inquiries." crumbs={[{label:'Home',href:'/'},{label:'Contact'}]}/><Section tone="surface"><div className="route-split"><div><h2>Direct inquiries to the appropriate context.</h2><p>Email is Neptlium’s supported public contact channel. Do not send passwords, private keys, recovery material or other sensitive authentication information by email.</p><a href={`mailto:${SITE.supportEmail}`} className="button mt-6"><Mail className="h-4 w-4" aria-hidden="true" />{SITE.supportEmail}</a></div><div className="route-rows compact">{categories.map(([title,body])=><article key={title}><h2>{title}</h2><p>{body}</p></article>)}</div></div><div className="mt-10"><DisclosureNote>Public correspondence and information from Neptlium is informational and does not constitute investment advice or establish financial authority beyond the product’s documented operating boundaries.</DisclosureNote></div></Section></>}
