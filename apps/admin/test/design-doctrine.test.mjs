@@ -11,10 +11,8 @@ test('admin is a light-first institutional operating surface', () => {
   assert.match(layout, /data-theme="light"/);
   assert.match(layout, /colorScheme:\s*"light"/);
   assert.match(css, /@neptlium\/ui\/styles\/brand\.css/);
-  assert.match(css, /--color-canvas:\s*#ffffff/);
-  assert.match(css, /--color-text-primary:\s*#101214/);
-  assert.match(css, /--color-accent-primary:\s*#101214/);
-  assert.match(css, /--color-border-default:\s*#dfe2e1/);
+  assert.match(css, /--color-canvas:\s*var\(--n-brand-canvas\)/);
+  assert.match(css, /--color-accent-primary:\s*var\(--n-brand-blue\)/);
   assert.doesNotMatch(css, /color-scheme:\s*dark\s*;/);
 });
 
