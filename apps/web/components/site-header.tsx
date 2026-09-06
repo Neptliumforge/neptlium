@@ -22,8 +22,10 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
   const hasDisclosure = item.links.length > 1 || item.links[0]?.href !== item.href;
 
   useEffect(() => setOpen(false), [path]);
+
   useEffect(() => {
     if (!open) return;
+
     const outside = (event: PointerEvent) => {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
     };
@@ -33,6 +35,7 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
         trigger.current?.focus();
       }
     };
+
     document.addEventListener('pointerdown', outside);
     document.addEventListener('keydown', escape);
     return () => {
@@ -43,7 +46,11 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
 
   if (!hasDisclosure) {
     return (
-      <Link className="desktop-domain-link" href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+      <Link
+        className="desktop-domain-link"
+        href={item.href}
+        aria-current={path === item.href ? 'page' : undefined}
+      >
         {item.label}
       </Link>
     );
@@ -63,6 +70,7 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
         </Link>
         <button
           ref={trigger}
+          type="button"
           aria-expanded={open}
           aria-controls={id}
           aria-haspopup="true"
@@ -125,7 +133,7 @@ export function SiteHeader() {
   const panel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 32);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -138,17 +146,21 @@ export function SiteHeader() {
 
   useEffect(() => {
     if (!mobileOpen) return;
+
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     close.current?.focus();
+
     const keys = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setMobileOpen(false);
         return;
       }
       if (event.key !== 'Tab') return;
+
       const nodes = panel.current?.querySelectorAll<HTMLElement>('a[href],button:not([disabled])');
       if (!nodes?.length) return;
+
       const first = nodes[0];
       const last = nodes[nodes.length - 1];
       if (event.shiftKey && document.activeElement === first) {
@@ -159,6 +171,7 @@ export function SiteHeader() {
         first.focus();
       }
     };
+
     document.addEventListener('keydown', keys);
     return () => {
       document.body.style.overflow = previousOverflow;
@@ -175,19 +188,23 @@ export function SiteHeader() {
     >
       <div className="nav-shell">
         <Brand tone="current" />
+
         <nav className="desktop-command-nav" aria-label="Primary navigation">
           {NAVIGATION.map((item) => (
             <DesktopDisclosure item={item} path={path} key={item.label} />
           ))}
         </nav>
+
         <div className="command-actions">
           <Link className="button command-primary-action" href={SITE.publicAccessUrl}>
             {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
           </Link>
         </div>
+
         <button
           ref={trigger}
           className="command-mobile-trigger"
+          type="button"
           aria-expanded={mobileOpen}
           aria-controls="mobile-command-sheet"
           aria-label="Open navigation"
@@ -197,24 +214,31 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {mobileOpen && (
+      {mobileOpen ? (
         <div className="mobile-command-wrap" role="dialog" aria-modal="true" aria-label="Navigation">
           <div id="mobile-command-sheet" className="mobile-command-sheet" ref={panel}>
             <div className="mobile-command-head">
               <Brand tone="current" />
-              <button ref={close} aria-label="Close navigation" onClick={() => setMobileOpen(false)}>
+              <button ref={close} type="button" aria-label="Close navigation" onClick={() => setMobileOpen(false)}>
                 <X aria-hidden="true" />
               </button>
             </div>
+
             <nav className="mobile-command-nav" aria-label="Mobile navigation">
               {NAVIGATION.map((item) => {
                 const expandable = item.links.length > 1 || item.links[0]?.href !== item.href;
                 const expanded = mobileSection === item.label;
                 const controls = `mobile-${item.label.toLowerCase()}`;
+
                 return (
-                  <section key={item.label}>
+                  <section key={item.label} data-expanded={expanded ? 'true' : 'false'}>
                     <div className="mobile-domain-row">
-                      <Link href={item.href}>{item.label}</Link>
+                      <Link
+                        href={item.href}
+                        aria-current={path === item.href ? 'page' : undefined}
+                      >
+                        {item.label}
+                      </Link>
                       {expandable ? (
                         <button
                           type="button"
@@ -223,16 +247,21 @@ export function SiteHeader() {
                           aria-label={`${expanded ? 'Hide' : 'Show'} ${item.label} links`}
                           onClick={() => setMobileSection(expanded ? null : item.label)}
                         >
-                          <span aria-hidden="true">{expanded ? '−' : '+'}</span>
+                          <ChevronDown aria-hidden="true" />
                         </button>
                       ) : null}
                     </div>
+
                     {expandable ? (
                       <div id={controls} hidden={!expanded} className="mobile-domain-children">
                         {item.links
                           .filter((link) => link.href !== item.href)
                           .map((link) => (
-                            <Link href={link.href} key={link.href}>
+                            <Link
+                              href={link.href}
+                              key={link.href}
+                              aria-current={path === link.href ? 'page' : undefined}
+                            >
                               <strong>{link.label}</strong>
                               <small>{link.description}</small>
                             </Link>
@@ -243,14 +272,18 @@ export function SiteHeader() {
                 );
               })}
             </nav>
-            <div className="mobile-command-actions">
-              <Link className="button" href={SITE.publicAccessUrl}>
+
+            <div className="mobile-command-actions" aria-label="Primary actions">
+              <Link className="mobile-explore-action" href="/platform">
+                Explore platform
+              </Link>
+              <Link className="mobile-enter-action" href={SITE.publicAccessUrl}>
                 {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
               </Link>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </header>
   );
 }
