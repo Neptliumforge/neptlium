@@ -44,8 +44,10 @@ test('protected customer routes remain protected by Clerk middleware', () => {
   assert.match(proxy, /await auth\.protect\(\)/);
 });
 
-test('production auth environment contract is explicit', () => {
+test('production auth environment contract is explicit and fails closed on invalid origins', () => {
   const env = read('.env.example');
+  const runtime = read('lib/runtime-config.ts');
+  const layout = read('app/layout.tsx');
   for (const expected of [
     'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY',
     'CLERK_SECRET_KEY',
@@ -55,7 +57,14 @@ test('production auth environment contract is explicit', () => {
     'NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/auth/complete',
     'NEXT_PUBLIC_SITE_URL=https://app.neptlium.com',
     'NEPTLIUM_API_URL=https://api.neptlium.com',
-  ]) assert.match(env, new RegExp(expected.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  ]) assert.ok(env.includes(expected), `missing environment contract: ${expected}`);
+  assert.match(runtime, /VERCEL_ENV !== 'production'/);
+  assert.match(runtime, /https:\/\/app\.neptlium\.com/);
+  assert.match(runtime, /https:\/\/api\.neptlium\.com/);
+  assert.match(runtime, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY/);
+  assert.match(runtime, /CLERK_SECRET_KEY/);
+  assert.match(layout, /assertProductionRuntimeConfig\(\)/);
+  assert.doesNotMatch(runtime, /console\.|process\.stdout|process\.stderr/);
 });
 
 test('API client is server-only, uses Clerk bearer authentication, request correlation and bounded timeouts', () => {
