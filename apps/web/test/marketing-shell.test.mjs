@@ -51,7 +51,10 @@ test('homepage routes visitors through platform, products, solutions, trust and 
 
 test('public CTA authority keeps Enter Neptlium primary and Explore platform secondary', () => {
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
-  assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
+  assert.match(site, /appOrigin:\s*'https:\/\/app\.neptlium\.com'/);
+  assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/'/);
+  assert.match(site, /signInUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
+  assert.match(site, /signUpUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
   for (const source of [page, header]) assert.match(source, /SITE\.publicAccess/);
   assert.doesNotMatch(header, /<Link href="\/products">Products<\/Link>/);
   assert.match(header, /mobile-explore-action[\s\S]*href="\/platform"/);

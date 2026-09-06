@@ -22,7 +22,8 @@ test('first authenticated app entry bootstraps through the API and preserves exi
   assert.match(complete, /bootstrapClerkIdentity/);
   assert.match(bootstrap, /\/v1\/auth\/bootstrap/);
   assert.match(bootstrap, /link_required/);
-  assert.match(complete, /redirect\('\/auth\/link-existing'\)/);
+  assert.match(complete, /destination = '\/auth\/link-existing'/);
+  assert.match(complete, /redirect\(destination\)/);
   assert.doesNotMatch(complete, /owner_id|supabase/i);
 });
 
