@@ -1,7 +1,10 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
+import { assertProductionRuntimeConfig } from '@/lib/runtime-config';
 import "./global.css";
+
+assertProductionRuntimeConfig();
 
 export const metadata: Metadata = {
   title: "Neptlium | Capital Operating Platform",
