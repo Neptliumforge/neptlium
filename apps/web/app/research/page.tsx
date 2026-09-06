@@ -7,4 +7,4 @@ export default function Page(){return <DetailPage eyebrow="Research" title="Rese
  ['Financial state and evidence','A core research concern is how systems distinguish provider-reported, internally canonical, derived, modeled and consequential information, and how those distinctions affect operational decision quality.'],
  ['Infrastructure and governance risk','Research may examine dependencies across providers, permissions, service boundaries and lifecycle controls where the underlying evidence supports a substantive analysis.'],
  ['Publication standard','Research will appear here when there is real work to publish. Neptlium will not populate this surface with invented reports, article titles, findings, performance claims or third-party validation.'],
-]}/>} 
+]}/>}
