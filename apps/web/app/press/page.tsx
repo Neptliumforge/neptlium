@@ -5,4 +5,4 @@ export default function PressPage(){return <DetailPage eyebrow="Press" title="Co
  ['Company description','Neptlium is building an operating environment for understanding, coordinating and governing capital while preserving distinctions between observed, provider-reported, modeled, proposed, authorized and consequential state.'],
  ['Publication standard','Announcements, partnerships, product capabilities, regulatory status, awards, customer claims and other consequential company statements should be published only when they are verified and appropriate to disclose.'],
  ['Media inquiries','Requests for verified company information may be directed to support@neptlium.com. Neptlium does not present fabricated press quotes, logos, awards or media coverage to imply external validation.'],
-]}/>} 
+]}/>}
