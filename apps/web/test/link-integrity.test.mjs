@@ -71,14 +71,22 @@ test('canonical product pages are authored independently rather than through Fou
   assert.equal(signatures.size, productPaths.length, 'Product pages should not share one identical composition signature');
 });
 
-test('public access CTA resolves to the authenticated Neptlium application', () => {
+test('public access CTA resolves to the canonical application root while explicit auth routes remain distinct', () => {
   const site = readFileSync(join(webRoot, 'lib/content/site.ts'), 'utf8');
-  const match = site.match(/publicAccessUrl:\s*['"]([^'"]+)['"]/);
-  assert.ok(match, 'SITE.publicAccessUrl must be statically declared');
-  const url = new URL(match[1]);
-  assert.equal(url.protocol, 'https:');
-  assert.equal(url.hostname, 'app.neptlium.com');
-  assert.equal(url.pathname, '/auth/sign-in');
+  const publicMatch = site.match(/publicAccessUrl:\s*['"]([^'"]+)['"]/);
+  const signInMatch = site.match(/signInUrl:\s*['"]([^'"]+)['"]/);
+  const signUpMatch = site.match(/signUpUrl:\s*['"]([^'"]+)['"]/);
+  assert.ok(publicMatch, 'SITE.publicAccessUrl must be statically declared');
+  assert.ok(signInMatch, 'SITE.signInUrl must be statically declared');
+  assert.ok(signUpMatch, 'SITE.signUpUrl must be statically declared');
+
+  const publicUrl = new URL(publicMatch[1]);
+  assert.equal(publicUrl.protocol, 'https:');
+  assert.equal(publicUrl.hostname, 'app.neptlium.com');
+  assert.equal(publicUrl.pathname, '/');
+
+  assert.equal(new URL(signInMatch[1]).pathname, '/auth/sign-in');
+  assert.equal(new URL(signUpMatch[1]).pathname, '/auth/sign-up');
 });
 
 test('sitemap entries resolve to real pages and never fabricate freshness', () => {
