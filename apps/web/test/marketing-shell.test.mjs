@@ -9,13 +9,13 @@ const header = read('components/site-header.tsx');
 const footer = read('components/site-footer.tsx');
 const brand = read('components/brand.tsx');
 const css = read('app/neptlium-visual-direction.css');
-const hardening = read('app/production-hardening.css');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
-const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${hardening}\n${site}`;
+const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${site}`;
 
-test('hero preserves the Neptlium-native proposition with exactly one H1, white wave field and structural operating diagram', () => {
+test('hero preserves the Neptlium-native proposition with exactly one H1 and structural operating model', () => {
   for (const copy of [
+    'Capital operating infrastructure',
     'The operating system for capital.',
     'See, coordinate and govern capital across treasury, allocation and portfolio context.',
     'Capital state',
@@ -24,11 +24,9 @@ test('hero preserves the Neptlium-native proposition with exactly one H1, white 
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /className="authority-wave-field"/);
   assert.match(page, /className="hero-architecture"/);
-  assert.match(hardening, /\.authority-wave-field-primary path[\s\S]*stroke:\s*rgb\(245 243 238/);
-  assert.match(hardening, /\.authority-hero h1[\s\S]*font-size:\s*clamp\(2\.35rem, 3\.65vw, 3\.35rem\)/);
-  assert.doesNotMatch(page, /ProductContextIllustration|<Image|<img|\.png|\.webp|1000209629/i);
+  assert.doesNotMatch(page, /authority-wave-field|ProductContextIllustration|<Image|<img|\.png|\.webp|1000209629/i);
+  assert.match(css, /\.authority-hero h1[\s\S]*font-size:\s*clamp\(3rem, 5\.1vw, 4\.45rem\)/);
 });
 
 test('homepage routes visitors through platform, products, solutions, trust and company context', () => {
@@ -51,12 +49,13 @@ test('homepage routes visitors through platform, products, solutions, trust and 
     assert.doesNotMatch(page, new RegExp(obsolete, 'i'));
 });
 
-test('public CTA authority keeps Enter Neptlium isolated as the product-entry action', () => {
+test('public CTA authority keeps Enter Neptlium primary and Explore platform secondary', () => {
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
   assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
   for (const source of [page, header]) assert.match(source, /SITE\.publicAccess/);
   assert.doesNotMatch(header, /<Link href="\/products">Products<\/Link>/);
-  assert.doesNotMatch(header, />Explore platform<\/Link>/);
+  assert.match(header, /mobile-explore-action[\s\S]*href="\/platform"/);
+  assert.match(header, /mobile-enter-action[\s\S]*SITE\.publicAccessUrl/);
   assert.doesNotMatch(`${page}\n${header}\n${footer}`, /Request access|Open Neptlium/);
 });
 
@@ -68,7 +67,7 @@ test('navigation is exactly five canonical domains with contracted expert discov
   assert.match(architecture, /PRIMARY_PRODUCTS = PRODUCTS\.slice\(0, 4\)/);
   assert.match(architecture, /PRIMARY_COMPANY = COMPANY\.slice\(0, 2\)/);
   assert.match(header, /NAVIGATION\.map/);
-  assert.match(header, /<Link href=\{item\.href\}/);
+  assert.match(header, /href=\{item\.href\}/);
   assert.doesNotMatch(architecture, /label: 'Capital'|label: 'Connectivity'/);
 });
 
@@ -88,6 +87,10 @@ test('navigation preserves desktop and independently designed mobile accessibili
     "data-home={isHome ? 'true' : 'false'}",
   ])
     assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+  assert.match(css, /\.mobile-command-wrap[\s\S]*position:\s*fixed[\s\S]*inset:\s*0/);
+  assert.match(css, /\.mobile-command-sheet[\s\S]*100dvh/);
+  assert.match(css, /env\(safe-area-inset-top\)/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
 test('footer is the complete institutional map with legal separated from product navigation', () => {
@@ -100,19 +103,20 @@ test('footer is the complete institutional map with legal separated from product
   assert.match(footer, /Keep your capital work connected\./);
   assert.doesNotMatch(footer, /All products|Solutions overview|Resources overview|Company overview/);
   assert.doesNotMatch(footer, /SITE\.publicAccess|Explore platform/);
+  assert.doesNotMatch(footer, /style=\{\{/);
   for (const unverified of ['bsky.app', 'x.com/Neptlium', 'youtube.com/@neptlium', 'tiktok.com/@neptlium'])
     assert.doesNotMatch(footer, new RegExp(unverified.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.doesNotMatch(footer, /Neptliumlabs|href=["']#["']/i);
 });
 
-test('canonical brand and palette remain authoritative', () => {
+test('canonical brand and palette remain authoritative in one visual-direction layer', () => {
   assert.match(brand, /from '@neptlium\/ui'/);
   assert.match(brand, /NeptliumMark/);
   assert.doesNotMatch(brand, /<svg|<path|d="/);
   for (const token of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
     assert.match(css, new RegExp(token, 'i'));
   assert.match(layout, /neptlium-visual-direction\.css/);
-  assert.match(layout, /production-hardening\.css/);
+  assert.doesNotMatch(layout, /production-hardening\.css/);
   for (const retiredImport of [
     'marketing-shell.css',
     'apple-calibration.css',
@@ -122,7 +126,7 @@ test('canonical brand and palette remain authoritative', () => {
     'marketing-production.css',
     'unified-design.css',
   ]) assert.doesNotMatch(layout, new RegExp(retiredImport.replace('.', '\\.')));
-  assert.match(hardening, /data-home='true'/);
+  assert.match(css, /data-home='true'/);
   assert.doesNotMatch(css, /radial-gradient|backdrop-filter:\s*blur\(|filter:\s*blur\(/i);
 });
 
