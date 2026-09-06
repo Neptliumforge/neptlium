@@ -6,9 +6,11 @@ export const SITE = {
   description:
     'Neptlium brings portfolio context, capital movement, treasury and allocation into one clear capital operating environment.',
   supportEmail: 'support@neptlium.com',
-  accessUrl: 'https://app.neptlium.com/auth/sign-up',
+  appOrigin: 'https://app.neptlium.com',
+  accessUrl: 'https://app.neptlium.com/',
+  publicAccessUrl: 'https://app.neptlium.com/',
   signInUrl: 'https://app.neptlium.com/auth/sign-in',
-  publicAccessUrl: 'https://app.neptlium.com/auth/sign-in',
+  signUpUrl: 'https://app.neptlium.com/auth/sign-up',
   publicAccessLabel: 'Enter Neptlium',
   exploreUrl: '/platform',
   exploreLabel: 'Explore platform',
