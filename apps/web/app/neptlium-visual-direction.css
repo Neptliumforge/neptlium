@@ -4,6 +4,7 @@
   --web-ivory-low: #eeece6;
   --web-carbon: #101214;
   --web-carbon-soft: #181b1d;
+  --web-carbon-muted: #23272a;
   --web-teal: #0f8f86;
   --web-teal-interaction: #20afa3;
   --web-graphite: #343a3f;
@@ -13,19 +14,56 @@
   --web-rule-light: rgb(16 18 20 / 14%);
   --web-shell: 78rem;
   --web-reading: 42rem;
+  --web-gutter: clamp(1rem, 3vw, 2.5rem);
+  --web-space-xs: 0.5rem;
+  --web-space-sm: 0.75rem;
+  --web-space-md: 1rem;
+  --web-space-lg: 1.5rem;
+  --web-space-xl: 2rem;
+  --web-space-2xl: 3rem;
+  --web-space-3xl: 4rem;
+  --web-space-4xl: 6rem;
+  --web-space-5xl: 8rem;
+  --web-ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
-.web-shell {
-  width: min(calc(100% - 3rem), var(--web-shell));
+html,
+body {
+  overflow-x: clip;
+}
+
+html {
+  background: var(--web-carbon);
+  scroll-padding-top: 5rem;
+  scroll-behavior: auto;
+}
+
+.web-shell,
+.nav-shell,
+.footer-shell {
+  width: min(calc(100% - (var(--web-gutter) * 2)), var(--web-shell));
   margin-inline: auto;
+}
+
+.brand {
+  gap: 0.72rem;
+  color: inherit;
+  font-size: 0.94rem;
+  font-weight: 650;
+  letter-spacing: -0.022em;
+}
+
+.brand-mark {
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .web-eyebrow {
   margin: 0;
   color: rgb(131 201 195 / 92%);
-  font-size: 0.72rem;
-  font-weight: 650;
-  letter-spacing: 0.11em;
+  font-size: 0.69rem;
+  font-weight: 680;
+  letter-spacing: 0.115em;
   text-transform: uppercase;
 }
 
@@ -36,19 +74,31 @@
 .text-arrow-link,
 .inline-links a {
   display: inline-flex;
+  min-height: 2.75rem;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.52rem;
   color: var(--web-carbon);
-  font-size: 0.86rem;
-  font-weight: 650;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--web-teal) 45%, transparent);
-  text-underline-offset: 0.3rem;
+  font-size: 0.84rem;
+  font-weight: 620;
+  text-decoration: none;
+}
+
+.text-arrow-link::after,
+.inline-links a::after {
+  position: absolute;
 }
 
 .text-arrow-link svg,
 .inline-links svg {
-  width: 0.9rem;
+  width: 0.88rem;
+  transition: transform 160ms var(--web-ease);
+}
+
+.text-arrow-link:hover svg,
+.text-arrow-link:focus-visible svg,
+.inline-links a:hover svg,
+.inline-links a:focus-visible svg {
+  transform: translateX(0.14rem);
 }
 
 .text-arrow-link.on-dark,
@@ -56,22 +106,31 @@
   color: var(--web-ivory);
 }
 
-.web-button {
+.web-button,
+.command-primary-action,
+.mobile-enter-action,
+.mobile-explore-action {
   display: inline-flex;
   min-height: 3rem;
   align-items: center;
   justify-content: center;
-  gap: 0.68rem;
-  padding: 0.72rem 1rem;
+  gap: 0.62rem;
+  padding: 0.7rem 1rem;
   border: 1px solid transparent;
-  border-radius: 0.5rem;
-  font-size: 0.88rem;
+  border-radius: 0.35rem;
+  font-size: 0.84rem;
   font-weight: 650;
-  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+  line-height: 1;
+  transition:
+    background-color 160ms var(--web-ease),
+    border-color 160ms var(--web-ease),
+    color 160ms var(--web-ease);
 }
 
-.web-button svg {
-  width: 0.95rem;
+.web-button svg,
+.command-primary-action svg,
+.mobile-enter-action svg {
+  width: 0.9rem;
 }
 
 .web-button.primary {
@@ -79,49 +138,65 @@
   color: #fff;
 }
 
-.web-button.primary:hover {
+.web-button.primary:hover,
+.web-button.primary:focus-visible {
   background: var(--web-teal-interaction);
 }
 
 .web-button.secondary {
-  border-color: rgb(245 243 238 / 26%);
+  border-color: rgb(245 243 238 / 24%);
   color: var(--web-ivory);
 }
 
-.web-button.secondary:hover {
-  border-color: rgb(245 243 238 / 46%);
-  background: rgb(245 243 238 / 5%);
+:where(a, button, summary):focus-visible {
+  outline: 2px solid var(--web-teal-interaction);
+  outline-offset: 3px;
+  box-shadow: none;
 }
 
-/* Global navigation: five domains with direct hub destinations and concise disclosures. */
+/* Institutional header */
 .site-header.capital-command-bar {
   position: sticky;
   top: 0;
   z-index: 80;
   height: 4.5rem;
   border-bottom: 1px solid var(--web-stone);
-  background: var(--web-ivory-high);
+  background: rgb(251 250 247 / 98%);
   color: var(--web-carbon);
-}
-
-.nav-shell {
-  width: min(calc(100% - 3rem), var(--web-shell));
-  margin-inline: auto;
+  transition:
+    height 180ms var(--web-ease),
+    background-color 180ms var(--web-ease),
+    border-color 180ms var(--web-ease),
+    color 180ms var(--web-ease);
 }
 
 .capital-command-bar .nav-shell {
   display: grid;
+  height: 100%;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  height: 100%;
-  gap: clamp(1.5rem, 3vw, 3rem);
+  gap: clamp(1.5rem, 3vw, 3.25rem);
+}
+
+.site-header.capital-command-bar[data-home='true'][data-scrolled='false'] {
+  position: absolute;
+  inset: 0 0 auto;
+  border-bottom-color: var(--web-rule-dark);
+  background: var(--web-carbon);
+  color: var(--web-ivory);
+}
+
+.site-header.capital-command-bar[data-home='true'][data-scrolled='true'] {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 4.125rem;
 }
 
 .desktop-command-nav {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.05rem;
 }
 
 .command-menu-root {
@@ -133,18 +208,22 @@
   display: inline-flex;
   min-height: 2.75rem;
   align-items: center;
-  padding-inline: 0.72rem;
-  color: var(--web-graphite);
-  font-size: 0.84rem;
-  font-weight: 600;
+  padding-inline: 0.66rem;
+  color: currentColor;
+  font-size: 0.8rem;
+  font-weight: 590;
+  opacity: 0.7;
+  transition: opacity 140ms var(--web-ease);
 }
 
 .desktop-domain-link:hover,
+.desktop-domain-link:focus-visible,
 .desktop-domain-link[aria-current='page'],
 .desktop-domain-control > a:hover,
+.desktop-domain-control > a:focus-visible,
 .desktop-domain-control > a[aria-current='page'],
 .desktop-domain-control[data-active='true'] > a {
-  color: var(--web-carbon);
+  opacity: 1;
 }
 
 .desktop-domain-control {
@@ -153,24 +232,25 @@
 }
 
 .desktop-domain-control > a {
-  padding-right: 0.2rem;
+  padding-right: 0.08rem;
 }
 
 .desktop-domain-control > button {
   display: inline-flex;
-  width: 1.9rem;
-  height: 2.75rem;
+  width: 1.65rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--web-graphite);
+  color: currentColor;
+  opacity: 0.64;
 }
 
 .desktop-domain-control > button svg {
-  width: 0.75rem;
-  transition: transform 160ms ease;
+  width: 0.7rem;
+  transition: transform 160ms var(--web-ease);
 }
 
 .desktop-domain-control > button[aria-expanded='true'] svg {
@@ -179,23 +259,26 @@
 
 .capital-command-menu.concise-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: calc(100% + 0.75rem);
   left: 0;
   z-index: 90;
   display: grid;
-  width: min(22rem, calc(100vw - 2rem));
+  width: min(23rem, calc(100vw - 2rem));
   max-height: min(70vh, 34rem);
   overflow: auto;
-  padding: 0.42rem;
+  padding: 0.3rem 0;
   border: 1px solid var(--web-stone);
-  border-radius: 0.65rem;
+  border-radius: 0.25rem;
   background: var(--web-ivory-high);
   color: var(--web-carbon);
-  box-shadow: 0 18px 48px rgb(16 18 20 / 8%);
+  box-shadow: none;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-0.3rem);
-  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+  transform: translateY(-0.25rem);
+  transition:
+    opacity 150ms var(--web-ease),
+    transform 150ms var(--web-ease),
+    visibility 150ms var(--web-ease);
 }
 
 .capital-command-menu.concise-menu[data-open='true'] {
@@ -206,12 +289,16 @@
 
 .concise-menu > a {
   display: flex;
-  min-height: 3.75rem;
+  min-height: 4rem;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.65rem 0.75rem;
-  border-radius: 0.45rem;
+  padding: 0.72rem 0.9rem;
+  border-bottom: 1px solid rgb(16 18 20 / 9%);
+}
+
+.concise-menu > a:last-child {
+  border-bottom: 0;
 }
 
 .concise-menu > a:hover,
@@ -220,9 +307,7 @@
 }
 
 .concise-menu .menu-domain-overview {
-  margin-bottom: 0.25rem;
-  border-bottom: 1px solid var(--web-stone);
-  border-radius: 0;
+  background: color-mix(in srgb, var(--web-mist) 42%, transparent);
 }
 
 .concise-menu strong,
@@ -231,18 +316,18 @@
 }
 
 .concise-menu strong {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
 }
 
 .concise-menu small {
   margin-top: 0.18rem;
   color: var(--web-graphite);
-  font-size: 0.74rem;
-  line-height: 1.35;
+  font-size: 0.73rem;
+  line-height: 1.4;
 }
 
 .concise-menu svg {
-  width: 0.9rem;
+  width: 0.85rem;
   flex: none;
   color: var(--web-teal);
 }
@@ -250,24 +335,24 @@
 .command-actions {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-}
-
-.command-actions > a:first-child {
-  color: var(--web-graphite);
-  font-size: 0.82rem;
-  font-weight: 600;
 }
 
 .command-primary-action {
-  min-height: 2.7rem;
-  border-radius: 0.5rem;
-  background: var(--web-teal);
-  color: #fff;
+  min-height: 2.65rem;
+  padding-inline: 0.88rem;
+  background: var(--web-carbon);
+  color: var(--web-ivory);
 }
 
-.command-primary-action:hover {
-  background: var(--web-teal-interaction);
+.site-header[data-home='true'][data-scrolled='false'] .command-primary-action {
+  border-color: rgb(245 243 238 / 24%);
+  background: transparent;
+}
+
+.command-primary-action:hover,
+.command-primary-action:focus-visible {
+  background: var(--web-teal);
+  color: #fff;
 }
 
 .command-mobile-trigger {
@@ -277,38 +362,51 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 1px solid var(--web-stone);
-  border-radius: 0.5rem;
+  border: 0;
   background: transparent;
-  color: var(--web-carbon);
+  color: inherit;
 }
 
+.command-mobile-trigger svg {
+  width: 1.25rem;
+}
+
+/* Full-screen mobile navigation */
 .mobile-command-wrap {
   position: fixed;
   inset: 0;
-  z-index: 100;
-  background: var(--web-ivory-high);
-  color: var(--web-carbon);
+  z-index: 120;
+  background: var(--web-carbon);
+  color: var(--web-ivory);
+  animation: mobile-nav-enter 340ms var(--web-ease) both;
 }
 
 .mobile-command-sheet {
   display: flex;
+  width: 100%;
   min-height: 100dvh;
+  max-height: 100dvh;
   flex-direction: column;
   overflow-y: auto;
-  padding: 0 1.25rem 1.25rem;
+  overscroll-behavior: contain;
+  padding:
+    env(safe-area-inset-top)
+    max(1.1rem, env(safe-area-inset-right))
+    max(1.1rem, env(safe-area-inset-bottom))
+    max(1.1rem, env(safe-area-inset-left));
 }
 
 .mobile-command-head {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   display: flex;
-  min-height: 4.25rem;
+  min-height: 4.75rem;
+  flex: none;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--web-stone);
-  background: var(--web-ivory-high);
+  border-bottom: 1px solid var(--web-rule-dark);
+}
+
+.mobile-command-head .brand {
+  color: var(--web-ivory);
 }
 
 .mobile-command-head > button {
@@ -320,54 +418,76 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--web-carbon);
+  color: var(--web-ivory);
+}
+
+.mobile-command-head > button svg {
+  width: 1.2rem;
 }
 
 .mobile-command-nav {
   flex: 1;
-  padding-top: 1rem;
+  padding-top: clamp(1.75rem, 7vh, 4.5rem);
 }
 
 .mobile-command-nav section {
-  border-bottom: 1px solid var(--web-stone);
+  border-bottom: 1px solid var(--web-rule-dark);
 }
 
 .mobile-domain-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 3rem;
+  grid-template-columns: minmax(0, 1fr) 3.25rem;
   align-items: center;
 }
 
 .mobile-domain-row > a {
   display: flex;
-  min-height: 3.75rem;
+  min-height: 4.3rem;
   align-items: center;
-  color: var(--web-carbon);
-  font-size: 1.05rem;
-  font-weight: 650;
+  color: var(--web-ivory);
+  font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
+  font-size: clamp(1.55rem, 7vw, 2rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.026em;
+}
+
+.mobile-domain-row > a[aria-current='page'] {
+  color: rgb(245 243 238 / 72%);
 }
 
 .mobile-domain-row > button {
   display: inline-flex;
-  min-width: 3rem;
-  min-height: 3rem;
+  width: 3.25rem;
+  min-height: 3.25rem;
   align-items: center;
   justify-content: center;
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--web-carbon);
-  font-size: 1.25rem;
+  color: rgb(245 243 238 / 72%);
+}
+
+.mobile-domain-row > button svg {
+  width: 1rem;
+  transition: transform 220ms var(--web-ease);
+}
+
+.mobile-command-nav section[data-expanded='true'] .mobile-domain-row > button svg {
+  transform: rotate(180deg);
 }
 
 .mobile-domain-children {
   display: grid;
-  padding: 0 0 0.65rem 0.75rem;
+  padding: 0.2rem 0 1rem;
+  animation: mobile-children-enter 220ms var(--web-ease) both;
 }
 
 .mobile-domain-children > a {
+  display: block;
   min-height: 3.6rem;
-  padding: 0.65rem 0;
+  padding: 0.62rem 0 0.62rem 0.2rem;
+  color: var(--web-ivory);
 }
 
 .mobile-domain-children strong,
@@ -376,95 +496,96 @@
 }
 
 .mobile-domain-children strong {
-  font-size: 0.88rem;
-}
-
-.mobile-domain-children small {
-  max-width: 28rem;
-  margin-top: 0.2rem;
-  color: var(--web-graphite);
-  font-size: 0.76rem;
-  line-height: 1.4;
-}
-
-.mobile-command-actions {
-  display: grid;
-  gap: 0.75rem;
-  padding-top: 1rem;
-}
-
-.mobile-command-actions .button {
-  min-height: 3rem;
-  border-radius: 0.5rem;
-  background: var(--web-teal);
-  color: #fff;
-}
-
-.mobile-command-actions > a:last-child {
-  min-height: 2.75rem;
-  color: var(--web-carbon);
   font-size: 0.86rem;
   font-weight: 600;
 }
 
-/* Homepage. */
+.mobile-domain-children small {
+  max-width: 31rem;
+  margin-top: 0.24rem;
+  color: rgb(245 243 238 / 48%);
+  font-size: 0.73rem;
+  line-height: 1.45;
+}
+
+.mobile-command-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  flex: none;
+  align-items: center;
+  padding-top: clamp(1.5rem, 5vh, 3rem);
+}
+
+.mobile-explore-action {
+  justify-content: flex-start;
+  padding-inline: 0;
+  color: rgb(245 243 238 / 72%);
+}
+
+.mobile-enter-action {
+  border-color: rgb(245 243 238 / 22%);
+  color: var(--web-ivory);
+}
+
+.mobile-enter-action:hover,
+.mobile-enter-action:focus-visible {
+  border-color: var(--web-teal-interaction);
+  background: var(--web-teal);
+  color: #fff;
+}
+
+@keyframes mobile-nav-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mobile-children-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Homepage */
 .neptlium-home {
   background: var(--web-ivory);
   color: var(--web-carbon);
 }
 
-body:has(.neptlium-home) .site-header.capital-command-bar {
-  position: absolute;
-  inset: 0 0 auto;
-  border-bottom-color: var(--web-rule-dark);
-  background: var(--web-carbon);
-  color: var(--web-ivory);
-}
-
-body:has(.neptlium-home) .site-header .brand,
-body:has(.neptlium-home) .desktop-domain-link,
-body:has(.neptlium-home) .desktop-domain-control > a,
-body:has(.neptlium-home) .desktop-domain-control > button,
-body:has(.neptlium-home) .command-actions > a:first-child,
-body:has(.neptlium-home) .command-mobile-trigger {
-  color: var(--web-ivory);
-}
-
-body:has(.neptlium-home) .command-mobile-trigger {
-  border-color: var(--web-rule-dark);
-}
-
-body:has(.neptlium-home) :focus-visible,
-.architecture-page :focus-visible {
-  outline: 2px solid var(--web-teal-interaction);
-  outline-offset: 3px;
-  box-shadow: none;
-}
-
 .authority-hero {
   position: relative;
+  overflow: hidden;
   background: var(--web-carbon);
   color: var(--web-ivory);
 }
 
-.authority-hero::after {
+.authority-hero::before {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: auto 0 0;
   height: 1px;
   background: var(--web-teal);
   content: '';
-  opacity: 0.72;
+  opacity: 0.58;
 }
 
 .authority-hero-inner {
-  min-height: min(50rem, 92vh);
-  padding-block: clamp(8.25rem, 12vw, 10rem) clamp(4rem, 7vw, 5.75rem);
+  min-height: min(52rem, 96dvh);
+  padding-block: clamp(9rem, 15vw, 12rem) clamp(4.5rem, 8vw, 7rem);
 }
 
 .authority-hero-copy {
-  max-width: 58rem;
+  max-width: 48rem;
 }
 
 .authority-hero h1,
@@ -478,123 +599,118 @@ body:has(.neptlium-home) :focus-visible,
 }
 
 .authority-hero h1 {
-  display: grid;
-  max-width: 11ch;
-  margin: 1.55rem 0 1.45rem;
-  font-size: clamp(3rem, 5vw, 4.35rem);
-  line-height: 0.97;
-  letter-spacing: -0.038em;
-}
-
-.authority-hero h1 span:nth-child(2) {
-  position: relative;
-  width: fit-content;
-  padding-right: 0.35em;
-}
-
-.authority-hero h1 span:nth-child(2)::after {
-  position: absolute;
-  right: 0;
-  bottom: 0.12em;
-  width: 0.12em;
-  height: 0.12em;
-  border-radius: 50%;
-  background: var(--web-teal-interaction);
-  content: '';
+  max-width: 10ch;
+  margin: 1.1rem 0 1.5rem;
+  font-size: clamp(3rem, 5.1vw, 4.45rem);
+  line-height: 0.98;
+  letter-spacing: -0.042em;
+  text-wrap: balance;
 }
 
 .authority-hero-lead {
-  max-width: 39rem;
+  max-width: 37rem;
   margin: 0;
-  color: rgb(245 243 238 / 72%);
+  color: rgb(245 243 238 / 69%);
   font-size: clamp(1rem, 1.35vw, 1.14rem);
-  line-height: 1.66;
+  line-height: 1.7;
 }
 
 .authority-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
-  margin-top: 1.9rem;
+  gap: 0.8rem 1.25rem;
+  align-items: center;
+  margin-top: 2rem;
 }
 
-.hero-system {
+.hero-architecture {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(5rem, 10vw, 8rem);
+  border-top: 1px solid var(--web-rule-dark);
+  border-bottom: 1px solid var(--web-rule-dark);
+}
+
+.hero-architecture-plane,
+.hero-architecture-core {
+  min-width: 0;
+  padding: 1.4rem 1.4rem 1.65rem 0;
+}
+
+.hero-architecture-core,
+.hero-architecture-plane + .hero-architecture-core,
+.hero-architecture-core + .hero-architecture-plane {
+  padding-left: 1.4rem;
+  border-left: 1px solid var(--web-rule-dark);
+}
+
+.hero-architecture-core {
   position: relative;
-  margin-top: clamp(3.75rem, 7vw, 6.5rem);
-  padding-top: 1.25rem;
 }
 
-.hero-system-rule {
+.hero-architecture-core::before {
   position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
+  top: -1px;
+  left: 1.4rem;
+  width: 3.75rem;
   height: 1px;
-  background: var(--web-rule-dark);
-}
-
-.hero-system-rule::before {
-  position: absolute;
-  top: -2px;
-  left: 0;
-  width: 4rem;
-  height: 5px;
-  background: var(--web-teal);
+  background: var(--web-teal-interaction);
   content: '';
 }
 
-.hero-system ol {
+.hero-architecture-kicker {
+  display: block;
+  color: rgb(245 243 238 / 42%);
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.hero-architecture h2 {
+  max-width: 20ch;
+  margin: 0.85rem 0 1.25rem;
+  color: var(--web-ivory);
+  font-family: inherit;
+  font-size: clamp(1rem, 1.45vw, 1.16rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.016em;
+}
+
+.hero-architecture ul,
+.hero-architecture ol {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
+  border-top: 1px solid rgb(245 243 238 / 10%);
 }
 
-.hero-system li {
-  display: grid;
-  min-height: 8rem;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  gap: 0.8rem;
-  padding: 1rem 1rem 1rem 0;
-  border-right: 1px solid var(--web-rule-dark);
+.hero-architecture li {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.7rem;
+  border-bottom: 1px solid rgb(245 243 238 / 8%);
+  color: rgb(245 243 238 / 62%);
+  font-size: 0.77rem;
 }
 
-.hero-system li + li {
-  padding-left: 1rem;
+.hero-architecture-core li {
+  color: rgb(245 243 238 / 82%);
 }
 
-.hero-system li:last-child {
-  border-right: 0;
-}
-
-.hero-system-index,
-.capability-index,
-.intelligence-list article > span,
-.homepage-solution-list > a > span {
+.hero-architecture-core li span {
   color: var(--web-teal-interaction);
-  font-size: 0.68rem;
+  font-size: 0.63rem;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-}
-
-.hero-system strong {
-  display: block;
-  font-size: 0.88rem;
-}
-
-.hero-system li p {
-  max-width: 13rem;
-  margin: 0.5rem 0 0;
-  color: rgb(245 243 238 / 54%);
-  font-size: 0.78rem;
-  line-height: 1.48;
 }
 
 .hero-system-note {
   margin: 0.85rem 0 0;
-  color: rgb(245 243 238 / 42%);
-  font-size: 0.68rem;
+  color: rgb(245 243 238 / 38%);
+  font-size: 0.66rem;
 }
 
 .operating-environment,
@@ -603,26 +719,33 @@ body:has(.neptlium-home) :focus-visible,
   background: var(--web-ivory);
 }
 
-.operating-environment {
-  padding: clamp(5.5rem, 9vw, 8rem) 0 clamp(4.5rem, 7vw, 6.5rem);
+.operating-environment,
+.reason-section {
+  padding: clamp(6rem, 10vw, 9rem) 0;
+}
+
+.capital-organization {
+  padding: clamp(4rem, 8vw, 7rem) 0 clamp(7rem, 11vw, 10rem);
 }
 
 .editorial-grid,
 .reason-grid,
 .final-authority-inner,
 .intelligence-grid,
-.architecture-split {
+.architecture-split,
+.architecture-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(18rem, 0.75fr);
-  gap: clamp(3rem, 8vw, 7rem);
+  grid-template-columns: minmax(0, 0.95fr) minmax(18rem, 0.72fr);
+  gap: clamp(3rem, 8vw, 7.5rem);
   align-items: start;
 }
 
 .neptlium-home h2 {
   margin: 0.9rem 0 0;
-  font-size: clamp(2.15rem, 3.8vw, 3.35rem);
-  line-height: 1.04;
-  letter-spacing: -0.034em;
+  font-size: clamp(2.15rem, 3.7vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 
 .editorial-copy {
@@ -638,12 +761,8 @@ body:has(.neptlium-home) :focus-visible,
   max-width: 38rem;
   margin: 0;
   color: var(--web-graphite);
-  font-size: 1rem;
-  line-height: 1.68;
-}
-
-.capital-organization {
-  padding: 1rem 0 clamp(5.5rem, 9vw, 8rem);
+  font-size: 0.98rem;
+  line-height: 1.72;
 }
 
 .system-heading {
@@ -655,22 +774,41 @@ body:has(.neptlium-home) :focus-visible,
 }
 
 .capability-system {
-  margin-top: 3rem;
+  margin-top: 3.25rem;
   border-top: 1px solid var(--web-rule-light);
 }
 
 .capability-row {
   display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1.3fr) minmax(9rem, 0.45fr) 1.5rem;
+  min-height: 8.75rem;
+  grid-template-columns: 3.25rem minmax(0, 1.3fr) minmax(8rem, 0.4fr) 1.25rem;
   gap: 1rem;
   align-items: center;
-  min-height: 8.5rem;
-  padding: 1.1rem 0;
+  padding: 1rem 0;
   border-bottom: 1px solid var(--web-rule-light);
+  transition: background-color 150ms var(--web-ease);
 }
 
-.capability-row:hover {
+.capability-row:hover,
+.capability-row:focus-visible {
   background: var(--web-ivory-high);
+}
+
+.capability-index,
+.intelligence-list article > span,
+.homepage-solution-list > a > span,
+.architecture-link-list > a > span,
+.resource-ledger > a > span,
+.architecture-numbered-list article > span,
+.platform-lifecycle li > span,
+.platform-map > div > span,
+.solution-index a > span,
+.solution-essays article > span,
+.architecture-sequence li > span {
+  color: var(--web-teal);
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
 }
 
 .capability-copy h3,
@@ -679,27 +817,44 @@ body:has(.neptlium-home) :focus-visible,
 }
 
 .capability-copy h3 {
-  font-size: clamp(1.45rem, 2.2vw, 1.9rem);
-  letter-spacing: -0.024em;
+  font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
+  font-size: clamp(1.45rem, 2.15vw, 1.9rem);
+  font-weight: 400;
+  letter-spacing: -0.026em;
 }
 
 .capability-copy p {
   max-width: 34rem;
-  margin-top: 0.45rem;
+  margin-top: 0.48rem;
   color: var(--web-graphite);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   line-height: 1.58;
 }
 
 .capability-signal {
   color: var(--web-graphite);
-  font-size: 0.74rem;
+  font-size: 0.7rem;
 }
 
-.capability-row svg {
-  width: 0.95rem;
+.capability-row svg,
+.homepage-solution-list svg,
+.architecture-link-list svg,
+.resource-ledger svg {
+  width: 0.9rem;
   justify-self: end;
   color: var(--web-teal);
+  transition: transform 160ms var(--web-ease);
+}
+
+.capability-row:hover svg,
+.capability-row:focus-visible svg,
+.homepage-solution-list > a:hover svg,
+.homepage-solution-list > a:focus-visible svg,
+.architecture-link-list > a:hover svg,
+.architecture-link-list > a:focus-visible svg,
+.resource-ledger > a:hover svg,
+.resource-ledger > a:focus-visible svg {
+  transform: translateX(0.14rem);
 }
 
 .section-followup {
@@ -708,25 +863,28 @@ body:has(.neptlium-home) :focus-visible,
 
 .homepage-solutions,
 .intelligence-section {
-  padding: clamp(5.5rem, 9vw, 8rem) 0;
+  padding: clamp(7rem, 11vw, 10rem) 0;
   background: var(--web-carbon-soft);
   color: var(--web-ivory);
 }
 
+.intelligence-section {
+  background: var(--web-carbon);
+}
+
 .homepage-solutions h2,
-.homepage-solutions .architecture-split > div:first-child > p,
-.intelligence-heading > p:last-child {
+.intelligence-section h2 {
   color: var(--web-ivory);
 }
 
 .homepage-solutions .architecture-split > div:first-child > p,
 .intelligence-heading > p:last-child {
   margin-top: 1.35rem;
-  color: rgb(245 243 238 / 64%);
+  color: rgb(245 243 238 / 62%);
 }
 
 .homepage-solutions .text-arrow-link {
-  margin-top: 1.4rem;
+  margin-top: 1.25rem;
 }
 
 .homepage-solution-list,
@@ -739,9 +897,13 @@ body:has(.neptlium-home) :focus-visible,
   display: grid;
   grid-template-columns: 2.5rem minmax(0, 1fr) 1rem;
   gap: 1rem;
-  padding: 1.35rem 0;
+  padding: 1.45rem 0;
   border-bottom: 1px solid var(--web-rule-dark);
   color: var(--web-ivory);
+}
+
+.intelligence-list article {
+  grid-template-columns: 2.5rem minmax(0, 1fr);
 }
 
 .homepage-solution-list h3,
@@ -753,22 +915,17 @@ body:has(.neptlium-home) :focus-visible,
 
 .homepage-solution-list h3,
 .intelligence-list h3 {
-  font-size: 1rem;
-  font-weight: 650;
+  font-size: 0.96rem;
+  font-weight: 630;
 }
 
 .homepage-solution-list p,
 .intelligence-list p {
   max-width: 30rem;
   margin-top: 0.55rem;
-  color: rgb(245 243 238 / 58%);
-  font-size: 0.86rem;
-  line-height: 1.56;
-}
-
-.homepage-solution-list svg {
-  width: 0.9rem;
-  color: var(--web-teal-interaction);
+  color: rgb(245 243 238 / 55%);
+  font-size: 0.84rem;
+  line-height: 1.58;
 }
 
 .intelligence-heading {
@@ -776,38 +933,32 @@ body:has(.neptlium-home) :focus-visible,
   top: 7rem;
 }
 
-.intelligence-list article {
-  grid-template-columns: 2.5rem minmax(0, 1fr);
-}
-
 .intelligence-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  padding-top: 1.25rem;
+  gap: 1rem 1.4rem;
+  padding-top: 1.35rem;
 }
 
 .intelligence-links a {
+  min-height: 2.75rem;
   color: var(--web-ivory);
-  font-size: 0.82rem;
-  text-decoration: underline;
-  text-underline-offset: 0.25rem;
-}
-
-.reason-section {
-  padding: clamp(5.5rem, 9vw, 8rem) 0;
+  font-size: 0.8rem;
 }
 
 .reason-grid {
-  grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr);
+  grid-template-columns: minmax(10rem, 0.34fr) minmax(0, 1fr);
 }
 
-.home-company-links {
-  margin-top: 1.4rem;
+.inline-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1.35rem;
 }
 
 .final-authority {
-  padding: clamp(4.5rem, 7vw, 6.5rem) 0;
+  padding: clamp(6rem, 9vw, 8rem) 0;
   background: var(--web-carbon);
   color: var(--web-ivory);
 }
@@ -816,29 +967,26 @@ body:has(.neptlium-home) :focus-visible,
   align-items: end;
 }
 
-/* Canonical hub/deep-page architecture. */
+/* Shared architecture pages */
 .architecture-page {
   background: var(--web-ivory);
   color: var(--web-carbon);
 }
 
 .architecture-hero {
-  padding: clamp(5.5rem, 8vw, 7.5rem) 0 clamp(4rem, 6vw, 5.5rem);
+  padding: clamp(6rem, 9vw, 8rem) 0 clamp(4.5rem, 7vw, 6rem);
   border-bottom: 1px solid var(--web-stone);
   background: var(--web-ivory-high);
 }
 
 .architecture-hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.65fr);
-  gap: clamp(3rem, 8vw, 7rem);
   align-items: end;
 }
 
 .architecture-page h1 {
   max-width: 14ch;
   margin: 0.9rem 0 0;
-  font-size: clamp(2.85rem, 4.8vw, 4.15rem);
+  font-size: clamp(2.75rem, 4.65vw, 4.05rem);
   line-height: 1;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -851,26 +999,26 @@ body:has(.neptlium-home) :focus-visible,
   max-width: var(--web-reading);
   margin: 0;
   color: var(--web-graphite);
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: 0.98rem;
+  line-height: 1.72;
 }
 
 .architecture-section {
-  padding: clamp(5rem, 8vw, 7rem) 0;
+  padding: clamp(5.5rem, 9vw, 8rem) 0;
 }
 
 .architecture-section.architecture-compact {
-  padding-block: 1.25rem;
+  padding-block: 1.5rem;
 }
 
 .architecture-section-heading {
   max-width: 50rem;
-  margin-bottom: 2.75rem;
+  margin-bottom: 3rem;
 }
 
 .architecture-page h2 {
   margin: 0.8rem 0 0;
-  font-size: clamp(2rem, 3.5vw, 3.05rem);
+  font-size: clamp(2rem, 3.4vw, 3rem);
   line-height: 1.06;
   letter-spacing: -0.032em;
   text-wrap: balance;
@@ -884,34 +1032,24 @@ body:has(.neptlium-home) :focus-visible,
   margin-top: 1.3rem;
 }
 
-.architecture-link-list {
+.architecture-link-list,
+.resource-ledger,
+.architecture-numbered-list,
+.platform-map,
+.solution-essays {
   border-top: 1px solid var(--web-stone);
 }
 
 .architecture-link-list > a,
 .resource-ledger > a {
   display: grid;
-  grid-template-columns: 3.25rem minmax(0, 1fr) 1.5rem;
+  min-height: 7.5rem;
+  grid-template-columns: 3.1rem minmax(0, 1fr) 1.3rem;
   gap: 1rem;
   align-items: center;
-  min-height: 7.5rem;
   padding: 1rem 0;
   border-bottom: 1px solid var(--web-stone);
   color: var(--web-carbon);
-}
-
-.architecture-link-list > a > span,
-.resource-ledger > a > span,
-.architecture-numbered-list article > span,
-.platform-lifecycle li > span,
-.platform-map > div > span,
-.solution-index a > span,
-.solution-essays article > span,
-.architecture-sequence li > span {
-  color: var(--web-teal);
-  font-size: 0.68rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
 }
 
 .architecture-link-list h3,
@@ -931,14 +1069,8 @@ body:has(.neptlium-home) :focus-visible,
   max-width: 42rem;
   margin-top: 0.4rem;
   color: var(--web-graphite);
-  font-size: 0.88rem;
-  line-height: 1.55;
-}
-
-.architecture-link-list svg,
-.resource-ledger svg {
-  width: 0.95rem;
-  color: var(--web-teal);
+  font-size: 0.86rem;
+  line-height: 1.58;
 }
 
 .architecture-dark {
@@ -956,7 +1088,7 @@ body:has(.neptlium-home) :focus-visible,
 .architecture-dark .architecture-prose p,
 .architecture-dark .architecture-statement > p:last-of-type,
 .architecture-dark .architecture-split > div:first-child > p {
-  color: rgb(245 243 238 / 64%);
+  color: rgb(245 243 238 / 62%);
 }
 
 .dark-links {
@@ -969,7 +1101,7 @@ body:has(.neptlium-home) :focus-visible,
 }
 
 .dark-links p {
-  color: rgb(245 243 238 / 58%);
+  color: rgb(245 243 238 / 56%);
 }
 
 .architecture-sequence,
@@ -992,68 +1124,54 @@ body:has(.neptlium-home) :focus-visible,
 .architecture-sequence strong,
 .architecture-sequence p,
 .platform-lifecycle h3,
-.platform-lifecycle p {
+.platform-lifecycle p,
+.architecture-numbered-list h3,
+.architecture-numbered-list p,
+.platform-map strong,
+.platform-map p {
   margin: 0;
 }
 
 .architecture-sequence p,
 .platform-lifecycle p {
   margin-top: 0.45rem;
-  color: rgb(245 243 238 / 58%);
-  font-size: 0.86rem;
-  line-height: 1.55;
-}
-
-.architecture-numbered-list {
-  border-top: 1px solid var(--web-stone);
+  color: rgb(245 243 238 / 56%);
+  font-size: 0.84rem;
+  line-height: 1.58;
 }
 
 .architecture-numbered-list article {
   display: grid;
   grid-template-columns: 2.75rem minmax(0, 1fr);
   gap: 1rem;
-  padding: 1.25rem 0;
+  padding: 1.3rem 0;
   border-bottom: 1px solid var(--web-stone);
 }
 
-.architecture-numbered-list h3,
-.architecture-numbered-list p {
-  margin: 0;
-}
-
 .architecture-numbered-list h3 {
-  font-size: 1.1rem;
+  font-size: 1.08rem;
 }
 
 .architecture-numbered-list p {
   max-width: 36rem;
   margin-top: 0.4rem;
   color: var(--web-graphite);
-  font-size: 0.86rem;
-  line-height: 1.56;
-}
-
-.platform-map {
-  border-top: 1px solid var(--web-stone);
+  font-size: 0.84rem;
+  line-height: 1.58;
 }
 
 .platform-map > div {
   display: grid;
   grid-template-columns: 2.75rem minmax(8rem, 0.5fr) minmax(0, 1fr);
   gap: 1rem;
-  padding: 1.25rem 0;
+  padding: 1.3rem 0;
   border-bottom: 1px solid var(--web-stone);
-}
-
-.platform-map strong,
-.platform-map p {
-  margin: 0;
 }
 
 .platform-map p {
   color: var(--web-graphite);
-  font-size: 0.84rem;
-  line-height: 1.5;
+  font-size: 0.82rem;
+  line-height: 1.52;
 }
 
 .platform-lifecycle {
@@ -1079,7 +1197,7 @@ body:has(.neptlium-home) :focus-visible,
 }
 
 .platform-lifecycle h3 {
-  font-size: 1.15rem;
+  font-size: 1.12rem;
 }
 
 .solution-index {
@@ -1108,18 +1226,14 @@ body:has(.neptlium-home) :focus-visible,
 }
 
 .solution-index strong {
-  font-size: 0.88rem;
-}
-
-.solution-essays {
-  border-top: 1px solid var(--web-stone);
+  font-size: 0.86rem;
 }
 
 .solution-essays article {
   display: grid;
-  grid-template-columns: 3.25rem minmax(0, 1fr);
+  grid-template-columns: 3.1rem minmax(0, 1fr);
   gap: 1rem;
-  padding: clamp(2.25rem, 4vw, 3.5rem) 0;
+  padding: clamp(2.5rem, 4vw, 3.75rem) 0;
   border-bottom: 1px solid var(--web-stone);
   scroll-margin-top: 6rem;
 }
@@ -1128,17 +1242,17 @@ body:has(.neptlium-home) :focus-visible,
   max-width: 48rem;
 }
 
-.solution-label {
-  margin: 0;
+.solution-label,
+.resource-ledger small {
   color: var(--web-teal);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 650;
 }
 
 .solution-essays h3 {
   max-width: 24ch;
   margin: 0.75rem 0 0;
-  font-size: clamp(1.55rem, 2.7vw, 2.25rem);
+  font-size: clamp(1.55rem, 2.65vw, 2.2rem);
   line-height: 1.1;
 }
 
@@ -1146,26 +1260,12 @@ body:has(.neptlium-home) :focus-visible,
   max-width: var(--web-reading);
   margin: 1rem 0 0;
   color: var(--web-graphite);
-  line-height: 1.65;
-}
-
-.inline-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-  margin-top: 1.15rem;
-}
-
-.resource-ledger {
-  border-top: 1px solid var(--web-stone);
+  line-height: 1.68;
 }
 
 .resource-ledger small {
   display: block;
   margin-bottom: 0.35rem;
-  color: var(--web-teal);
-  font-size: 0.68rem;
-  font-weight: 650;
   letter-spacing: 0.04em;
 }
 
@@ -1178,16 +1278,13 @@ body:has(.neptlium-home) :focus-visible,
   max-width: 52rem;
 }
 
-.architecture-statement > p:last-of-type {
-  margin-top: 1.25rem;
-}
-
+.architecture-statement > p:last-of-type,
 .architecture-statement .text-arrow-link {
   margin-top: 1.25rem;
 }
 
 .architecture-cta {
-  padding: clamp(4rem, 7vw, 6rem) 0;
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
   border-top: 1px solid var(--web-stone);
 }
 
@@ -1206,29 +1303,42 @@ body:has(.neptlium-home) :focus-visible,
   max-width: 22ch;
 }
 
-/* Footer architecture. */
+/* Section endings: structural, not decorative. */
+:where(.operating-environment, .capital-organization, .reason-section, .architecture-section) {
+  position: relative;
+}
+
+:where(.operating-environment, .capital-organization, .reason-section, .architecture-section)::after {
+  position: absolute;
+  right: max(var(--web-gutter), calc((100% - var(--web-shell)) / 2));
+  bottom: 0;
+  left: max(var(--web-gutter), calc((100% - var(--web-shell)) / 2));
+  height: 1px;
+  background: rgb(16 18 20 / 9%);
+  content: '';
+  pointer-events: none;
+}
+
+/* Footer */
 .institutional-footer {
-  border-top: 1px solid var(--web-stone);
   background: var(--web-ivory-high);
   color: var(--web-carbon);
 }
 
 .footer-shell {
-  width: min(calc(100% - 3rem), var(--web-shell));
-  margin-inline: auto;
-  padding-block: 4.5rem 1.5rem;
+  padding-block: clamp(4.5rem, 8vw, 7rem) 1.5rem;
 }
 
 .footer-primary {
   display: grid;
-  grid-template-columns: minmax(18rem, 0.85fr) minmax(0, 1.45fr);
+  grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.5fr);
   gap: clamp(3rem, 8vw, 7rem);
 }
 
 .footer-brand-column h2 {
   max-width: 15ch;
   margin: 1.5rem 0 0;
-  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  font-size: clamp(1.9rem, 3vw, 2.65rem);
   line-height: 1.05;
   letter-spacing: -0.03em;
 }
@@ -1237,91 +1347,77 @@ body:has(.neptlium-home) :focus-visible,
   max-width: 34rem;
   margin: 1rem 0 0;
   color: var(--web-graphite);
-  font-size: 0.92rem;
-  line-height: 1.6;
-}
-
-.footer-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
-.footer-primary-action,
-.footer-secondary-action {
-  display: inline-flex;
-  min-height: 2.8rem;
-  align-items: center;
-  gap: 0.6rem;
-  padding-inline: 0.9rem;
-  border-radius: 0.45rem;
-  font-size: 0.82rem;
-  font-weight: 650;
-}
-
-.footer-primary-action {
-  background: var(--web-teal);
-  color: #fff;
-}
-
-.footer-secondary-action {
-  border: 1px solid var(--web-stone);
-  color: var(--web-carbon);
+  font-size: 0.9rem;
+  line-height: 1.62;
 }
 
 .footer-navigation-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2.25rem 1.5rem;
+  gap: 2.4rem 1.5rem;
 }
 
 .footer-navigation-grid h3 {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.8rem;
   font-family: inherit;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.065em;
   text-transform: uppercase;
+}
+
+.footer-navigation-grid h3 a {
+  color: var(--web-carbon);
 }
 
 .footer-navigation-grid nav > div {
   display: grid;
-  gap: 0.55rem;
+  gap: 0.58rem;
 }
 
-.footer-navigation-grid a {
+.footer-navigation-grid nav > div a {
   color: var(--web-graphite);
-  font-size: 0.78rem;
-  line-height: 1.35;
+  font-size: 0.77rem;
+  line-height: 1.4;
 }
 
-.footer-navigation-grid a:hover {
+.footer-navigation-grid a:hover,
+.footer-navigation-grid a:focus-visible {
   color: var(--web-carbon);
 }
 
 .footer-base {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem 1.5rem;
-  align-items: center;
-  margin-top: 3.5rem;
-  padding-top: 1.25rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1.25rem 2rem;
+  align-items: start;
+  margin-top: 4rem;
+  padding-top: 1.35rem;
   border-top: 1px solid var(--web-stone);
   color: var(--web-graphite);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
 }
 
-.footer-base a {
+.footer-meta,
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+}
+
+.footer-legal {
+  justify-content: flex-end;
+}
+
+.footer-external {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  margin-left: auto;
-  color: var(--web-graphite);
+  white-space: nowrap;
 }
 
-.footer-base svg {
-  width: 0.8rem;
+.footer-external svg {
+  width: 0.78rem;
 }
 
 @media (max-width: 68rem) {
@@ -1357,10 +1453,8 @@ body:has(.neptlium-home) :focus-visible,
 }
 
 @media (max-width: 56rem) {
-  .web-shell,
-  .nav-shell,
-  .footer-shell {
-    width: min(calc(100% - 2rem), var(--web-shell));
+  :root {
+    --web-gutter: clamp(1rem, 4vw, 1.5rem);
   }
 
   .editorial-grid,
@@ -1370,28 +1464,37 @@ body:has(.neptlium-home) :focus-visible,
   .architecture-split,
   .architecture-hero-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 2.25rem;
   }
 
   .authority-hero-inner {
     min-height: auto;
-    padding-top: 7.5rem;
+    padding-top: 8.75rem;
   }
 
-  .hero-system ol {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .hero-architecture {
+    grid-template-columns: 1fr;
   }
 
-  .hero-system li:nth-child(2) {
-    border-right: 0;
-  }
-
-  .hero-system li:nth-child(n + 3) {
+  .hero-architecture-plane,
+  .hero-architecture-core,
+  .hero-architecture-plane + .hero-architecture-core,
+  .hero-architecture-core + .hero-architecture-plane {
+    padding: 1.35rem 0 1.45rem;
+    border-left: 0;
     border-top: 1px solid var(--web-rule-dark);
   }
 
+  .hero-architecture-plane:first-child {
+    border-top: 0;
+  }
+
+  .hero-architecture-core::before {
+    left: 0;
+  }
+
   .capability-row {
-    grid-template-columns: 2.75rem minmax(0, 1fr) 1.25rem;
+    grid-template-columns: 2.75rem minmax(0, 1fr) 1.2rem;
   }
 
   .capability-signal {
@@ -1400,14 +1503,6 @@ body:has(.neptlium-home) :focus-visible,
 
   .intelligence-heading {
     position: static;
-  }
-
-  .architecture-hero {
-    padding-top: 4.75rem;
-  }
-
-  .architecture-lead {
-    max-width: 38rem;
   }
 
   .solution-index {
@@ -1442,48 +1537,55 @@ body:has(.neptlium-home) :focus-visible,
   .footer-navigation-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .footer-base {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-legal {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 40rem) {
   .site-header.capital-command-bar {
-    height: 4.125rem;
+    height: 4.75rem;
+  }
+
+  .site-header.capital-command-bar[data-home='true'][data-scrolled='true'] {
+    height: 4.25rem;
+  }
+
+  .brand {
+    font-size: 0.92rem;
+  }
+
+  .brand-mark {
+    width: 1.65rem;
+    height: 1.65rem;
   }
 
   .authority-hero h1 {
-    font-size: clamp(2.65rem, 12vw, 3.35rem);
+    max-width: 10.5ch;
+    font-size: clamp(2.55rem, 12vw, 3.25rem);
+    line-height: 1;
   }
 
   .authority-hero-lead,
   .architecture-lead {
-    font-size: 0.96rem;
+    font-size: 0.95rem;
   }
 
   .authority-actions {
-    display: grid;
+    align-items: stretch;
   }
 
   .authority-actions .web-button {
-    width: 100%;
+    width: auto;
   }
 
-  .hero-system {
-    margin-top: 3rem;
-  }
-
-  .hero-system ol {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-system li,
-  .hero-system li + li {
-    min-height: auto;
-    padding: 1rem 0;
-    border-right: 0;
-    border-top: 1px solid var(--web-rule-dark);
-  }
-
-  .hero-system li:first-child {
-    border-top: 0;
+  .hero-architecture {
+    margin-top: 4.25rem;
   }
 
   .neptlium-home h2,
@@ -1496,39 +1598,40 @@ body:has(.neptlium-home) :focus-visible,
   }
 
   .capability-row {
-    min-height: 7.25rem;
-    grid-template-columns: 2.3rem minmax(0, 1fr) 1.1rem;
+    min-height: 7.5rem;
+    grid-template-columns: 2.2rem minmax(0, 1fr) 1rem;
   }
 
   .capability-copy p {
-    font-size: 0.84rem;
+    font-size: 0.82rem;
   }
 
   .homepage-solution-list > a {
-    grid-template-columns: 2.25rem minmax(0, 1fr) 1rem;
+    grid-template-columns: 2.2rem minmax(0, 1fr) 1rem;
   }
 
   .architecture-link-list > a,
   .resource-ledger > a {
-    grid-template-columns: 2.5rem minmax(0, 1fr) 1.25rem;
+    grid-template-columns: 2.4rem minmax(0, 1fr) 1.2rem;
     min-height: 6.8rem;
   }
 
   .architecture-numbered-list article,
   .solution-essays article,
   .architecture-sequence li {
-    grid-template-columns: 2.25rem minmax(0, 1fr);
+    grid-template-columns: 2.2rem minmax(0, 1fr);
   }
 
   .platform-map > div {
-    grid-template-columns: 2.25rem minmax(0, 1fr);
+    grid-template-columns: 2.2rem minmax(0, 1fr);
   }
 
   .platform-map > div p {
     grid-column: 2;
   }
 
-  .platform-lifecycle {
+  .platform-lifecycle,
+  .solution-index {
     grid-template-columns: 1fr;
   }
 
@@ -1545,10 +1648,6 @@ body:has(.neptlium-home) :focus-visible,
     border-top: 0;
   }
 
-  .solution-index {
-    grid-template-columns: 1fr;
-  }
-
   .solution-index a,
   .solution-index a:first-child,
   .solution-index a:nth-child(2) {
@@ -1562,25 +1661,35 @@ body:has(.neptlium-home) :focus-visible,
     border-top: 0;
   }
 
-  .footer-navigation-grid {
-    grid-template-columns: 1fr 1fr;
+  .mobile-command-actions {
+    grid-template-columns: 1fr;
   }
 
-  .footer-base a {
-    width: 100%;
-    margin-left: 0;
+  .mobile-explore-action {
+    order: 2;
+    min-height: 2.75rem;
+  }
+
+  .mobile-enter-action {
+    justify-content: space-between;
+  }
+
+  .footer-navigation-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (max-width: 24.5rem) {
-  .web-shell,
-  .nav-shell,
-  .footer-shell {
-    width: min(calc(100% - 1.5rem), var(--web-shell));
+  :root {
+    --web-gutter: 0.85rem;
   }
 
   .mobile-command-sheet {
-    padding-inline: 0.9rem;
+    padding-inline: max(0.9rem, env(safe-area-inset-left));
+  }
+
+  .mobile-domain-row > a {
+    font-size: 1.45rem;
   }
 
   .footer-navigation-grid {
@@ -1593,8 +1702,8 @@ body:has(.neptlium-home) :focus-visible,
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

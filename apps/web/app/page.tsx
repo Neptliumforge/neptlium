@@ -16,41 +16,18 @@ const operatingCore = ['Observe', 'Understand', 'Govern'] as const;
 const governedWork = ['Treasury coordination', 'Allocation workflows', 'Portfolio intelligence'] as const;
 
 const trustLayers = [
-  ['Clarity', 'Keep what is visible, modeled, authorized and authoritative conceptually distinct.'],
+  ['Clarity', 'Keep visible, modeled, authorized and authoritative information conceptually distinct.'],
   ['Governance', 'Make identity, review and control part of the operating model rather than an afterthought.'],
   ['Security', 'Keep privileged operations and sensitive authority outside public browser control.'],
 ] as const;
-
-function AuthorityWaveField() {
-  return (
-    <svg
-      className="authority-wave-field"
-      viewBox="0 0 1600 760"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <g className="authority-wave-field-primary">
-        <path d="M-80 575 C 230 355, 430 330, 700 468 S 1160 672, 1690 328" />
-        <path d="M-90 625 C 220 405, 430 375, 700 515 S 1165 720, 1700 378" />
-        <path d="M-110 680 C 205 455, 420 425, 700 566 S 1175 770, 1710 430" />
-      </g>
-      <g className="authority-wave-field-secondary">
-        <path d="M785 -55 C 960 165, 1008 280, 955 404 S 910 638, 1160 820" />
-        <path d="M885 -70 C 1045 142, 1098 270, 1040 405 S 1010 654, 1270 820" />
-      </g>
-      <path className="authority-wave-field-signal" d="M-40 513 C 265 308, 455 300, 715 432 S 1170 623, 1650 300" />
-    </svg>
-  );
-}
 
 export default function HomePage() {
   return (
     <div className="neptlium-home">
       <section className="authority-hero" aria-labelledby="home-hero-title">
-        <AuthorityWaveField />
         <div className="web-shell authority-hero-inner">
           <div className="authority-hero-copy">
+            <p className="web-eyebrow">Capital operating infrastructure</p>
             <h1 id="home-hero-title">The operating system for capital.</h1>
             <p className="authority-hero-lead">
               See, coordinate and govern capital across treasury, allocation and portfolio context.
@@ -70,29 +47,32 @@ export default function HomePage() {
               <span className="hero-architecture-kicker">01 / Capital state</span>
               <h2 id="hero-capital-state">Keep the whole position in context.</h2>
               <ul>
-                {capitalState.map((item) => <li key={item}>{item}</li>)}
+                {capitalState.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
             </section>
-
-            <div className="hero-architecture-connector" aria-hidden="true"><span /></div>
 
             <section className="hero-architecture-core" aria-labelledby="hero-operating-core">
               <span className="hero-architecture-kicker">02 / Neptlium</span>
               <h2 id="hero-operating-core">One operating context.</h2>
               <ol>
                 {operatingCore.map((item, index) => (
-                  <li key={item}><span>{String(index + 1).padStart(2, '0')}</span>{item}</li>
+                  <li key={item}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    {item}
+                  </li>
                 ))}
               </ol>
             </section>
-
-            <div className="hero-architecture-connector" aria-hidden="true"><span /></div>
 
             <section className="hero-architecture-plane" aria-labelledby="hero-governed-work">
               <span className="hero-architecture-kicker">03 / Governed work</span>
               <h2 id="hero-governed-work">Move forward without losing state.</h2>
               <ul>
-                {governedWork.map((item) => <li key={item}>{item}</li>)}
+                {governedWork.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
             </section>
           </div>
@@ -122,7 +102,7 @@ export default function HomePage() {
         <div className="web-shell">
           <header className="section-heading system-heading">
             <p className="web-eyebrow on-light">Products</p>
-            <h2 id="products-title">Distinct products, one operating language.</h2>
+            <h2 id="products-title">Distinct products. One operating language.</h2>
             <p>
               Each product has a clear responsibility. The system becomes useful through the
               relationships between them.
@@ -184,8 +164,8 @@ export default function HomePage() {
             <p className="web-eyebrow">Intelligence, governance and trust</p>
             <h2 id="intelligence-title">Clarity before consequence.</h2>
             <p>
-              Neptlium is designed to make the difference between understanding, modeling, reviewing
-              and acting visible rather than collapsing them into one moment.
+              Neptlium is designed to keep understanding, modeling, review and action distinct rather
+              than collapsing them into one moment.
             </p>
           </div>
           <div className="intelligence-list">

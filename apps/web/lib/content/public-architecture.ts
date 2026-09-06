@@ -45,6 +45,8 @@ export const PRODUCTS = [
   },
 ] as const satisfies readonly NavigationLink[];
 
+export const PRIMARY_PRODUCTS = PRODUCTS.slice(0, 4);
+
 export const SOLUTIONS = [
   {
     label: 'Capital visibility',
@@ -75,6 +77,11 @@ export const RESOURCES = [
     description: 'Understand Neptlium concepts, terminology and operating relationships.',
   },
   {
+    label: 'Research',
+    href: '/research',
+    description: 'Publication surface for substantive Neptlium research when it exists.',
+  },
+  {
     label: 'Security',
     href: '/security',
     description: 'Review the security and control principles behind the platform.',
@@ -83,11 +90,6 @@ export const RESOURCES = [
     label: 'Trust',
     href: '/trust',
     description: 'Understand how Neptlium communicates boundaries, risk and product truth.',
-  },
-  {
-    label: 'Research',
-    href: '/research',
-    description: 'Publication surface for substantive Neptlium research when it exists.',
   },
 ] as const satisfies readonly NavigationLink[];
 
@@ -109,6 +111,8 @@ export const COMPANY = [
   },
 ] as const satisfies readonly NavigationLink[];
 
+export const PRIMARY_COMPANY = COMPANY.slice(0, 2);
+
 export const NAVIGATION = [
   {
     label: 'Platform',
@@ -126,7 +130,7 @@ export const NAVIGATION = [
     label: 'Products',
     href: '/products',
     description: 'Explore the products that form the Neptlium system.',
-    links: PRODUCTS,
+    links: PRIMARY_PRODUCTS,
   },
   {
     label: 'Solutions',
@@ -137,14 +141,14 @@ export const NAVIGATION = [
   {
     label: 'Resources',
     href: '/resources',
-    description: 'Learn the concepts, security principles and thinking behind Neptlium.',
+    description: 'Learn the concepts, research, security principles and thinking behind Neptlium.',
     links: RESOURCES,
   },
   {
     label: 'Company',
     href: '/company',
     description: 'Understand the organization and principles behind Neptlium.',
-    links: COMPANY,
+    links: PRIMARY_COMPANY,
   },
 ] as const;
 
