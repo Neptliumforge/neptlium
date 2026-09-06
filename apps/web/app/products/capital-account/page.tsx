@@ -3,86 +3,19 @@ import { ArrowRight } from 'lucide-react';
 import { CapitalAccountVisual } from '@/components/product-visuals';
 import { createPageMetadata } from '@/lib/seo';
 
-export const metadata = createPageMetadata({
-  title: 'Capital Account — Neptlium Products',
-  description:
-    'See how Neptlium Capital Account organizes capital movement and account context alongside treasury, allocation and portfolio work.',
-  path: '/products/capital-account',
-});
+export const metadata = createPageMetadata({ title: 'Capital Account — Funding and Movement Context | Neptlium', description: 'Neptlium Capital Account organizes account-level funding and capital-movement context while preserving source, destination, lifecycle and authority distinctions.', path: '/products/capital-account' });
 
 const accountStates = [
-  ['Context', 'The account sits inside a wider capital picture rather than acting as an isolated balance surface.'],
-  ['Intent', 'A planned movement remains distinguishable from an authorized or completed financial outcome.'],
-  ['Activity', 'Movement history is meaningful only where authoritative evidence supports it.'],
+  ['Account context', 'The account is represented inside a wider capital picture rather than as an isolated balance surface.'],
+  ['Movement intent', 'A requested or proposed movement remains distinct from review, authorization, submission and financial outcome.'],
+  ['Provider evidence', 'Externally reported activity retains its provenance rather than silently becoming an internally invented source of truth.'],
+  ['Canonical state', 'Neptlium can organize its own operating record without rewriting what a provider, network or consequential system actually reported.'],
 ] as const;
 
-export default function CapitalAccountPage() {
-  return (
-    <div className="product-story capital-account-story">
-      <section className="product-story-hero">
-        <div className="web-shell product-story-hero-grid">
-          <div>
-            <p className="web-eyebrow on-light">Products · Capital Account</p>
-            <h1>Capital movement belongs inside the account context that explains it.</h1>
-          </div>
-          <div className="product-story-intro">
-            <p>
-              Capital Account organizes funding and movement without separating activity from treasury,
-              portfolio and allocation context.
-            </p>
-            <Link className="text-arrow-link" href="/products">
-              All products <ArrowRight aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="capital-account-ledger" aria-labelledby="account-structure-title">
-        <div className="web-shell capital-account-ledger-grid">
-          <div>
-            <p className="web-eyebrow on-light">Account structure</p>
-            <h2 id="account-structure-title">One account context. Several different kinds of truth.</h2>
-            <p>
-              Neptlium keeps account context, intended movement and supported activity related without
-              presenting them as interchangeable states.
-            </p>
-          </div>
-          <div className="capital-account-state-list">
-            {accountStates.map(([title, body], index) => (
-              <article key={title}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{body}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="capital-account-visual-section">
-        <div className="web-shell capital-account-visual-grid">
-          <div className="product-story-visual"><CapitalAccountVisual /></div>
-          <div className="product-story-aside">
-            <p className="web-eyebrow on-light">Relationship</p>
-            <h2>Movement should remain legible before, during and after the decision.</h2>
-            <p>
-              The product is designed so surrounding capital context stays visible while authority and
-              financial outcome remain separate concepts.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="product-story-close architecture-dark">
-        <div className="web-shell product-story-close-grid">
-          <h2>Movement belongs inside a wider capital picture.</h2>
-          <Link className="text-arrow-link on-dark" href="/products/treasury">
-            Continue to Treasury <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}
+export default function CapitalAccountPage() { return <div className="product-story capital-account-story">
+  <section className="product-story-hero"><div className="web-shell product-story-hero-grid"><div><p className="web-eyebrow on-light">Products · Capital Account</p><h1>Capital movement should retain the context that explains it.</h1></div><div className="product-story-intro"><p>Capital Account is designed to organize funding, account-level operating state and movement context alongside treasury, allocation and portfolio work.</p><p>It presents the lifecycle around capital movement without implying that Neptlium is itself a bank, custodian, broker, payment institution or settlement provider.</p><Link className="text-arrow-link" href="/products">All products <ArrowRight aria-hidden="true" /></Link></div></div></section>
+  <section className="capital-account-ledger" aria-labelledby="account-title"><div className="web-shell capital-account-ledger-grid"><div><p className="web-eyebrow on-light">Operating state</p><h2 id="account-title">One account context can contain several different kinds of truth.</h2><p>Useful capital visibility depends on knowing whether information is observed, provider-reported, internally canonical, proposed or consequential.</p></div><div className="capital-account-state-list">{accountStates.map(([title,body],index)=><article key={title}><span>{String(index+1).padStart(2,'0')}</span><div><h3>{title}</h3><p>{body}</p></div></article>)}</div></div></section>
+  <section className="capital-account-visual-section"><div className="web-shell capital-account-visual-grid"><div className="product-story-visual"><CapitalAccountVisual /></div><div className="product-story-aside"><p className="web-eyebrow on-light">Movement lifecycle</p><h2>Source, destination, timing and state belong together.</h2><p>A movement workflow is easier to reason about when the origin and destination, requested amount, provider evidence and current lifecycle state remain connected. Requested, approved, submitted, settled and reconciled are not synonyms.</p><p>Neptlium is designed to preserve those distinctions so downstream treasury and allocation context does not have to infer what happened from a single balance change.</p></div></div></section>
+  <section className="architecture-section architecture-dark"><div className="web-shell architecture-split"><div><p className="web-eyebrow">Relationship to treasury and allocation</p><h2>Movement changes the operating picture around it.</h2></div><div><p>Funding context can affect liquidity. Liquidity can constrain allocation. Allocation intent can create future funding requirements. Capital Account provides a movement-oriented view into that connected system while leaving treasury interpretation and allocation modeling to their defined product responsibilities.</p><p>Visibility into capital availability should not be read as an instruction or authorization to move capital. Consequential actions depend on the applicable authenticated workflow, provider capability, permissions and verified state.</p></div></div></section>
+  <section className="product-story-close"><div className="web-shell product-story-close-grid"><h2>Keep capital state legible through the movement lifecycle.</h2><Link className="text-arrow-link" href="/products/treasury">Continue to Treasury <ArrowRight aria-hidden="true" /></Link></div></section>
+</div>; }
