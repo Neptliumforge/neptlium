@@ -29,7 +29,7 @@ test('responsive and reduced-motion behavior are first-class', () => {
   for (const media of ['68rem', '56rem', '40rem', '24.5rem'])
     assert.match(css, new RegExp(`@media \\(max-width: ${media.replace('.', '\\.')}\\)`));
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.match(css, /\.authority-actions\s*\{[^}]*display:\s*grid/s);
+  assert.match(css, /\.authority-actions\s*\{[^}]*display:\s*flex/s);
   assert.match(css, /\.command-mobile-trigger\s*\{[^}]*display:\s*inline-flex/s);
   assert.match(css, /\.mobile-command-wrap/);
 });
