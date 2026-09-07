@@ -21,10 +21,7 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 function isItemActive(pathname: string, href: string): boolean {
-  return (
-    pathname === href ||
-    (href !== "/dashboard" && pathname.startsWith(`${href}/`))
-  );
+  return pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`));
 }
 
 export interface MobileNavigationProps {
@@ -34,12 +31,7 @@ export interface MobileNavigationProps {
   readonly profile?: ReactNode;
 }
 
-export function MobileNavigation({
-  primaryItems,
-  secondaryItems = [],
-  footer,
-  profile,
-}: MobileNavigationProps) {
+export function MobileNavigation({ primaryItems, secondaryItems = [], footer, profile }: MobileNavigationProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -49,7 +41,7 @@ export function MobileNavigation({
     const active = [...primaryItems, ...secondaryItems]
       .sort((a, b) => b.href.length - a.href.length)
       .find((item) => isItemActive(pathname, item.href));
-    return active?.label ?? "Dashboard";
+    return active?.label ?? "Overview";
   }, [pathname, primaryItems, secondaryItems]);
 
   useEffect(() => {
@@ -63,9 +55,7 @@ export function MobileNavigation({
     document.body.style.overflow = "hidden";
     const drawer = drawerRef.current;
     const getFocusableElements = () =>
-      Array.from(
-        drawer?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? [],
-      );
+      Array.from(drawer?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? []);
     const focusables = getFocusableElements();
     if (focusables.length > 0) focusables[0]?.focus();
     else drawer?.focus();
@@ -107,14 +97,15 @@ export function MobileNavigation({
     <>
       <div className="flex h-full items-center gap-2 px-3">
         <NeptliumMark size={22} />
-        <p className="min-w-0 flex-1 truncate text-body-sm font-semibold tracking-tight text-text-primary">
-          {title}
-        </p>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[10px] font-medium tracking-[0.03em] text-text-muted">Operating environment</p>
+          <p className="truncate text-body-sm font-semibold tracking-tight text-text-primary">{title}</p>
+        </div>
         {profile}
         <button
           ref={triggerRef}
           type="button"
-          aria-label="Open secondary navigation menu"
+          aria-label="Open workspace navigation"
           aria-expanded={open}
           aria-controls={DRAWER_ID}
           onClick={() => setOpen(true)}
@@ -126,7 +117,7 @@ export function MobileNavigation({
 
       <nav
         aria-label="Primary navigation"
-        className="fixed inset-x-0 bottom-0 z-40 grid h-[calc(4rem+env(safe-area-inset-bottom))] grid-cols-4 border-t border-border-hairline bg-topnav px-1 pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 grid h-[calc(4rem+env(safe-area-inset-bottom))] grid-cols-5 border-t border-border-hairline bg-topnav px-1 pb-[env(safe-area-inset-bottom)] lg:hidden"
       >
         {primaryItems.map((item) => {
           const isActive = isItemActive(pathname, item.href);
@@ -136,20 +127,14 @@ export function MobileNavigation({
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-1 text-[11px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring",
+                "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring sm:px-1 sm:text-[11px]",
                 isActive
-                  ? "text-text-primary after:absolute after:inset-x-5 after:top-0 after:h-0.5 after:bg-accent-primary"
+                  ? "text-text-primary after:absolute after:inset-x-4 after:top-0 after:h-px after:bg-accent-primary"
                   : "text-text-muted hover:text-text-secondary",
               )}
             >
               {item.icon && (
-                <span
-                  className={cn(
-                    "shrink-0",
-                    isActive ? "text-accent-primary" : "text-text-muted",
-                  )}
-                  aria-hidden="true"
-                >
+                <span className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")} aria-hidden="true">
                   {item.icon}
                 </span>
               )}
@@ -160,10 +145,7 @@ export function MobileNavigation({
       </nav>
 
       <div
-        className={cn(
-          "fixed inset-0 z-50 lg:hidden",
-          open ? "pointer-events-auto" : "pointer-events-none",
-        )}
+        className={cn("fixed inset-0 z-50 lg:hidden", open ? "pointer-events-auto" : "pointer-events-none")}
         aria-hidden={open ? undefined : "true"}
       >
         <button
@@ -182,7 +164,7 @@ export function MobileNavigation({
           id={DRAWER_ID}
           role="dialog"
           aria-modal="true"
-          aria-label="Secondary navigation"
+          aria-label="Workspace navigation"
           tabIndex={-1}
           className={cn(
             "relative flex h-[100dvh] flex-col border-r border-border-hairline bg-sidebar shadow-lg transition-transform duration-200 motion-reduce:transition-none",
@@ -196,11 +178,12 @@ export function MobileNavigation({
           }}
         >
           <div className="flex items-center justify-between border-b border-border-hairline px-4 pb-3">
-            <div className="flex min-w-0 items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2.5">
               <NeptliumMark size={26} />
-              <span className="truncate text-body-sm font-semibold tracking-[0.08em] text-text-primary">
-                {BRAND_WORDMARK}
-              </span>
+              <div className="min-w-0">
+                <span className="block truncate text-body-sm font-semibold tracking-[0.08em] text-text-primary">{BRAND_WORDMARK}</span>
+                <span className="block truncate text-[10px] font-medium tracking-[0.03em] text-text-muted">Operating environment</span>
+              </div>
             </div>
             <button
               type="button"
@@ -212,11 +195,8 @@ export function MobileNavigation({
             </button>
           </div>
 
-          <nav
-            aria-label="Application navigation"
-            className="flex-1 overflow-y-auto px-3 py-3"
-          >
-            <div className="space-y-0.5">
+          <nav aria-label="Application navigation" className="flex-1 overflow-y-auto px-3 py-3">
+            <div className="divide-y divide-border-hairline border-y border-border-hairline">
               {secondaryItems.map((item) => {
                 const isActive = isItemActive(pathname, item.href);
                 return (
@@ -226,20 +206,12 @@ export function MobileNavigation({
                     onClick={() => setOpen(false)}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "flex min-h-12 items-center gap-3 rounded-md border px-3 py-2 text-body-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
-                      isActive
-                        ? "border-border-default bg-surface-2 text-text-primary"
-                        : "border-transparent text-text-secondary hover:border-border-hairline hover:bg-surface-2 hover:text-text-primary",
+                      "flex min-h-12 items-center gap-3 px-2 py-2 text-body-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring",
+                      isActive ? "text-text-primary" : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
                     )}
                   >
                     {item.icon && (
-                      <span
-                        className={cn(
-                          "shrink-0",
-                          isActive ? "text-accent-primary" : "text-text-muted",
-                        )}
-                        aria-hidden="true"
-                      >
+                      <span className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")} aria-hidden="true">
                         {item.icon}
                       </span>
                     )}
@@ -250,11 +222,7 @@ export function MobileNavigation({
             </div>
           </nav>
 
-          {footer && (
-            <div className="shrink-0 border-t border-border-hairline px-3 pt-3">
-              {footer}
-            </div>
-          )}
+          {footer && <div className="shrink-0 border-t border-border-hairline px-3 pt-3">{footer}</div>}
         </div>
       </div>
     </>
