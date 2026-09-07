@@ -31,15 +31,15 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {sections.map((section) => (
-        <div key={section.heading ?? "__root__"}>
+        <section key={section.heading ?? "__root__"} aria-label={section.heading}>
           {section.heading ? (
-            <p className="mb-1 px-3 text-[10px] font-medium uppercase tracking-widest text-text-muted">
+            <p className="mb-1.5 hidden px-3 text-[10px] font-medium tracking-[0.03em] text-sidebar-text-muted xl:block">
               {section.heading}
             </p>
           ) : null}
-          <div className="space-y-0.5">
+          <div className="space-y-px">
             {section.items.map((item) => {
               const isActive =
                 pathname === item.href ||
@@ -50,24 +50,25 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
                   href={item.href}
                   aria-label={item.label}
                   aria-current={isActive ? "page" : undefined}
+                  title={item.label}
                   className={cn(
-                    "relative flex min-h-11 items-center justify-center gap-2.5 rounded-md px-3 py-2 text-body-sm font-medium transition-colors duration-150 ease-out before:absolute before:inset-y-2.5 before:left-0 before:w-0.5 before:rounded-full before:bg-transparent xl:justify-start",
+                    "relative flex min-h-10 items-center justify-center gap-2.5 px-3 py-2 text-body-sm font-medium transition-colors duration-150 ease-out before:absolute before:inset-y-2 before:left-0 before:w-px before:bg-transparent xl:justify-start",
                     isActive
-                      ? "bg-surface-2 text-text-primary before:bg-accent-primary"
-                      : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
+                      ? "text-sidebar-text-primary before:bg-sidebar-text-primary"
+                      : "text-sidebar-text-secondary hover:bg-sidebar-surface-secondary hover:text-sidebar-text-primary",
                   )}
                 >
                   {item.icon ? (
-                    <span className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")} aria-hidden="true">
+                    <span className={cn("shrink-0", isActive ? "text-sidebar-text-primary" : "text-sidebar-text-muted")} aria-hidden="true">
                       {item.icon}
                     </span>
                   ) : null}
-                  <span className="hidden xl:inline">{item.label}</span>
+                  <span className="hidden min-w-0 truncate xl:inline">{item.label}</span>
                 </Link>
               );
             })}
           </div>
-        </div>
+        </section>
       ))}
     </div>
   );
