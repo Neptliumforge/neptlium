@@ -3,123 +3,18 @@ import { ArrowRight } from 'lucide-react';
 import { SOLUTIONS } from '@/lib/content/public-architecture';
 import { createPageMetadata } from '@/lib/seo';
 
-export const metadata = createPageMetadata({
-  title: 'Solutions — Capital Operating Problems Neptlium Addresses',
-  description:
-    'See Neptlium through the operating problems it is designed to address: capital visibility, treasury coordination, allocation workflows and governance.',
-  path: '/solutions',
-});
+export const metadata = createPageMetadata({ title: 'Solutions — Capital Operating Problems | Neptlium', description: 'Neptlium addresses capital visibility, treasury coordination, allocation workflows and governance by connecting context while preserving evidence, lifecycle and authority boundaries.', path: '/solutions' });
 
 const solutionDetails = [
-  {
-    id: 'capital-visibility',
-    title: 'Capital visibility',
-    question: 'How do we understand the whole capital picture without flattening its meaning?',
-    body: 'Keep portfolio composition, account activity, liquidity and capital roles connected while preserving the difference between visible context and authoritative financial state.',
-    links: [
-      ['Portfolio Intelligence', '/products/portfolio-intelligence'],
-      ['Capital Account', '/products/capital-account'],
-    ],
-  },
-  {
-    id: 'treasury-coordination',
-    title: 'Treasury coordination',
-    question: 'How do we keep liquidity useful to the decisions around it?',
-    body: 'Bring treasury context into the same operating model as portfolio and allocation work so reserves, readiness and movement remain understandable together.',
-    links: [
-      ['Treasury', '/products/treasury'],
-      ['Capital Account', '/products/capital-account'],
-    ],
-  },
-  {
-    id: 'allocation-workflows',
-    title: 'Allocation workflows',
-    question: 'How do we shape a plan without making intent look like execution?',
-    body: 'Express capital roles, model a possible structure, review the proposal and keep the boundary between planning, authority and financial outcome explicit.',
-    links: [
-      ['Allocation', '/products/allocation'],
-      ['Capital Universe', '/products/capital-universe'],
-    ],
-  },
-  {
-    id: 'governance-control',
-    title: 'Governance and control',
-    question: 'How do we make consequential work understandable before it becomes irreversible?',
-    body: 'Keep identity, authorization, review, operating state and auditability visible around important capital decisions rather than hiding them behind a single action.',
-    links: [
-      ['Security', '/security'],
-      ['Trust', '/trust'],
-    ],
-  },
+  { id:'capital-visibility', title:'Capital visibility', question:'Visibility is useful only when the state behind the number remains legible.', body:'Capital can appear fragmented across positions, accounts, liquidity views and movement records. Aggregating those numbers is not enough if provenance and operating meaning disappear in the process. Neptlium is designed to connect portfolio composition, account context, liquidity and movement while preserving whether information is available, provider-reported, internally canonical, derived or modeled.', boundary:'A visible value is not automatically an authoritative balance, available liquidity or permission to act. Reconciliation and consequential state depend on the evidence and systems that actually support them.', links:[['Portfolio Intelligence','/products/portfolio-intelligence'],['Capital Account','/products/capital-account']] },
+  { id:'treasury-coordination', title:'Treasury coordination', question:'Liquidity should be read against obligations, timing and portfolio activity.', body:'An isolated cash view cannot explain why capital is held, what funding requirements are approaching, or how allocation intent changes future liquidity needs. Neptlium brings treasury context into the wider capital picture so reserves, movement, operating liquidity and readiness can be reviewed together.', boundary:'Understanding treasury state is distinct from managing cash or executing a treasury action. Timing, source, provider state, permissions and authorization remain explicit dependencies.', links:[['Treasury','/products/treasury'],['Capital Account','/products/capital-account']] },
+  { id:'allocation-workflows', title:'Allocation workflows', question:'Capital intent should remain distinguishable from capital consequence.', body:'Allocation work moves through assumptions, scenarios, target states, review and approval. When those stages are compressed, a model can acquire authority it has not earned. Neptlium is designed to carry portfolio and liquidity constraints into allocation context while preserving proposed, reviewed, authorized and consequential states.', boundary:'Modeling is not execution, a target is not a recommendation, and approval is not proof of outcome. Any consequential activity depends on the applicable provider and authorized operating path.', links:[['Allocation','/products/allocation'],['Capital Universe','/products/capital-universe']] },
+  { id:'governance-control', title:'Governance and control', question:'Sensitive capital work requires visible authority, not implied authority.', body:'Identity, roles, evidence, review and lifecycle state matter most when work can become consequential. Neptlium is designed to make those boundaries part of the operating model rather than leaving them to informal handoffs or public browser presentation.', boundary:'Public surfaces provide information, not privileged control. Authenticated and authorized services remain the appropriate boundary for sensitive operations. Neptlium does not claim certifications or controls that are not explicitly documented.', links:[['Security','/security'],['Trust','/trust']] },
 ] as const;
 
-export default function SolutionsPage() {
-  return (
-    <div className="architecture-page solutions-hub">
-      <section className="architecture-hero">
-        <div className="web-shell architecture-hero-grid">
-          <div>
-            <p className="web-eyebrow on-light">Solutions</p>
-            <h1>Start with the operating problem, not a feature list.</h1>
-          </div>
-          <p className="architecture-lead">
-            Neptlium is designed for situations where capital becomes difficult to understand because
-            context, liquidity, movement, allocation and authority are split across different tools or
-            conversations.
-          </p>
-        </div>
-      </section>
-
-      <section className="architecture-section architecture-compact" aria-label="Solution index">
-        <div className="web-shell solution-index">
-          {SOLUTIONS.map((solution, index) => (
-            <a href={solution.href} key={solution.href}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <strong>{solution.label}</strong>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section className="architecture-section solutions-detail" aria-labelledby="solutions-title">
-        <div className="web-shell">
-          <div className="architecture-section-heading">
-            <p className="web-eyebrow on-light">Operating needs</p>
-            <h2 id="solutions-title">Four problems. One connected operating model.</h2>
-          </div>
-          <div className="solution-essays">
-            {solutionDetails.map((solution, index) => (
-              <article id={solution.id} key={solution.id}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div>
-                  <p className="solution-label">{solution.title}</p>
-                  <h3>{solution.question}</h3>
-                  <p>{solution.body}</p>
-                  <div className="inline-links">
-                    {solution.links.map(([label, href]) => (
-                      <Link href={href} key={href}>
-                        {label} <ArrowRight aria-hidden="true" />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="architecture-cta architecture-dark">
-        <div className="web-shell architecture-cta-inner">
-          <div>
-            <p className="web-eyebrow">System view</p>
-            <h2>See how those operating needs resolve into one platform architecture.</h2>
-          </div>
-          <Link className="web-button secondary" href="/platform">
-            Explore platform <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}
+export default function SolutionsPage(){return <div className="architecture-page solutions-hub">
+<section className="architecture-hero"><div className="web-shell architecture-hero-grid"><div><p className="web-eyebrow on-light">Solutions</p><h1>Resolve operating ambiguity before it becomes financial consequence.</h1></div><div className="architecture-lead"><p>Capital operations become difficult when portfolio context, liquidity, movement, allocation and authority are split across systems that do not preserve each other’s state.</p><p>Neptlium approaches these problems as one operating model: connect what belongs together, and keep distinct what carries different evidentiary or financial meaning.</p></div></div></section>
+<section className="architecture-section architecture-compact" aria-label="Solution index"><div className="web-shell solution-index">{SOLUTIONS.map((s,i)=><a href={s.href} key={s.href}><span>{String(i+1).padStart(2,'0')}</span><strong>{s.label}</strong></a>)}</div></section>
+<section className="architecture-section solutions-detail" aria-labelledby="solutions-title"><div className="web-shell"><div className="architecture-section-heading"><p className="web-eyebrow on-light">Operating needs</p><h2 id="solutions-title">Four problems. One disciplined operating context.</h2></div><div className="solution-essays">{solutionDetails.map((s,i)=><article id={s.id} key={s.id}><span>{String(i+1).padStart(2,'0')}</span><div><p className="solution-label">{s.title}</p><h3>{s.question}</h3><p>{s.body}</p><p><strong>Boundary.</strong> {s.boundary}</p><div className="inline-links">{s.links.map(([label,href])=><Link href={href} key={href}>{label} <ArrowRight aria-hidden="true" /></Link>)}</div></div></article>)}</div></div></section>
+<section className="architecture-cta architecture-dark"><div className="web-shell architecture-cta-inner"><div><p className="web-eyebrow">System view</p><h2>See how these operating needs resolve into the platform architecture.</h2></div><Link className="web-button secondary" href="/platform">Explore platform <ArrowRight aria-hidden="true" /></Link></div></section>
+</div>}

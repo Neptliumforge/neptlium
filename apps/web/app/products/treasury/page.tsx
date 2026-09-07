@@ -3,87 +3,20 @@ import { ArrowRight } from 'lucide-react';
 import { TreasuryVisual } from '@/components/product-visuals';
 import { createPageMetadata } from '@/lib/seo';
 
-export const metadata = createPageMetadata({
-  title: 'Treasury — Neptlium Products',
-  description:
-    'See how Neptlium Treasury keeps liquidity, reserves and capital readiness connected to the wider capital operating picture.',
-  path: '/products/treasury',
-});
+export const metadata = createPageMetadata({ title: 'Treasury — Liquidity and Capital Readiness | Neptlium', description: 'Neptlium Treasury places liquidity, reserves, funding requirements and capital readiness inside the wider portfolio operating context while keeping visibility distinct from execution authority.', path: '/products/treasury' });
 
 const readiness = [
-  ['Observed', 'What can be supported by the available evidence.'],
-  ['Reserved', 'Capital intentionally preserved for a defined purpose.'],
-  ['Available', 'Capital that may be usable within the applicable operating constraints.'],
-  ['Ready', 'A stronger operational state that should not be inferred from visibility alone.'],
+  ['Observed', 'Liquidity or balance information supported by the evidence currently available to the system.'],
+  ['Reserved', 'Capital intentionally associated with a defined obligation, policy or operating purpose.'],
+  ['Available', 'Capital that may be usable subject to the constraints, timing and provider state that apply.'],
+  ['Ready', 'A stronger operating conclusion that should depend on the required funding, permissions and consequential path, not visibility alone.'],
 ] as const;
 
-export default function TreasuryPage() {
-  return (
-    <div className="product-story treasury-story">
-      <section className="treasury-hero">
-        <div className="web-shell treasury-hero-grid">
-          <div>
-            <p className="web-eyebrow on-light">Products · Treasury</p>
-            <h1>Liquidity is useful only when its operating state is clear.</h1>
-          </div>
-          <div className="treasury-hero-note">
-            <p>
-              Treasury connects liquidity and reserve context to the decisions around it without turning
-              a visible balance into a claim of readiness.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="treasury-readiness" aria-labelledby="readiness-title">
-        <div className="web-shell">
-          <div className="treasury-readiness-heading">
-            <p className="web-eyebrow on-light">Capital readiness</p>
-            <h2 id="readiness-title">Four states that should not collapse into one number.</h2>
-          </div>
-          <div className="treasury-readiness-line">
-            {readiness.map(([title, body]) => (
-              <article key={title}>
-                <h3>{title}</h3>
-                <p>{body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="treasury-context-band">
-        <div className="web-shell treasury-context-grid">
-          <div className="product-story-visual"><TreasuryVisual /></div>
-          <div>
-            <p className="web-eyebrow">Operating context</p>
-            <h2>Treasury sits between what capital is and what the organization intends to do next.</h2>
-            <p>
-              It connects back to Capital Account for movement context and forward to Allocation for
-              decision context while retaining its own responsibility for liquidity interpretation.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="treasury-links">
-        <div className="web-shell treasury-link-row">
-          <Link href="/products/capital-account">Capital Account</Link>
-          <span aria-hidden="true">→</span>
-          <strong>Treasury</strong>
-          <span aria-hidden="true">→</span>
-          <Link href="/products/allocation">Allocation</Link>
-        </div>
-      </section>
-
-      <section className="product-story-close">
-        <div className="web-shell product-story-close-grid">
-          <h2>See liquidity in the context that gives it meaning.</h2>
-          <Link className="text-arrow-link" href="/products/allocation">
-            Continue to Allocation <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-    </div>
-  );
-}
+export default function TreasuryPage() { return <div className="product-story treasury-story">
+  <section className="treasury-hero"><div className="web-shell treasury-hero-grid"><div><p className="web-eyebrow on-light">Products · Treasury</p><h1>Liquidity is an operating state, not merely a balance.</h1></div><div className="treasury-hero-note"><p>Treasury is designed to place cash, reserves, funding requirements and capital readiness in the context of the portfolio activity they support.</p><p>It helps distinguish what is visible from what is reserved, available or operationally ready without implying that Neptlium directly manages cash or executes treasury activity.</p></div></div></section>
+  <section className="treasury-readiness" aria-labelledby="readiness-title"><div className="web-shell"><div className="treasury-readiness-heading"><p className="web-eyebrow on-light">Capital readiness</p><h2 id="readiness-title">Four states that should not collapse into one number.</h2><p>A treasury position becomes more useful when its purpose, constraints and evidence travel with it.</p></div><div className="treasury-readiness-line">{readiness.map(([title,body])=><article key={title}><h3>{title}</h3><p>{body}</p></article>)}</div></div></section>
+  <section className="treasury-context-band"><div className="web-shell treasury-context-grid"><div className="product-story-visual"><TreasuryVisual /></div><div><p className="web-eyebrow">Operating context</p><h2>Treasury connects current liquidity to what the organization may need to do next.</h2><p>Capital Account can provide funding and movement context. Portfolio Intelligence can provide composition and exposure context. Allocation can describe intended target state. Treasury sits between them, helping establish whether liquidity and reserves are aligned with the work under consideration.</p><p>That relationship matters because an isolated cash view cannot explain why liquidity exists, what obligations it supports, or whether a proposed allocation is operationally compatible with current capital state.</p></div></div></section>
+  <section className="architecture-section"><div className="web-shell architecture-split"><div><p className="web-eyebrow on-light">Governance</p><h2>Understanding liquidity is different from authorizing its use.</h2></div><div><p>Neptlium is designed to support review of treasury context while preserving the boundary between interpretation and consequence. Provider-reported balances, internal operating state, proposed funding actions and authorized outcomes should remain distinguishable throughout the lifecycle.</p><p>Where consequential capabilities exist, their availability depends on the applicable authenticated service, provider, permissions and verified state. A treasury view alone is not evidence that capital can or should move.</p></div></div></section>
+  <section className="treasury-links"><div className="web-shell treasury-link-row"><Link href="/products/capital-account">Capital Account</Link><span aria-hidden="true">→</span><strong>Treasury</strong><span aria-hidden="true">→</span><Link href="/products/allocation">Allocation</Link></div></section>
+  <section className="product-story-close"><div className="web-shell product-story-close-grid"><h2>Read liquidity in the context that gives it operating meaning.</h2><Link className="text-arrow-link" href="/products/allocation">Continue to Allocation <ArrowRight aria-hidden="true" /></Link></div></section>
+</div>; }
