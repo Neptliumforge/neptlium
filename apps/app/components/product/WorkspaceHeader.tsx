@@ -15,19 +15,23 @@ export function WorkspaceHeader({
 }) {
   return (
     <header className="border-b border-border-hairline pb-5 sm:pb-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-        <div className="min-w-0">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
+        <div className="min-w-0 max-w-3xl">
           {eyebrow ? (
-            <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.09em] text-text-muted">
+            <p className="mb-1.5 text-[11px] font-medium tracking-[0.03em] text-text-muted">
               {eyebrow}
             </p>
           ) : null}
           <h1>{title}</h1>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">{description}</p>
+          <p className="mt-1.5 max-w-3xl text-sm leading-6 text-text-muted">{description}</p>
         </div>
-        {action ? <div className="shrink-0">{action}</div> : null}
+        {action ? <div className="w-full shrink-0 md:w-auto">{action}</div> : null}
       </div>
-      {meta ? <div className="mt-4 text-xs text-text-muted">{meta}</div> : null}
+      {meta ? (
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border-hairline pt-3 text-xs text-text-muted">
+          {meta}
+        </div>
+      ) : null}
     </header>
   );
 }
