@@ -5,6 +5,7 @@ import {
   dashboardMobilePrimaryNavItems,
   dashboardMobileSecondaryNavItems,
   dashboardNavItems,
+  dashboardSecondaryNavItems,
 } from '@/components/navigation/dashboardNav';
 import { ProfileMenu } from '@/components/navigation/ProfileMenu';
 import { filterNavByRole } from '@/components/security/filterNavByRole';
@@ -15,9 +16,9 @@ export default async function DashboardLayout({ children }: { readonly children:
   const { user, profile } = await requireProvisionedUser();
   const role = await resolveRole(user.id);
   const navItems = filterNavByRole(dashboardNavItems, role);
+  const secondaryItems = filterNavByRole(dashboardSecondaryNavItems, role);
   const mobilePrimaryItems = filterNavByRole(dashboardMobilePrimaryNavItems, role);
   const mobileSecondaryItems = filterNavByRole(dashboardMobileSecondaryNavItems, role);
-  const settingsItems = mobileSecondaryItems.filter((item) => item.label === 'Settings');
   const displayName = profile.fullName ?? profile.displayName ?? profile.email ?? user.email ?? 'Account';
   const profileMenu = (
     <ProfileMenu
@@ -33,15 +34,25 @@ export default async function DashboardLayout({ children }: { readonly children:
         Skip to application workspace
       </Link>
       <AppShell
+        brandDescriptor="Operating environment"
         sidebar={<Sidebar items={navItems} />}
-        sidebarFooter={settingsItems.length ? <Sidebar items={settingsItems} /> : undefined}
+        sidebarFooter={<Sidebar items={secondaryItems} />}
         header={
-          <div className="flex items-center gap-5 text-sm">
-            <Link href="/dashboard/transactions" className="text-text-muted hover:text-text-primary">Activity</Link>
-            <Link href="/dashboard/settings#support" className="text-text-muted hover:text-text-primary">Help</Link>
+          <div className="flex min-w-0 items-center gap-6">
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium tracking-[0.03em] text-text-muted">Current workspace</p>
+              <p className="truncate text-sm font-medium text-text-primary">{displayName}</p>
+            </div>
+            <span className="hidden h-7 w-px bg-border-hairline xl:block" aria-hidden="true" />
+            <p className="hidden text-xs text-text-muted xl:block">Capital operating environment</p>
           </div>
         }
-        utility={profileMenu}
+        utility={
+          <div className="flex items-center gap-4">
+            <Link href="/dashboard/settings#support" className="text-sm text-text-muted hover:text-text-primary">Support</Link>
+            {profileMenu}
+          </div>
+        }
         mobileNav={
           <MobileNavigation
             primaryItems={mobilePrimaryItems}

@@ -142,16 +142,6 @@ button[class*='primary'], a[class*='primary'], [class*='bg-primary'] { backgroun
   main h1 { font-size: 1.75rem; }
 }
 
-@media (max-width: 1023px) {
-  header > nav[aria-label='Primary navigation'] {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  header > nav[aria-label='Primary navigation'] a {
-    font-size: .625rem;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
