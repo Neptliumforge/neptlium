@@ -48,7 +48,7 @@ export default function HomePage() {
             <p className="authority-hero-lead"><strong>See capital clearly. Coordinate what comes next. Govern how it moves.</strong></p>
             <p className="authority-hero-lead">Neptlium brings portfolio context, treasury, allocation and capital movement into one operating environment.</p>
             <div className="authority-actions">
-              <Link className="web-button primary" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel} <ArrowRight aria-hidden="true" /></Link>
+              <Link className="web-button secondary" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel} <ArrowRight aria-hidden="true" /></Link>
               <Link className="text-arrow-link on-dark" href="#operating-context">Explore the platform <ArrowDown aria-hidden="true" /></Link>
             </div>
           </div>
@@ -69,12 +69,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="operating-context" className="operating-environment" aria-labelledby="context-title">
+      <section id="operating-context" className="homepage-solutions" aria-labelledby="context-title">
         <div className="web-shell">
           <header className="section-heading system-heading">
-            <p className="web-eyebrow on-light">One operating context</p>
+            <p className="web-eyebrow">One operating context</p>
             <h2 id="context-title">Capital should remain intelligible as it moves.</h2>
-            <p>Capital activity is often distributed across portfolios, accounts, providers, teams and workflows. Neptlium is designed to preserve the relationships between them so understanding, coordination and authority remain connected.</p>
+            <p className="authority-hero-lead">Capital activity is often distributed across portfolios, accounts, providers, teams and workflows. Neptlium is designed to preserve the relationships between them so understanding, coordination and authority remain connected.</p>
           </header>
           <div className="hero-architecture" aria-label="Neptlium operating context model">
             <section className="hero-architecture-plane">
@@ -184,7 +184,10 @@ export default function HomePage() {
       <section className="reason-section" aria-labelledby="evidence-title">
         <div className="web-shell reason-grid">
           <p className="web-eyebrow on-light">Architectural evidence</p>
-          <div><h2 id="evidence-title">Built around explicit boundaries.</h2><div className="capability-system">{boundaries.map((boundary) => <div className="capability-row" key={boundary}><div className="capability-copy"><h3>{boundary}</h3></div></div>)}</div></div>
+          <div>
+            <h2 id="evidence-title">Built around explicit boundaries.</h2>
+            <div className="capability-system">{boundaries.map((boundary, index) => <div className="capability-row" key={boundary}><span className="capability-index">{String(index + 1).padStart(2, '0')}</span><div className="capability-copy"><h3>{boundary}</h3></div><span className="capability-signal">Boundary</span><span aria-hidden="true">·</span></div>)}</div>
+          </div>
         </div>
       </section>
 
@@ -205,7 +208,7 @@ export default function HomePage() {
       <section className="final-authority">
         <div className="web-shell final-authority-inner">
           <div><p className="web-eyebrow">Neptlium</p><h2>See capital as one connected system.</h2></div>
-          <div><p className="authority-hero-lead">Understand the platform or enter the Neptlium operating environment.</p><div className="authority-actions"><Link className="web-button primary" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel} <ArrowRight aria-hidden="true" /></Link><Link className="text-arrow-link on-dark" href="/platform">Explore the platform <ArrowRight aria-hidden="true" /></Link></div></div>
+          <div><p className="authority-hero-lead">Understand the platform or enter the Neptlium operating environment.</p><div className="authority-actions"><Link className="web-button secondary" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel} <ArrowRight aria-hidden="true" /></Link><Link className="text-arrow-link on-dark" href="/platform">Explore the platform <ArrowRight aria-hidden="true" /></Link></div></div>
         </div>
       </section>
     </div>
