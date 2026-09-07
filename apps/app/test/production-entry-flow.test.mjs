@@ -20,9 +20,28 @@ test('Clerk sign-in and sign-up always complete through the authoritative comple
   for (const source of [signIn, signUp]) {
     assert.match(source, /AuthShell/);
     assert.match(source, /fallbackRedirectUrl="\/auth\/complete"/);
+    assert.match(source, /fallback=\{<AuthMountFallback \/>\}/);
+    assert.doesNotMatch(source, /min-h-\[(?:420|460)px\]/);
+    assert.match(source, /role="status"/);
+    assert.match(source, /aria-live="polite"/);
   }
   assert.match(signIn, /signUpUrl="\/auth\/sign-up"/);
   assert.match(signUp, /signInUrl="\/auth\/sign-in"/);
+});
+
+test('ClerkProvider is mounted inside body so the document root remains valid Next.js markup', () => {
+  const layout = read('app/layout.tsx');
+  const htmlIndex = layout.indexOf('<html');
+  const bodyIndex = layout.indexOf('<body');
+  const providerIndex = layout.indexOf('<ClerkProvider');
+  const providerCloseIndex = layout.indexOf('</ClerkProvider>');
+  const bodyCloseIndex = layout.indexOf('</body>');
+
+  assert.ok(htmlIndex >= 0);
+  assert.ok(bodyIndex > htmlIndex);
+  assert.ok(providerIndex > bodyIndex);
+  assert.ok(providerCloseIndex > providerIndex);
+  assert.ok(bodyCloseIndex > providerCloseIndex);
 });
 
 test('auth completion resolves bootstrap before canonical account context and redirects outside error handling', () => {
