@@ -37,11 +37,13 @@ const themeBoot = `(() => {
 
 export default function RootLayout({ children }: { readonly children: React.ReactNode }): React.ReactElement {
   return (
-    <ClerkProvider signInUrl="/auth/sign-in" signUpUrl="/auth/sign-up">
-      <html lang="en" suppressHydrationWarning>
-        <head><script dangerouslySetInnerHTML={{ __html: themeBoot }} /></head>
-        <body className="antialiased">{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: themeBoot }} /></head>
+      <body className="antialiased">
+        <ClerkProvider signInUrl="/auth/sign-in" signUpUrl="/auth/sign-up">
+          {children}
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
