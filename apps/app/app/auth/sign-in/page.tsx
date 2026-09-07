@@ -1,6 +1,21 @@
 import { SignIn } from '@clerk/nextjs';
 import { AuthShell } from '@/app/(auth)/components/AuthShell';
 
+function AuthMountFallback() {
+  return (
+    <div
+      className="w-full border border-border-subtle bg-surface-primary px-5 py-6"
+      role="status"
+      aria-live="polite"
+    >
+      <p className="text-sm font-medium text-text-primary">Preparing secure access…</p>
+      <p className="mt-1 text-sm leading-6 text-text-muted">
+        Loading the authentication service.
+      </p>
+    </div>
+  );
+}
+
 export default function SignInPage() {
   return (
     <AuthShell>
@@ -19,9 +34,10 @@ export default function SignInPage() {
           </div>
         </div>
 
-        <div className="min-h-[420px] w-full">
+        <div className="w-full">
           <SignIn
             routing="hash"
+            fallback={<AuthMountFallback />}
             fallbackRedirectUrl="/auth/complete"
             signUpUrl="/auth/sign-up"
             appearance={{
