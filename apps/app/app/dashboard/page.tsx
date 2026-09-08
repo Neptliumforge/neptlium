@@ -64,6 +64,28 @@ export default async function DashboardPage() {
     ...(activityError ? [{ title: 'Capital activity could not be loaded', detail: 'Recent governed movement is temporarily unavailable.', href: '/dashboard/transactions', label: 'Review activity' }] : []),
     ...(pendingApprovals.length ? [{ title: `${pendingApprovals.length} transfer${pendingApprovals.length === 1 ? '' : 's'} awaiting authorization`, detail: 'Treasury movement is held until the required approval state is satisfied.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
   ];
+  const capitalContextLinks = [
+    {
+      label: 'Capital Account',
+      href: '/dashboard/wallet',
+      detail: capabilityError ? 'State unavailable' : enabledFunding.length ? `${enabledFunding.length} funding rail${enabledFunding.length === 1 ? '' : 's'} enabled` : 'Review funding state',
+    },
+    {
+      label: 'Treasury',
+      href: '/dashboard/treasury',
+      detail: pendingApprovals.length ? `${pendingApprovals.length} awaiting authorization` : 'No approval attention',
+    },
+    {
+      label: 'Allocation',
+      href: '/dashboard/allocations',
+      detail: overview?.allocation.state === 'VALUE' ? 'Allocation state available' : 'Policy context available',
+    },
+    {
+      label: 'Intelligence',
+      href: '/dashboard/portfolio',
+      detail: 'Portfolio context',
+    },
+  ] as const;
 
   return (
     <div className="space-y-12 lg:space-y-16">
@@ -182,12 +204,7 @@ export default async function DashboardPage() {
           </div>
 
           <nav aria-label="Capital context" className="border-t border-border-hairline lg:border-y">
-            {[
-              ['Capital Account', '/dashboard/wallet', capabilityError ? 'State unavailable' : enabledFunding.length ? `${enabledFunding.length} funding rail${enabledFunding.length === 1 ? '' : 's'} enabled` : 'Review funding state'],
-              ['Treasury', '/dashboard/treasury', pendingApprovals.length ? `${pendingApprovals.length} awaiting authorization` : 'No approval attention'],
-              ['Allocation', '/dashboard/allocations', overview?.allocation.state === 'VALUE' ? 'Allocation state available' : 'Policy context available'],
-              ['Intelligence', '/dashboard/portfolio', 'Portfolio context'],
-            ].map(([label, href, detail]) => (
+            {capitalContextLinks.map(({ label, href, detail }) => (
               <Link key={href} href={href} className="group flex items-center justify-between gap-5 border-b border-border-hairline py-4 last:border-0">
                 <div><p className="text-sm font-medium text-text-primary">{label}</p><p className="mt-1 text-xs text-text-muted">{detail}</p></div>
                 <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-text-primary" aria-hidden="true" />
