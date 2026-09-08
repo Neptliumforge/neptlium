@@ -19,6 +19,7 @@ test('Clerk sign-in and sign-up always complete through the authoritative comple
   const signUp = read('app/auth/sign-up/page.tsx');
   for (const source of [signIn, signUp]) {
     assert.match(source, /AuthShell/);
+    assert.match(source, /AuthRuntimeDiagnostic/);
     assert.match(source, /fallbackRedirectUrl="\/auth\/complete"/);
     assert.match(source, /fallback=\{<AuthMountFallback \/>\}/);
     assert.doesNotMatch(source, /min-h-\[(?:420|460)px\]/);
@@ -27,6 +28,18 @@ test('Clerk sign-in and sign-up always complete through the authoritative comple
   }
   assert.match(signIn, /signUpUrl="\/auth\/sign-up"/);
   assert.match(signUp, /signInUrl="\/auth\/sign-in"/);
+});
+
+test('temporary auth diagnostics distinguish Clerk loading, loaded, degraded and failed states', () => {
+  const diagnostic = read('app/(auth)/components/AuthRuntimeDiagnostic.tsx');
+  for (const control of ['ClerkLoading', 'ClerkLoaded', 'ClerkDegraded', 'ClerkFailed']) {
+    assert.match(diagnostic, new RegExp(`<${control}>`));
+  }
+  for (const state of ['loading', 'loaded', 'degraded', 'failed']) {
+    assert.match(diagnostic, new RegExp(`state="${state}"`));
+  }
+  assert.match(diagnostic, /data-auth-runtime-state=\{state\}/);
+  assert.doesNotMatch(diagnostic, /publishable|secret|token|cookie|userId|sessionId/i);
 });
 
 test('ClerkProvider is mounted inside body so the document root remains valid Next.js markup', () => {
