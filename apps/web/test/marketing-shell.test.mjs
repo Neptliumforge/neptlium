@@ -9,28 +9,31 @@ const header = read('components/site-header.tsx');
 const footer = read('components/site-footer.tsx');
 const brand = read('components/brand.tsx');
 const css = read('app/neptlium-visual-direction.css');
+const heroCss = read('app/landing-v3.css');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
-const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${site}`;
+const shell = `${page}\n${layout}\n${header}\n${footer}\n${brand}\n${css}\n${heroCss}\n${site}`;
 
 const escaped = (copy) => new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i');
 
-test('hero establishes category, proposition, meaning and action before the operating diagram', () => {
+test('hero establishes a concise capital-intelligence proposition and direct product entry', () => {
   for (const copy of [
-    'Capital operating infrastructure',
-    'The operating system for capital.',
-    'See capital clearly. Coordinate what comes next. Govern how it moves.',
-    'Neptlium brings portfolio context, treasury, allocation and capital movement into one operating environment.',
-    'Portfolio context',
-    'Treasury',
+    'Capital intelligence',
+    'Capital, understood before it moves.',
+    'Understand what you own, how it is positioned, and what deserves attention — from one intelligent capital environment.',
+    'Operating view',
+    'Capital context',
+    'Portfolio',
     'Allocation',
-    'Governance',
+    'Treasury',
   ]) assert.match(page, escaped(copy));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /className="hero-wave-field"/);
-  assert.match(page, /href="#operating-context"/);
-  assert.doesNotMatch(page, /ProductContextIllustration|<Image|<img|\.png|\.webp|1000209629/i);
-  assert.match(css, /\.authority-hero h1[\s\S]*font-size:\s*clamp\(3rem, 5\.1vw, 4\.45rem\)/);
+  assert.match(page, /className="hero-product-preview"/);
+  assert.match(page, /href=\{SITE\.signInUrl\}>Sign in/);
+  assert.doesNotMatch(page, /hero-wave-field|ProductContextIllustration|<Image|<img|\.png|\.webp|1000209629/i);
+  assert.match(heroCss, /\.authority-hero-copy h1[\s\S]*font-size:\s*clamp\(3\.35rem, 6vw, 5\.6rem\)/);
+  assert.match(heroCss, /background:\s*var\(--web-carbon\)/);
+  assert.doesNotMatch(heroCss, /radial-gradient|linear-gradient|filter:\s*blur|backdrop-filter/i);
 });
 
 test('homepage expresses the full institutional landing architecture without fabricated proof', () => {
@@ -64,7 +67,7 @@ test('public CTA authority keeps Enter Neptlium primary and routes new visitors 
   for (const source of [page, header]) assert.match(source, /SITE\.publicAccess/);
   assert.equal((page.match(/SITE\.publicAccessLabel/g) ?? []).length, 2);
   assert.match(page, /web-button secondary[\s\S]*SITE\.publicAccessUrl/);
-  assert.match(page, /text-arrow-link on-dark[\s\S]*Explore the platform/);
+  assert.match(page, /hero-sign-in[\s\S]*SITE\.signInUrl/);
   assert.doesNotMatch(header, /<Link href="\/products">Products<\/Link>/);
   assert.match(header, /mobile-explore-action[\s\S]*href="\/platform"/);
   assert.match(header, /mobile-enter-action[\s\S]*SITE\.publicAccessUrl/);
@@ -116,7 +119,7 @@ test('footer is the complete institutional map with legal separated from product
   assert.doesNotMatch(footer, /Neptliumlabs|href=["']#["']/i);
 });
 
-test('canonical brand and palette remain authoritative in one visual-direction layer', () => {
+test('canonical brand and palette remain authoritative in the visual system', () => {
   assert.match(brand, /from '@neptlium\/ui'/);
   assert.match(brand, /NeptliumMark/);
   assert.doesNotMatch(brand, /<svg|<path|d="/);
