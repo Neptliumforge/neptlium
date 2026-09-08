@@ -51,15 +51,15 @@ export default async function TransactionsPage() {
       <header>
         <h1>Capital Activity</h1>
         <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
-          Canonical customer funding and governed transfer intents supplied by api.neptlium.com.
+          Deposits and transfers across your Capital Account.
         </p>
       </header>
 
       <div className="border-y border-border-hairline">
         {error ? (
-          <ProductStateMessage state="ERROR" title="Capital activity unavailable">The governed activity APIs could not be loaded.</ProductStateMessage>
+          <ProductStateMessage state="ERROR" title="Capital activity unavailable">We could not load your recent deposits and transfers. Try again shortly.</ProductStateMessage>
         ) : rows.length === 0 ? (
-          <ProductStateMessage state="NO_ACTIVITY" title="No capital activity yet">Deposits and governed movement will appear here when canonical intents exist.</ProductStateMessage>
+          <ProductStateMessage state="NO_ACTIVITY" title="No capital activity yet">You have not created any deposits or transfers yet.</ProductStateMessage>
         ) : (
           <>
             <div className="hidden grid-cols-[minmax(7rem,0.8fr)_minmax(8rem,1fr)_minmax(8rem,auto)_auto_minmax(9rem,auto)] gap-5 border-b border-border-hairline py-3 text-xs font-medium text-text-muted md:grid">
@@ -79,7 +79,7 @@ export default async function TransactionsPage() {
       </div>
 
       <p className="text-xs leading-5 text-text-muted">
-        Provider observations are not shown as customer activity unless they have been normalized into governed Neptlium financial state.
+        Activity is shown after it is recorded to your account. Pending and completed states remain distinct.
       </p>
     </div>
   );
