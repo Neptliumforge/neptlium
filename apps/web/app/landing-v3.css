@@ -2,18 +2,19 @@
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] {
   position: sticky;
   inset: auto;
-  border-bottom-color: var(--web-stone);
-  background: var(--web-ivory-high);
-  color: var(--web-carbon);
+  border-bottom-color: rgb(242 242 237 / 10%);
+  background: rgb(8 10 11 / 88%);
+  color: var(--web-ivory);
+  backdrop-filter: blur(14px);
 }
 
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] a[class*='entryAction'] {
-  color: var(--web-carbon);
+  color: var(--web-ivory);
 }
 
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] .command-primary-action {
-  border-color: var(--web-carbon);
-  background: var(--web-carbon);
+  border-color: rgb(242 242 237 / 24%);
+  background: rgb(242 242 237 / 6%);
   color: var(--web-ivory);
 }
 
@@ -1235,4 +1236,137 @@
   .context-map-body { padding-inline: 1rem; }
   .context-map { min-height: 14rem; }
   .context-node { font-size: 0.75rem; }
+}
+
+/* Final marketing environment: continuous, quiet, and institutional. */
+.neptlium-home {
+  --marketing-surface: #0e1214;
+  --marketing-surface-soft: #121819;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 82% 6%, rgb(15 143 136 / 7%), transparent 34rem),
+    linear-gradient(180deg, #101516 0%, #0b1011 38%, #101516 72%, #0d1213 100%);
+  color: var(--web-ivory);
+}
+
+.neptlium-home::before {
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background:
+    linear-gradient(90deg, transparent 0 49.95%, rgb(242 242 237 / 2.2%) 50%, transparent 50.05%),
+    linear-gradient(180deg, transparent 0 49.95%, rgb(242 242 237 / 1.8%) 50%, transparent 50.05%);
+  background-size: 12rem 12rem;
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 38%), transparent 62%);
+  opacity: 0.2;
+}
+
+.neptlium-home::after {
+  position: fixed;
+  z-index: -1;
+  inset: -20%;
+  pointer-events: none;
+  content: '';
+  background: radial-gradient(ellipse at 50% 0%, rgb(242 242 237 / 3.2%), transparent 56%);
+  animation: neptlium-atmosphere 48s ease-in-out infinite alternate;
+}
+
+@keyframes neptlium-atmosphere {
+  from { transform: translate3d(-1%, -0.5%, 0) scale(1); }
+  to { transform: translate3d(1%, 0.5%, 0) scale(1.03); }
+}
+
+.neptlium-home > section {
+  background: transparent;
+}
+
+.neptlium-home > section + section {
+  border-top: 1px solid rgb(242 242 237 / 7%);
+}
+
+.neptlium-home > .authority-hero,
+.neptlium-home > .product-experience,
+.neptlium-home > .institutional-intelligence {
+  background: transparent;
+}
+
+.neptlium-home > .context-statement,
+.neptlium-home > .intelligence-pillars,
+.neptlium-home > .ecosystem-map,
+.neptlium-home > .solutions-section,
+.neptlium-home > .ai-section {
+  background: color-mix(in srgb, var(--marketing-surface-soft) 88%, transparent);
+  color: var(--web-ivory);
+}
+
+.neptlium-home .context-statement-inner > p,
+.neptlium-home .pillar-row p,
+.neptlium-home .ecosystem-copy p,
+.neptlium-home .ecosystem-tree p,
+.neptlium-home .solutions-layout p,
+.neptlium-home .ai-layout p {
+  color: rgb(242 242 237 / 62%);
+}
+
+.neptlium-home .pillar-list,
+.neptlium-home .ecosystem-tree,
+.neptlium-home .principle-list,
+.neptlium-home .audience-list,
+.neptlium-home .ai-layers {
+  border-color: rgb(242 242 237 / 13%);
+}
+
+.neptlium-home .pillar-row,
+.neptlium-home .ecosystem-tree details,
+.neptlium-home .principle-list > div,
+.neptlium-home .audience-list > a,
+.neptlium-home .ai-layers > div {
+  border-color: rgb(242 242 237 / 13%);
+}
+
+.neptlium-home .pillar-row:hover,
+.neptlium-home .audience-list > a:hover {
+  background: rgb(242 242 237 / 4%);
+}
+
+.neptlium-home .hero-text-cta,
+.neptlium-home .hero-secondary-link {
+  min-height: 2.5rem;
+  border-radius: 0.25rem;
+  transition: color 220ms var(--web-ease), border-color 220ms var(--web-ease), background-color 220ms var(--web-ease);
+}
+
+.neptlium-home .hero-text-cta {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgb(242 242 237 / 82%);
+  background: var(--web-ivory);
+  color: var(--web-carbon);
+}
+
+.neptlium-home .hero-text-cta:hover,
+.neptlium-home .hero-text-cta:focus-visible {
+  border-color: var(--web-ivory);
+  background: transparent;
+  color: var(--web-ivory);
+}
+
+.neptlium-home .hero-secondary-link {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgb(242 242 237 / 20%);
+}
+
+.neptlium-home .hero-secondary-link:hover,
+.neptlium-home .hero-secondary-link:focus-visible {
+  border-color: rgb(242 242 237 / 48%);
+  background: rgb(242 242 237 / 4%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neptlium-home::after {
+    animation: none;
+  }
 }
