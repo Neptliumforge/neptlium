@@ -1,192 +1,294 @@
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { Section, Stack } from '@neptlium/ui';
 import { requireProvisionedUser } from '@/lib/auth';
 import { getPortfolioState } from '@/lib/api/client';
 import { getAllocationWorkspace } from '@/lib/api/allocation';
-import { getCanonicalBalances, getFundingCapabilities } from '@/lib/api/financial';
-import { FinancialValue, ProductStateBadge, ProductStateMessage } from '@/components/product/ProductState';
+import { getCanonicalBalances } from '@/lib/api/financial';
+import {
+  AttentionState,
+  ExposurePanel,
+  HoldingsTable,
+  PortfolioContext,
+  PortfolioState,
+  type IntelligenceItem,
+  type PortfolioAttentionItem,
+  type PortfolioContextItem,
+  type PortfolioStateItem,
+} from '@/components/product/PortfolioIntelligence';
 import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 
 export default async function PortfolioPage() {
   await requireProvisionedUser();
 
-  const [portfolioResult, balancesResult, capabilitiesResult, allocationResult] = await Promise.allSettled([
+  const [portfolioResult, balancesResult, allocationResult] = await Promise.allSettled([
     getPortfolioState(),
     getCanonicalBalances(),
-    getFundingCapabilities(),
     getAllocationWorkspace(),
   ]);
 
   const portfolio = portfolioResult.status === 'fulfilled' ? portfolioResult.value : null;
   const balances = balancesResult.status === 'fulfilled' ? balancesResult.value.balances : [];
-  const capabilities = capabilitiesResult.status === 'fulfilled' ? capabilitiesResult.value.capabilities : [];
   const allocation = allocationResult.status === 'fulfilled' ? allocationResult.value : null;
   const balanceError = balancesResult.status === 'rejected';
-  const capabilityError = capabilitiesResult.status === 'rejected';
   const allocationError = allocationResult.status === 'rejected';
   const allocationPolicy = allocation?.activePolicy ?? null;
   const allocationDrift = allocation?.drift ?? null;
-  const allocationOutsidePolicy = allocationDrift?.rows.filter((row) => row.status === 'OUTSIDE_POLICY').length ?? 0;
-  const allocationReview = allocationDrift?.rows.filter((row) => row.status === 'REVIEW').length ?? 0;
-  const allocationValuationUnavailable = allocationDrift?.rows.some((row) => row.status === 'VALUATION_UNAVAILABLE') ?? false;
-  const hasEnabledFunding = capabilities.some((capability) => capability.state === 'ENABLED');
-  const fundingActionLabel = capabilityError || !hasEnabledFunding ? 'Review funding' : 'Fund capital';
-  const hasMultipleAssets = balances.length > 1;
-  const singleBalance = balances.length === 1 ? balances[0] : undefined;
+  const allocationOutsidePolicy =
+    allocationDrift?.rows.filter((row) => row.status === 'OUTSIDE_POLICY').length ?? 0;
+  const allocationReview =
+    allocationDrift?.rows.filter((row) => row.status === 'REVIEW').length ?? 0;
+  const allocationValuationUnavailable =
+    allocationDrift?.rows.some((row) => row.status === 'VALUATION_UNAVAILABLE') ?? false;
+
+  const portfolioState: readonly PortfolioStateItem[] = [
+    balanceError
+      ? {
+          label: 'Position status',
+          value: 'Unavailable',
+          detail: 'Canonical positions could not be loaded.',
+          state: 'UNAVAILABLE',
+        }
+      : balances.length === 0
+        ? {
+            label: 'Position status',
+            value: 'Not established',
+            detail: 'No canonical portfolio positions are recorded.',
+            state: 'NO_POSITION',
+          }
+        : {
+            label: 'Position status',
+            value: 'Observed',
+            detail: `${balances.length} source-backed position${balances.length === 1 ? '' : 's'} recorded.`,
+            state: 'AVAILABLE',
+          },
+    {
+      label: 'Data freshness',
+      value: 'Unavailable',
+      detail: 'The canonical balance contract does not expose a position observation time.',
+      state: 'UNAVAILABLE',
+    },
+    portfolioResult.status === 'rejected'
+      ? {
+          label: 'Availability',
+          value: 'Unavailable',
+          detail: 'Portfolio reporting context could not be loaded.',
+          state: 'UNAVAILABLE',
+        }
+      : portfolio?.positions.state === 'PENDING'
+        ? {
+            label: 'Availability',
+            value: 'Awaiting source',
+            detail: portfolio.positions.reason,
+            state: 'PENDING',
+          }
+        : {
+            label: 'Availability',
+            value: balanceError ? 'Unavailable' : 'Available',
+            detail: balanceError
+              ? 'Position evidence is unavailable.'
+              : 'The canonical holdings source responded.',
+            state: balanceError ? 'UNAVAILABLE' : 'AVAILABLE',
+          },
+  ];
+
+  const concentration: IntelligenceItem = balanceError
+    ? {
+        label: 'Concentration',
+        value: 'Unavailable',
+        detail: 'Exposure analysis unavailable while canonical positions cannot be loaded.',
+        state: 'UNAVAILABLE',
+      }
+    : balances.length === 0
+      ? {
+          label: 'Concentration',
+          value: 'Not established',
+          detail: 'Exposure analysis unavailable without sufficient portfolio data.',
+          state: 'NO_POSITION',
+        }
+      : balances.length === 1
+        ? {
+            label: 'Concentration',
+            value: 'Observed',
+            detail:
+              'A single canonical asset position is represented. No valuation-based percentage is inferred.',
+            state: 'AVAILABLE',
+          }
+        : {
+            label: 'Concentration',
+            value: 'Unavailable',
+            detail: 'Cross-asset concentration requires authoritative valuation evidence.',
+            state: 'UNAVAILABLE',
+          };
+
+  const allocationContext: IntelligenceItem = allocationError
+    ? {
+        label: 'Allocation context',
+        value: 'Unavailable',
+        detail: 'Governed allocation state could not be loaded.',
+        state: 'UNAVAILABLE',
+      }
+    : !allocationPolicy
+      ? {
+          label: 'Allocation context',
+          value: 'Not configured',
+          detail: 'No authoritative allocation policy is established.',
+          state: 'NOT_CONFIGURED',
+        }
+      : !allocationDrift
+        ? {
+            label: 'Allocation context',
+            value: 'Configured',
+            detail: 'An authoritative allocation policy exists; drift context is not established.',
+            state: 'READY',
+          }
+        : allocationValuationUnavailable
+          ? {
+              label: 'Allocation context',
+              value: 'Partially available',
+              detail:
+                'Policy context is available, but cross-asset valuation evidence is unavailable.',
+              state: 'UNAVAILABLE',
+            }
+          : allocationOutsidePolicy > 0 || allocationReview > 0
+            ? {
+                label: 'Allocation context',
+                value: 'Review required',
+                detail: `${allocationOutsidePolicy + allocationReview} policy relationship${allocationOutsidePolicy + allocationReview === 1 ? '' : 's'} require review.`,
+                state: 'REQUIRES_APPROVAL',
+              }
+            : {
+                label: 'Allocation context',
+                value: 'Observed',
+                detail: 'Current computable policy relationships are within tolerance.',
+                state: 'AVAILABLE',
+              };
+
+  const policyAssets = allocationPolicy
+    ? new Set(
+        allocationPolicy.targets.flatMap((target) =>
+          target.asset ? [`${target.asset}:${target.network ?? ''}`] : [],
+        ),
+      )
+    : null;
+  const relatedPositions = policyAssets
+    ? balances.filter((balance) => policyAssets.has(`${balance.asset}:${balance.network ?? ''}`))
+        .length
+    : 0;
+  const relationships: IntelligenceItem =
+    balanceError || allocationError
+      ? {
+          label: 'Relationships',
+          value: 'Unavailable',
+          detail: 'Position and allocation evidence are both required to establish relationships.',
+          state: 'UNAVAILABLE',
+        }
+      : !allocationPolicy
+        ? {
+            label: 'Relationships',
+            value: 'Not established',
+            detail: 'Portfolio-to-policy relationships require an authoritative allocation policy.',
+            state: 'NOT_CONFIGURED',
+          }
+        : {
+            label: 'Relationships',
+            value: 'Observed',
+            detail: `${relatedPositions} of ${balances.length} canonical position${balances.length === 1 ? '' : 's'} directly correspond to asset-based policy targets.`,
+            state: 'AVAILABLE',
+          };
+
+  const attention: PortfolioAttentionItem[] = [
+    ...(balanceError
+      ? [
+          {
+            id: 'positions-unavailable',
+            title: 'Position source unavailable',
+            detail: 'Canonical holdings could not be loaded. No position state is inferred.',
+          },
+        ]
+      : []),
+    ...(allocationError
+      ? [
+          {
+            id: 'allocation-unavailable',
+            title: 'Allocation context unavailable',
+            detail: 'Authoritative policy relationships could not be loaded.',
+          },
+        ]
+      : []),
+    ...(allocationDrift?.rows
+      .filter((row) => row.status === 'OUTSIDE_POLICY')
+      .map((row) => ({
+        id: `outside-policy:${row.key}`,
+        title: 'Allocation relationship outside policy',
+        detail: 'A governed allocation drift row is outside its configured tolerance.',
+        href: '/dashboard/allocations',
+      })) ?? []),
+    ...(allocationDrift?.rows
+      .filter((row) => row.status === 'REVIEW')
+      .map((row) => ({
+        id: `allocation-review:${row.key}`,
+        title: 'Allocation relationship requires review',
+        detail: 'A governed allocation drift row is marked for review.',
+        href: '/dashboard/allocations',
+      })) ?? []),
+  ];
+
+  const context: PortfolioContextItem[] = [
+    balanceError
+      ? {
+          id: 'position-source',
+          title: 'Position source unavailable',
+          detail: 'The canonical holdings collection could not be retrieved.',
+        }
+      : balances.length === 0
+        ? {
+            id: 'position-source',
+            title: 'No portfolio positions available',
+            detail: 'The returned canonical holdings collection is empty.',
+          }
+        : {
+            id: 'position-source',
+            title: 'Portfolio information available',
+            detail: `${balances.length} canonical position record${balances.length === 1 ? '' : 's'} returned by the governed source.`,
+          },
+    allocationError
+      ? {
+          id: 'allocation-source',
+          title: 'Allocation context unavailable',
+          detail: 'No policy or drift relationship is inferred.',
+        }
+      : {
+          id: 'allocation-source',
+          title: 'Allocation observation recorded',
+          detail: allocationPolicy
+            ? 'Authoritative policy context is connected to this portfolio view.'
+            : 'No active allocation policy is recorded.',
+          ...(allocation?.observed.asOf ? { occurredAt: allocation.observed.asOf } : {}),
+        },
+    concentration.state === 'UNAVAILABLE' || concentration.state === 'NO_POSITION'
+      ? {
+          id: 'exposure-context',
+          title: 'Exposure analysis unavailable',
+          detail: concentration.detail,
+        }
+      : {
+          id: 'exposure-context',
+          title: 'Exposure structure observed',
+          detail: concentration.detail,
+        },
+  ];
 
   return (
-    <Stack>
+    <div className="space-y-10 lg:space-y-12">
       <WorkspaceHeader
-        eyebrow="Canonical positions"
-        title="Portfolio"
-        description="Inspect established capital positions, liquidity state, exposure context, and the valuation evidence available today."
-        action={(
-          <div className="flex flex-wrap gap-2">
-            <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-11 items-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Deposit</Link>
-            <Link href="/dashboard/wallet" className="inline-flex min-h-11 items-center rounded-md border border-border-default px-4 text-sm font-medium text-text-primary hover:bg-surface-2">Capital Account</Link>
-          </div>
-        )}
+        eyebrow="Portfolio"
+        title="Portfolio Intelligence"
+        description="Understand positions, exposure, and capital context."
       />
 
-      <section className="grid gap-5 border-b border-border-hairline pb-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:pb-7">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Portfolio state</p>
-          <div className="mt-2 text-[2.25rem] font-medium leading-none tracking-[-0.025em] text-text-primary sm:text-[2.6rem]">
-            {balanceError ? 'Unavailable' : balances.length === 0 ? '0 positions' : hasMultipleAssets ? `${balances.length} canonical assets` : <FinancialValue valueAtomic={singleBalance!.total_atomic} asset={singleBalance!.asset} />}
-          </div>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
-            {balanceError
-              ? 'Canonical portfolio state could not be established. No zero or valuation is inferred.'
-              : balances.length === 0
-                ? 'The canonical balance collection is successfully empty. Fund capital to establish the first position.'
-                : hasMultipleAssets
-                  ? 'Asset quantities are established independently. A cross-asset total remains unavailable without governed valuation evidence.'
-                  : 'A single canonical denomination is established from the Neptlium ledger.'}
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-3">
-          <div><p className="text-xs text-text-muted">Performance</p><p className="mt-1 text-sm font-medium text-text-primary">Not established</p></div>
-          <div><p className="text-xs text-text-muted">Valuation</p><p className="mt-1 text-sm font-medium text-text-primary">{balanceError ? 'Unavailable' : hasMultipleAssets ? 'Unavailable' : balances.length ? 'Single denomination' : 'No positions'}</p></div>
-          <div className="col-span-2 sm:col-span-1"><p className="text-xs text-text-muted">Source</p><p className="mt-1 text-sm font-medium text-text-primary">Canonical ledger</p></div>
-        </div>
-      </section>
-
-      <nav className="flex gap-6 overflow-x-auto border-b border-border-hairline" aria-label="Portfolio views">
-        {[
-          ['Positions', '#positions'],
-          ['Funding coverage', '#funding-coverage'],
-          ['Intelligence', '#intelligence'],
-        ].map(([label, href], index) => (
-          <a key={href} href={href} className={`min-h-11 shrink-0 border-b-2 px-0.5 pt-3 text-sm font-medium ${index === 0 ? 'border-accent-primary text-text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}>
-            {label}
-          </a>
-        ))}
-      </nav>
-
-      <section id="positions" className="scroll-mt-24">
-        <Section title="Canonical positions">
-          <div className="border-y border-border-hairline">
-            {balanceError ? (
-              <ProductStateMessage state="ERROR" title="Portfolio positions unavailable">Canonical balances could not be loaded from the Neptlium API.</ProductStateMessage>
-            ) : balances.length === 0 ? (
-              <div className="grid gap-5 py-6 sm:grid-cols-[1fr_auto] sm:items-center">
-                <ProductStateMessage state="NO_POSITION" title="No canonical positions">Zero positions is an established empty collection, not a fabricated zero balance.</ProductStateMessage>
-                <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">{fundingActionLabel}</Link>
-              </div>
-            ) : (
-              <>
-                <div className="hidden grid-cols-[minmax(8rem,1fr)_repeat(5,minmax(7rem,auto))] gap-5 border-b border-border-hairline py-3 text-xs font-medium text-text-muted lg:grid">
-                  <span>Asset</span><span>Total</span><span>Available</span><span>Pending</span><span>Reserved</span><span>Restricted</span>
-                </div>
-                {balances.map((balance) => (
-                  <div key={`${balance.asset}:${balance.network ?? ''}`} className="grid gap-4 border-b border-border-hairline py-5 last:border-0 lg:grid-cols-[minmax(8rem,1fr)_repeat(5,minmax(7rem,auto))] lg:items-center lg:gap-5">
-                    <div><p className="text-sm font-medium text-text-primary">{balance.asset}</p><p className="mt-1 text-xs text-text-muted">{balance.network ?? 'Denomination'} · canonical position</p></div>
-                    <dl className="grid grid-cols-2 gap-4 sm:grid-cols-5 lg:contents">
-                      <div><dt className="text-[11px] text-text-muted lg:hidden">Total</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} /></dd></div>
-                      <div><dt className="text-[11px] text-text-muted lg:hidden">Available</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.available_atomic} asset={balance.asset} /></dd></div>
-                      <div><dt className="text-[11px] text-text-muted lg:hidden">Pending</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.pending_atomic} asset={balance.asset} /></dd></div>
-                      <div><dt className="text-[11px] text-text-muted lg:hidden">Reserved</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.reserved_atomic} asset={balance.asset} /></dd></div>
-                      <div><dt className="text-[11px] text-text-muted lg:hidden">Restricted</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.restricted_atomic} asset={balance.asset} /></dd></div>
-                    </dl>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-          <p className="mt-3 text-xs leading-5 text-text-muted">Positions are rendered only from returned canonical balance records. Funding capability does not create a position.</p>
-        </Section>
-      </section>
-
-      <section id="funding-coverage" className="scroll-mt-24">
-        <Section title="Funding coverage">
-          <div className="border-y border-border-hairline">
-            {capabilityError ? (
-              <ProductStateMessage state="ERROR" title="Funding coverage unavailable">The governed funding capability set could not be loaded.</ProductStateMessage>
-            ) : capabilities.length === 0 ? (
-              <ProductStateMessage state="NOT_CONFIGURED" title="No governed funding assets exposed">No funding capability is currently exposed for this environment.</ProductStateMessage>
-            ) : capabilities.map((capability) => (
-              <div key={capability.code} className="grid gap-3 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-5">
-                <div><p className="text-sm font-medium text-text-primary">{capability.asset} · {capability.network}</p><p className="mt-1 text-xs text-text-muted">Funding capability · independent of canonical holdings</p></div>
-                <ProductStateBadge state={capability.state === 'ENABLED' ? 'READY' : capability.state === 'INELIGIBLE' ? 'INELIGIBLE' : capability.state === 'NOT_CONFIGURED' ? 'NOT_CONFIGURED' : 'UNAVAILABLE'}>{capability.state.replaceAll('_', ' ').toLowerCase()}</ProductStateBadge>
-              </div>
-            ))}
-          </div>
-        </Section>
-      </section>
-
-      <section id="intelligence" className="scroll-mt-24">
-        <Section title="Portfolio intelligence">
-          <div className="divide-y divide-border-hairline border-y border-border-hairline">
-            {[
-              ['Concentration', balanceError ? 'Unavailable while canonical positions cannot be loaded.' : hasMultipleAssets ? 'Requires governed cross-asset valuation before concentration can be calculated.' : balances.length ? 'Single-denomination capital is currently visible.' : 'No positions to analyze yet.'],
-              ['Liquidity', balanceError ? 'Unavailable.' : balances.length ? 'Canonical available, pending, reserved, and restricted quantities are established by asset.' : 'No canonical liquidity positions yet.'],
-              ['Volatility', 'Not established without an authoritative market-data and valuation source.'],
-              ['Counterparty', 'Not established from provider identity alone; governed counterparty evidence is required.'],
-              ['Allocation drift',
-                allocationError
-                  ? 'Governed allocation state is unavailable.'
-                  : !allocationPolicy
-                    ? 'No allocation policy is established.'
-                    : !allocationDrift
-                      ? 'Drift has not been established for the active policy.'
-                      : allocationValuationUnavailable
-                        ? 'Policy is established, but cross-asset valuation evidence is unavailable.'
-                        : allocationOutsidePolicy > 0
-                          ? `${allocationOutsidePolicy} policy target${allocationOutsidePolicy === 1 ? '' : 's'} outside tolerance.`
-                          : allocationReview > 0
-                            ? `${allocationReview} policy target${allocationReview === 1 ? '' : 's'} requires review.`
-                            : 'Observed capital is within the currently computable policy tolerance.'],
-              ['Reserve coverage',
-                allocationError
-                  ? 'Governed allocation state is unavailable.'
-                  : !allocationPolicy
-                    ? 'No reserve requirement is established.'
-                    : allocationPolicy.reserveRequirementBps === 0
-                      ? 'The active policy does not specify a reserve requirement.'
-                      : allocationValuationUnavailable
-                        ? `Policy requires ${(allocationPolicy.reserveRequirementBps / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}% reserve coverage; authoritative valuation is unavailable.`
-                        : `Policy requires ${(allocationPolicy.reserveRequirementBps / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}% reserve coverage.`],
-            ].map(([title, copy]) => (
-              <div key={title} className="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-6">
-                <p className="text-sm font-medium text-text-primary">{title}</p>
-                <p className="text-sm leading-6 text-text-muted">{copy}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 flex flex-wrap gap-4">
-            <Link href="/dashboard/allocations" className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-primary">Review Allocation <ArrowRight className="size-4" aria-hidden="true" /></Link>
-            <Link href="/dashboard/treasury" className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-primary">Review Treasury <ArrowRight className="size-4" aria-hidden="true" /></Link>
-          </div>
-        </Section>
-      </section>
-
-      <Section title="Reporting">
-        <div className="border-y border-border-hairline py-5">
-          <p className="text-sm font-medium text-text-primary">{portfolio?.performance.state === 'VALUE' ? 'Canonical reporting history available' : 'Performance not established'}</p>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">Performance appears only when the API can establish canonical positions and reporting-value history. Provider balances and unsupported market prices are never promoted into portfolio performance.</p>
-        </div>
-      </Section>
-    </Stack>
+      <PortfolioState items={portfolioState} />
+      <HoldingsTable balances={balances} loadError={balanceError} />
+      <ExposurePanel items={[concentration, allocationContext, relationships]} />
+      <AttentionState items={attention} />
+      <PortfolioContext items={context} />
+    </div>
   );
 }
