@@ -159,7 +159,7 @@ test('all five primary workspaces use the shared information-first header', () =
     );
   }
   assert.equal(
-    read('components/product/CapitalAccountExperience.tsx').includes('WorkspaceHeader'),
+    read('app/dashboard/capital-account/CapitalAccountView.tsx').includes('WorkspaceHeader'),
     true,
   );
   assert.equal(
@@ -207,7 +207,7 @@ test('Overview is a governed capital operating home without fabricated valuation
 
   // Core governed workspaces remain directly reachable.
   for (const href of [
-    '/dashboard/wallet',
+    '/dashboard/capital-account',
     '/dashboard/treasury',
     '/dashboard/allocations',
     '/dashboard/portfolio',
@@ -218,7 +218,7 @@ test('Overview is a governed capital operating home without fabricated valuation
   for (const workspace of [
     'Portfolio Intelligence',
     'Understand positions and exposure.',
-    'Understand funding and availability.',
+    'Understand funding, availability, and movement capability.',
     'Understand policy and structure.',
     'Understand movement capability and controls.',
   ]) {
@@ -243,33 +243,29 @@ test('Overview is a governed capital operating home without fabricated valuation
   }
 });
 
-test('Capital Account is an intentional non-executing production UI architecture', () => {
+test('Capital Account is the API-authoritative funding and movement workspace', () => {
   const page = read('app/dashboard/capital-account/page.tsx');
-  const components = read('components/product/CapitalAccountExperience.tsx');
-  const surface = `${page}\n${components}`;
-  for (const section of [
-    'CapitalPositionCard',
-    'AccountStateGrid',
-    'CapitalActionState',
-    'BalancePanel',
-    'MovementPanel',
-    'DestinationPanel',
-    'ActivityPanel',
-    'CapitalContextPanel',
-  ]) {
-    assert.equal(surface.includes(section), true, `missing ${section}`);
-  }
-  assert.equal(components.includes('No capital positions yet.'), true);
-  assert.equal(components.includes('No balances available.'), true);
-  assert.equal(components.includes('No destinations configured.'), true);
-  assert.equal(components.includes('No activity recorded.'), true);
-  assert.equal(page.includes('getCanonicalBalances'), false);
-  assert.equal(/<button|<Button|<form/.test(surface), false);
+  const view = read('app/dashboard/capital-account/CapitalAccountView.tsx');
+  for (const contract of [
+    'getCanonicalBalances',
+    'getFundingCapabilities',
+    'getFundingActivity',
+    'getTransferCapabilities',
+    'getTransferActivity',
+    'getTransferAliases',
+  ])
+    assert.equal(page.includes(contract), true, `missing ${contract}`);
+  for (const tab of ['Capital State', 'Funding', 'Movement', 'Destinations', 'Capital Context'])
+    assert.equal(view.includes(`'${tab}'`), true, `missing ${tab}`);
+  assert.equal(view.includes('CapitalAccountView'), true);
+  assert.equal(view.includes('WalletView'), false);
+  assert.equal(view.includes('Movement request unavailable'), true);
+  assert.equal(/No request has been\s+sent\./.test(view), true);
 });
 
-test('Deposit UX is capability-driven, copyable, and never hardcodes a treasury destination', () => {
-  const view = read('app/dashboard/wallet/WalletView.tsx');
-  const actions = read('app/dashboard/wallet/actions.ts');
+test('Funding UX is capability-driven, copyable, and never hardcodes a treasury destination', () => {
+  const view = read('app/dashboard/capital-account/CapitalAccountView.tsx');
+  const actions = read('app/dashboard/capital-account/actions.ts');
   const financial = read('lib/api/financial.ts');
   assert.equal(view.includes('capabilities.map'), true);
   assert.equal(view.includes('deposit_address'), true);
@@ -289,13 +285,16 @@ test('Deposit UX is capability-driven, copyable, and never hardcodes a treasury 
 });
 
 test('Withdrawal UX never manufactures availability and remains inert before reservation API support', () => {
-  const view = read('app/dashboard/wallet/WalletView.tsx');
-  const actions = read('app/dashboard/wallet/actions.ts');
-  assert.equal(view.includes("active === 'Withdraw'"), true);
+  const view = read('app/dashboard/capital-account/CapitalAccountView.tsx');
+  const actions = read('app/dashboard/capital-account/actions.ts');
+  assert.equal(view.includes("active === 'Movement'"), true);
   assert.equal(view.includes('Select verified destination'), true);
-  assert.equal(view.includes('Withdrawal submission unavailable'), true);
-  assert.equal(view.includes('No request has been sent.'), true);
-  assert.equal(view.includes('<Button className="mt-4" disabled>Submit withdrawal</Button>'), true);
+  assert.equal(view.includes('Movement request unavailable'), true);
+  assert.equal(/No request has been\s+sent\./.test(view), true);
+  assert.equal(
+    /<Button className="mt-4" disabled>\s*Request movement\s*<\/Button>/.test(view),
+    true,
+  );
   assert.equal(view.includes('valueAtomic={selectedTransferBalance.available_atomic}'), true);
   assert.equal(view.includes("selectedTransferBalance ? '0'"), false);
   assert.equal(view.includes("selectedTransferBalance.available_atomic ?? '0'"), false);
@@ -304,8 +303,8 @@ test('Withdrawal UX never manufactures availability and remains inert before res
 });
 
 test('Destination management uses governed alias persistence without pretending verification', () => {
-  const view = read('app/dashboard/wallet/WalletView.tsx');
-  const actions = read('app/dashboard/wallet/actions.ts');
+  const view = read('app/dashboard/capital-account/CapitalAccountView.tsx');
+  const actions = read('app/dashboard/capital-account/actions.ts');
   const financial = read('lib/api/financial.ts');
   assert.equal(view.includes("active === 'Destinations'"), true);
   assert.equal(view.includes('createTransferAliasAction'), true);
@@ -318,11 +317,15 @@ test('Destination management uses governed alias persistence without pretending 
 
 test('legacy capital routes converge on governed workspaces', () => {
   assert.equal(
-    read('app/dashboard/deposit/page.tsx').includes("redirect('/dashboard/capital-account')"),
+    read('app/dashboard/deposit/page.tsx').includes(
+      "redirect('/dashboard/capital-account#funding')",
+    ),
     true,
   );
   assert.equal(
-    read('app/dashboard/withdrawals/page.tsx').includes("redirect('/dashboard/capital-account')"),
+    read('app/dashboard/withdrawals/page.tsx').includes(
+      "redirect('/dashboard/capital-account#movement')",
+    ),
     true,
   );
   assert.equal(
