@@ -43,9 +43,9 @@ export function calculateThesisDrift(history: readonly ThesisEvaluationSnapshot[
   const current = history[0];
   if (!current) return null;
   const previous = history[1];
-  if (!previous) return { state: 'NOT_COMPARABLE', reason: 'A prior evaluation is required to calculate drift', current };
+  if (!previous) return { state: 'NOT_COMPARABLE', reason: 'A prior evaluation is required to calculate drift', current, changedCriteria: [] };
   if (current.thesisVersion !== previous.thesisVersion) {
-    return { state: 'NOT_COMPARABLE', reason: 'Thesis version changed between evaluations', current, previous };
+    return { state: 'NOT_COMPARABLE', reason: 'Thesis version changed between evaluations', current, previous, changedCriteria: [] };
   }
 
   const currentCriteria = criterionMap(current.summary);
