@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Section, Stack } from '@neptlium/ui';
 import { requireProvisionedUser } from '@/lib/auth';
 import { getPortfolioState } from '@/lib/api/client';
+import { getAllocationWorkspace } from '@/lib/api/allocation';
 import { getCanonicalBalances, getFundingCapabilities } from '@/lib/api/financial';
 import { FinancialValue, ProductStateBadge, ProductStateMessage } from '@/components/product/ProductState';
 import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
@@ -10,17 +11,25 @@ import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 export default async function PortfolioPage() {
   await requireProvisionedUser();
 
-  const [portfolioResult, balancesResult, capabilitiesResult] = await Promise.allSettled([
+  const [portfolioResult, balancesResult, capabilitiesResult, allocationResult] = await Promise.allSettled([
     getPortfolioState(),
     getCanonicalBalances(),
     getFundingCapabilities(),
+    getAllocationWorkspace(),
   ]);
 
   const portfolio = portfolioResult.status === 'fulfilled' ? portfolioResult.value : null;
   const balances = balancesResult.status === 'fulfilled' ? balancesResult.value.balances : [];
   const capabilities = capabilitiesResult.status === 'fulfilled' ? capabilitiesResult.value.capabilities : [];
+  const allocation = allocationResult.status === 'fulfilled' ? allocationResult.value : null;
   const balanceError = balancesResult.status === 'rejected';
   const capabilityError = capabilitiesResult.status === 'rejected';
+  const allocationError = allocationResult.status === 'rejected';
+  const allocationPolicy = allocation?.activePolicy ?? null;
+  const allocationDrift = allocation?.drift ?? null;
+  const allocationOutsidePolicy = allocationDrift?.rows.filter((row) => row.status === 'OUTSIDE_POLICY').length ?? 0;
+  const allocationReview = allocationDrift?.rows.filter((row) => row.status === 'REVIEW').length ?? 0;
+  const allocationValuationUnavailable = allocationDrift?.rows.some((row) => row.status === 'VALUATION_UNAVAILABLE') ?? false;
   const hasEnabledFunding = capabilities.some((capability) => capability.state === 'ENABLED');
   const fundingActionLabel = capabilityError || !hasEnabledFunding ? 'Review funding' : 'Fund capital';
   const hasMultipleAssets = balances.length > 1;
@@ -134,8 +143,30 @@ export default async function PortfolioPage() {
               ['Liquidity', balanceError ? 'Unavailable.' : balances.length ? 'Canonical available, pending, reserved, and restricted quantities are established by asset.' : 'No canonical liquidity positions yet.'],
               ['Volatility', 'Not established without an authoritative market-data and valuation source.'],
               ['Counterparty', 'Not established from provider identity alone; governed counterparty evidence is required.'],
-              ['Allocation drift', 'Open Allocation to compare canonical positions with an authorized policy.'],
-              ['Reserve coverage', 'Appears only when policy requirements and authoritative valuation inputs can establish coverage.'],
+              ['Allocation drift',
+                allocationError
+                  ? 'Governed allocation state is unavailable.'
+                  : !allocationPolicy
+                    ? 'No allocation policy is established.'
+                    : !allocationDrift
+                      ? 'Drift has not been established for the active policy.'
+                      : allocationValuationUnavailable
+                        ? 'Policy is established, but cross-asset valuation evidence is unavailable.'
+                        : allocationOutsidePolicy > 0
+                          ? `${allocationOutsidePolicy} policy target${allocationOutsidePolicy === 1 ? '' : 's'} outside tolerance.`
+                          : allocationReview > 0
+                            ? `${allocationReview} policy target${allocationReview === 1 ? '' : 's'} requires review.`
+                            : 'Observed capital is within the currently computable policy tolerance.'],
+              ['Reserve coverage',
+                allocationError
+                  ? 'Governed allocation state is unavailable.'
+                  : !allocationPolicy
+                    ? 'No reserve requirement is established.'
+                    : allocationPolicy.reserveRequirementBps === 0
+                      ? 'The active policy does not specify a reserve requirement.'
+                      : allocationValuationUnavailable
+                        ? `Policy requires ${(allocationPolicy.reserveRequirementBps / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}% reserve coverage; authoritative valuation is unavailable.`
+                        : `Policy requires ${(allocationPolicy.reserveRequirementBps / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}% reserve coverage.`],
             ].map(([title, copy]) => (
               <div key={title} className="grid gap-1 py-4 sm:grid-cols-[11rem_1fr] sm:gap-6">
                 <p className="text-sm font-medium text-text-primary">{title}</p>
