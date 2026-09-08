@@ -849,3 +849,169 @@
     animation: none;
   }
 }
+
+/* Stage 2 hero: a restrained context map, not a product dashboard. */
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy .web-eyebrow {
+  max-width: 28rem;
+  color: rgb(135 205 198 / 86%);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+  max-width: 12ch;
+  margin-top: 1.1rem;
+  font-size: clamp(2.85rem, 5vw, 4rem) !important;
+  font-weight: 480;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy > .authority-hero-lead {
+  max-width: 34rem;
+  margin-top: 1.35rem;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-actions {
+  margin-top: 1.75rem;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta,
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link {
+  min-height: 2.65rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta {
+  padding-inline: 0.9rem;
+  border: 1px solid rgb(241 241 236 / 82%);
+  border-radius: 0.3rem;
+  background: var(--web-ivory);
+  color: var(--web-carbon);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta:hover,
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta:focus-visible {
+  border-color: var(--web-teal);
+  background: var(--web-teal);
+  color: var(--web-carbon);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgb(241 241 236 / 18%);
+  border-radius: 0.3rem;
+  color: rgb(241 241 236 / 64%);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link:hover,
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link:focus-visible {
+  border-color: rgb(241 241 236 / 42%);
+  color: var(--web-ivory);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .capital-context-map {
+  width: min(100%, 27rem);
+  align-self: center;
+  border-color: rgb(241 241 236 / 12%);
+  background: #0e1214;
+  box-shadow: none;
+}
+
+.context-map-body {
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+
+.context-map-label {
+  margin: 0;
+  color: rgb(241 241 236 / 42%);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.context-map {
+  position: relative;
+  min-height: 17rem;
+  margin-top: 1.25rem;
+}
+
+.context-node {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgb(241 241 236 / 72%);
+  font-size: 0.82rem;
+}
+
+.context-node-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid rgb(135 205 198 / 80%);
+  border-radius: 50%;
+  background: #0e1214;
+}
+
+.context-node.context { top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--web-ivory); font-weight: 500; }
+.context-node.context .context-node-dot { width: 0.6rem; height: 0.6rem; border-color: var(--web-teal); background: var(--web-teal); box-shadow: 0 0 0 0.3rem rgb(15 143 136 / 12%); }
+.context-node.ownership { top: 1rem; left: 50%; transform: translateX(-50%); }
+.context-node.markets { top: 50%; left: 0.25rem; transform: translateY(-50%); }
+.context-node.decisions { top: 50%; right: 0.25rem; transform: translateY(-50%); }
+.context-node.operations { bottom: 1rem; left: 50%; transform: translateX(-50%); }
+
+.context-line { position: absolute; display: block; background: rgb(135 205 198 / 28%); }
+.context-line-horizontal { top: 50%; right: 12%; left: 12%; height: 1px; }
+.context-line-vertical { top: 12%; bottom: 12%; left: 50%; width: 1px; }
+
+.context-map-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(241 241 236 / 10%);
+  color: rgb(241 241 236 / 42%);
+  font-size: 0.72rem;
+}
+
+.context-map-status .panel-status { color: rgb(241 241 236 / 52%); }
+
+@media (max-width: 48rem) {
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+    max-width: 13ch;
+    font-size: clamp(2.25rem, 9.5vw, 3rem) !important;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .capital-context-map {
+    width: 100%;
+  }
+}
+
+@media (max-width: 30rem) {
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
+    gap: 2rem;
+    padding-block: 2.5rem 3rem;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+    max-width: 12ch;
+    font-size: clamp(2.2rem, 10.5vw, 2.75rem) !important;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .authority-actions {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .context-map-body { padding-inline: 1rem; }
+  .context-map { min-height: 14rem; }
+  .context-node { font-size: 0.75rem; }
+}

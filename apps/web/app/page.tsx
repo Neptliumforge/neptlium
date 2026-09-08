@@ -46,14 +46,24 @@ function Label({ children, dark = false }: { children: React.ReactNode; dark?: b
 }
 
 function OperatingPanel() {
-  return <aside className="operating-panel" aria-label="Neptlium operating view">
-    <div className="operating-panel-top"><span>NEPTLIUM</span><span>Operating View</span></div>
-    <div className="operating-panel-body">
-      <div className="operating-panel-heading"><Label dark>Capital context</Label><span className="panel-status"><i />Private environment</span></div>
-      <div className="panel-observations">
-        {['Position', 'Change', 'Attention'].map((item, index) => <div key={item} className="panel-observation"><span>0{index + 1}</span><strong>{item}</strong><em>{['Connected', 'Monitoring', 'No critical items'][index]}</em></div>)}
+  const relationships = [
+    ['Ownership', 'ownership'],
+    ['Markets', 'markets'],
+    ['Context', 'context'],
+    ['Decisions', 'decisions'],
+    ['Operations', 'operations'],
+  ] as const;
+
+  return <aside className="operating-panel capital-context-map" aria-label="Neptlium capital context map">
+    <div className="operating-panel-top"><span>NEPTLIUM</span><span>Capital context</span></div>
+    <div className="context-map-body">
+      <p className="context-map-label">Relationships in view</p>
+      <div className="context-map" role="img" aria-label="Ownership and markets connect through context to decisions and operations">
+        {relationships.map(([label, className]) => <div key={label} className={`context-node ${className}`}><span className="context-node-dot" aria-hidden="true" /><span>{label}</span></div>)}
+        <span className="context-line context-line-horizontal" aria-hidden="true" />
+        <span className="context-line context-line-vertical" aria-hidden="true" />
       </div>
-      <div className="panel-navigation">{['Portfolio', 'Allocation', 'Treasury', 'Research'].map((item, index) => <span className={index === 0 ? 'active' : ''} key={item}>{item}<ArrowRight aria-hidden="true" /></span>)}</div>
+      <p className="context-map-status"><span className="panel-status"><i />System state</span> Context connected</p>
     </div>
   </aside>;
 }
@@ -62,7 +72,7 @@ export default function HomePage() {
   return <div className="neptlium-home institutional-home">
     <section className="authority-hero editorial-hero" aria-labelledby="hero-title">
       <div className="web-shell editorial-hero-inner">
-        <div className="editorial-hero-copy"><Label>Capital intelligence</Label><h1 id="hero-title">Capital,<br />understood before<br />it moves.</h1><p className="authority-hero-lead">An intelligent layer for understanding position, change, and strategic attention.</p><div className="authority-actions"><Link className="hero-text-cta" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link><a className="hero-secondary-link" href="#intelligence">Explore Intelligence</a></div></div>
+        <div className="editorial-hero-copy"><Label>Neptlium · Capital intelligence infrastructure</Label><h1 id="hero-title">The intelligence layer for modern capital.</h1><p className="authority-hero-lead">Neptlium connects ownership, markets, decisions, and capital operations into one intelligent environment.</p><div className="authority-actions"><Link className="hero-text-cta" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link><a className="hero-secondary-link" href="#intelligence">Explore Intelligence</a></div></div>
         <OperatingPanel />
       </div>
     </section>
