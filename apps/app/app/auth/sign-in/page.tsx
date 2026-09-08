@@ -1,4 +1,5 @@
 import { SignIn } from '@clerk/nextjs';
+import { AuthRuntimeDiagnostic } from '@/app/(auth)/components/AuthRuntimeDiagnostic';
 import { AuthShell } from '@/app/(auth)/components/AuthShell';
 
 function AuthMountFallback() {
@@ -33,6 +34,8 @@ export default function SignInPage() {
             </p>
           </div>
         </div>
+
+        <AuthRuntimeDiagnostic />
 
         <div className="w-full">
           <SignIn
