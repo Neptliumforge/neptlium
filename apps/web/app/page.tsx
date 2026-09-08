@@ -1,95 +1,84 @@
 import Link from 'next/link';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, ChevronDown, Search } from 'lucide-react';
 import { SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata = createPageMetadata({
-  title: 'Capital, understood before it moves',
-  description: 'Neptlium is the intelligence layer for modern capital — helping institutions understand position, change, and strategic attention.',
+  title: 'The intelligence layer for modern capital',
+  description: 'Neptlium helps institutions understand position, change, and strategic attention.',
   path: '/',
 });
 
-const capabilities = [
-  ['Ownership Intelligence', 'Understand holdings, exposure, concentration, and strategic position.'],
-  ['Market Intelligence', 'Read market movement, opportunities, and changing conditions in context.'],
-  ['Decision Intelligence', 'Move from data to context to decision without losing the thread.'],
-  ['Capital Operations', 'Support oversight, allocation, reporting, and planning in one environment.'],
+const pillars = [
+  ['Ownership Intelligence', 'Understand what you own.', 'Holdings, exposure, concentration, and strategic position.'],
+  ['Market Intelligence', 'Understand what changes.', 'Market movement, opportunity, and context.'],
+  ['Decision Intelligence', 'Understand what matters.', 'Move from data to context to decision.'],
+  ['Capital Operations', 'Understand what happens next.', 'Oversight, allocation, reporting, and planning.'],
 ] as const;
 const ecosystem = [
   ['Markets', 'The forces shaping price, liquidity, and access.'],
   ['Infrastructure', 'The rails carrying value through modern financial systems.'],
-  ['Digital Assets', 'A changing asset class within a wider capital system.'],
   ['Financial Networks', 'The institutions and relationships behind capital movement.'],
+  ['Digital Assets', 'A changing asset class within a wider capital system.'],
   ['Artificial Intelligence', 'New intelligence systems changing how decisions are made.'],
-  ['Emerging Technologies', 'The technologies redefining future capital formation.'],
+  ['Emerging Technologies', 'Technologies redefining future capital formation.'],
 ] as const;
 const audiences = [
-  ['Asset Managers', 'Portfolio visibility, allocation intelligence, and strategic awareness.'],
-  ['Corporations', 'Capital planning, treasury intelligence, and financial clarity.'],
-  ['Family Offices', 'Unified wealth intelligence and decision support.'],
-  ['Institutions', 'Research advantage and a deeper understanding of capital.'],
+  ['Asset Managers', 'See portfolio position, allocation intelligence, and strategic awareness in context.'],
+  ['Corporations', 'Bring capital planning, treasury intelligence, and financial clarity together.'],
+  ['Family Offices', 'Create unified wealth intelligence and decision support.'],
+  ['Institutions', 'Build research advantage and deeper capital understanding.'],
 ] as const;
-const aiCapabilities = [
-  ['Predictive Intelligence', 'Identify meaningful changes before they become obvious.'],
-  ['Autonomous Research', 'Analyze markets, companies, assets, and trends with institutional context.'],
-  ['Institutional Security', 'Private intelligence environment. Controlled access. Data integrity.'],
+const principles = [
+  ['Continuous Intelligence', 'Context preserved across changing environments.'],
+  ['Global Perspective', 'Connected understanding across markets and systems.'],
+  ['Structured Decisions', 'Information organized for better judgment.'],
+  ['Transparent Understanding', 'Know what changed and why.'],
+] as const;
+const aiLayers = [
+  ['Predict', 'Identify meaningful changes.'],
+  ['Research', 'Understand markets, entities, and trends.'],
+  ['Secure', 'Maintain institutional control.'],
 ] as const;
 
-function SectionLabel({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
-  return <p className={`web-eyebrow${light ? ' on-light' : ''}`}>{children}</p>;
+function Label({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
+  return <p className={`web-eyebrow${dark ? ' on-light' : ''}`}>{children}</p>;
+}
+
+function OperatingPanel() {
+  return <aside className="operating-panel" aria-label="Neptlium operating view">
+    <div className="operating-panel-top"><span>NEPTLIUM</span><span>Operating View</span></div>
+    <div className="operating-panel-body">
+      <div className="operating-panel-heading"><Label dark>Capital context</Label><span className="panel-status"><i />Private environment</span></div>
+      <div className="panel-observations">
+        {['Position', 'Change', 'Attention'].map((item, index) => <div key={item} className="panel-observation"><span>0{index + 1}</span><strong>{item}</strong><em>{['Connected', 'Monitoring', 'No critical items'][index]}</em></div>)}
+      </div>
+      <div className="panel-navigation">{['Portfolio', 'Allocation', 'Treasury', 'Research'].map((item, index) => <span className={index === 0 ? 'active' : ''} key={item}>{item}<ArrowRight aria-hidden="true" /></span>)}</div>
+    </div>
+  </aside>;
 }
 
 export default function HomePage() {
   return <div className="neptlium-home institutional-home">
-    <section className="authority-hero" aria-labelledby="hero-title">
-      <div className="web-shell authority-hero-inner">
-        <div className="authority-hero-copy">
-          <SectionLabel>Capital intelligence</SectionLabel>
-          <h1 id="hero-title">Capital,<br />understood<br />before it moves.</h1>
-          <p className="authority-hero-lead">An intelligent layer for understanding position, change, and strategic attention.</p>
-          <div className="authority-actions">
-            <Link className="web-button primary" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link>
-            <a className="hero-sign-in" href="#contact">Contact Sales</a>
-          </div>
-        </div>
+    <section className="authority-hero editorial-hero" aria-labelledby="hero-title">
+      <div className="web-shell editorial-hero-inner">
+        <div className="editorial-hero-copy"><Label>Capital intelligence</Label><h1 id="hero-title">Capital,<br />understood before<br />it moves.</h1><p className="authority-hero-lead">An intelligent layer for understanding position, change, and strategic attention.</p><div className="authority-actions"><Link className="hero-text-cta" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link><a className="hero-secondary-link" href="#intelligence">Explore Intelligence</a></div></div>
+        <OperatingPanel />
       </div>
     </section>
 
-    <section className="product-reveal" aria-labelledby="product-reveal-title">
-      <div className="web-shell">
-        <div className="product-frame">
-          <div className="product-topline"><span>NEPTLIUM</span><span>Capital intelligence</span><span>Private environment</span></div>
-          <div className="product-body">
-            <nav className="product-tabs" aria-label="Product preview navigation"><span className="active">Overview</span><span>Portfolio</span><span>Allocation</span><span>Treasury</span><span>Research</span></nav>
-            <div className="product-stage">
-              <SectionLabel light>Operating view</SectionLabel>
-              <h2 id="product-reveal-title">The system understands capital.</h2>
-              <div className="product-signals"><div><span>01</span><strong>Capital context</strong><small>Relationships across the system</small></div><div><span>02</span><strong>Portfolio intelligence</strong><small>Position, exposure, and intent</small></div><div><span>03</span><strong>Strategic signals</strong><small>What deserves attention now</small></div></div>
-              <div className="product-empty"><span>Context awaiting connection</span><i aria-hidden="true" /></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <section className="context-statement" aria-labelledby="context-title"><div className="web-shell context-statement-inner"><div><Label>Context is the advantage</Label><h2 id="context-title">Capital becomes difficult<br />when information loses context.</h2></div><p>Neptlium reconnects the relationships between ownership, markets, and decisions.</p></div></section>
 
-    <section className="capital-organization capability-section" aria-labelledby="capabilities-title"><div className="web-shell">
-      <header className="section-heading system-heading"><SectionLabel light>One environment</SectionLabel><h2 id="capabilities-title">Every capital decision.</h2><p>Neptlium connects portfolio intelligence, market context, ownership structure, and financial signals into one continuously evolving intelligence layer.</p></header>
-      <div className="capability-system">{capabilities.map(([title, description], index) => <article className="capability-row" key={title}><span className="capability-index">{String(index + 1).padStart(2, '0')}</span><div className="capability-copy"><h3>{title}</h3><p>{description}</p></div><ArrowRight aria-hidden="true" /></article>)}</div>
-    </div></section>
+    <section id="intelligence" className="intelligence-pillars" aria-labelledby="pillars-title"><div className="web-shell"><div className="section-intro"><Label>Intelligence architecture</Label><h2 id="pillars-title">Understand the whole system.</h2></div><div className="pillar-list">{pillars.map(([title, lead, description], index) => <article className="pillar-row" key={title}><span className="pillar-index">0{index + 1}</span><div><h3>{title}</h3><strong>{lead}</strong><p>{description}</p></div><ArrowRight aria-hidden="true" /></article>)}</div></div></section>
 
-    <section className="ecosystem-section" aria-labelledby="ecosystem-title"><div className="web-shell">
-      <div className="editorial-grid"><div><SectionLabel>Capital ecosystem</SectionLabel><h2 id="ecosystem-title">A clearer view of what shapes capital.</h2></div><p className="editorial-copy">Neptlium maps the companies, markets, technologies, and institutions shaping the future of capital.</p></div>
-      <div className="ecosystem-grid">{ecosystem.map(([title, description], index) => <article className="ecosystem-card" key={title}><span>{String(index + 1).padStart(2, '0')}</span><h3>{title}</h3><p>{description}</p><ArrowRight aria-hidden="true" /></article>)}</div>
-    </div></section>
+    <section className="product-experience" aria-labelledby="experience-title"><div className="web-shell"><div className="experience-heading"><Label dark>Product experience</Label><h2 id="experience-title">One environment.<br />Every capital decision.</h2><p>A living system for the relationships, signals, and context behind capital.</p></div><div className="experience-surface"><div className="experience-nav">{['Overview', 'Portfolio', 'Allocation', 'Treasury', 'Research'].map((item, index) => <span className={index === 0 ? 'active' : ''} key={item}>{item}</span>)}</div><div className="experience-canvas"><div className="canvas-topline"><span>Overview / Operating view</span><span>Context state</span></div><div className="canvas-core"><span className="canvas-kicker">Capital intelligence</span><h3>Relationships,<br />made visible.</h3><div className="canvas-trace"><i /><span>Position</span><i /><span>Change</span><i /><span>Attention</span></div></div><div className="canvas-foot"><span>System state</span><strong>Awaiting connected context</strong></div></div></div></div></section>
 
-    <section className="operating-environment scale-section" aria-labelledby="scale-title"><div className="web-shell editorial-grid"><div><SectionLabel light>Institutional scale</SectionLabel><h2 id="scale-title">Built for institutional-scale intelligence.</h2></div><div className="scale-list">{['Continuous Intelligence', 'Global Perspective', 'Structured Decision Making', 'Transparent Capital Understanding'].map((item, index) => <div key={item}><span>{String(index + 1).padStart(2, '0')}</span><h3>{item}</h3><p>Designed to preserve context across teams, systems, and decisions.</p></div>)}</div></div></section>
+    <section className="ecosystem-map" aria-labelledby="ecosystem-title"><div className="web-shell ecosystem-layout"><div className="ecosystem-copy"><Label>Research perspective</Label><h2 id="ecosystem-title">Capital<br />ecosystem</h2><p>A connected view of the companies, markets, technologies, and institutions shaping the future of capital.</p></div><div className="ecosystem-tree">{ecosystem.map(([title, description], index) => <details key={title} open={index === 0}><summary><span>{title}</span><ChevronDown aria-hidden="true" /></summary><p>{description}</p></details>)}</div></div></section>
 
-    <section className="capital-organization solutions-section" aria-labelledby="solutions-title"><div className="web-shell"><header className="section-heading system-heading"><SectionLabel light>Solutions</SectionLabel><h2 id="solutions-title">The command center for modern capital.</h2></header><div className="audience-grid">{audiences.map(([title, description]) => <Link href="#contact" className="audience-card" key={title}><h3>{title}</h3><p>{description}</p><ArrowRight aria-hidden="true" /></Link>)}</div></div></section>
+    <section className="institutional-intelligence" aria-labelledby="institutional-title"><div className="web-shell institutional-layout"><div><Label dark>Institutional intelligence</Label><h2 id="institutional-title">Built for institutional-scale intelligence.</h2></div><div className="principle-list">{principles.map(([title, description], index) => <div key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></div></section>
 
-    <section className="ai-section" aria-labelledby="ai-title"><div className="web-shell"><div className="architecture-split"><div><SectionLabel>Intelligence layer</SectionLabel><h2 id="ai-title">AI-powered capital intelligence.</h2><p>Neptlium interprets financial signals, identifies meaningful changes, and produces executive-ready intelligence.</p></div><div className="ai-list">{aiCapabilities.map(([title, description]) => <article key={title}><span>—</span><div><h3>{title}</h3><p>{description}</p></div></article>)}</div></div></div></section>
+    <section className="solutions-section" aria-labelledby="solutions-title"><div className="web-shell solutions-layout"><div><Label>Who uses Neptlium?</Label><h2 id="solutions-title">The operating layer<br />for modern capital.</h2></div><div className="audience-list">{audiences.map(([title, description], index) => <Link href="#intelligence" key={title}><span>0{index + 1}</span><div><h3>{title}</h3><p>{description}</p></div><ArrowRight aria-hidden="true" /></Link>)}</div></div></section>
 
-    <section id="contact" className="contact-section" aria-labelledby="contact-title"><div className="web-shell contact-grid"><div><SectionLabel light>Private conversation</SectionLabel><h2 id="contact-title">Build your capital intelligence environment.</h2><p>Tell us what your institution needs to understand more clearly.</p></div><form className="contact-form"><label>Name<input name="name" type="text" autoComplete="name" /></label><label>Organization<input name="organization" type="text" autoComplete="organization" /></label><label>Role<input name="role" type="text" /></label><label>Email<input name="email" type="email" autoComplete="email" /></label><label className="full-field">Message<textarea name="message" rows={4} /></label><button className="web-button primary" type="submit">Contact Neptlium <ArrowRight aria-hidden="true" /></button></form></div></section>
-
-    <section className="final-authority"><div className="web-shell final-authority-inner"><div><SectionLabel>Neptlium</SectionLabel><h2>The intelligence layer for modern capital.</h2></div><div><p className="authority-hero-lead">Understand what you own, how capital is positioned, and what deserves attention.</p><Link className="web-button secondary" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link></div></div></section>
+    <section className="ai-section" aria-labelledby="ai-title"><div className="web-shell ai-layout"><div><Label>Capability layer</Label><h2 id="ai-title">Intelligence<br />that compounds.</h2><p>Neptlium interprets financial signals and creates clearer understanding from complex environments.</p></div><div className="ai-layers">{aiLayers.map(([title, description], index) => <div key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></div></section>
   </div>;
 }
