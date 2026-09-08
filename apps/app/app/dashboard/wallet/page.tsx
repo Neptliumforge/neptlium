@@ -1,40 +1,5 @@
-import { requireProvisionedUser } from '@/lib/auth';
-import {
-  getCanonicalBalances,
-  getFundingActivity,
-  getFundingCapabilities,
-  getTransferActivity,
-  getTransferAliases,
-  getTransferCapabilities,
-} from '@/lib/api/financial';
-import { WalletView } from './WalletView';
+import { redirect } from 'next/navigation';
 
-export default async function WalletPage() {
-  await requireProvisionedUser();
-
-  const [capabilities, balances, funding, transferCapabilities, transfers, aliases] = await Promise.allSettled([
-    getFundingCapabilities(),
-    getCanonicalBalances(),
-    getFundingActivity(),
-    getTransferCapabilities(),
-    getTransferActivity(),
-    getTransferAliases(),
-  ]);
-
-  return (
-    <WalletView
-      capabilities={capabilities.status === 'fulfilled' ? capabilities.value.capabilities : []}
-      capabilityError={capabilities.status === 'rejected'}
-      balances={balances.status === 'fulfilled' ? balances.value.balances : []}
-      balanceError={balances.status === 'rejected'}
-      fundingActivity={funding.status === 'fulfilled' ? funding.value.data : []}
-      fundingActivityError={funding.status === 'rejected'}
-      transferCapabilities={transferCapabilities.status === 'fulfilled' ? transferCapabilities.value.capabilities : []}
-      transferCapabilityError={transferCapabilities.status === 'rejected'}
-      transferActivity={transfers.status === 'fulfilled' ? transfers.value.data : []}
-      transferActivityError={transfers.status === 'rejected'}
-      aliases={aliases.status === 'fulfilled' ? aliases.value.data : []}
-      aliasError={aliases.status === 'rejected'}
-    />
-  );
+export default function WalletPage() {
+  redirect('/dashboard/capital-account');
 }
