@@ -197,7 +197,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
               <ReviewRow label="Account" value="Personal" />
             </dl>
             <p className="text-sm leading-6 text-text-secondary">
-              Organization and team settings are optional and can be added later from your account settings.
+              Organization details are not required for your personal account.
             </p>
             <label className="flex cursor-pointer gap-3 text-sm leading-5 text-text-secondary">
               <input
