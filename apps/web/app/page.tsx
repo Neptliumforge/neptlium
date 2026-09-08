@@ -35,7 +35,7 @@ const governanceLayers = [
   ['Review', 'Separate interpretation and modeled intent from authorized state.'],
   ['Govern', 'Keep identity, permissions and consequential operations within explicit control boundaries.'],
 ] as const;
-const boundaries = ['MODELED ≠ EXECUTED', 'PENDING ≠ COMPLETED', 'VISIBLE ≠ AUTHORITATIVE', 'PUBLIC CLIENT ≠ PRIVILEGED AUTHORITY'] as const;
+const boundaries = ['MODELED ≠ EXECUTED', 'PENDING ≠ COMPLETED', 'VISIBLE ≠ AUTHORITATIVE', 'PUBLIC VIEW ≠ PRIVILEGED AUTHORITY'] as const;
 
 export default function HomePage() {
   return (
@@ -169,6 +169,7 @@ export default function HomePage() {
             <p className="web-eyebrow on-light">Financial state</p>
             <h2 id="financial-state-title">Not every number means the same thing.</h2>
             <p>Neptlium is designed to preserve these distinctions rather than collapse them into a single representation of certainty.</p>
+            <p>No customer balances, transactions or performance data are shown.</p>
           </header>
           <div className="capability-system">
             {financialStates.map(([state, description], index) => (
