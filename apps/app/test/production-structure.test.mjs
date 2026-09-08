@@ -150,7 +150,6 @@ test('all five primary workspaces use the shared information-first header', () =
   for (const path of [
     'app/dashboard/page.tsx',
     'app/dashboard/portfolio/page.tsx',
-    'app/dashboard/wallet/WalletView.tsx',
     'app/dashboard/treasury/TreasuryView.tsx',
     'app/dashboard/allocations/AllocationWorkspace.tsx',
   ]) {
@@ -160,6 +159,10 @@ test('all five primary workspaces use the shared information-first header', () =
       `${path} does not use WorkspaceHeader`,
     );
   }
+  assert.equal(
+    read('components/product/CapitalAccountExperience.tsx').includes('WorkspaceHeader'),
+    true,
+  );
 });
 
 test('Overview is a governed capital operating home without fabricated valuation or execution actions', () => {
@@ -237,27 +240,28 @@ test('Overview is a governed capital operating home without fabricated valuation
   }
 });
 
-test('Capital Account exposes complete governed workflows without fabricating balance state', () => {
-  const view = read('app/dashboard/wallet/WalletView.tsx');
-  for (const tab of ['Balances', 'Deposit', 'Withdraw', 'Destinations', 'Activity'])
-    assert.equal(view.includes(`'${tab}'`), true, `missing tab ${tab}`);
-  assert.equal(view.includes('0 positions'), true);
-  assert.equal(view.includes('No capital positions yet'), true);
-  assert.equal(
-    view.includes('A recorded zero balance is shown as zero. Missing balances remain unavailable.'),
-    true,
-  );
-  assert.equal(view.includes('Source of truth · Neptlium canonical ledger'), false);
-  for (const state of [
-    'Requested',
-    'Reserved',
-    'Pending approval',
-    'Approved',
-    'Submitted',
-    'Settled',
-    'Reconciled',
-  ])
-    assert.equal(view.includes(state), true, `missing withdrawal state ${state}`);
+test('Capital Account is an intentional non-executing production UI architecture', () => {
+  const page = read('app/dashboard/capital-account/page.tsx');
+  const components = read('components/product/CapitalAccountExperience.tsx');
+  const surface = `${page}\n${components}`;
+  for (const section of [
+    'CapitalPositionCard',
+    'AccountStateGrid',
+    'CapitalActionState',
+    'BalancePanel',
+    'MovementPanel',
+    'DestinationPanel',
+    'ActivityPanel',
+    'CapitalContextPanel',
+  ]) {
+    assert.equal(surface.includes(section), true, `missing ${section}`);
+  }
+  assert.equal(components.includes('No capital positions yet.'), true);
+  assert.equal(components.includes('No balances available.'), true);
+  assert.equal(components.includes('No destinations configured.'), true);
+  assert.equal(components.includes('No activity recorded.'), true);
+  assert.equal(page.includes('getCanonicalBalances'), false);
+  assert.equal(/<button|<Button|<form/.test(surface), false);
 });
 
 test('Deposit UX is capability-driven, copyable, and never hardcodes a treasury destination', () => {
@@ -311,11 +315,15 @@ test('Destination management uses governed alias persistence without pretending 
 
 test('legacy capital routes converge on governed workspaces', () => {
   assert.equal(
-    read('app/dashboard/deposit/page.tsx').includes("redirect('/dashboard/wallet')"),
+    read('app/dashboard/deposit/page.tsx').includes("redirect('/dashboard/capital-account')"),
     true,
   );
   assert.equal(
-    read('app/dashboard/withdrawals/page.tsx').includes("redirect('/dashboard/wallet')"),
+    read('app/dashboard/withdrawals/page.tsx').includes("redirect('/dashboard/capital-account')"),
+    true,
+  );
+  assert.equal(
+    read('app/dashboard/wallet/page.tsx').includes("redirect('/dashboard/capital-account')"),
     true,
   );
   assert.equal(
