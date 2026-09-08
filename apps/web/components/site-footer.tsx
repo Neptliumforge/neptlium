@@ -1,16 +1,62 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Brand } from './brand';
-import { COMPANY, PRIMARY_PRODUCTS, RESOURCES, SOLUTIONS } from '@/lib/content/public-architecture';
+import chrome from './site-chrome.module.css';
 
-type FooterLink = { readonly label: string; readonly href: string };
-const footerGroups: readonly { readonly label: string; readonly href: string; readonly links: readonly FooterLink[] }[] = [
- { label:'Platform',href:'/platform',links:[] },
- { label:'Products',href:'/products',links:PRIMARY_PRODUCTS.map(({label,href})=>({label,href})) },
- { label:'Solutions',href:'/solutions',links:SOLUTIONS.map(({label,href})=>({label,href})) },
- { label:'Resources',href:'/resources',links:RESOURCES.map(({label,href})=>({label,href})) },
- { label:'Company',href:'/company',links:COMPANY.map(({label,href})=>({label,href})) },
+const legalLinks = [
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms', href: '/terms' },
+  { label: 'Cookie Policy', href: '/cookie-policy' },
+  { label: 'Risk Disclosure', href: '/risk-disclosure' },
+  { label: 'Accessibility', href: '/accessibility' },
 ] as const;
-const legalLinks=[{label:'Privacy',href:'/privacy'},{label:'Terms',href:'/terms'},{label:'Cookie Policy',href:'/cookie-policy'},{label:'Risk Disclosure',href:'/risk-disclosure'},{label:'Accessibility',href:'/accessibility'}] as const;
 
-export function SiteFooter(){return <footer className="institutional-footer" aria-label="Neptlium footer"><div className="footer-shell"><div className="footer-primary"><div className="footer-brand-column"><Brand/><h2>The operating system for capital.</h2><p className="footer-brand-copy">Neptlium provides an operating environment for understanding, coordinating and governing capital across portfolio context, treasury, allocation and capital movement.</p></div><div className="footer-navigation-grid" aria-label="Footer navigation groups">{footerGroups.map(group=><nav key={group.label} aria-label={group.label}><h3><Link href={group.href}>{group.label}</Link></h3>{group.links.length>0?<div>{group.links.map(destination=><Link key={`${group.label}-${destination.href}`} href={destination.href}>{destination.label}</Link>)}</div>:null}</nav>)}</div></div><div className="footer-base"><div className="footer-meta"><span>© {new Date().getFullYear()} Neptlium</span><span>Capital operating platform</span></div><nav className="footer-legal" aria-label="Legal">{legalLinks.map(link=><Link key={link.href} href={link.href}>{link.label}</Link>)}</nav><a className="footer-external" href="https://github.com/Neptliumforge" target="_blank" rel="noopener noreferrer" aria-label="Neptliumforge on GitHub (opens in a new tab)">GitHub <ArrowUpRight aria-hidden="true" /></a></div></div></footer>}
+const socialLinks = [
+  { label: 'Bluesky', href: 'https://bsky.app/profile/neptlium.bsky.social' },
+  { label: 'X', href: 'https://x.com/Neptlium' },
+  { label: 'YouTube', href: 'https://youtube.com/@neptlium?si=fJ7q0r18UCoxjJth' },
+  { label: 'TikTok', href: 'https://www.tiktok.com/@neptlium?_r=1&_t=ZS-98quVuRhCNt' },
+] as const;
+
+export function SiteFooter() {
+  return (
+    <footer className={chrome.footer} aria-label="Neptlium footer">
+      <div className={chrome.footerShell}>
+        <div className={chrome.footerSignature}>
+          <div className={chrome.footerIdentity}>
+            <Brand />
+            <p className={chrome.footerStatement}>
+              A capital operating environment for understanding, coordinating and governing what you own.
+            </p>
+          </div>
+
+          <nav className={chrome.socials} aria-label="Neptlium social channels">
+            {socialLinks.map((social) => (
+              <a
+                className={chrome.socialLink}
+                href={social.href}
+                key={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div className={chrome.footerBase}>
+          <span>© {new Date().getFullYear()} Neptlium</span>
+          <nav className={chrome.legal} aria-label="Legal">
+            {legalLinks.map((link) => (
+              <Link key={link.href} href={link.href}>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </div>
+    </footer>
+  );
+}
