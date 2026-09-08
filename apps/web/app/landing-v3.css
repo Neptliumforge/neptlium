@@ -2,18 +2,19 @@
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] {
   position: sticky;
   inset: auto;
-  border-bottom-color: var(--web-stone);
-  background: var(--web-ivory-high);
-  color: var(--web-carbon);
+  border-bottom-color: rgb(242 242 237 / 10%);
+  background: rgb(8 10 11 / 88%);
+  color: var(--web-ivory);
+  backdrop-filter: blur(14px);
 }
 
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] a[class*='entryAction'] {
-  color: var(--web-carbon);
+  color: var(--web-ivory);
 }
 
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] .command-primary-action {
-  border-color: var(--web-carbon);
-  background: var(--web-carbon);
+  border-color: rgb(242 242 237 / 24%);
+  background: rgb(242 242 237 / 6%);
   color: var(--web-ivory);
 }
 
@@ -611,6 +612,103 @@
 }
 @media (prefers-reduced-motion: reduce) { .operating-panel { animation: none; } .pillar-row, .audience-list > a { transition: none; } }
 
+/* Stage 5: platform environment as connected intelligence surfaces. */
+.platform-ecosystem { padding-top: clamp(6rem, 12vw, 11rem); }
+.platform-ecosystem .experience-heading { align-items: end; }
+.platform-ecosystem .experience-heading h2 { max-width: 12ch; font-size: clamp(2.5rem, 4.5vw, 4.5rem); font-weight: 500; line-height: 1.03; letter-spacing: -.055em; }
+.platform-ecosystem .experience-heading > p { max-width: 31rem; }
+.platform-relationship-map { margin-top: clamp(3.5rem, 7vw, 6rem); padding: 1.5rem 2rem 2rem; border: 1px solid rgb(245 243 238 / 18%); background: var(--web-carbon-soft); }
+.platform-map-title { color: var(--web-teal-interaction); font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.platform-map-grid { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, 3.5rem); align-items: center; justify-items: center; min-height: 17.5rem; margin-top: 1rem; }
+.platform-map-node { position: relative; z-index: 1; display: inline-flex; align-items: center; min-height: 2.6rem; padding: .65rem .8rem; border: 1px solid rgb(245 243 238 / 15%); background: var(--web-carbon-soft); color: var(--web-ivory); font-size: .75rem; font-weight: 500; text-align: center; }
+.platform-map-node::before { width: .35rem; height: .35rem; margin-right: .5rem; border: 1px solid var(--web-teal); border-radius: 50%; content: ''; }
+.platform-map-overview { grid-column: 3; grid-row: 1; border-color: var(--web-teal); }
+.platform-map-portfolio { grid-column: 1; grid-row: 3; }
+.platform-map-account { grid-column: 3; grid-row: 3; border-color: rgb(245 243 238 / 32%); }
+.platform-map-treasury { grid-column: 5; grid-row: 3; }
+.platform-map-allocation { grid-column: 3; grid-row: 5; }
+.platform-map-research { grid-column: 5; grid-row: 5; }
+.platform-map-line { position: absolute; z-index: 0; background: rgb(245 243 238 / 18%); }
+.platform-map-line-horizontal { top: 50%; right: 8%; left: 8%; height: 1px; }
+.platform-map-line-vertical { top: 10%; bottom: 10%; left: 50%; width: 1px; }
+.platform-surfaces { margin-top: clamp(3.5rem, 7vw, 6rem); border-top: 1px solid var(--web-rule-dark); }
+.platform-surface-row { display: grid; grid-template-columns: 3rem minmax(0, 1fr) minmax(13rem, .7fr); gap: 1.5rem; align-items: start; padding: 1.8rem 0; border-bottom: 1px solid var(--web-rule-dark); transition: background-color 220ms var(--web-ease); }
+.platform-surface-row:hover { background: rgb(245 243 238 / 4%); }
+.platform-surface-index { color: var(--web-teal-interaction); font: .68rem var(--font-mono, monospace); }
+.platform-surface-row h3, .platform-surface-row strong, .platform-surface-row p { margin: 0; }
+.platform-surface-row h3 { font-size: 1.05rem; font-weight: 520; }
+.platform-surface-row strong { display: block; margin-top: .55rem; color: rgb(245 243 238 / 68%); font-size: .86rem; font-weight: 450; }
+.platform-surface-row p { max-width: 34rem; margin-top: .5rem; color: rgb(245 243 238 / 55%); font-size: .86rem; line-height: 1.6; }
+.platform-surface-signals { display: flex; flex-wrap: wrap; gap: .5rem 1rem; padding-top: .15rem; }
+.platform-surface-signals span { color: rgb(245 243 238 / 48%); font: .67rem var(--font-mono, monospace); letter-spacing: .04em; }
+.platform-surface-signals span::before { margin-right: .35rem; color: var(--web-teal); content: '—'; }
+.platform-closing { max-width: 35rem; margin: clamp(3.5rem, 7vw, 6rem) 0 0; color: rgb(245 243 238 / 76%); font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 450; line-height: 1.25; letter-spacing: -.03em; }
+@media (max-width: 48rem) {
+  .platform-ecosystem .experience-heading { display: block; }
+  .platform-ecosystem .experience-heading > p { margin-top: 1.5rem; }
+  .platform-relationship-map { padding-inline: 1rem; }
+  .platform-map-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, 3.25rem); min-height: 16.25rem; }
+  .platform-map-overview { grid-column: 2; grid-row: 1; }
+  .platform-map-portfolio { grid-column: 1; grid-row: 3; }
+  .platform-map-account { grid-column: 2; grid-row: 3; }
+  .platform-map-treasury { grid-column: 3; grid-row: 3; }
+  .platform-map-allocation { grid-column: 2; grid-row: 5; }
+  .platform-map-research { grid-column: 3; grid-row: 5; }
+  .platform-map-line-horizontal { right: 4%; left: 4%; }
+  .platform-surface-row { grid-template-columns: 2rem minmax(0, 1fr); gap: .8rem 1rem; }
+  .platform-surface-signals { grid-column: 2; }
+}
+@media (max-width: 30rem) {
+  .platform-ecosystem .experience-heading h2 { font-size: clamp(2.25rem, 9vw, 3.25rem); }
+  .platform-map-node { padding-inline: .45rem; font-size: .68rem; }
+  .platform-map-node::before { margin-right: .3rem; }
+  .platform-surface-row { padding-block: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { .platform-surface-row { transition: none; } }
+
+/* Stage 3: intelligence architecture as a connected institutional system. */
+.architecture-section { background: var(--web-ivory-high); }
+.architecture-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 31rem); align-items: end; gap: clamp(3rem, 10vw, 10rem); padding-bottom: clamp(3.5rem, 7vw, 6rem); }
+.architecture-intro h2 { max-width: 15ch; margin: .9rem 0 0; font-size: clamp(2.5rem, 4.5vw, 4.5rem); font-weight: 500; line-height: 1.03; letter-spacing: -.055em; }
+.architecture-intro > p { max-width: 31rem; margin: 0 0 .2rem; color: var(--web-graphite); font-size: 1rem; line-height: 1.7; }
+.architecture-map { display: grid; grid-template-columns: 10rem minmax(0, 1fr); align-items: center; gap: 2rem; min-height: 18rem; padding: 2rem; border: 1px solid var(--web-stone); background: var(--web-ivory); }
+.architecture-map-title { align-self: start; color: var(--web-teal); font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.architecture-map-grid { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, 3.5rem); align-items: center; justify-items: center; min-height: 12rem; }
+.architecture-map-node { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .5rem; padding: .65rem .85rem; background: var(--web-ivory); color: var(--web-carbon); font-size: .8rem; font-weight: 550; }
+.architecture-map-node::before { width: .35rem; height: .35rem; border: 1px solid var(--web-teal); border-radius: 50%; content: ''; }
+.architecture-map-ownership { grid-column: 2; grid-row: 1; }
+.architecture-map-markets { grid-column: 1; grid-row: 2; }
+.architecture-map-context { grid-column: 2; grid-row: 2; border: 1px solid var(--web-stone); }
+.architecture-map-decisions { grid-column: 3; grid-row: 2; }
+.architecture-map-operations { grid-column: 2; grid-row: 3; }
+.architecture-map-line { position: absolute; z-index: 0; background: var(--web-stone); }
+.architecture-map-line-horizontal { top: 50%; right: 16%; left: 16%; height: 1px; }
+.architecture-map-line-vertical { top: 16%; bottom: 16%; left: 50%; width: 1px; }
+.architecture-layers { margin-top: clamp(3rem, 7vw, 6rem); }
+.architecture-layer { grid-template-columns: 3rem minmax(0, 1fr) minmax(14rem, .8fr) auto; gap: 1.5rem; padding-block: 2rem; }
+.architecture-layer:hover { padding-inline: 1rem; }
+.architecture-layer p { max-width: 34rem; }
+.architecture-signals { display: flex; flex-wrap: wrap; align-items: start; gap: .45rem 1rem; padding-top: .2rem; }
+.architecture-signals span { color: var(--web-graphite); font: .67rem var(--font-mono, monospace); letter-spacing: .04em; }
+.architecture-signals span::before { margin-right: .35rem; color: var(--web-teal); content: '—'; }
+.architecture-closing { margin: clamp(3.5rem, 8vw, 7rem) 0 0; color: var(--web-carbon); font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -.04em; }
+@media (max-width: 48rem) {
+  .architecture-intro { grid-template-columns: 1fr; gap: 1.5rem; }
+  .architecture-intro h2 { font-size: clamp(2.35rem, 9vw, 3.5rem); }
+  .architecture-map { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.25rem; }
+  .architecture-map-title { align-self: auto; }
+  .architecture-layer { grid-template-columns: 2rem minmax(0, 1fr) auto; gap: .8rem 1rem; }
+  .architecture-signals { grid-column: 2 / 4; }
+  .architecture-layer > svg { grid-column: 3; grid-row: 1; }
+}
+@media (max-width: 30rem) {
+  .architecture-map-grid { grid-template-rows: repeat(3, 3rem); }
+  .architecture-map-node { padding-inline: .45rem; font-size: .72rem; }
+  .architecture-layer { padding-block: 1.5rem; }
+  .architecture-signals { gap: .35rem .7rem; }
+}
+
+
 /* Canonical institutional hero: left-led editorial composition at every breakpoint. */
 .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
   align-items: center;
@@ -763,10 +861,10 @@
   max-width: 13ch;
   margin-top: 1.15rem;
   font-family: var(--neptlium-system-font) !important;
-  font-size: clamp(3rem, 4.5vw, 3.5rem) !important;
+  font-size: clamp(2.75rem, 4vw, 3.5rem) !important;
   font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
 .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy > .authority-hero-lead {
@@ -811,19 +909,13 @@
 }
 
 .neptlium-home > .authority-hero.editorial-hero .operating-panel {
-  animation: panel-state-rise 600ms 1.2s both ease-out;
-}
-
-@keyframes panel-state-rise {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 48rem) {
   .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
     grid-template-columns: 1fr;
-    gap: 3rem;
-    padding-block: 3.75rem 4rem;
+    gap: 3.5rem;
+    padding-block: 4.5rem 5rem;
   }
 
   .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
@@ -852,6 +944,429 @@
 
 @media (prefers-reduced-motion: reduce) {
   .neptlium-home > .authority-hero.editorial-hero .operating-panel {
+    animation: none;
+  }
+}
+
+/* Stage 2 hero: a restrained context map, not a product dashboard. */
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy .web-eyebrow {
+  max-width: 28rem;
+  color: rgb(135 205 198 / 86%);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+  max-width: 12ch;
+  margin-top: 1.1rem;
+  font-size: clamp(2.85rem, 5vw, 4rem) !important;
+  font-weight: 480;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy > .authority-hero-lead {
+  max-width: 34rem;
+  margin-top: 1.35rem;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-actions {
+  margin-top: 1.75rem;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta,
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link {
+  min-height: 2.65rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta {
+  padding-inline: 0.9rem;
+  border: 1px solid rgb(241 241 236 / 82%);
+  border-radius: 0.3rem;
+  background: var(--web-ivory);
+  color: var(--web-carbon);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta:hover,
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta:focus-visible {
+  border-color: var(--web-teal);
+  background: var(--web-teal);
+  color: var(--web-carbon);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgb(241 241 236 / 18%);
+  border-radius: 0.3rem;
+  color: rgb(241 241 236 / 64%);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link:hover,
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link:focus-visible {
+  border-color: rgb(241 241 236 / 42%);
+  color: var(--web-ivory);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .capital-context-map {
+  width: min(100%, 27rem);
+  align-self: center;
+  border-color: rgb(241 241 236 / 12%);
+  background: #0e1214;
+  box-shadow: none;
+}
+
+.context-map-body {
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+
+.context-map-label {
+  margin: 0;
+  color: rgb(241 241 236 / 42%);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.context-map {
+  position: relative;
+  min-height: 17rem;
+  margin-top: 1.25rem;
+}
+
+.context-node {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgb(241 241 236 / 72%);
+  font-size: 0.82rem;
+}
+
+.context-node-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid rgb(135 205 198 / 80%);
+  border-radius: 50%;
+  background: #0e1214;
+}
+
+.context-node.context { top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--web-ivory); font-weight: 500; }
+.context-node.context .context-node-dot { width: 0.6rem; height: 0.6rem; border-color: var(--web-teal); background: var(--web-teal); box-shadow: 0 0 0 0.3rem rgb(15 143 136 / 12%); }
+.context-node.ownership { top: 1rem; left: 50%; transform: translateX(-50%); }
+.context-node.markets { top: 50%; left: 0.25rem; transform: translateY(-50%); }
+.context-node.decisions { top: 50%; right: 0.25rem; transform: translateY(-50%); }
+.context-node.operations { bottom: 1rem; left: 50%; transform: translateX(-50%); }
+
+.context-line { position: absolute; display: block; background: rgb(135 205 198 / 28%); }
+.context-line-horizontal { top: 50%; right: 12%; left: 12%; height: 1px; }
+.context-line-vertical { top: 12%; bottom: 12%; left: 50%; width: 1px; }
+
+.context-map-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(241 241 236 / 10%);
+  color: rgb(241 241 236 / 42%);
+  font-size: 0.72rem;
+}
+
+.context-map-status .panel-status { color: rgb(241 241 236 / 52%); }
+
+@media (max-width: 48rem) {
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+    max-width: 13ch;
+    font-size: clamp(2.25rem, 9.5vw, 3rem) !important;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .capital-context-map {
+    width: 100%;
+  }
+}
+
+/* Stage 6: one quiet, institutional rhythm across the complete experience. */
+.neptlium-home {
+  position: relative;
+  isolation: isolate;
+  background: var(--web-ivory-high);
+}
+
+.neptlium-home::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(circle at 76% 8%, rgb(15 143 136 / 4%), transparent 26rem), linear-gradient(180deg, rgb(16 18 20 / 1%), transparent 22rem);
+  content: '';
+  pointer-events: none;
+}
+
+.neptlium-home > section {
+  position: relative;
+  border-top: 1px solid color-mix(in oklab, var(--web-carbon) 8%, transparent);
+}
+
+.neptlium-home > .authority-hero {
+  border-top: 0;
+}
+
+.neptlium-home > .authority-hero.editorial-hero {
+  background-color: #080a0b;
+  background-image: linear-gradient(rgb(241 241 236 / 2.5%) 1px, transparent 1px), linear-gradient(90deg, rgb(241 241 236 / 2.5%) 1px, transparent 1px), radial-gradient(circle at 68% 38%, rgb(15 143 136 / 8%), transparent 32rem);
+  background-size: 4rem 4rem, 4rem 4rem, auto;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+  max-width: 13ch;
+  font-size: clamp(2.85rem, 5vw, 4rem) !important;
+  font-weight: 480;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy .web-eyebrow {
+  margin-bottom: 0;
+}
+
+.neptlium-home > .context-statement,
+.neptlium-home > .intelligence-pillars,
+.neptlium-home > .solutions-section,
+.neptlium-home > .ai-section {
+  padding-block: clamp(7rem, 12vw, 11rem);
+}
+
+.neptlium-home > .product-experience,
+.neptlium-home > .ecosystem-map,
+.neptlium-home > .institutional-intelligence {
+  padding-block: clamp(7rem, 12vw, 11rem);
+}
+
+.neptlium-home .web-eyebrow {
+  font-weight: 550;
+  letter-spacing: .15em;
+}
+
+.neptlium-home h1,
+.neptlium-home h2,
+.neptlium-home h3,
+.neptlium-home strong {
+  font-weight: 500;
+}
+
+.neptlium-home p {
+  text-wrap: pretty;
+}
+
+@keyframes neptlium-entrance {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.neptlium-home > .authority-hero .web-eyebrow,
+.neptlium-home > .authority-hero h1,
+.neptlium-home > .authority-hero .authority-hero-lead,
+.neptlium-home > .authority-hero .authority-actions,
+.neptlium-home > .authority-hero .operating-panel {
+  opacity: 0;
+  animation: neptlium-entrance 700ms var(--web-ease) forwards;
+}
+
+.neptlium-home > .authority-hero h1 { animation-delay: 100ms; }
+.neptlium-home > .authority-hero .authority-hero-lead { animation-delay: 180ms; }
+.neptlium-home > .authority-hero .authority-actions { animation-delay: 260ms; }
+.neptlium-home > .authority-hero .operating-panel { animation-delay: 320ms; }
+
+@supports (animation-timeline: view()) {
+  .neptlium-home > section:not(.authority-hero) {
+    animation: neptlium-entrance linear both;
+    animation-timeline: view(block 78% 12%);
+    animation-range: entry 0% cover 24%;
+  }
+}
+
+@media (max-width: 48rem) {
+  .neptlium-home > .context-statement,
+  .neptlium-home > .intelligence-pillars,
+  .neptlium-home > .product-experience,
+  .neptlium-home > .ecosystem-map,
+  .neptlium-home > .institutional-intelligence,
+  .neptlium-home > .solutions-section,
+  .neptlium-home > .ai-section {
+    padding-block: 5.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neptlium-home > .authority-hero .web-eyebrow,
+  .neptlium-home > .authority-hero h1,
+  .neptlium-home > .authority-hero .authority-hero-lead,
+  .neptlium-home > .authority-hero .authority-actions,
+  .neptlium-home > .authority-hero .operating-panel,
+  .neptlium-home > section:not(.authority-hero) {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 30rem) {
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
+    gap: 2rem;
+    padding-block: 2.5rem 3rem;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+    max-width: 12ch;
+    font-size: clamp(2.2rem, 10.5vw, 2.75rem) !important;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .authority-actions {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .context-map-body { padding-inline: 1rem; }
+  .context-map { min-height: 14rem; }
+  .context-node { font-size: 0.75rem; }
+}
+
+/* Final marketing environment: continuous, quiet, and institutional. */
+.neptlium-home {
+  --marketing-surface: #0e1214;
+  --marketing-surface-soft: #121819;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 82% 6%, rgb(15 143 136 / 7%), transparent 34rem),
+    linear-gradient(180deg, #101516 0%, #0b1011 38%, #101516 72%, #0d1213 100%);
+  color: var(--web-ivory);
+}
+
+.neptlium-home::before {
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background:
+    linear-gradient(90deg, transparent 0 49.95%, rgb(242 242 237 / 2.2%) 50%, transparent 50.05%),
+    linear-gradient(180deg, transparent 0 49.95%, rgb(242 242 237 / 1.8%) 50%, transparent 50.05%);
+  background-size: 12rem 12rem;
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 38%), transparent 62%);
+  opacity: 0.2;
+}
+
+.neptlium-home::after {
+  position: fixed;
+  z-index: -1;
+  inset: -20%;
+  pointer-events: none;
+  content: '';
+  background: radial-gradient(ellipse at 50% 0%, rgb(242 242 237 / 3.2%), transparent 56%);
+  animation: neptlium-atmosphere 48s ease-in-out infinite alternate;
+}
+
+@keyframes neptlium-atmosphere {
+  from { transform: translate3d(-1%, -0.5%, 0) scale(1); }
+  to { transform: translate3d(1%, 0.5%, 0) scale(1.03); }
+}
+
+.neptlium-home > section {
+  background: transparent;
+}
+
+.neptlium-home > section + section {
+  border-top: 1px solid rgb(242 242 237 / 7%);
+}
+
+.neptlium-home > .authority-hero,
+.neptlium-home > .product-experience,
+.neptlium-home > .institutional-intelligence {
+  background: transparent;
+}
+
+.neptlium-home > .context-statement,
+.neptlium-home > .intelligence-pillars,
+.neptlium-home > .ecosystem-map,
+.neptlium-home > .solutions-section,
+.neptlium-home > .ai-section {
+  background: color-mix(in srgb, var(--marketing-surface-soft) 88%, transparent);
+  color: var(--web-ivory);
+}
+
+.neptlium-home .context-statement-inner > p,
+.neptlium-home .pillar-row p,
+.neptlium-home .ecosystem-copy p,
+.neptlium-home .ecosystem-tree p,
+.neptlium-home .solutions-layout p,
+.neptlium-home .ai-layout p {
+  color: rgb(242 242 237 / 62%);
+}
+
+.neptlium-home .pillar-list,
+.neptlium-home .ecosystem-tree,
+.neptlium-home .principle-list,
+.neptlium-home .audience-list,
+.neptlium-home .ai-layers {
+  border-color: rgb(242 242 237 / 13%);
+}
+
+.neptlium-home .pillar-row,
+.neptlium-home .ecosystem-tree details,
+.neptlium-home .principle-list > div,
+.neptlium-home .audience-list > a,
+.neptlium-home .ai-layers > div {
+  border-color: rgb(242 242 237 / 13%);
+}
+
+.neptlium-home .pillar-row:hover,
+.neptlium-home .audience-list > a:hover {
+  background: rgb(242 242 237 / 4%);
+}
+
+.neptlium-home .hero-text-cta,
+.neptlium-home .hero-secondary-link {
+  min-height: 2.5rem;
+  border-radius: 0.25rem;
+  transition: color 220ms var(--web-ease), border-color 220ms var(--web-ease), background-color 220ms var(--web-ease);
+}
+
+.neptlium-home .hero-text-cta {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgb(242 242 237 / 82%);
+  background: var(--web-ivory);
+  color: var(--web-carbon);
+}
+
+.neptlium-home .hero-text-cta:hover,
+.neptlium-home .hero-text-cta:focus-visible {
+  border-color: var(--web-ivory);
+  background: transparent;
+  color: var(--web-ivory);
+}
+
+.neptlium-home .hero-secondary-link {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgb(242 242 237 / 20%);
+}
+
+.neptlium-home .hero-secondary-link:hover,
+.neptlium-home .hero-secondary-link:focus-visible {
+  border-color: rgb(242 242 237 / 48%);
+  background: rgb(242 242 237 / 4%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neptlium-home::after {
     animation: none;
   }
 }

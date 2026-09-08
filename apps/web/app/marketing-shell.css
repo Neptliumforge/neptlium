@@ -28,12 +28,12 @@
   --nts-weight-medium: 500;
   --nts-weight-emphasis: 550;
   --nts-weight-semibold: 600;
-  --nts-display: clamp(2.5rem, 2rem + 1.65vw, 3.75rem);
-  --nts-h1: clamp(2rem, 1.72rem + 1vw, 2.75rem);
-  --nts-h2: clamp(1.625rem, 1.48rem + 0.55vw, 2rem);
+  --nts-display: clamp(2.25rem, 1.9rem + 1.2vw, 3.5rem);
+  --nts-h1: clamp(1.875rem, 1.65rem + 0.8vw, 2.5rem);
+  --nts-h2: clamp(1.5rem, 1.35rem + 0.45vw, 2rem);
   --nts-h3: 1.125rem;
-  --nts-lead: clamp(1.0625rem, 1rem + 0.18vw, 1.1875rem);
-  --nts-body: 0.9375rem;
+  --nts-lead: clamp(1rem, 0.98rem + 0.16vw, 1.125rem);
+  --nts-body: 1rem;
   --nts-nav: 0.875rem;
   --nts-caption: 0.8125rem;
   --nts-label: 0.6875rem;
