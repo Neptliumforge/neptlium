@@ -18,6 +18,12 @@ const baseThesis = {
   geographies: ['United States', 'Europe'],
 };
 
+const baseCriterion = {
+  weightBps: 1000,
+  importance: 'PREFERRED',
+  position: 1,
+};
+
 test('thesis input normalizes text and rejects duplicate governed dimensions', () => {
   assert.deepEqual(validateThesisInput({ ...baseThesis, name: '  Growth Equity  ' }).name, 'Growth Equity');
   assert.throws(
@@ -53,6 +59,47 @@ test('quantitative criteria require governed metrics and operator values', () =>
     () => validateThesisCriterion({ ...criterion, numericValue: undefined }),
     /requires numericValue/,
   );
+});
+
+test('criterion operators must match governed metric value types', () => {
+  assert.throws(() => validateThesisCriterion({
+    ...baseCriterion,
+    metricKey: 'revenue_growth_yoy',
+    kind: 'QUANTITATIVE',
+    operator: 'CONTAINS',
+    textValue: '25',
+  }), /requires a text metric/);
+
+  assert.throws(() => validateThesisCriterion({
+    ...baseCriterion,
+    metricKey: 'switching_costs',
+    kind: 'QUALITATIVE',
+    operator: 'GT',
+    numericValue: 1,
+  }), /requires a numeric metric/);
+
+  assert.throws(() => validateThesisCriterion({
+    ...baseCriterion,
+    metricKey: 'gross_margin',
+    kind: 'QUANTITATIVE',
+    operator: 'EQ',
+  }), /requires numericValue/);
+});
+
+test('boolean criteria require explicit boolean operators', () => {
+  assert.doesNotThrow(() => validateThesisCriterion({
+    ...baseCriterion,
+    metricKey: 'founder_led',
+    kind: 'QUALITATIVE',
+    operator: 'IS_TRUE',
+  }));
+
+  assert.throws(() => validateThesisCriterion({
+    ...baseCriterion,
+    metricKey: 'founder_led',
+    kind: 'QUALITATIVE',
+    operator: 'EQ',
+  }), /require IS_TRUE or IS_FALSE/);
 });
 
 test('qualitative metrics cannot silently become quantitative criteria', () => {
