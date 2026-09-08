@@ -1,21 +1,65 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { CapitalAccountVisual } from '@/components/product-visuals';
 import { createPageMetadata } from '@/lib/seo';
+import styles from '../product-depth.module.css';
 
-export const metadata = createPageMetadata({ title: 'Capital Account — Funding and Movement Context | Neptlium', description: 'Neptlium Capital Account organizes account-level funding and capital-movement context while preserving source, destination, lifecycle and authority distinctions.', path: '/products/capital-account' });
+export const metadata = createPageMetadata({
+  title: 'Capital Account — Governed Capital Movement | Neptlium',
+  description: 'Neptlium Capital Account gives funding and capital movement a governed operating context across purpose, lifecycle, evidence and downstream portfolio meaning.',
+  path: '/products/capital-account',
+});
 
-const accountStates = [
-  ['Account context', 'The account is represented inside a wider capital picture rather than as an isolated balance surface.'],
-  ['Movement intent', 'A requested or proposed movement remains distinct from review, authorization, submission and financial outcome.'],
-  ['Provider evidence', 'Externally reported activity retains its provenance rather than silently becoming an internally invented source of truth.'],
-  ['Canonical state', 'Neptlium can organize its own operating record without rewriting what a provider, network or consequential system actually reported.'],
+const operatingRecord = [
+  ['Available context', 'Understand the capital picture around an account without reducing it to a single balance or provider observation.'],
+  ['Movement purpose', 'Keep funding and movement activity attached to the reason it exists: an entity, obligation, allocation, transfer or other governed capital objective.'],
+  ['Lifecycle state', 'Requested, reviewed, authorized, submitted, settled and reconciled remain distinct claims rather than being flattened into “moved.”'],
+  ['Evidence and provenance', 'Preserve where a movement observation came from and what authority that evidence carries before it becomes part of the wider operating record.'],
 ] as const;
 
-export default function CapitalAccountPage() { return <div className="product-story capital-account-story">
-  <section className="product-story-hero"><div className="web-shell product-story-hero-grid"><div><p className="web-eyebrow on-light">Products · Capital Account</p><h1>Capital movement should retain the context that explains it.</h1></div><div className="product-story-intro"><p>Capital Account is designed to organize funding, account-level operating state and movement context alongside treasury, allocation and portfolio work.</p><p>It presents the lifecycle around capital movement without implying that Neptlium is itself a bank, custodian, broker, payment institution or settlement provider.</p><Link className="text-arrow-link" href="/products">All products <ArrowRight aria-hidden="true" /></Link></div></div></section>
-  <section className="capital-account-ledger" aria-labelledby="account-title"><div className="web-shell capital-account-ledger-grid"><div><p className="web-eyebrow on-light">Operating state</p><h2 id="account-title">One account context can contain several different kinds of truth.</h2><p>Useful capital visibility depends on knowing whether information is observed, provider-reported, internally canonical, proposed or consequential.</p></div><div className="capital-account-state-list">{accountStates.map(([title,body],index)=><article key={title}><span>{String(index+1).padStart(2,'0')}</span><div><h3>{title}</h3><p>{body}</p></div></article>)}</div></div></section>
-  <section className="capital-account-visual-section"><div className="web-shell capital-account-visual-grid"><div className="product-story-visual"><CapitalAccountVisual /></div><div className="product-story-aside"><p className="web-eyebrow on-light">Movement lifecycle</p><h2>Source, destination, timing and state belong together.</h2><p>A movement workflow is easier to reason about when the origin and destination, requested amount, provider evidence and current lifecycle state remain connected. Requested, approved, submitted, settled and reconciled are not synonyms.</p><p>Neptlium is designed to preserve those distinctions so downstream treasury and allocation context does not have to infer what happened from a single balance change.</p></div></div></section>
-  <section className="architecture-section architecture-dark"><div className="web-shell architecture-split"><div><p className="web-eyebrow">Relationship to treasury and allocation</p><h2>Movement changes the operating picture around it.</h2></div><div><p>Funding context can affect liquidity. Liquidity can constrain allocation. Allocation intent can create future funding requirements. Capital Account provides a movement-oriented view into that connected system while leaving treasury interpretation and allocation modeling to their defined product responsibilities.</p><p>Visibility into capital availability should not be read as an instruction or authorization to move capital. Consequential actions depend on the applicable authenticated workflow, provider capability, permissions and verified state.</p></div></div></section>
-  <section className="product-story-close"><div className="web-shell product-story-close-grid"><h2>Keep capital state legible through the movement lifecycle.</h2><Link className="text-arrow-link" href="/products/treasury">Continue to Treasury <ArrowRight aria-hidden="true" /></Link></div></section>
-</div>; }
+const relationships = [
+  ['Treasury', 'Capital movement changes the liquidity picture and can alter reserves, readiness and future obligations.'],
+  ['Allocation', 'Funding can support an intended capital structure, but movement alone does not establish allocation intent or approval.'],
+  ['Portfolio Intelligence', 'Movement becomes more meaningful when its effect on ownership, exposure and portfolio structure remains visible.'],
+] as const;
+
+export default function CapitalAccountPage() {
+  return <main className={styles.page}>
+    <section className={styles.hero}>
+      <div className={`web-shell ${styles.heroGrid}`}>
+        <div><p className="web-eyebrow on-light">01 · Capital Account</p><h1>Capital, with somewhere to operate.</h1></div>
+        <div className={styles.heroLead}>
+          <p><strong>Capital Account gives funding and capital movement a governed operating context.</strong></p>
+          <p>Instead of treating movement as an isolated transaction, Neptlium connects capital activity to its purpose, lifecycle, evidence and the wider portfolio state it affects.</p>
+          <p>The result is not simply a record that capital moved. It is a record of <strong>why it moved, where it belongs and what that movement changes.</strong></p>
+          <Link className="text-arrow-link" href="/products">All products <ArrowRight aria-hidden="true" /></Link>
+        </div>
+      </div>
+    </section>
+
+    <section className={styles.section} aria-labelledby="capital-record-title">
+      <div className="web-shell">
+        <div className={styles.split}><div><p className="web-eyebrow on-light">Operating record</p><h2 id="capital-record-title">Know where capital stands—and how it arrived there.</h2></div><p className={styles.sectionIntro}>Capital movement becomes institutionally useful when account context, purpose, state and evidence survive every handoff. Capital Account is designed to preserve that continuity.</p></div>
+        <div className={styles.ledger}>{operatingRecord.map(([title, body], index) => <article key={title}><span className={styles.index}>{String(index + 1).padStart(2, '0')}</span><h3>{title}</h3><p>{body}</p></article>)}</div>
+      </div>
+    </section>
+
+    <section className={`${styles.section} ${styles.sectionMuted}`}>
+      <div className="web-shell">
+        <div className={styles.split}><div><p className="web-eyebrow on-light">Movement with context</p><h2>Funding activity should remain attached to its purpose.</h2></div><div className={styles.prose}><p>A deposit, withdrawal or transfer can have very different operating meaning depending on the entity, obligation, strategy or allocation it supports.</p><p>Capital Account is designed so movement context does not disappear into an activity feed. The movement remains connected to the capital system around it.</p><p>This creates a more durable institutional record: not merely a chronology of transactions, but a traceable relationship between capital movement and the decisions or requirements that produced it.</p></div></div>
+      </div>
+    </section>
+
+    <section className={styles.darkSection}>
+      <div className="web-shell">
+        <div className={styles.split}><div><p className="web-eyebrow">Connected responsibility</p><h2>Movement changes the operating picture around it.</h2></div><div className={styles.darkProse}><p>Capital Account does not absorb Treasury, Allocation or Portfolio Intelligence. It gives them a movement-oriented operating record they can interpret within their own responsibility.</p><p>Visibility into capital does not itself authorize its use. Consequential action remains dependent on the applicable authenticated workflow, permissions, provider capability and verified state.</p></div></div>
+        <div className={styles.relationshipList}>{relationships.map(([title, body], index) => <article key={title}><span className={styles.index}>{String(index + 1).padStart(2, '0')}</span><div><h3>{title}</h3><p>{body}</p></div></article>)}</div>
+      </div>
+    </section>
+
+    <section className={styles.section}>
+      <div className="web-shell"><div className={styles.statement}><p className="web-eyebrow on-light">Institutional continuity</p><h2>Preserve the record behind the movement.</h2><p>Institutional memory weakens when the reason behind capital activity survives only in inboxes, meetings or spreadsheets. Capital Account is designed to keep purpose, lifecycle and evidence closer to the movement itself.</p><p className={styles.statementQuote}>Capital should never move without context.</p></div></div>
+    </section>
+
+    <section className={styles.close}><div className={`web-shell ${styles.closeGrid}`}><h2>Give every capital movement an operating meaning.</h2><Link className="text-arrow-link" href="/products/treasury">Continue to Treasury <ArrowRight aria-hidden="true" /></Link></div></section>
+  </main>;
+}
