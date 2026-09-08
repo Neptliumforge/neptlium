@@ -7,6 +7,10 @@
   color: var(--web-carbon);
 }
 
+.site-header.capital-command-bar[data-home='true'][data-scrolled='false'] a[class*='entryAction'] {
+  color: var(--web-carbon);
+}
+
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] .command-primary-action {
   border-color: var(--web-carbon);
   background: var(--web-carbon);
