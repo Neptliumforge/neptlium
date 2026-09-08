@@ -7,10 +7,12 @@ import { createPrincipalAuthenticator } from './authentication.js';
 import { SupabaseIdentityPrincipalResolver } from './identity-principal.js';
 import { MemoryRateLimiter } from './security.js';
 import { handleThesisRoute } from './thesis-routes.js';
+import type { ThesisLanguageModel } from './thesis-intelligence.js';
 import { MemoryThesisRepository, SupabaseThesisRepository, type ThesisRepository } from './thesis-repository.js';
 
 export interface ThesisAppDependencies extends Dependencies {
   thesisRepository?: ThesisRepository;
+  thesisLanguageModel?: ThesisLanguageModel;
 }
 
 const headersBase = {
@@ -60,7 +62,14 @@ export async function buildThesisApp(deps: ThesisAppDependencies = {}) {
         if (Buffer.byteLength(raw) > 1_048_576) throw new ApiError(413, 'payload_too_large', 'Request body exceeds 1 MiB');
         try { body = raw.length ? JSON.parse(raw) : undefined; } catch { throw new ApiError(422, 'validation_failed', 'Malformed JSON'); }
       }
-      const result = await handleThesisRoute({ method, path: target.pathname, query: target.searchParams, body }, { repository: thesisRepository, principal: async () => ({ id: principal.id }) });
+      const result = await handleThesisRoute(
+        { method, path: target.pathname, query: target.searchParams, body },
+        {
+          repository: thesisRepository,
+          principal: async () => ({ id: principal.id }),
+          ...(deps.thesisLanguageModel ? { languageModel: deps.thesisLanguageModel } : {}),
+        },
+      );
       if (!result) throw new ApiError(404, 'not_found', 'Route not found');
       const responseBody = JSON.stringify(result.data);
       return { statusCode: result.status ?? 200, headers: responseHeaders, body: responseBody, json: () => JSON.parse(responseBody) };
