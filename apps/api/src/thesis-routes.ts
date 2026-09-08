@@ -1,6 +1,7 @@
 import { ApiError } from './errors.js';
 import { validateThesisCriterion, validateThesisInput, type ThesisCriterionInput, type ThesisInput } from './thesis-domain.js';
 import { evaluateThesis } from './thesis-evaluator.js';
+import { explainThesisEvaluation, proposeThesisFromText, type ThesisLanguageModel } from './thesis-intelligence.js';
 import type { ThesisRepository } from './thesis-repository.js';
 
 type ThesisContext = {
@@ -23,10 +24,21 @@ function subject(value: unknown, label: string, max: number) {
 
 export async function handleThesisRoute(
   context: ThesisContext,
-  deps: { repository: ThesisRepository; principal: () => Promise<{ id: string }> },
+  deps: {
+    repository: ThesisRepository;
+    principal: () => Promise<{ id: string }>;
+    languageModel?: ThesisLanguageModel;
+  },
 ): Promise<RouteResult | undefined> {
   const { method, path } = context;
   if (!path.startsWith('/v1/theses') && !path.startsWith('/v1/entities/')) return undefined;
+
+  if (method === 'POST' && path === '/v1/theses/propose') {
+    await deps.principal();
+    assertObject(context.body);
+    const text = subject(context.body.text, 'text', 20_000);
+    return { data: await proposeThesisFromText(text, deps.languageModel) };
+  }
 
   if (method === 'GET' && path === '/v1/theses') {
     const principal = await deps.principal();
@@ -49,6 +61,23 @@ export async function handleThesisRoute(
     const input = validateThesisCriterion(context.body as unknown as ThesisCriterionInput);
     const criterion = await deps.repository.addCriterion({ ownerId: principal.id, thesisId: criterionMatch[1], criterion: input });
     return { status: 201, data: criterion };
+  }
+
+  const explainMatch = path.match(/^\/v1\/theses\/([^/]+)\/explain$/);
+  if (method === 'GET' && explainMatch?.[1]) {
+    const principal = await deps.principal();
+    const subjectType = subject(context.query.get('subject_type'), 'subject_type', 80);
+    const subjectKey = subject(context.query.get('subject_key'), 'subject_key', 240);
+    const bundle = await deps.repository.getThesis(principal.id, explainMatch[1]);
+    const evidence = await deps.repository.listEvidence(principal.id, subjectType, subjectKey);
+    const summary = evaluateThesis(bundle.criteria, evidence);
+    return {
+      data: {
+        thesis: bundle.thesis,
+        subject: { type: subjectType, key: subjectKey },
+        explanation: explainThesisEvaluation(summary),
+      },
+    };
   }
 
   const evaluateMatch = path.match(/^\/v1\/theses\/([^/]+)\/evaluate$/);
@@ -79,6 +108,7 @@ export async function handleThesisRoute(
         thesis: bundle.thesis,
         subject: { type: subjectType, key: subjectKey },
         live,
+        explanation: explainThesisEvaluation(live),
         latest_snapshot: latest,
         stale_snapshot: latest ? latest.thesisVersion !== bundle.thesis.version : false,
       },

@@ -66,6 +66,7 @@ export type ErrorCode =
   | 'thesis_criterion_invalid'
   | 'thesis_evidence_invalid'
   | 'thesis_metric_unknown'
+  | 'thesis_intelligence_invalid'
   | 'canonical_operation_failed'
   | 'webhook_inbox_unavailable'
   | 'settlement_evidence_unavailable'
