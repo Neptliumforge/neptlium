@@ -119,7 +119,7 @@ export async function handleThesisRoute(
     const bundle = await deps.repository.getThesis(principal.id, evaluateMatch[1]); const evidence = await deps.repository.listEvidence(principal.id, subjectType, subjectKey);
     const summary = evaluateThesis(bundle.criteria, evidence); const snapshot = await deps.repository.saveEvaluation({ ownerId: principal.id, actorId: principal.id, thesis: bundle.thesis, subjectType, subjectKey, summary });
     const history = await deps.repository.evaluationHistory(principal.id, evaluateMatch[1], subjectType, subjectKey, 2);
-    return { status: 201, data: { snapshot, drift: calculateThesisDrift(history) } };
+    return { status: 201, data: { ...snapshot, drift: calculateThesisDrift(history) } };
   }
 
   const entityFitMatch = path.match(/^\/v1\/entities\/([^/]+)\/([^/]+)\/thesis-fit$/);
