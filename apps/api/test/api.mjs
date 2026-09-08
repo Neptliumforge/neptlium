@@ -591,3 +591,27 @@ test('Circle transfer execution is unconditionally disabled', async () => {
     (error) => error.code === 'provider_execution_disabled',
   );
 });
+
+test('production Alchemy health reflects durable signed ingress without legacy injected verifier', async () => {
+  const productionAlchemy = loadConfig({
+    NODE_ENV: 'test',
+    ENABLE_MAINNET: 'true',
+    ALCHEMY_ENVIRONMENT: 'production',
+    ALCHEMY_API_KEY: 'alchemy-key',
+    ALCHEMY_RPC_URL: 'https://base-mainnet.g.alchemy.com/v2/test',
+    ALCHEMY_WEBHOOK_SIGNING_KEY: 'alchemy-signing-key',
+  });
+
+  const app = await buildApp({ config: productionAlchemy });
+
+  const response = await app.inject({
+    method: 'GET',
+    url: '/v1/health',
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(
+    response.json().providers.alchemy,
+    'configured_observation_only',
+  );
+});

@@ -291,8 +291,9 @@ export async function buildApp(deps: Dependencies = {}) {
           providers: {
             coinbase: 'not_configured',
             alchemy:
-              config.alchemyConfigured && deps.webhookVerifiers?.alchemy
-                ? 'configured'
+              config.alchemyConfigured &&
+              Boolean(config.ALCHEMY_WEBHOOK_SIGNING_KEY)
+                ? 'configured_observation_only'
                 : 'not_configured',
             circle: capitalProvider.readiness(),
             stripe_treasury: config.stripeTreasuryConfigured
