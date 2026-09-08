@@ -1,225 +1,213 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { requireProvisionedUser } from '@/lib/auth';
-import { getOverviewState } from '@/lib/api/client';
+import { getOverviewState, type ResourceState } from '@/lib/api/client';
 import {
   getCanonicalBalances,
   getFundingActivity,
   getFundingCapabilities,
   getTransferActivity,
+  getTransferCapabilities,
   type FundingActivity,
-  type FundingCapability,
   type TransferActivity,
 } from '@/lib/api/financial';
-import { FinancialValue, ProductStateBadge, ProductStateMessage } from '@/components/product/ProductState';
+import { ProductStateBadge, ProductStateMessage, type ProductStateName } from '@/components/product/ProductState';
 import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 
-function activityState(state: string) {
-  if (['AVAILABLE', 'RECONCILED', 'SETTLED'].includes(state)) return 'AVAILABLE' as const;
-  if (['FAILED', 'RETURNED', 'REVERSED', 'DISCREPANCY'].includes(state)) return 'ERROR' as const;
-  if (['CANCELLED', 'CANCELED'].includes(state)) return 'UNAVAILABLE' as const;
-  if (state === 'RESERVED') return 'RESERVED' as const;
-  if (['AUTHORIZED', 'PENDING_APPROVAL'].includes(state)) return 'REQUIRES_APPROVAL' as const;
-  return 'PENDING' as const;
+type GovernedState = {
+  readonly label: string;
+  readonly detail: string;
+  readonly state: ProductStateName;
+};
+
+type CapitalContext = {
+  readonly id: string;
+  readonly title: string;
+  readonly detail: string;
+  readonly createdAt: string;
+};
+
+function resourceState(resource: ResourceState | undefined, unavailable: boolean): GovernedState {
+  if (unavailable || !resource) {
+    return { label: 'Unavailable', detail: 'Governed state could not be loaded.', state: 'UNAVAILABLE' };
+  }
+  if (resource.state === 'VALUE') {
+    return { label: 'Observed', detail: 'Current governed information is available.', state: 'AVAILABLE' };
+  }
+  if (resource.state === 'EMPTY') {
+    return { label: 'Not observed', detail: 'No governed information is currently recorded.', state: 'NO_POSITION' };
+  }
+  if (resource.state === 'PENDING') {
+    return { label: 'Pending', detail: resource.reason, state: 'PENDING' };
+  }
+  if (resource.state === 'NOT_CONFIGURED') {
+    return { label: 'Not configured', detail: resource.reason, state: 'NOT_CONFIGURED' };
+  }
+  return { label: 'Unavailable', detail: resource.reason, state: 'UNAVAILABLE' };
 }
 
-function fundingLabel(state: FundingCapability['state']) {
-  if (state === 'ENABLED') return 'Enabled';
-  if (state === 'INELIGIBLE') return 'Ineligible';
-  if (state === 'NOT_CONFIGURED') return 'Not configured';
-  return 'Disabled';
+function allocationState(resource: ResourceState | undefined, unavailable: boolean): GovernedState {
+  const current = resourceState(resource, unavailable);
+  if (current.label === 'Observed') {
+    return { ...current, label: 'Configured', detail: 'A governed allocation structure is recorded.' };
+  }
+  if (current.label === 'Not observed') {
+    return { ...current, label: 'Not configured', detail: 'No governed allocation structure is recorded.', state: 'NOT_CONFIGURED' };
+  }
+  return current;
 }
 
-type RecentActivity =
-  | ({ readonly kind: 'Deposit' } & FundingActivity)
-  | ({ readonly kind: 'Transfer' } & TransferActivity);
+function capitalContext(
+  funding: readonly FundingActivity[],
+  transfers: readonly TransferActivity[],
+): readonly CapitalContext[] {
+  return [
+    ...funding.map((item) => ({
+      id: `funding:${item.id}`,
+      title: 'Funding instruction recorded',
+      detail: `${item.asset} · ${item.network ?? item.rail} · ${item.state.replaceAll('_', ' ').toLowerCase()}`,
+      createdAt: item.created_at,
+    })),
+    ...transfers.map((item) => ({
+      id: `treasury:${item.id}`,
+      title: 'Treasury instruction recorded',
+      detail: `${item.asset} · ${item.network ?? item.rail} · ${item.state.replaceAll('_', ' ').toLowerCase()}`,
+      createdAt: item.created_at,
+    })),
+  ].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 4);
+}
 
 export default async function DashboardPage() {
   await requireProvisionedUser();
 
-  const [overviewResult, balancesResult, capabilitiesResult, fundingResult, transferResult] = await Promise.allSettled([
+  const [overviewResult, balancesResult, fundingCapabilitiesResult, transferCapabilitiesResult, fundingResult, transferResult] = await Promise.allSettled([
     getOverviewState(),
     getCanonicalBalances(),
     getFundingCapabilities(),
+    getTransferCapabilities(),
     getFundingActivity(),
     getTransferActivity(),
   ]);
 
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
   const balances = balancesResult.status === 'fulfilled' ? balancesResult.value.balances : [];
-  const capabilities = capabilitiesResult.status === 'fulfilled' ? capabilitiesResult.value.capabilities : [];
-  const capabilityError = capabilitiesResult.status === 'rejected';
-  const balanceError = balancesResult.status === 'rejected';
+  const fundingCapabilities = fundingCapabilitiesResult.status === 'fulfilled' ? fundingCapabilitiesResult.value.capabilities : [];
+  const transferCapabilities = transferCapabilitiesResult.status === 'fulfilled' ? transferCapabilitiesResult.value.capabilities : [];
   const funding = fundingResult.status === 'fulfilled' ? fundingResult.value.data : [];
   const transfers = transferResult.status === 'fulfilled' ? transferResult.value.data : [];
-  const activityError = fundingResult.status === 'rejected' && transferResult.status === 'rejected';
-  const recent: RecentActivity[] = [
-    ...funding.map((item) => ({ ...item, kind: 'Deposit' as const })),
-    ...transfers.map((item) => ({ ...item, kind: 'Transfer' as const })),
-  ].sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at)).slice(0, 4);
-
   const pendingApprovals = transfers.filter((item) => item.state === 'PENDING_APPROVAL');
-  const enabledFunding = capabilities.filter((item) => item.state === 'ENABLED');
-  const canFund = !capabilityError && enabledFunding.length > 0;
+
   const attention = [
-    ...(balanceError ? [{ title: 'Capital position is unavailable', detail: 'Your latest balance information could not be loaded.', href: '/dashboard/wallet', label: 'Open Capital Account' }] : []),
-    ...(activityError ? [{ title: 'Recent activity is unavailable', detail: 'Your latest capital activity could not be loaded.', href: '/dashboard/transactions', label: 'Open activity' }] : []),
-    ...(pendingApprovals.length ? [{ title: `${pendingApprovals.length} transfer${pendingApprovals.length === 1 ? '' : 's'} awaiting authorization`, detail: 'Review the transfer before it can progress.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
+    ...(overviewResult.status === 'rejected' ? [{ title: 'Operating context is unavailable', detail: 'Current portfolio and allocation state could not be loaded.', href: '/dashboard', label: 'Review Overview' }] : []),
+    ...(balancesResult.status === 'rejected' ? [{ title: 'Capital Account state is unavailable', detail: 'Canonical liquidity information could not be loaded.', href: '/dashboard/wallet', label: 'Open Capital Account' }] : []),
+    ...(fundingCapabilitiesResult.status === 'rejected' || transferCapabilitiesResult.status === 'rejected' ? [{ title: 'Capability state is unavailable', detail: 'Current funding or treasury capability could not be confirmed.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
+    ...(pendingApprovals.length > 0 ? [{ title: `${pendingApprovals.length} item${pendingApprovals.length === 1 ? '' : 's'} require review`, detail: 'Treasury instructions are awaiting authorization.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
   ];
-  const capitalContextLinks = [
-    {
-      label: 'Capital Account',
-      href: '/dashboard/wallet',
-      detail: capabilityError ? 'Temporarily unavailable' : enabledFunding.length ? `${enabledFunding.length} funding rail${enabledFunding.length === 1 ? '' : 's'} enabled` : 'Funding not enabled',
-    },
-    {
-      label: 'Treasury',
-      href: '/dashboard/treasury',
-      detail: pendingApprovals.length ? `${pendingApprovals.length} awaiting authorization` : 'No approvals waiting',
-    },
-    {
-      label: 'Allocation',
-      href: '/dashboard/allocations',
-      detail: overview?.allocation.state === 'VALUE' ? 'Allocation available' : 'No allocation set',
-    },
-    {
-      label: 'Portfolio Intelligence',
-      href: '/dashboard/portfolio',
-      detail: 'Portfolio view',
-    },
+
+  const hasPendingLiquidity = [...funding, ...transfers].some((item) => !['AVAILABLE', 'RECONCILED', 'SETTLED', 'FAILED', 'RETURNED', 'REVERSED', 'CANCELLED', 'CANCELED'].includes(item.state));
+  const liquidity: GovernedState = balancesResult.status === 'rejected'
+    ? { label: 'Unavailable', detail: 'Canonical liquidity state could not be loaded.', state: 'UNAVAILABLE' }
+    : hasPendingLiquidity
+      ? { label: 'Pending', detail: 'A governed capital instruction has not reached a settled state.', state: 'PENDING' }
+      : balances.length > 0
+        ? { label: 'Available', detail: 'Canonical liquidity positions are recorded by asset.', state: 'AVAILABLE' }
+        : { label: 'Unavailable', detail: 'No canonical liquidity position is currently observed.', state: 'UNAVAILABLE' };
+
+  const treasury: GovernedState = transferCapabilitiesResult.status === 'rejected'
+    ? { label: 'Unavailable', detail: 'Treasury capability could not be confirmed.', state: 'UNAVAILABLE' }
+    : pendingApprovals.length > 0
+      ? { label: 'Review required', detail: 'A governed treasury instruction awaits authorization.', state: 'REQUIRES_APPROVAL' }
+      : transferCapabilities.some((item) => item.state === 'ENABLED')
+        ? { label: 'Available', detail: 'At least one governed movement capability is enabled.', state: 'AVAILABLE' }
+        : { label: 'Not configured', detail: 'No governed movement capability is currently enabled.', state: 'NOT_CONFIGURED' };
+
+  const capitalStates = [
+    { name: 'Portfolio', ...resourceState(overview?.portfolio, overviewResult.status === 'rejected') },
+    { name: 'Liquidity', ...liquidity },
+    { name: 'Allocation', ...allocationState(overview?.allocation, overviewResult.status === 'rejected') },
+    { name: 'Treasury', ...treasury },
   ] as const;
+
+  const workspaces = [
+    { title: 'Portfolio Intelligence', description: 'Understand positions and exposure.', href: '/dashboard/portfolio', context: capitalStates[0].label },
+    { title: 'Capital Account', description: 'Understand funding and availability.', href: '/dashboard/wallet', context: fundingCapabilitiesResult.status === 'rejected' ? 'Unavailable' : fundingCapabilities.some((item) => item.state === 'ENABLED') ? 'Capability available' : 'Not configured' },
+    { title: 'Allocation', description: 'Understand policy and structure.', href: '/dashboard/allocations', context: capitalStates[2].label },
+    { title: 'Treasury', description: 'Understand movement capability and controls.', href: '/dashboard/treasury', context: capitalStates[3].label },
+  ] as const;
+
+  const recentContext = capitalContext(funding, transfers);
+  const contextUnavailable = fundingResult.status === 'rejected' && transferResult.status === 'rejected';
 
   return (
     <div className="space-y-10 lg:space-y-12">
       <WorkspaceHeader
-        eyebrow="Neptlium"
-        title="Overview"
-        description="Your capital position, activity, portfolio context, and items that need attention."
+        eyebrow="Overview"
+        title="Capital Operating Environment"
+        description="Understand current capital state, changes, and attention areas."
       />
 
-      <section aria-labelledby="capital-position-title">
-        <div className="mb-4 flex items-end justify-between gap-5">
-          <div>
-            <p className="neptlium-meta">Capital</p>
-            <h2 id="capital-position-title" className="mt-2 text-text-primary">Capital position</h2>
-          </div>
-          <Link href="/dashboard/wallet" className="hidden items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-text-primary sm:inline-flex">
-            Open Capital Account <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
-        </div>
-
-        <div className="neptlium-plane overflow-hidden rounded-[2px]">
-          <div className="px-5 py-6 sm:px-7 sm:py-7 lg:px-8 lg:py-8">
-            {balanceError ? (
-              <ProductStateMessage state="ERROR" title="Capital position unavailable">We could not load your latest balances. No value is shown until they are available.</ProductStateMessage>
-            ) : balances.length === 0 ? (
-              <div className="max-w-xl py-2">
-                <p className="text-[clamp(2rem,4vw,3.5rem)] font-medium leading-none tracking-[-0.05em] text-text-primary">No capital yet</p>
-                <p className="mt-4 text-sm leading-6 text-text-secondary">Your Capital Account is ready for supported funding when funding is enabled.</p>
-              </div>
-            ) : (
-              <div className="grid gap-7 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,.7fr)] lg:items-end">
-                <div>
-                  <p className="text-xs font-medium text-text-muted">Positions</p>
-                  <div className="mt-4 space-y-4">
-                    {balances.slice(0, 3).map((balance, index) => (
-                      <div key={`${balance.asset}:${balance.network ?? ''}`} className={index === 0 ? '' : 'border-t border-border-hairline pt-4'}>
-                        <div className="flex items-baseline justify-between gap-6">
-                          <div>
-                            <p className="text-sm font-medium text-text-primary">{balance.asset}</p>
-                            <p className="mt-1 text-xs text-text-muted">{balance.network ?? 'Account balance'}</p>
-                          </div>
-                          <div className="text-right text-[clamp(1.6rem,3vw,2.9rem)] font-medium leading-none tracking-[-0.045em] text-text-primary" data-numeric>
-                            <FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border-t border-border-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
-                  <p className="neptlium-meta">Readiness</p>
-                  <dl className="mt-4 space-y-3.5">
-                    <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Funding</dt><dd className="text-sm font-medium text-text-primary">{capabilityError ? 'Unavailable' : enabledFunding.length ? `${enabledFunding.length} enabled` : 'Not enabled'}</dd></div>
-                    <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Treasury</dt><dd className="text-sm font-medium text-text-primary">{pendingApprovals.length ? `${pendingApprovals.length} to authorize` : 'Clear'}</dd></div>
-                    <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Allocation</dt><dd className="text-sm font-medium text-text-primary">{overview?.allocation.state === 'VALUE' ? 'Available' : 'Not set'}</dd></div>
-                  </dl>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 border-t border-border-hairline bg-black/[.018] px-5 py-3.5 sm:px-7 lg:px-8">
-            {canFund ? (
-              <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-9 items-center bg-[#101214] px-4 text-sm font-medium text-white hover:bg-[#26292b]">Fund capital</Link>
-            ) : capabilityError ? (
-              <span className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-muted">Funding unavailable</span>
-            ) : (
-              <Link href="/dashboard/wallet" className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-secondary hover:text-text-primary">Open Capital Account <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
-            )}
-            <Link href="/dashboard/treasury" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Treasury <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
-            <Link href="/dashboard/allocations" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Allocation <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
-          </div>
-        </div>
-      </section>
-
       <section aria-labelledby="attention-title">
-        <div className="mb-3.5 flex items-center justify-between gap-4">
-          <div><p className="neptlium-meta">Review</p><h2 id="attention-title" className="mt-2 text-text-primary">Attention</h2></div>
+        <div className="mb-4">
+          <p className="neptlium-meta">Attention state</p>
+          <h2 id="attention-title" className="mt-2 text-text-primary">
+            {attention.length === 0 ? 'No items require your attention.' : `${attention.length} item${attention.length === 1 ? '' : 's'} require review.`}
+          </h2>
         </div>
         <div className="border-y border-border-hairline">
           {attention.length === 0 ? (
-            <div className="grid gap-2 py-5 sm:grid-cols-[1fr_auto] sm:items-center">
-              <div><p className="text-sm font-medium text-text-primary">Nothing needs your attention.</p><p className="mt-1 text-sm text-text-muted">Approvals and account issues that require action are shown here.</p></div>
-              <span className="mt-2 text-xs font-medium text-text-secondary sm:mt-0">Clear</span>
+            <div className="flex items-center justify-between gap-6 py-5">
+              <p className="max-w-2xl text-sm leading-6 text-text-muted">There are no governed approvals or unavailable operating states requiring review.</p>
+              <ProductStateBadge state="READY">Clear</ProductStateBadge>
             </div>
           ) : attention.map((item) => (
             <Link key={item.title} href={item.href} className="group grid gap-3 border-b border-border-hairline py-4.5 last:border-0 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-8">
               <div><p className="text-sm font-medium text-text-primary">{item.title}</p><p className="mt-1 max-w-2xl text-sm text-text-muted">{item.detail}</p></div>
-              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-text-secondary group-hover:text-text-primary">{item.label}<ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" /></span>
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-text-secondary group-hover:text-text-primary">{item.label}<ArrowRight className="size-4" aria-hidden="true" /></span>
             </Link>
           ))}
         </div>
       </section>
 
-      <section aria-labelledby="context-title">
-        <div className="mb-4 flex items-end justify-between gap-5">
-          <div><p className="neptlium-meta">Recent</p><h2 id="context-title" className="mt-2 text-text-primary">Activity</h2></div>
-          <Link href="/dashboard/transactions" className="text-sm font-medium text-text-secondary hover:text-text-primary">View all activity</Link>
-        </div>
-
-        <div className="grid gap-7 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,.7fr)] lg:gap-10">
-          <div className="border-y border-border-hairline">
-            {activityError ? (
-              <ProductStateMessage state="ERROR" title="Activity unavailable">We could not load your recent activity. Your existing account state is unchanged.</ProductStateMessage>
-            ) : recent.length === 0 ? (
-              <div className="py-5"><p className="text-sm font-medium text-text-primary">No activity yet.</p><p className="mt-1 text-sm text-text-muted">Deposits and transfers are listed here after you create them.</p></div>
-            ) : recent.map((item) => (
-              <div key={`${item.kind}:${item.id}`} className="grid gap-3 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-6">
-                <div className="min-w-0"><p className="text-sm font-medium text-text-primary">{item.kind} · {item.asset}</p><p className="mt-1 truncate text-xs text-text-muted">{item.network ?? item.rail} · {new Date(item.created_at).toLocaleString()}</p></div>
-                <div className="text-sm font-medium text-text-primary" data-numeric>{'amount_atomic' in item && item.amount_atomic ? <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} /> : <span className="text-text-muted">—</span>}</div>
-                <ProductStateBadge state={activityState(item.state)}>{item.state.replaceAll('_', ' ')}</ProductStateBadge>
-              </div>
-            ))}
-          </div>
-
-          <nav aria-label="Workspace" className="border-t border-border-hairline lg:border-y">
-            {capitalContextLinks.map(({ label, href, detail }) => (
-              <Link key={href} href={href} className="group flex items-center justify-between gap-5 border-b border-border-hairline py-3.5 last:border-0">
-                <div><p className="text-sm font-medium text-text-primary">{label}</p><p className="mt-1 text-xs text-text-muted">{detail}</p></div>
-                <ArrowRight className="size-4 text-text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-text-primary" aria-hidden="true" />
-              </Link>
-            ))}
-          </nav>
+      <section aria-labelledby="capital-state-title">
+        <div className="mb-4"><p className="neptlium-meta">Governed state</p><h2 id="capital-state-title" className="mt-2 text-text-primary">Capital state</h2></div>
+        <div className="grid border-y border-border-hairline sm:grid-cols-2 lg:grid-cols-4">
+          {capitalStates.map((item) => (
+            <div key={item.name} className="border-b border-border-hairline py-5 sm:px-5 sm:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:first:pl-0 lg:last:border-r-0 lg:last:pr-0">
+              <p className="text-sm font-medium text-text-primary">{item.name}</p>
+              <div className="mt-3"><ProductStateBadge state={item.state}>{item.label}</ProductStateBadge></div>
+              <p className="mt-3 text-xs leading-5 text-text-muted">{item.detail}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      {!capabilityError && capabilities.length > 0 ? (
-        <footer className="border-t border-border-hairline pt-4 text-xs text-text-muted">
-          Funding: {capabilities.map((capability) => `${capability.asset} · ${capability.network} · ${fundingLabel(capability.state)}`).join('  /  ')}
-        </footer>
-      ) : null}
+      <section aria-labelledby="workspaces-title">
+        <div className="mb-4"><p className="neptlium-meta">Navigate</p><h2 id="workspaces-title" className="mt-2 text-text-primary">Operating workspaces</h2></div>
+        <nav aria-label="Operating workspaces" className="grid border-t border-border-hairline md:grid-cols-2">
+          {workspaces.map((workspace) => (
+            <Link key={workspace.href} href={workspace.href} className="group flex min-h-32 items-start justify-between gap-6 border-b border-border-hairline py-5 md:odd:border-r md:odd:pr-6 md:even:pl-6">
+              <div><p className="text-sm font-medium text-text-primary">{workspace.title}</p><p className="mt-2 text-sm leading-6 text-text-muted">{workspace.description}</p><p className="mt-3 text-xs text-text-secondary">Current context · {workspace.context}</p></div>
+              <ArrowRight className="mt-0.5 size-4 shrink-0 text-text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-text-primary" aria-hidden="true" />
+            </Link>
+          ))}
+        </nav>
+      </section>
+
+      <section aria-labelledby="recent-context-title">
+        <div className="mb-4"><p className="neptlium-meta">Recent</p><h2 id="recent-context-title" className="mt-2 text-text-primary">Capital context</h2></div>
+        <div className="border-y border-border-hairline">
+          {contextUnavailable ? (
+            <ProductStateMessage state="UNAVAILABLE" title="Capital context unavailable">Recent governed context could not be loaded. No activity or value is inferred.</ProductStateMessage>
+          ) : recentContext.length === 0 ? (
+            <ProductStateMessage state="NO_ACTIVITY" title="No recent capital context">No governed funding or treasury instructions are currently recorded.</ProductStateMessage>
+          ) : recentContext.map((item) => (
+            <div key={item.id} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-8">
+              <div><p className="text-sm font-medium text-text-primary">{item.title}</p><p className="mt-1 text-xs text-text-muted">{item.detail}</p></div>
+              <time dateTime={item.createdAt} className="text-xs text-text-muted">{new Date(item.createdAt).toLocaleString()}</time>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

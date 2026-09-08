@@ -135,39 +135,60 @@ test('all five primary workspaces use the shared information-first header', () =
   }
 });
 
-test('Overview is an action-oriented capital operating home without fabricated valuation', () => {
+test('Overview is a governed capital operating home without fabricated valuation or execution actions', () => {
   const overview = read('app/dashboard/page.tsx');
 
-  // Attention remains explicit without manufacturing an issue.
-  assert.equal(overview.includes('Nothing needs your attention.'), true);
-  assert.equal(overview.includes('awaiting authorization'), true);
+  // The page represents operating context and keeps attention explicit without manufacturing an issue.
+  assert.equal(overview.includes('Capital Operating Environment'), true);
+  assert.equal(overview.includes('Understand current capital state, changes, and attention areas.'), true);
+  assert.equal(overview.includes('No items require your attention.'), true);
+  assert.equal(overview.includes('require review'), true);
 
   // Financial truth crosses the authenticated Neptlium API boundary.
   assert.equal(overview.includes('getOverviewState'), true);
   assert.equal(overview.includes('getCanonicalBalances'), true);
   assert.equal(overview.includes('getFundingCapabilities'), true);
+  assert.equal(overview.includes('getTransferCapabilities'), true);
   assert.equal(overview.includes('getFundingActivity'), true);
   assert.equal(overview.includes('getTransferActivity'), true);
 
-  // Missing canonical state must never become a fabricated numeric zero.
+  // Missing canonical state must never become a fabricated valuation or numeric zero.
   assert.equal(overview.includes("?? '0'"), false);
-  assert.equal(overview.includes('No capital yet'), true);
-  assert.equal(overview.includes('FinancialValue'), true);
+  assert.equal(overview.includes('FinancialValue'), false);
+  for (const forbidden of ['Total balance', 'Net worth', 'Performance', 'Gain/loss']) {
+    assert.equal(overview.includes(forbidden), false, `Overview contains fabricated valuation concept: ${forbidden}`);
+  }
 
-  // Readiness is derived from governed backend capability state.
-  assert.equal(overview.includes('Readiness'), true);
-  assert.equal(overview.includes("enabledFunding.length > 0"), true);
-  assert.equal(overview.includes("capabilities.filter((item) => item.state === 'ENABLED')"), true);
+  // Capital is represented as governed state, not wealth.
+  for (const state of ['Capital state', 'Portfolio', 'Liquidity', 'Allocation', 'Treasury']) {
+    assert.equal(overview.includes(state), true, `missing capital state ${state}`);
+  }
+  assert.equal(overview.includes("item.state === 'ENABLED'"), true);
 
   // Core governed workspaces remain directly reachable.
   for (const href of [
     '/dashboard/wallet',
-    '/dashboard/wallet#deposit',
     '/dashboard/treasury',
     '/dashboard/allocations',
     '/dashboard/portfolio',
   ]) {
     assert.equal(overview.includes(href), true, `missing workspace link ${href}`);
+  }
+
+  for (const workspace of [
+    'Portfolio Intelligence',
+    'Understand positions and exposure.',
+    'Understand funding and availability.',
+    'Understand policy and structure.',
+    'Understand movement capability and controls.',
+  ]) {
+    assert.equal(overview.includes(workspace), true, `missing workspace contract: ${workspace}`);
+  }
+
+  // Recent context is not a transaction feed and the Overview exposes no execution shortcut.
+  assert.equal(overview.includes('Capital context'), true);
+  for (const forbidden of ['View all activity', 'Fund capital', '#deposit', 'Invest now', 'Deposit now', 'Move funds']) {
+    assert.equal(overview.includes(forbidden), false, `Overview contains execution action: ${forbidden}`);
   }
 });
 
