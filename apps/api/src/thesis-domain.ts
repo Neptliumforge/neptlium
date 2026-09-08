@@ -96,7 +96,7 @@ export function validateThesisInput(input: ThesisInput): ThesisInput {
   return {
     ...input,
     name,
-    description: description || undefined,
+    ...(description ? { description } : {}),
     sectors: assertStringList(input.sectors, 'Sectors', 50),
     geographies: assertStringList(input.geographies, 'Geographies', 50),
   };
@@ -130,10 +130,12 @@ export function validateThesisCriterion(input: ThesisCriterionInput): ThesisCrit
   if (input.kind === 'QUANTITATIVE' && metric.qualitative)
     throw new ApiError(422, 'thesis_criterion_invalid', `Metric ${input.metricKey} is registered as qualitative`);
 
+  const textValue = input.textValue?.trim();
+  const rationale = input.rationale?.trim();
   return {
     ...input,
-    textValue: input.textValue?.trim() || undefined,
-    rationale: input.rationale?.trim() || undefined,
+    ...(textValue ? { textValue } : {}),
+    ...(rationale ? { rationale } : {}),
   };
 }
 
@@ -149,11 +151,12 @@ export function validateThesisEvidence(input: ThesisEvidenceInput): ThesisEviden
   assertBasisPoints(input.confidenceBps, 'Evidence confidence');
   if (input.reported && input.derived) throw new ApiError(422, 'thesis_evidence_invalid', 'Evidence cannot be both reported and derived');
   if (input.sourceUri && input.sourceUri.length > 2_000) throw new ApiError(422, 'thesis_evidence_invalid', 'Evidence source URI is too long');
+  const sourceUri = input.sourceUri?.trim();
   return {
     ...input,
     subjectType,
     subjectKey,
     claim,
-    sourceUri: input.sourceUri?.trim() || undefined,
+    ...(sourceUri ? { sourceUri } : {}),
   };
 }
