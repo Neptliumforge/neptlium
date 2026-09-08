@@ -18,7 +18,7 @@ export default async function ReportsPage() {
         <EmptyState
           icon={<FileBarChart2 className="size-5" aria-hidden="true" />}
           title="No reports available"
-          description="Connect to Supabase to generate institutional reports."
+          description="No governed reports have been published to this account yet."
         />
       </Card>
     </div>
