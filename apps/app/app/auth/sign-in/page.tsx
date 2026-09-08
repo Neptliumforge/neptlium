@@ -4,8 +4,8 @@ import { AuthShell } from '@/app/(auth)/components/AuthShell';
 function AuthMountFallback() {
   return (
     <div className="w-full py-8" role="status" aria-live="polite">
-      <p className="text-sm font-medium text-text-primary">Preparing secure access…</p>
-      <p className="mt-1 text-sm leading-6 text-text-muted">Loading the authentication service.</p>
+      <p className="text-sm font-medium text-text-primary">Preparing sign in…</p>
+      <p className="mt-1 text-sm leading-6 text-text-muted">This should only take a moment.</p>
     </div>
   );
 }
@@ -15,9 +15,9 @@ export default function SignInPage() {
     <AuthShell>
       <div className="space-y-7">
         <div className="space-y-2.5">
-          <p className="neptlium-meta">Secure access</p>
-          <h1 className="text-[1.8rem] font-medium leading-[1.08] tracking-[-0.035em] text-text-primary sm:text-[2rem]">Enter Neptlium</h1>
-          <p className="max-w-sm text-sm leading-6 text-text-secondary">Continue into your governed capital operating environment.</p>
+          <p className="neptlium-meta">Welcome back</p>
+          <h1 className="text-[1.8rem] font-medium leading-[1.08] tracking-[-0.035em] text-text-primary sm:text-[2rem]">Sign in to Neptlium</h1>
+          <p className="max-w-sm text-sm leading-6 text-text-secondary">Continue to your portfolio, intelligence, and capital workspace.</p>
         </div>
         <div className="w-full border-t border-border-hairline pt-6">
           <SignIn
@@ -32,10 +32,10 @@ export default function SignInPage() {
               headerTitle: 'hidden',
               headerSubtitle: 'hidden',
               socialButtonsBlockButton: 'border-border-default bg-transparent shadow-none hover:bg-black/[.035]',
-              formFieldInput: 'border-border-default bg-white shadow-none focus:border-[#111111]',
-              formButtonPrimary: 'bg-[#111111] text-white shadow-none hover:bg-[#262626]',
+              formFieldInput: 'border-border-default bg-white shadow-none focus:border-[#0F8F86]',
+              formButtonPrimary: 'bg-[#101214] text-white shadow-none hover:bg-[#26292B]',
               footer: 'bg-transparent',
-              footerActionLink: 'text-[#111111] underline-offset-4 hover:underline',
+              footerActionLink: 'text-[#0F8F86] underline-offset-4 hover:underline',
             } }}
           />
         </div>
