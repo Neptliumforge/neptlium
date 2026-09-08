@@ -60,11 +60,7 @@ test('primary authenticated navigation reflects the institutional operating mode
     'Allocation',
     'Portfolio Intelligence',
   ]) {
-    assert.equal(
-      mobilePrimary.includes(`label: '${mobile}'`),
-      true,
-      `missing mobile ${mobile}`,
-    );
+    assert.equal(mobilePrimary.includes(`label: '${mobile}'`), true, `missing mobile ${mobile}`);
   }
 
   assert.equal((mobilePrimary.match(/href:/g) ?? []).length, 6);
@@ -110,16 +106,37 @@ test('System theme persists and follows operating-system changes', () => {
   const layout = read('app/layout.tsx');
   const profile = read('components/navigation/ProfileMenu.tsx');
   assert.equal(layout.includes("localStorage.getItem('neptlium-theme')"), true);
-  assert.equal(layout.includes("preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system'"), true);
+  assert.equal(
+    layout.includes(
+      "preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system'",
+    ),
+    true,
+  );
   assert.equal(profile.includes("localStorage.setItem('neptlium-theme', next)"), true);
-  assert.equal(profile.includes("document.documentElement.dataset.themePreference = theme"), true);
+  assert.equal(profile.includes('document.documentElement.dataset.themePreference = theme'), true);
   assert.equal(profile.includes("media.addEventListener('change', synchronize)"), true);
   assert.equal(profile.includes("media.removeEventListener('change', synchronize)"), true);
 });
 
 test('product-wide state vocabulary is explicit and non-color-only', () => {
   const productState = read('components/product/ProductState.tsx');
-  for (const state of ['LOADING','AVAILABLE','READY','PENDING','AWAITING_PROVISIONING','CAPABILITY_DISABLED','RESERVED','RESTRICTED','REQUIRES_APPROVAL','NOT_CONFIGURED','INELIGIBLE','UNAVAILABLE','NO_ACTIVITY','NO_POSITION','ERROR']) {
+  for (const state of [
+    'LOADING',
+    'AVAILABLE',
+    'READY',
+    'PENDING',
+    'AWAITING_PROVISIONING',
+    'CAPABILITY_DISABLED',
+    'RESERVED',
+    'RESTRICTED',
+    'REQUIRES_APPROVAL',
+    'NOT_CONFIGURED',
+    'INELIGIBLE',
+    'UNAVAILABLE',
+    'NO_ACTIVITY',
+    'NO_POSITION',
+    'ERROR',
+  ]) {
     assert.equal(productState.includes(`'${state}'`), true, `missing state ${state}`);
   }
   assert.equal(productState.includes("role={state === 'ERROR' ? 'alert'"), true);
@@ -130,8 +147,18 @@ test('all five primary workspaces use the shared information-first header', () =
   const header = read('components/product/WorkspaceHeader.tsx');
   assert.equal(header.includes('border-b border-border-hairline'), true);
   assert.equal(header.includes('uppercase'), false);
-  for (const path of ['app/dashboard/page.tsx','app/dashboard/portfolio/page.tsx','app/dashboard/wallet/WalletView.tsx','app/dashboard/treasury/TreasuryView.tsx','app/dashboard/allocations/AllocationWorkspace.tsx']) {
-    assert.equal(read(path).includes('WorkspaceHeader'), true, `${path} does not use WorkspaceHeader`);
+  for (const path of [
+    'app/dashboard/page.tsx',
+    'app/dashboard/portfolio/page.tsx',
+    'app/dashboard/wallet/WalletView.tsx',
+    'app/dashboard/treasury/TreasuryView.tsx',
+    'app/dashboard/allocations/AllocationWorkspace.tsx',
+  ]) {
+    assert.equal(
+      read(path).includes('WorkspaceHeader'),
+      true,
+      `${path} does not use WorkspaceHeader`,
+    );
   }
 });
 
@@ -140,7 +167,10 @@ test('Overview is a governed capital operating home without fabricated valuation
 
   // The page represents operating context and keeps attention explicit without manufacturing an issue.
   assert.equal(overview.includes('Capital Operating Environment'), true);
-  assert.equal(overview.includes('Understand current capital state, changes, and attention areas.'), true);
+  assert.equal(
+    overview.includes('Understand current capital state, changes, and attention areas.'),
+    true,
+  );
   assert.equal(overview.includes('No items require your attention.'), true);
   assert.equal(overview.includes('require review'), true);
 
@@ -156,7 +186,11 @@ test('Overview is a governed capital operating home without fabricated valuation
   assert.equal(overview.includes("?? '0'"), false);
   assert.equal(overview.includes('FinancialValue'), false);
   for (const forbidden of ['Total balance', 'Net worth', 'Performance', 'Gain/loss']) {
-    assert.equal(overview.includes(forbidden), false, `Overview contains fabricated valuation concept: ${forbidden}`);
+    assert.equal(
+      overview.includes(forbidden),
+      false,
+      `Overview contains fabricated valuation concept: ${forbidden}`,
+    );
   }
 
   // Capital is represented as governed state, not wealth.
@@ -187,19 +221,43 @@ test('Overview is a governed capital operating home without fabricated valuation
 
   // Recent context is not a transaction feed and the Overview exposes no execution shortcut.
   assert.equal(overview.includes('Capital context'), true);
-  for (const forbidden of ['View all activity', 'Fund capital', '#deposit', 'Invest now', 'Deposit now', 'Move funds']) {
-    assert.equal(overview.includes(forbidden), false, `Overview contains execution action: ${forbidden}`);
+  for (const forbidden of [
+    'View all activity',
+    'Fund capital',
+    '#deposit',
+    'Invest now',
+    'Deposit now',
+    'Move funds',
+  ]) {
+    assert.equal(
+      overview.includes(forbidden),
+      false,
+      `Overview contains execution action: ${forbidden}`,
+    );
   }
 });
 
 test('Capital Account exposes complete governed workflows without fabricating balance state', () => {
   const view = read('app/dashboard/wallet/WalletView.tsx');
-  for (const tab of ['Balances','Deposit','Withdraw','Destinations','Activity']) assert.equal(view.includes(`'${tab}'`), true, `missing tab ${tab}`);
+  for (const tab of ['Balances', 'Deposit', 'Withdraw', 'Destinations', 'Activity'])
+    assert.equal(view.includes(`'${tab}'`), true, `missing tab ${tab}`);
   assert.equal(view.includes('0 positions'), true);
   assert.equal(view.includes('No capital positions yet'), true);
-  assert.equal(view.includes('A recorded zero balance is shown as zero. Missing balances remain unavailable.'), true);
+  assert.equal(
+    view.includes('A recorded zero balance is shown as zero. Missing balances remain unavailable.'),
+    true,
+  );
   assert.equal(view.includes('Source of truth · Neptlium canonical ledger'), false);
-  for (const state of ['Requested','Reserved','Pending approval','Approved','Submitted','Settled','Reconciled']) assert.equal(view.includes(state), true, `missing withdrawal state ${state}`);
+  for (const state of [
+    'Requested',
+    'Reserved',
+    'Pending approval',
+    'Approved',
+    'Submitted',
+    'Settled',
+    'Reconciled',
+  ])
+    assert.equal(view.includes(state), true, `missing withdrawal state ${state}`);
 });
 
 test('Deposit UX is capability-driven, copyable, and never hardcodes a treasury destination', () => {
@@ -252,21 +310,55 @@ test('Destination management uses governed alias persistence without pretending 
 });
 
 test('legacy capital routes converge on governed workspaces', () => {
-  assert.equal(read('app/dashboard/deposit/page.tsx').includes("redirect('/dashboard/wallet')"), true);
-  assert.equal(read('app/dashboard/withdrawals/page.tsx').includes("redirect('/dashboard/wallet')"), true);
-  assert.equal(read('app/dashboard/transfer/page.tsx').includes("redirect('/dashboard/treasury')"), true);
+  assert.equal(
+    read('app/dashboard/deposit/page.tsx').includes("redirect('/dashboard/wallet')"),
+    true,
+  );
+  assert.equal(
+    read('app/dashboard/withdrawals/page.tsx').includes("redirect('/dashboard/wallet')"),
+    true,
+  );
+  assert.equal(
+    read('app/dashboard/transfer/page.tsx').includes("redirect('/dashboard/treasury')"),
+    true,
+  );
 });
 
-test('Portfolio is canonical-position-first and separates capability coverage', () => {
+test('Portfolio is an API-authoritative intelligence surface without execution actions', () => {
   const portfolio = read('app/dashboard/portfolio/page.tsx');
-  assert.equal(portfolio.includes('getFundingCapabilities'), true);
+  const components = read('components/product/PortfolioIntelligence.tsx');
+  const surface = `${portfolio}\n${components}`;
+  assert.equal(portfolio.includes('getPortfolioState'), true);
   assert.equal(portfolio.includes('getCanonicalBalances'), true);
-  assert.equal(portfolio.includes('Canonical positions'), true);
-  assert.equal(portfolio.includes('Funding coverage'), true);
-  assert.equal(portfolio.includes('Funding capability does not create a position'), true);
-  assert.equal(portfolio.includes("balances.length === 0 ? '0 positions'"), true);
+  assert.equal(portfolio.includes('getAllocationWorkspace'), true);
+  assert.equal(portfolio.includes('Portfolio Intelligence'), true);
+  assert.equal(portfolio.includes('Understand positions, exposure, and capital context.'), true);
+  for (const section of [
+    'PortfolioState',
+    'HoldingsTable',
+    'ExposurePanel',
+    'AttentionState',
+    'PortfolioContext',
+  ])
+    assert.equal(portfolio.includes(section), true, `missing ${section}`);
+  for (const column of ['Asset', 'Quantity', 'Source', 'Status'])
+    assert.equal(components.includes(`>${column}<`), true, `missing ${column}`);
+  assert.equal(components.includes('No portfolio positions available.'), true);
+  assert.equal(components.includes('No portfolio items require attention.'), true);
   assert.equal(portfolio.includes("balance?.available_atomic ?? '0'"), false);
-  for (const forbidden of ['Buy', 'Sell', 'Trade', 'Swap', 'candlestick', 'market ticker']) assert.equal(portfolio.includes(forbidden), false, `portfolio contains ${forbidden}`);
+  for (const forbidden of [
+    '#deposit',
+    'Fund capital',
+    '>Deposit<',
+    '>Withdraw<',
+    '>Buy<',
+    '>Sell<',
+    '>Trade<',
+    'Execute allocation',
+    'candlestick',
+    'market ticker',
+  ])
+    assert.equal(surface.includes(forbidden), false, `portfolio contains ${forbidden}`);
 });
 
 test('Treasury preserves liquidity and movement-governance semantics in production language', () => {
@@ -275,7 +367,10 @@ test('Treasury preserves liquidity and movement-governance semantics in producti
   assert.equal(treasury.includes('Transfers and destinations'), true);
   assert.equal(treasury.includes('Verified destinations'), true);
   assert.equal(treasury.includes('No capital positions yet'), true);
-  assert.equal(treasury.includes('Reservation and approval remain separate from submission.'), true);
+  assert.equal(
+    treasury.includes('Reservation and approval remain separate from submission.'),
+    true,
+  );
   assert.equal(treasury.includes('/dashboard/wallet#withdraw'), true);
   assert.equal(treasury.includes('/dashboard/wallet#destinations'), true);
 });
@@ -290,8 +385,30 @@ test('Activity is sourced from governed funding and transfer APIs', () => {
 
 test('Allocation exposes policy, drift, authorization, classes, measures, and an execution gate', () => {
   const allocation = read('app/dashboard/allocations/AllocationWorkspace.tsx');
-  for (const label of ['Observed','Modeled','Authorized','Executed','Reconciled','Reserve','Core','Growth','Opportunity','Restricted']) assert.equal(allocation.includes(label), true, `Allocation missing ${label}`);
-  for (const measure of ['Concentration','Liquidity','Volatility','Reserve coverage','Network','Counterparty','Drift','Utilization']) assert.equal(allocation.includes(measure), true, `Allocation missing measure ${measure}`);
+  for (const label of [
+    'Observed',
+    'Modeled',
+    'Authorized',
+    'Executed',
+    'Reconciled',
+    'Reserve',
+    'Core',
+    'Growth',
+    'Opportunity',
+    'Restricted',
+  ])
+    assert.equal(allocation.includes(label), true, `Allocation missing ${label}`);
+  for (const measure of [
+    'Concentration',
+    'Liquidity',
+    'Volatility',
+    'Reserve coverage',
+    'Network',
+    'Counterparty',
+    'Drift',
+    'Utilization',
+  ])
+    assert.equal(allocation.includes(measure), true, `Allocation missing measure ${measure}`);
   assert.equal(allocation.includes('Execution unavailable'), true);
   assert.equal(allocation.includes('Authorization can establish a governed decision'), true);
 });
@@ -307,6 +424,9 @@ test('dashboard loading state does not impersonate financial cards or values', (
 test('auth styling has no atmospheric gradient or glow', () => {
   const shell = read('app/(auth)/components/AuthShell.tsx');
   const background = read('app/(auth)/components/AuthBackground.tsx');
-  const runtimeMarkup = `${shell}\n${background}`.replace(/never Blue atmosphere, glow, or decorative grid effects\./i, '');
+  const runtimeMarkup = `${shell}\n${background}`.replace(
+    /never Blue atmosphere, glow, or decorative grid effects\./i,
+    '',
+  );
   assert.equal(/radial-gradient|linear-gradient|\bglow\b/i.test(runtimeMarkup), false);
 });
