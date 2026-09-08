@@ -56,18 +56,21 @@ test('Portfolio intelligence consumes governed allocation state', () => {
   assert.match(page, /allocationReview/);
   assert.match(page, /allocationValuationUnavailable/);
 
-  assert.match(page, /No allocation policy is established/);
+  assert.match(page, /No authoritative allocation policy is established/);
   assert.match(page, /cross-asset valuation evidence is unavailable/);
-  assert.match(page, /reserve requirement/);
-
-  assert.doesNotMatch(page, /Open Allocation to compare canonical positions with an authorized policy/);
+  assert.match(page, /href: '\/dashboard\/allocations'/);
+  assert.doesNotMatch(
+    page,
+    /createAllocationPolicy|updateAllocationPolicy|authorizeAllocationPolicy|createAllocationModel|createAllocationPlan/,
+  );
 });
 
 test('Portfolio quantities remain canonical and valuation does not become fabricated', () => {
   const page = read('app/dashboard/portfolio/page.tsx');
+  const components = read('components/product/PortfolioIntelligence.tsx');
 
   assert.match(page, /getCanonicalBalances/);
-  assert.match(page, /Canonical ledger/);
-  assert.match(page, /cross-asset total remains unavailable without governed valuation evidence/);
-  assert.match(page, /Not established without an authoritative market-data and valuation source/);
+  assert.match(components, /Neptlium canonical ledger/);
+  assert.match(components, /Assets are not\s+combined without authoritative valuation evidence/);
+  assert.match(page, /Cross-asset concentration requires authoritative valuation evidence/);
 });
