@@ -20,7 +20,7 @@ export default function SignUpPage() {
             Create your Neptlium account
           </h1>
           <p className="max-w-sm text-sm leading-6 text-text-secondary">
-            Your account is personal. You can add or join an organization later when you need team access.
+            Your account starts with you. Organization details are not required to get started.
           </p>
         </div>
 
