@@ -1,6 +1,7 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
+import { Analytics } from '@vercel/analytics/next';
 import { assertProductionRuntimeConfig } from '@/lib/runtime-config';
 import "./global.css";
 
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { readonly children: React.Reac
         <ClerkProvider signInUrl="/auth/sign-in" signUpUrl="/auth/sign-up">
           {children}
         </ClerkProvider>
+        <Analytics />
       </body>
     </html>
   );

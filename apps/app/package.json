@@ -13,26 +13,27 @@
     "test": "node --test test/*.mjs"
   },
   "dependencies": {
+    "@clerk/nextjs": "7.7.9",
+    "@neptlium/design-system": "workspace:*",
+    "@neptlium/lib": "workspace:*",
     "@neptlium/types": "workspace:*",
     "@neptlium/ui": "workspace:*",
-    "@neptlium/lib": "workspace:*",
-    "@neptlium/design-system": "workspace:*",
-    "@clerk/nextjs": "7.7.9",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "next": "^16.0.0",
-    "tailwindcss": "^4.3.2",
     "@tailwindcss/postcss": "^4.3.2",
-    "postcss": "^8.5.16",
+    "@vercel/analytics": "^2.0.1",
+    "class-variance-authority": "^0.7.1",
     "framer-motion": "^12.0.0",
     "lucide-react": "^1.24.0",
-    "zod": "^3.24.1",
-    "class-variance-authority": "^0.7.1"
+    "next": "^16.0.0",
+    "postcss": "^8.5.16",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.3.2",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "typescript": "^6.0.3",
     "@types/node": "^26.0.1",
     "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3"
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
   }
 }
