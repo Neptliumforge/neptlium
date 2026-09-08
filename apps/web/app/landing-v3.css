@@ -763,10 +763,10 @@
   max-width: 13ch;
   margin-top: 1.15rem;
   font-family: var(--neptlium-system-font) !important;
-  font-size: clamp(3rem, 4.5vw, 3.5rem) !important;
+  font-size: clamp(2.75rem, 4vw, 3.5rem) !important;
   font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
 .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy > .authority-hero-lead {
@@ -811,19 +811,13 @@
 }
 
 .neptlium-home > .authority-hero.editorial-hero .operating-panel {
-  animation: panel-state-rise 600ms 1.2s both ease-out;
-}
-
-@keyframes panel-state-rise {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 48rem) {
   .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
     grid-template-columns: 1fr;
-    gap: 3rem;
-    padding-block: 3.75rem 4rem;
+    gap: 3.5rem;
+    padding-block: 4.5rem 5rem;
   }
 
   .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
