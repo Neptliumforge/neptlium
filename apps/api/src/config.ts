@@ -71,6 +71,56 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   if (alchemyProductionCapabilityVerified && ALCHEMY_ENVIRONMENT !== 'production')
     throw new Error('Alchemy production capability verification requires ALCHEMY_ENVIRONMENT=production');
 
+  const walletProvisioningEnabled = env.ENABLE_WALLET_PROVISIONING === 'true';
+  const cryptoDepositsEnabled = env.ENABLE_CRYPTO_DEPOSITS === 'true';
+  const cryptoWithdrawalsEnabled = env.ENABLE_CRYPTO_WITHDRAWALS === 'true';
+  const fiatDepositsEnabled = env.ENABLE_FIAT_DEPOSITS === 'true';
+  const fiatWithdrawalsEnabled = env.ENABLE_FIAT_WITHDRAWALS === 'true';
+  const conversionsEnabled = env.ENABLE_CONVERSIONS === 'true';
+
+  const anyEconomicCapabilityEnabled =
+    walletProvisioningEnabled ||
+    cryptoDepositsEnabled ||
+    cryptoWithdrawalsEnabled ||
+    fiatDepositsEnabled ||
+    fiatWithdrawalsEnabled ||
+    conversionsEnabled;
+
+  if (anyEconomicCapabilityEnabled && !mainnetPermitted)
+    throw new Error('Production economic capabilities require ENABLE_MAINNET=true');
+
+  if (walletProvisioningEnabled && (!circleLiveCapabilityVerified || !circleLiveExecutionEnabled))
+    throw new Error('Wallet provisioning requires verified Circle production execution');
+
+  if (
+    cryptoDepositsEnabled &&
+    (!circleLiveCapabilityVerified || !alchemyProductionCapabilityVerified)
+  )
+    throw new Error('Crypto deposits require verified Circle and Alchemy production capabilities');
+
+  if (
+    cryptoWithdrawalsEnabled &&
+    (!circleLiveCapabilityVerified ||
+      !circleLiveExecutionEnabled ||
+      !alchemyProductionCapabilityVerified)
+  )
+    throw new Error('Crypto withdrawals require verified Circle execution and Alchemy production capability');
+
+  if (
+    (fiatDepositsEnabled || fiatWithdrawalsEnabled) &&
+    (!stripeTreasuryEligibilityVerified || !stripeTreasuryLiveExecutionEnabled)
+  )
+    throw new Error('Fiat movement requires verified Stripe Treasury execution');
+
+  if (
+    conversionsEnabled &&
+    (!circleLiveCapabilityVerified ||
+      !circleLiveExecutionEnabled ||
+      !stripeTreasuryEligibilityVerified ||
+      !stripeTreasuryLiveExecutionEnabled)
+  )
+    throw new Error('Conversions require verified Circle and Stripe production execution');
+
   return {
     NODE_ENV: environment as Environment,
     API_HOST: env.API_HOST ?? '0.0.0.0', API_PORT: port, API_LOG_LEVEL: env.API_LOG_LEVEL ?? 'info', API_BUILD_ID: env.API_BUILD_ID ?? 'local',
@@ -90,6 +140,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     STRIPE_TREASURY_LIVE_EXECUTION_ENABLED: stripeTreasuryLiveExecutionEnabled,
     CIRCLE_LIVE_CAPABILITY_VERIFIED: circleLiveCapabilityVerified,
     CIRCLE_LIVE_EXECUTION_ENABLED: circleLiveExecutionEnabled,
+    ENABLE_WALLET_PROVISIONING: walletProvisioningEnabled,
+    ENABLE_CRYPTO_DEPOSITS: cryptoDepositsEnabled,
+    ENABLE_CRYPTO_WITHDRAWALS: cryptoWithdrawalsEnabled,
+    ENABLE_FIAT_DEPOSITS: fiatDepositsEnabled,
+    ENABLE_FIAT_WITHDRAWALS: fiatWithdrawalsEnabled,
+    ENABLE_CONVERSIONS: conversionsEnabled,
     WEBHOOK_TOLERANCE_SECONDS: webhookToleranceSeconds,
     allowedOrigins: (
       env.API_ALLOWED_ORIGINS ??
