@@ -203,15 +203,19 @@ test('Capital Account exposes complete governed workflows and canonical balance 
 test('Deposit UX is capability-driven, copyable, and never hardcodes a treasury destination', () => {
   const view = read('app/dashboard/wallet/WalletView.tsx');
   const actions = read('app/dashboard/wallet/actions.ts');
+  const financial = read('lib/api/financial.ts');
   assert.equal(view.includes('capabilities.map'), true);
   assert.equal(view.includes('deposit_address'), true);
   assert.equal(view.includes('memo_or_tag'), true);
   assert.equal(view.includes('navigator.clipboard.writeText'), true);
   assert.equal(view.includes('createFundingIntentAction'), true);
-  assert.equal(actions.includes('/v1/funding/intents'), true);
-  assert.equal(actions.includes('/v1/capital-account/deposit-instructions'), true);
-  assert.equal(actions.includes('/v1/capital-account/provider-wallet'), false);
-  assert.equal(actions.includes('/v1/wallet/withdrawals'), false);
+  assert.equal(actions.includes('createFundingIntent'), true);
+  assert.equal(actions.includes('getDepositInstructionsForIntent'), true);
+  assert.equal(actions.includes('/v1/'), false);
+  assert.equal(financial.includes('/v1/funding/intents'), true);
+  assert.equal(financial.includes('/v1/capital-account/deposit-instructions'), true);
+  assert.equal(financial.includes('/v1/capital-account/provider-wallet'), false);
+  assert.equal(financial.includes('/v1/wallet/withdrawals'), false);
   assert.equal(/bc1[a-z0-9]{10,}/i.test(view), false);
   assert.equal(/0x[a-f0-9]{20,}/i.test(view), false);
   assert.equal(/['"`]r[A-HJ-NP-Za-km-z1-9]{24,34}['"`]/.test(view), false);
@@ -234,9 +238,12 @@ test('Withdrawal UX never manufactures canonical availability and remains inert 
 test('Destination management uses governed alias persistence without pretending verification', () => {
   const view = read('app/dashboard/wallet/WalletView.tsx');
   const actions = read('app/dashboard/wallet/actions.ts');
+  const financial = read('lib/api/financial.ts');
   assert.equal(view.includes("active === 'Destinations'"), true);
   assert.equal(view.includes('createTransferAliasAction'), true);
-  assert.equal(actions.includes('/v1/treasury/aliases'), true);
+  assert.equal(actions.includes('createTransferAlias'), true);
+  assert.equal(actions.includes('/v1/'), false);
+  assert.equal(financial.includes('/v1/treasury/aliases'), true);
   assert.equal(view.includes('Saving a destination does not prove ownership'), true);
   assert.equal(view.includes('Destination removal is not exposed by the current API contract'), true);
 });

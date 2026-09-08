@@ -30,6 +30,7 @@ export default async function TreasuryPage() {
       transfers={transfers.status === 'fulfilled' ? transfers.value.data : []}
       transferError={transfers.status === 'rejected'}
       transferCapabilities={transferCapabilities.status === 'fulfilled' ? transferCapabilities.value.capabilities : []}
+      transferCapabilityError={transferCapabilities.status === 'rejected'}
     />
   );
 }

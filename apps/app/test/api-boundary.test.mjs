@@ -71,9 +71,13 @@ test('server-only API client is the customer product data boundary', () => {
   assert.match(financial, /\/v1\/treasury\/transfers/);
   assert.match(financial, /environment: 'LIVE'/);
 
-  // Product actions consume transport authority instead of manufacturing
-  // request identity/idempotency themselves.
-  assert.match(walletActions, /apiRequest<FundingActivity>/);
+  // Product actions consume the financial domain boundary instead of
+  // owning raw transport routes or manufacturing request identity.
+  assert.match(walletActions, /createFundingIntent/);
+  assert.match(walletActions, /getDepositInstructionsForIntent/);
+  assert.match(walletActions, /createTransferAlias/);
+  assert.doesNotMatch(walletActions, /apiRequest/);
+  assert.doesNotMatch(walletActions, /\/v1\//);
   assert.doesNotMatch(walletActions, /globalThis\.crypto\.randomUUID/);
 });
 

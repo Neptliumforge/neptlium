@@ -65,6 +65,19 @@ export interface TransferActivity {
 export function getFundingCapabilities() {
   return apiRequest<{ environment: 'LIVE'; custody_model: 'OMNIBUS'; capabilities: readonly FundingCapability[] }>('/v1/funding/capabilities');
 }
+
+export function createFundingIntent(input: {
+  readonly capability: string;
+  readonly amountAtomic?: string;
+}) {
+  return apiRequest<FundingActivity & { readonly replayed: boolean }>('/v1/funding/intents', {
+    method: 'POST',
+    body: JSON.stringify({
+      capability: input.capability,
+      ...(input.amountAtomic ? { amount_atomic: input.amountAtomic } : {}),
+    }),
+  });
+}
 export function getCanonicalBalances() {
   return apiRequest<{ state: 'VALUE' | 'EMPTY'; source: 'NEPTLIUM_CANONICAL_LEDGER'; balances: readonly CanonicalBalance[] }>('/v1/capital-account/balances');
 }
@@ -78,6 +91,21 @@ export function getDepositInstructionsForIntent(fundingIntentId: string) {
 }
 export function getTransferAliases() {
   return apiRequest<{ state: 'VALUE' | 'EMPTY'; data: readonly TransferAlias[] }>('/v1/treasury/aliases');
+}
+
+export function createTransferAlias(input: {
+  readonly alias: string;
+  readonly destinationType: string;
+  readonly destinationReference: string;
+}) {
+  return apiRequest<TransferAlias>('/v1/treasury/aliases', {
+    method: 'POST',
+    body: JSON.stringify({
+      alias: input.alias,
+      destination_type: input.destinationType,
+      destination_reference: input.destinationReference,
+    }),
+  });
 }
 export function getTransferCapabilities() {
   return apiRequest<{ environment: 'LIVE'; custody_model: 'OMNIBUS'; capabilities: readonly FundingCapability[] }>('/v1/treasury/transfer-capabilities');

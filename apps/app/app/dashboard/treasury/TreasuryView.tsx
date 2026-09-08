@@ -31,6 +31,7 @@ export function TreasuryView({
   transfers,
   transferError,
   transferCapabilities,
+  transferCapabilityError,
 }: {
   readonly balances: readonly CanonicalBalance[];
   readonly balanceError: boolean;
@@ -41,6 +42,7 @@ export function TreasuryView({
   readonly transfers: readonly TransferActivity[];
   readonly transferError: boolean;
   readonly transferCapabilities: readonly FundingCapability[];
+  readonly transferCapabilityError: boolean;
 }) {
   const activeAliases = aliases.filter((item) => item.activation_state === 'active');
   const verifiedAliases = aliases.filter((item) => item.activation_state === 'active' && item.verification_state === 'verified');
@@ -74,7 +76,7 @@ export function TreasuryView({
         </div>
         <div><p className="text-xs text-text-muted">Funding rails</p><p className="mt-1 text-sm font-medium text-text-primary">{fundingError ? 'Unavailable' : `${enabledFunding.length} enabled`}</p></div>
         <div><p className="text-xs text-text-muted">Verified destinations</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Unavailable' : verifiedAliases.length}</p></div>
-        <div><p className="text-xs text-text-muted">Execution</p><p className="mt-1 text-sm font-medium text-text-primary">{enabledTransfers.length ? 'Capability exposed' : 'Closed'}</p></div>
+        <div><p className="text-xs text-text-muted">Execution</p><p className="mt-1 text-sm font-medium text-text-primary">{transferCapabilityError ? 'Unavailable' : enabledTransfers.length ? 'Capability exposed' : 'Closed'}</p></div>
       </section>
 
       <Section title="Liquidity">
@@ -168,7 +170,7 @@ export function TreasuryView({
         <div className="mt-6 grid gap-4 border-y border-border-hairline py-5 sm:grid-cols-3">
           <div><p className="text-xs text-text-muted">Active destination records</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Unavailable' : activeAliases.length}</p></div>
           <div><p className="text-xs text-text-muted">Verified and active</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Unavailable' : verifiedAliases.length}</p></div>
-          <div><p className="text-xs text-text-muted">Outbound execution</p><p className="mt-1 text-sm font-medium text-text-primary">{enabledTransfers.length ? 'Capability exposed' : 'Closed'}</p></div>
+          <div><p className="text-xs text-text-muted">Outbound execution</p><p className="mt-1 text-sm font-medium text-text-primary">{transferCapabilityError ? 'Unavailable' : enabledTransfers.length ? 'Capability exposed' : 'Closed'}</p></div>
         </div>
         <p className="mt-3 text-xs leading-5 text-text-muted">An enabled capability does not prove reservation, submission, settlement, or reconciliation. Capital Account stops withdrawal preparation before any unsupported mutation.</p>
       </Section>

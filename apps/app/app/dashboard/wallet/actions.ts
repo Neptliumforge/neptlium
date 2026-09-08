@@ -1,8 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { apiRequest, ApiClientError } from "@/lib/api/client";
-import type { DepositInstruction, FundingActivity, TransferAlias } from "@/lib/api/financial";
+import { ApiClientError } from "@/lib/api/client";
+import {
+  createFundingIntent,
+  createTransferAlias,
+  getDepositInstructionsForIntent,
+  type DepositInstruction,
+  type FundingActivity,
+  type TransferAlias,
+} from "@/lib/api/financial";
 
 export type FundingIntentActionResult =
   | { readonly ok: true; readonly intent: FundingActivity; readonly instructions: DepositInstruction }
@@ -22,16 +29,11 @@ export async function createFundingIntentAction(
   }
 
   try {
-    const intent = await apiRequest<FundingActivity>("/v1/funding/intents", {
-      method: "POST",
-      body: JSON.stringify({
-        capability,
-        ...(amountAtomic ? { amount_atomic: amountAtomic } : {}),
-      }),
+    const intent = await createFundingIntent({
+      capability,
+      ...(amountAtomic ? { amountAtomic } : {}),
     });
-    const instructions = await apiRequest<DepositInstruction>(
-      `/v1/capital-account/deposit-instructions?funding_intent_id=${encodeURIComponent(intent.id)}`,
-    );
+    const instructions = await getDepositInstructionsForIntent(intent.id);
     revalidatePath("/dashboard/wallet");
     return { ok: true, intent, instructions };
   } catch (error) {
@@ -65,13 +67,10 @@ export async function createTransferAliasAction(
   }
 
   try {
-    const created = await apiRequest<TransferAlias>("/v1/treasury/aliases", {
-      method: "POST",
-      body: JSON.stringify({
-        alias: normalizedAlias,
-        destination_type: normalizedType,
-        destination_reference: normalizedReference,
-      }),
+    const created = await createTransferAlias({
+      alias: normalizedAlias,
+      destinationType: normalizedType,
+      destinationReference: normalizedReference,
     });
     revalidatePath("/dashboard/wallet");
     revalidatePath("/dashboard/treasury");

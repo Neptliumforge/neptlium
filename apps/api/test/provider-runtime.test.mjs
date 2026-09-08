@@ -4,6 +4,7 @@ import { loadConfig } from '../dist/config.js';
 import { alchemyObservation, verifyAlchemyWebhook } from '../dist/alchemy-observation.js';
 import { CircleCapitalProvider } from '../dist/circle.js';
 import { StripeTreasuryAdapter } from '../dist/stripe-treasury.js';
+import { liveFundingCapabilities } from '../dist/financial-routes.js';
 
 test('production provider environments are accepted only with explicit mainnet permission', () => {
   assert.doesNotThrow(() => loadConfig({ NODE_ENV: 'test', ENABLE_MAINNET: 'true', CIRCLE_ENVIRONMENT: 'production', CIRCLE_API_KEY: 'key', CIRCLE_ENTITY_SECRET: 'secret' }));
@@ -89,4 +90,81 @@ test('product economic gates fail closed independently from provider configurati
   assert.equal(shadow.ENABLE_FIAT_WITHDRAWALS, false);
   assert.equal(shadow.ENABLE_WALLET_PROVISIONING, false);
   assert.equal(shadow.ENABLE_CONVERSIONS, false);
+});
+
+
+test('customer funding capability surface is subordinate to product economic gates', () => {
+  const providerReadyShadow = loadConfig({
+    NODE_ENV: 'test',
+    ENABLE_MAINNET: 'true',
+
+    CIRCLE_ENVIRONMENT: 'production',
+    CIRCLE_API_KEY: 'circle-key',
+    CIRCLE_ENTITY_SECRET: 'circle-secret',
+    CIRCLE_LIVE_CAPABILITY_VERIFIED: 'true',
+
+    ALCHEMY_ENVIRONMENT: 'production',
+    ALCHEMY_API_KEY: 'alchemy-key',
+    ALCHEMY_RPC_URL: 'https://base-mainnet.g.alchemy.com/v2/key',
+    ALCHEMY_PRODUCTION_CAPABILITY_VERIFIED: 'true',
+
+    STRIPE_SECRET_KEY: 'sk_live_x',
+    STRIPE_WEBHOOK_SECRET: 'whsec_x',
+    STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID: 'fa_x',
+    STRIPE_TREASURY_ELIGIBILITY_VERIFIED: 'true',
+    STRIPE_TREASURY_LIVE_EXECUTION_ENABLED: 'true',
+
+    ENABLE_CRYPTO_DEPOSITS: 'false',
+    ENABLE_FIAT_DEPOSITS: 'false',
+  });
+
+  const shadowCapabilities = liveFundingCapabilities(providerReadyShadow);
+
+  const shadowUsd = shadowCapabilities.find((item) => item.code === 'USD_ACH');
+  const shadowUsdc = shadowCapabilities.find((item) => item.code === 'USDC_BASE');
+
+  assert.equal(shadowUsd?.state, 'DISABLED');
+  assert.equal(shadowUsd?.reason, 'fiat_deposits_gate_closed');
+  assert.equal(shadowUsdc?.state, 'DISABLED');
+  assert.equal(shadowUsdc?.reason, 'crypto_deposits_gate_closed');
+
+  const fiatOpen = loadConfig({
+    NODE_ENV: 'test',
+    ENABLE_MAINNET: 'true',
+
+    STRIPE_SECRET_KEY: 'sk_live_x',
+    STRIPE_WEBHOOK_SECRET: 'whsec_x',
+    STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID: 'fa_x',
+    STRIPE_TREASURY_ELIGIBILITY_VERIFIED: 'true',
+    STRIPE_TREASURY_LIVE_EXECUTION_ENABLED: 'true',
+
+    ENABLE_FIAT_DEPOSITS: 'true',
+  });
+
+  assert.equal(
+    liveFundingCapabilities(fiatOpen).find((item) => item.code === 'USD_ACH')?.state,
+    'ENABLED',
+  );
+
+  const cryptoOpen = loadConfig({
+    NODE_ENV: 'test',
+    ENABLE_MAINNET: 'true',
+
+    CIRCLE_ENVIRONMENT: 'production',
+    CIRCLE_API_KEY: 'circle-key',
+    CIRCLE_ENTITY_SECRET: 'circle-secret',
+    CIRCLE_LIVE_CAPABILITY_VERIFIED: 'true',
+
+    ALCHEMY_ENVIRONMENT: 'production',
+    ALCHEMY_API_KEY: 'alchemy-key',
+    ALCHEMY_RPC_URL: 'https://base-mainnet.g.alchemy.com/v2/key',
+    ALCHEMY_PRODUCTION_CAPABILITY_VERIFIED: 'true',
+
+    ENABLE_CRYPTO_DEPOSITS: 'true',
+  });
+
+  assert.equal(
+    liveFundingCapabilities(cryptoOpen).find((item) => item.code === 'USDC_BASE')?.state,
+    'ENABLED',
+  );
 });

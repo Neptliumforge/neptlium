@@ -80,15 +80,22 @@ export function liveFundingCapabilities(config: Config): FinancialCapability[] {
     eligibilityVerified: config.STRIPE_TREASURY_ELIGIBILITY_VERIFIED,
     liveExecutionEnabled: config.STRIPE_TREASURY_LIVE_EXECUTION_ENABLED,
   }).capability();
-  const digitalState: CapabilityState = config.CIRCLE_LIVE_CAPABILITY_VERIFIED
-    ? 'DISABLED'
-    : 'NOT_CONFIGURED';
-  const digitalReason = config.CIRCLE_LIVE_CAPABILITY_VERIFIED
-    ? 'circle_live_execution_gate_closed'
-    : 'circle_live_capability_not_verified';
 
   return publicFundingDefinitions().map((definition) => {
     if (definition.capabilityCode === 'USD_ACH') {
+      // Product authority is always outside provider readiness. Provider
+      // eligibility can never expose customer funding while the Neptlium
+      // economic gate remains closed.
+      if (!config.ENABLE_FIAT_DEPOSITS) {
+        return {
+          code: definition.capabilityCode,
+          asset: definition.asset,
+          network: definition.network,
+          state: 'DISABLED' as const,
+          reason: 'fiat_deposits_gate_closed',
+        };
+      }
+
       return {
         code: definition.capabilityCode,
         asset: definition.asset,
@@ -97,15 +104,46 @@ export function liveFundingCapabilities(config: Config): FinancialCapability[] {
         ...(stripe.reason ? { reason: stripe.reason } : {}),
       };
     }
+
     if (definition.capabilityCode === 'USDC_BASE') {
+      if (!config.ENABLE_CRYPTO_DEPOSITS) {
+        return {
+          code: definition.capabilityCode,
+          asset: definition.asset,
+          network: definition.network,
+          state: 'DISABLED' as const,
+          reason: 'crypto_deposits_gate_closed',
+        };
+      }
+
+      if (!config.CIRCLE_LIVE_CAPABILITY_VERIFIED) {
+        return {
+          code: definition.capabilityCode,
+          asset: definition.asset,
+          network: definition.network,
+          state: 'NOT_CONFIGURED' as const,
+          reason: 'circle_live_capability_not_verified',
+        };
+      }
+
+      if (!config.ALCHEMY_PRODUCTION_CAPABILITY_VERIFIED) {
+        return {
+          code: definition.capabilityCode,
+          asset: definition.asset,
+          network: definition.network,
+          state: 'NOT_CONFIGURED' as const,
+          reason: 'alchemy_production_capability_not_verified',
+        };
+      }
+
       return {
         code: definition.capabilityCode,
         asset: definition.asset,
         network: definition.network,
-        state: digitalState,
-        reason: digitalReason,
+        state: 'ENABLED' as const,
       };
     }
+
     return {
       code: definition.capabilityCode,
       asset: definition.asset,
@@ -337,9 +375,36 @@ export async function handleFinancialRoute(
 
   if (method === 'GET' && path === '/v1/treasury/transfer-capabilities') {
     await deps.ownerId();
-    return { data: { environment: 'LIVE', custody_model: 'OMNIBUS', capabilities: liveFundingCapabilities(deps.config).map((item) => ({
-      ...item, purpose: 'TRANSFER', state: 'DISABLED', reason: 'outbound_execution_not_activated',
-    })) } };
+
+    // Transfer requests remain deliberately unavailable until the dedicated
+    // reservation/approval execution path is activated. Product economic
+    // gates are still reported explicitly so the client never confuses
+    // unavailable infrastructure with a deliberately closed capability.
+    const capabilities = liveFundingCapabilities(deps.config).map((item) => {
+      const productGateOpen =
+        item.code === 'USD_ACH'
+          ? deps.config.ENABLE_FIAT_WITHDRAWALS
+          : deps.config.ENABLE_CRYPTO_WITHDRAWALS;
+
+      return {
+        ...item,
+        purpose: 'TRANSFER' as const,
+        state: 'DISABLED' as const,
+        reason: productGateOpen
+          ? 'outbound_execution_not_activated'
+          : item.code === 'USD_ACH'
+            ? 'fiat_withdrawals_gate_closed'
+            : 'crypto_withdrawals_gate_closed',
+      };
+    });
+
+    return {
+      data: {
+        environment: 'LIVE',
+        custody_model: 'OMNIBUS',
+        capabilities,
+      },
+    };
   }
 
   if (method === 'POST' && path === '/v1/treasury/transfers') {
