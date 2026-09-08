@@ -737,3 +737,121 @@
     margin-top: 1rem !important;
   }
 }
+
+/* Quiet institutional system: precise type, measured scale, state-led motion. */
+.neptlium-home {
+  --neptlium-system-font: Geist, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--neptlium-system-font);
+}
+
+.neptlium-home > .authority-hero.editorial-hero {
+  min-height: calc(100svh - 4rem);
+  background-color: #080a0b;
+  background-image: linear-gradient(rgb(241 241 236 / 3%) 1px, transparent 1px), linear-gradient(90deg, rgb(241 241 236 / 3%) 1px, transparent 1px);
+  background-position: center;
+  background-size: 4rem 4rem;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
+  min-height: calc(100svh - 4rem);
+  grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 27rem);
+  gap: clamp(2.5rem, 8vw, 8rem);
+  padding-block: clamp(4rem, 10vh, 7rem);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+  max-width: 13ch;
+  margin-top: 1.15rem;
+  font-family: var(--neptlium-system-font) !important;
+  font-size: clamp(3rem, 4.5vw, 3.5rem) !important;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy > .authority-hero-lead {
+  max-width: 28rem;
+  margin-top: 1.4rem;
+  font-family: var(--neptlium-system-font) !important;
+  color: rgb(241 241 236 / 62%);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-actions {
+  margin-top: 1.65rem;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta,
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link {
+  min-height: 2.5rem;
+  font-family: var(--neptlium-system-font) !important;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-text-cta {
+  border-bottom-color: rgb(241 241 236 / 70%);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .hero-secondary-link {
+  color: rgb(241 241 236 / 48%);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .operating-panel {
+  border-color: rgb(241 241 236 / 12%);
+  background: #0e1214;
+  box-shadow: 0 2rem 5rem rgb(0 0 0 / 22%);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .operating-panel-top,
+.neptlium-home > .authority-hero.editorial-hero .operating-panel-body {
+  font-family: var(--neptlium-system-font);
+}
+
+.neptlium-home > .authority-hero.editorial-hero .operating-panel {
+  animation: panel-state-rise 600ms 1.2s both ease-out;
+}
+
+@keyframes panel-state-rise {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 48rem) {
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding-block: 3.75rem 4rem;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+    max-width: 14ch;
+    font-size: clamp(2.75rem, 10vw, 3.5rem) !important;
+  }
+}
+
+@media (max-width: 30rem) {
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
+    gap: 2.25rem;
+    padding-block: 2.75rem 3rem;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+    max-width: 13ch;
+    font-size: clamp(2.45rem, 11vw, 3rem) !important;
+    line-height: 1.04;
+  }
+
+  .neptlium-home > .authority-hero.editorial-hero .authority-hero-copy > .authority-hero-lead {
+    max-width: 20rem;
+    font-size: 0.94rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neptlium-home > .authority-hero.editorial-hero .operating-panel {
+    animation: none;
+  }
+}
