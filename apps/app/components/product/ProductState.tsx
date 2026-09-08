@@ -46,8 +46,6 @@ const descriptions: Partial<Record<ProductStateName, string>> = {
   ERROR: 'We could not load this information. Your existing account state is unchanged.',
 };
 
-const implementationLanguage = /\b(api|backend|canonical|governed|provider|provisioning)\b|will appear here/i;
-
 const tones: Record<ProductStateName, 'success' | 'warning' | 'danger' | 'neutral'> = {
   LOADING: 'neutral',
   AVAILABLE: 'success',
@@ -81,9 +79,7 @@ export function ProductStateMessage({
   readonly children?: ReactNode;
   readonly compact?: boolean;
 }) {
-  const body = typeof children === 'string' && implementationLanguage.test(children)
-    ? descriptions[state]
-    : children;
+  const body = children ?? descriptions[state];
 
   return (
     <div className={compact ? 'py-3' : 'py-5'} role={state === 'ERROR' ? 'alert' : state === 'LOADING' ? 'status' : undefined} aria-live={state === 'LOADING' ? 'polite' : undefined}>

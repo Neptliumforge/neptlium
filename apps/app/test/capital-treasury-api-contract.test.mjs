@@ -47,7 +47,8 @@ test('Treasury distinguishes execution closed from capability retrieval failure'
 test('withdrawal submission remains inert until governed reservation authority exists', () => {
   const wallet = read('app/dashboard/wallet/WalletView.tsx');
 
-  assert.match(wallet, /Submission capability not exposed/);
-  assert.match(wallet, /Preparation does not reserve or move capital/);
+  assert.match(wallet, /Withdrawal submission unavailable/);
+  assert.match(wallet, /No request has been sent\./);
+  assert.match(wallet, /Reviewing a withdrawal does not reserve or move capital/);
   assert.match(wallet, /<Button className="mt-4" disabled>Submit withdrawal<\/Button>/);
 });

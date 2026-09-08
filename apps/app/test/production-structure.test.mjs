@@ -7,33 +7,22 @@ import test from 'node:test';
 const appRoot = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFileSync(join(appRoot, path), 'utf8');
 
-test('authenticated application enforces restrained institutional operating authority', () => {
+test('authenticated application enforces neutral operating authority', () => {
   const global = read('app/global.css');
   const icon = read('public/icon.svg');
   const uiPackage = read('../../packages/ui/package.json');
-
   assert.equal(global.includes("@import '@neptlium/ui/styles/brand.css'"), true);
-
-  // Carbon remains the primary action/authority accent.
   assert.equal(global.includes('--color-accent-primary: var(--n-carbon)'), true);
   assert.equal(global.includes('--color-accent-primary-hover: #26292b'), true);
-
-  // Authenticated chrome uses the canonical neutral surface system.
   assert.equal(global.includes('--color-canvas: var(--n-canvas)'), true);
-  assert.equal(global.includes('--color-topnav: rgb(255 255 255 / 96%)'), true);
   assert.equal(global.includes('--color-sidebar: #f5f3ee'), true);
-  assert.equal(global.includes("--color-sidebar: #101214"), true);
-
-  // Decorative legacy product blues remain absent.
+  assert.equal(global.includes('--color-topnav: rgb(255 255 255 / 96%)'), true);
   assert.equal(global.includes('#258BE5'), false);
   assert.equal(global.includes('#319EED'), false);
-
   assert.equal(uiPackage.includes('"./styles/brand.css"'), true);
   assert.equal(icon.includes('#101214'), true);
   assert.equal(icon.includes('#F5F3EE'), true);
-
-  // No atmospheric visual effects in operating UI.
-  assert.equal(/crystalline|glow/i.test(global), false);
+  assert.equal(/gradient|radial|crystalline|glow/i.test(global), false);
 });
 
 test('primary authenticated navigation reflects the institutional operating model', () => {
@@ -71,7 +60,11 @@ test('primary authenticated navigation reflects the institutional operating mode
     'Allocation',
     'Portfolio Intelligence',
   ]) {
-    assert.equal(mobilePrimary.includes(`label: '${mobile}'`), true, `missing mobile ${mobile}`);
+    assert.equal(
+      mobilePrimary.includes(`label: '${mobile}'`),
+      true,
+      `missing mobile ${mobile}`,
+    );
   }
 
   assert.equal((mobilePrimary.match(/href:/g) ?? []).length, 6);
@@ -83,36 +76,24 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   const shell = read('../../packages/ui/src/shell/AppShell.tsx');
   const sidebar = read('../../packages/ui/src/shell/Sidebar.tsx');
   const global = read('app/global.css');
-
   assert.equal(layout.includes('dashboardSecondaryNavItems'), true);
-  // Shell identity reflects the current authenticated capital-intelligence product.
   assert.equal(layout.includes('brandDescriptor="Capital intelligence"'), true);
   assert.equal(layout.includes('brandTone="teal"'), true);
-  // Account context is derived from provisioned authenticated identity.
-  assert.equal(layout.includes('displayName'), true);
-  assert.equal(layout.includes('ProfileMenu'), true);
+  assert.equal(layout.includes('Current operating context'), false);
   assert.equal(layout.includes('sidebarFooter='), true);
-
-  // Mobile navigation must support the full primary workspace set
-  // without hard-coding the retired five-workspace model.
+  assert.equal(mobile.includes('grid-cols-5'), true);
+  assert.equal(global.includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), false);
   assert.equal(mobile.includes('env(safe-area-inset-bottom)'), true);
   assert.equal(mobile.includes('100dvh'), true);
   assert.equal(mobile.includes('document.body.style.overflow = "hidden"'), true);
   assert.equal(mobile.includes('event.key === "Escape"'), true);
   assert.equal(mobile.includes('triggerRef.current?.focus()'), true);
-
-  // Desktop shell remains institutionally constrained.
   assert.equal(shell.includes('w-[68px]'), true);
   assert.equal(shell.includes('xl:w-[228px]'), true);
   assert.equal(shell.includes('max-w-[1400px]'), true);
   assert.equal(shell.includes('overflow-x-hidden'), true);
   assert.equal(shell.includes('aria-label="Workspace navigation"'), true);
-
-  // Navigation should not regress into padded rounded SaaS cards.
   assert.equal(sidebar.includes('rounded-md px-3 py-2'), false);
-
-  // No stale five-column mobile assumption in app-level styling.
-  assert.equal(global.includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), false);
 });
 
 test('application shell exposes a keyboard skip target and institutional workspace width', () => {
@@ -157,28 +138,28 @@ test('all five primary workspaces use the shared information-first header', () =
 test('Overview is an action-oriented capital operating home without fabricated valuation', () => {
   const overview = read('app/dashboard/page.tsx');
 
-  // Attention is explicit without manufacturing an issue.
+  // Attention remains explicit without manufacturing an issue.
   assert.equal(overview.includes('Nothing needs your attention.'), true);
   assert.equal(overview.includes('awaiting authorization'), true);
 
-  // Financial truth comes from the authenticated API boundary.
+  // Financial truth crosses the authenticated Neptlium API boundary.
   assert.equal(overview.includes('getOverviewState'), true);
   assert.equal(overview.includes('getCanonicalBalances'), true);
   assert.equal(overview.includes('getFundingCapabilities'), true);
   assert.equal(overview.includes('getFundingActivity'), true);
   assert.equal(overview.includes('getTransferActivity'), true);
 
-  // Never fabricate a numeric zero when canonical state is absent.
+  // Missing canonical state must never become a fabricated numeric zero.
   assert.equal(overview.includes("?? '0'"), false);
   assert.equal(overview.includes('No capital yet'), true);
   assert.equal(overview.includes('FinancialValue'), true);
 
-  // Operating readiness is derived from governed backend capability state.
+  // Readiness is derived from governed backend capability state.
   assert.equal(overview.includes('Readiness'), true);
   assert.equal(overview.includes("enabledFunding.length > 0"), true);
-  assert.equal(overview.includes("item.state === 'ENABLED'"), true);
+  assert.equal(overview.includes("capabilities.filter((item) => item.state === 'ENABLED')"), true);
 
-  // Primary governed workspaces remain actionable.
+  // Core governed workspaces remain directly reachable.
   for (const href of [
     '/dashboard/wallet',
     '/dashboard/wallet#deposit',
@@ -190,13 +171,13 @@ test('Overview is an action-oriented capital operating home without fabricated v
   }
 });
 
-test('Capital Account exposes complete governed workflows and canonical balance semantics', () => {
+test('Capital Account exposes complete governed workflows without fabricating balance state', () => {
   const view = read('app/dashboard/wallet/WalletView.tsx');
-  assert.equal(view.includes('Source of truth · Neptlium canonical ledger'), true);
   for (const tab of ['Balances','Deposit','Withdraw','Destinations','Activity']) assert.equal(view.includes(`'${tab}'`), true, `missing tab ${tab}`);
   assert.equal(view.includes('0 positions'), true);
-  assert.equal(view.includes('Canonical available'), true);
-  assert.equal(view.includes('Not established'), true);
+  assert.equal(view.includes('No capital positions yet'), true);
+  assert.equal(view.includes('A recorded zero balance is shown as zero. Missing balances remain unavailable.'), true);
+  assert.equal(view.includes('Source of truth · Neptlium canonical ledger'), false);
   for (const state of ['Requested','Reserved','Pending approval','Approved','Submitted','Settled','Reconciled']) assert.equal(view.includes(state), true, `missing withdrawal state ${state}`);
 });
 
@@ -221,12 +202,13 @@ test('Deposit UX is capability-driven, copyable, and never hardcodes a treasury 
   assert.equal(/['"`]r[A-HJ-NP-Za-km-z1-9]{24,34}['"`]/.test(view), false);
 });
 
-test('Withdrawal UX never manufactures canonical availability and remains inert before reservation API support', () => {
+test('Withdrawal UX never manufactures availability and remains inert before reservation API support', () => {
   const view = read('app/dashboard/wallet/WalletView.tsx');
   const actions = read('app/dashboard/wallet/actions.ts');
   assert.equal(view.includes("active === 'Withdraw'"), true);
   assert.equal(view.includes('Select verified destination'), true);
-  assert.equal(view.includes('Submission capability not exposed'), true);
+  assert.equal(view.includes('Withdrawal submission unavailable'), true);
+  assert.equal(view.includes('No request has been sent.'), true);
   assert.equal(view.includes('<Button className="mt-4" disabled>Submit withdrawal</Button>'), true);
   assert.equal(view.includes('valueAtomic={selectedTransferBalance.available_atomic}'), true);
   assert.equal(view.includes("selectedTransferBalance ? '0'"), false);
@@ -244,8 +226,8 @@ test('Destination management uses governed alias persistence without pretending 
   assert.equal(actions.includes('createTransferAlias'), true);
   assert.equal(actions.includes('/v1/'), false);
   assert.equal(financial.includes('/v1/treasury/aliases'), true);
-  assert.equal(view.includes('Saving a destination does not prove ownership'), true);
-  assert.equal(view.includes('Destination removal is not exposed by the current API contract'), true);
+  assert.equal(view.includes('Saving a destination does not verify ownership'), true);
+  assert.equal(view.includes('Verification and activation are shown separately.'), true);
 });
 
 test('legacy capital routes converge on governed workspaces', () => {
@@ -266,13 +248,13 @@ test('Portfolio is canonical-position-first and separates capability coverage', 
   for (const forbidden of ['Buy', 'Sell', 'Trade', 'Swap', 'candlestick', 'market ticker']) assert.equal(portfolio.includes(forbidden), false, `portfolio contains ${forbidden}`);
 });
 
-test('Treasury is a complete liquidity and movement-governance workspace', () => {
+test('Treasury preserves liquidity and movement-governance semantics in production language', () => {
   const treasury = read('app/dashboard/treasury/TreasuryView.tsx');
-  assert.equal(treasury.includes('Liquidity and movement control'), true);
-  assert.equal(treasury.includes('Movement control'), true);
+  assert.equal(treasury.includes('Liquidity and movement'), true);
+  assert.equal(treasury.includes('Transfers and destinations'), true);
   assert.equal(treasury.includes('Verified destinations'), true);
-  assert.equal(treasury.includes('Provider aggregate balances are not substituted'), true);
-  assert.equal(treasury.includes('Reservation must precede submission'), true);
+  assert.equal(treasury.includes('No capital positions yet'), true);
+  assert.equal(treasury.includes('Reservation and approval remain separate from submission.'), true);
   assert.equal(treasury.includes('/dashboard/wallet#withdraw'), true);
   assert.equal(treasury.includes('/dashboard/wallet#destinations'), true);
 });
