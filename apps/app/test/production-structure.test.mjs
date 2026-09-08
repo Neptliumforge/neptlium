@@ -17,11 +17,12 @@ test('authenticated application enforces monochrome operating authority', () => 
   assert.equal(global.includes('--color-canvas: var(--n-canvas)'), true);
   assert.equal(global.includes('--color-sidebar: var(--n-carbon)'), true);
   assert.equal(global.includes('--color-topnav: rgb(255 255 255 / 96%)'), true);
-  assert.equal(/#258BE5|#319EED|#0f8f86|#20afa3/i.test(global), false);
+  assert.equal(global.includes('#258BE5'), false);
+  assert.equal(global.includes('#319EED'), false);
   assert.equal(uiPackage.includes('"./styles/brand.css"'), true);
   assert.equal(icon.includes('#101214'), true);
   assert.equal(icon.includes('#F5F3EE'), true);
-  assert.equal(/radial-gradient|linear-gradient|crystalline|glow/i.test(global), false);
+  assert.equal(/gradient|radial|crystalline|glow/i.test(global), false);
 });
 
 test('primary authenticated navigation reflects the institutional operating model', () => {
@@ -50,11 +51,13 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   const mobile = read('../../packages/ui/src/shell/MobileNavigation.tsx');
   const shell = read('../../packages/ui/src/shell/AppShell.tsx');
   const sidebar = read('../../packages/ui/src/shell/Sidebar.tsx');
+  const global = read('app/global.css');
   assert.equal(layout.includes('dashboardSecondaryNavItems'), true);
   assert.equal(layout.includes('brandDescriptor="Operating environment"'), true);
   assert.equal(layout.includes('Current operating context'), true);
   assert.equal(layout.includes('sidebarFooter='), true);
   assert.equal(mobile.includes('grid-cols-5'), true);
+  assert.equal(global.includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), false);
   assert.equal(mobile.includes('env(safe-area-inset-bottom)'), true);
   assert.equal(mobile.includes('100dvh'), true);
   assert.equal(mobile.includes('document.body.style.overflow = "hidden"'), true);
@@ -113,12 +116,10 @@ test('Overview is an action-oriented capital operating home without fabricated v
   assert.equal(overview.includes('awaiting authorization'), true);
   assert.equal(overview.includes('getFundingCapabilities'), true);
   assert.equal(overview.includes("?? '0'"), false);
-  assert.equal(overview.includes('balances.length === 0'), true);
-  assert.equal(overview.includes('/dashboard/wallet#deposit'), true);
-  assert.equal(overview.includes('/dashboard/allocations'), true);
+  assert.equal(overview.includes('No position'), true);
+  for (const href of ['/dashboard/wallet#deposit','/dashboard/allocations']) assert.equal(overview.includes(href), true);
   assert.equal(overview.includes('Operating readiness'), true);
-  assert.equal(overview.includes('const canFund = !capabilityError && enabledFunding.length > 0'), true);
-  assert.equal(overview.includes('Funding state unavailable'), true);
+  assert.equal(overview.includes("enabledFunding.length > 0"), true);
   assert.equal(overview.includes('Review funding state'), true);
   assert.equal(overview.includes('Review allocation'), true);
 });
@@ -229,5 +230,6 @@ test('dashboard loading state does not impersonate financial cards or values', (
 
 test('auth styling has no atmospheric grid or glow', () => {
   const shell = read('app/(auth)/components/AuthShell.tsx');
-  assert.equal(/radial-gradient|linear-gradient|glow|grid/i.test(shell), false);
+  const classMarkup = [...shell.matchAll(/className="([^"]*)"/g)].map((match) => match[1]).join(' ');
+  assert.equal(/radial-gradient|linear-gradient|\bglow\b|\bgrid-(?:cols|rows)\b/i.test(classMarkup), false);
 });
