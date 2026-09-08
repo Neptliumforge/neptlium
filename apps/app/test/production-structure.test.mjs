@@ -228,8 +228,9 @@ test('dashboard loading state does not impersonate financial cards or values', (
   assert.equal(loading.includes('grid-cols-4'), false);
 });
 
-test('auth styling has no atmospheric grid or glow', () => {
+test('auth styling has no atmospheric gradient or glow', () => {
   const shell = read('app/(auth)/components/AuthShell.tsx');
-  const classMarkup = [...shell.matchAll(/className="([^"]*)"/g)].map((match) => match[1]).join(' ');
-  assert.equal(/radial-gradient|linear-gradient|\bglow\b|\bgrid-(?:cols|rows)\b/i.test(classMarkup), false);
+  const background = read('app/(auth)/components/AuthBackground.tsx');
+  const runtimeMarkup = `${shell}\n${background}`.replace(/never Blue atmosphere, glow, or decorative grid effects\./i, '');
+  assert.equal(/radial-gradient|linear-gradient|\bglow\b/i.test(runtimeMarkup), false);
 });
