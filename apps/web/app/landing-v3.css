@@ -1,15 +1,51 @@
 /* Landing V3: cinematic institutional first view. CSS/SVG only; no decorative image asset. */
-.authority-hero.landing-v3-hero {
+.neptlium-home > .authority-hero {
   position: relative;
   min-height: max(46rem, 100svh);
   overflow: hidden;
   background:
-    radial-gradient(circle at 77% 31%, rgb(117 150 145 / 16%) 0, rgb(63 86 83 / 10%) 18%, transparent 44%),
-    linear-gradient(180deg, #0d1112 0%, #101415 54%, #0b0f10 100%);
+    radial-gradient(circle at 78% 30%, rgb(117 150 145 / 16%) 0, rgb(63 86 83 / 9%) 20%, transparent 45%),
+    linear-gradient(180deg, #0d1112 0%, #101415 55%, #0a0e0f 100%);
   color: var(--web-ivory);
+  isolation: isolate;
 }
 
-.landing-v3-hero-inner {
+.neptlium-home > .authority-hero::before {
+  position: absolute;
+  z-index: 0;
+  top: clamp(-36rem, -42vw, -23rem);
+  right: clamp(-21rem, -17vw, -8rem);
+  width: clamp(44rem, 68vw, 78rem);
+  aspect-ratio: 1;
+  border: 1px solid rgb(245 243 238 / 13%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 70%, rgb(242 239 229 / 11%) 0 2%, rgb(121 151 146 / 12%) 16%, rgb(21 31 31 / 71%) 48%, rgb(9 14 15 / 98%) 73%);
+  box-shadow: inset -5rem -6rem 9rem rgb(0 0 0 / 48%);
+  content: '';
+  pointer-events: none;
+}
+
+.neptlium-home > .authority-hero::after {
+  position: absolute;
+  z-index: 0;
+  right: -18vw;
+  bottom: -28vw;
+  width: 97vw;
+  height: 49vw;
+  min-height: 24rem;
+  border-top: 1px solid rgb(245 243 238 / 18%);
+  border-radius: 52% 48% 0 0 / 20% 22% 0 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgb(190 209 200 / 13%) 0%, rgb(64 82 80 / 8%) 28%, transparent 59%),
+    linear-gradient(180deg, rgb(26 34 34 / 72%), rgb(8 11 12 / 94%));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
+  content: '';
+  pointer-events: none;
+  transform: rotate(-2.5deg);
+}
+
+.neptlium-home > .authority-hero .authority-hero-inner {
   position: relative;
   z-index: 2;
   display: grid;
@@ -20,58 +56,7 @@
   padding-bottom: clamp(1.25rem, 3vh, 2rem);
 }
 
-.landing-v3-atmosphere {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.landing-v3-orbit {
-  position: absolute;
-  top: clamp(-36rem, -42vw, -23rem);
-  right: clamp(-21rem, -17vw, -8rem);
-  width: clamp(44rem, 68vw, 78rem);
-  aspect-ratio: 1;
-  border: 1px solid rgb(245 243 238 / 13%);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 70%, rgb(242 239 229 / 12%) 0 2%, rgb(121 151 146 / 12%) 16%, rgb(21 31 31 / 70%) 48%, rgb(9 14 15 / 98%) 73%);
-  box-shadow:
-    inset -5rem -6rem 9rem rgb(0 0 0 / 48%),
-    0 0 0 1px rgb(255 255 255 / 2%);
-}
-
-.landing-v3-horizon {
-  position: absolute;
-  right: -8vw;
-  bottom: 23%;
-  width: 77vw;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgb(245 243 238 / 48%) 48%, rgb(245 243 238 / 12%) 78%, transparent 100%);
-  box-shadow: 0 0 1.5rem rgb(216 226 220 / 28%);
-  transform: rotate(0.5deg);
-  transform-origin: right center;
-}
-
-.landing-v3-plane {
-  position: absolute;
-  right: -18vw;
-  bottom: -28vw;
-  width: 97vw;
-  height: 49vw;
-  min-height: 24rem;
-  border-top: 1px solid rgb(245 243 238 / 18%);
-  border-radius: 52% 48% 0 0 / 20% 22% 0 0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgb(190 209 200 / 13%) 0%, rgb(64 82 80 / 8%) 27%, transparent 59%),
-    linear-gradient(180deg, rgb(26 34 34 / 72%), rgb(8 11 12 / 94%));
-  transform: rotate(-2.5deg);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%);
-}
-
-.landing-v3-hero-copy {
+.neptlium-home > .authority-hero .authority-hero-copy {
   position: relative;
   z-index: 3;
   align-self: center;
@@ -79,12 +64,29 @@
   padding-bottom: clamp(2rem, 7vh, 5rem);
 }
 
-.landing-v3-hero-copy .web-eyebrow {
-  margin-bottom: 1.45rem;
+.neptlium-home > .authority-hero .authority-hero-copy::after {
+  position: absolute;
+  top: 0;
+  left: min(58vw, 56rem);
+  width: 11rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgb(245 243 238 / 22%);
+  color: rgb(245 243 238 / 46%);
+  content: 'CAPITAL SHOULD REMAIN INTELLIGIBLE AS IT MOVES.';
+  font-size: 0.63rem;
+  font-weight: 650;
+  line-height: 1.6;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.neptlium-home > .authority-hero .authority-hero-copy .web-eyebrow {
+  max-width: 24rem;
+  margin-bottom: 1.4rem;
   color: rgb(131 201 195 / 88%);
 }
 
-.landing-v3-hero-copy h1 {
+.neptlium-home > .authority-hero .authority-hero-copy h1 {
   max-width: 9.5ch;
   margin: 0;
   color: var(--web-ivory);
@@ -96,31 +98,30 @@
   text-wrap: balance;
 }
 
-.landing-v3-lead {
+.neptlium-home > .authority-hero .authority-hero-copy > .authority-hero-lead {
   max-width: 38rem;
-  margin: 1.7rem 0 0;
+  margin: 1.65rem 0 0;
   color: rgb(245 243 238 / 74%);
   font-size: clamp(1rem, 1.35vw, 1.12rem);
   line-height: 1.55;
   text-wrap: pretty;
 }
 
-.landing-v3-actions {
+.neptlium-home > .authority-hero .authority-hero-copy > .authority-hero-lead + .authority-hero-lead {
+  display: none;
+}
+
+.neptlium-home > .authority-hero .authority-actions {
   display: grid;
   width: min(100%, 26rem);
-  gap: 0.72rem;
-  margin-top: 1.8rem;
+  gap: 0.62rem;
+  margin-top: 1.75rem;
 }
 
-.landing-primary-action,
-.landing-secondary-action {
+.neptlium-home > .authority-hero .authority-actions .web-button.secondary {
   display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.landing-primary-action {
   min-height: 3.45rem;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: 0.82rem 1rem 0.82rem 1.1rem;
@@ -130,223 +131,229 @@
   color: var(--web-carbon);
   font-size: 0.9rem;
   font-weight: 680;
+  text-decoration: none;
   transition: transform 150ms var(--web-ease), background-color 150ms var(--web-ease), border-color 150ms var(--web-ease);
 }
 
-.landing-primary-action:hover,
-.landing-primary-action:focus-visible {
+.neptlium-home > .authority-hero .authority-actions .web-button.secondary:hover,
+.neptlium-home > .authority-hero .authority-actions .web-button.secondary:focus-visible {
   border-color: #fff;
   background: #fff;
+  color: var(--web-carbon);
   transform: translateY(-1px);
 }
 
-.landing-primary-action svg,
-.landing-secondary-action svg {
-  width: 0.95rem;
-  flex: none;
-}
-
-.landing-secondary-action {
-  min-height: 2.8rem;
+.neptlium-home > .authority-hero .authority-actions .text-arrow-link.on-dark {
+  display: flex;
+  min-height: 2.7rem;
+  align-items: center;
   justify-content: space-between;
-  padding: 0.35rem 0.15rem;
+  padding: 0.3rem 0.15rem;
   color: rgb(245 243 238 / 68%);
   font-size: 0.83rem;
   font-weight: 620;
 }
 
-.landing-secondary-action:hover,
-.landing-secondary-action:focus-visible {
+.neptlium-home > .authority-hero .authority-actions .text-arrow-link.on-dark:hover,
+.neptlium-home > .authority-hero .authority-actions .text-arrow-link.on-dark:focus-visible {
   color: var(--web-ivory);
 }
 
-.landing-v3-principle {
+.neptlium-home > .authority-hero .hero-wave-field {
   position: absolute;
-  top: clamp(7.25rem, 12vh, 9rem);
-  right: 0;
-  z-index: 3;
-  width: 11rem;
-  padding-left: 1rem;
-  border-left: 1px solid rgb(245 243 238 / 22%);
-  color: rgb(245 243 238 / 46%);
-  font-size: 0.63rem;
-  font-weight: 650;
-  line-height: 1.6;
-  letter-spacing: 0.19em;
-  text-transform: uppercase;
+  z-index: 1;
+  right: -8vw;
+  bottom: 22%;
+  width: 78vw;
+  height: 8rem;
+  color: rgb(245 243 238 / 58%);
+  opacity: 0.42;
+  transform: rotate(0.5deg);
+  transform-origin: right center;
 }
 
-.landing-v3-domain-rail {
+.neptlium-home > .authority-hero .hero-architecture {
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-self: end;
   border-top: 1px solid rgb(245 243 238 / 12%);
 }
 
-.landing-v3-domain-rail span {
+.neptlium-home > .authority-hero .hero-architecture-plane {
   min-width: 0;
-  padding: 1rem 0.9rem 0.2rem 0;
+  padding: 0.95rem 0.8rem 0 0;
+  border: 0;
+  background: transparent;
+}
+
+.neptlium-home > .authority-hero .hero-architecture-kicker {
+  display: none;
+}
+
+.neptlium-home > .authority-hero .hero-architecture-plane h2 {
+  margin: 0;
   color: rgb(245 243 238 / 48%);
+  font-family: inherit;
   font-size: 0.62rem;
   font-weight: 620;
+  line-height: 1.3;
   letter-spacing: 0.105em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
 @media (max-width: 767px) {
-  .authority-hero.landing-v3-hero,
-  .landing-v3-hero-inner {
+  .neptlium-home > .authority-hero,
+  .neptlium-home > .authority-hero .authority-hero-inner {
     min-height: 100svh;
   }
 
-  .authority-hero.landing-v3-hero {
+  .neptlium-home > .authority-hero {
     background:
       radial-gradient(circle at 92% 18%, rgb(112 148 141 / 14%) 0, rgb(42 61 59 / 8%) 26%, transparent 49%),
       linear-gradient(180deg, #0d1112 0%, #101415 62%, #0b0f10 100%);
   }
 
-  .landing-v3-hero-inner {
-    grid-template-rows: minmax(0, 1fr) auto;
-    padding-top: 6.2rem;
-    padding-bottom: max(0.9rem, env(safe-area-inset-bottom));
-  }
-
-  .landing-v3-orbit {
+  .neptlium-home > .authority-hero::before {
     top: -18rem;
     right: -18rem;
     width: 34rem;
     opacity: 0.78;
   }
 
-  .landing-v3-horizon {
-    right: -22vw;
-    bottom: 28%;
-    width: 100vw;
-    opacity: 0.56;
-  }
-
-  .landing-v3-plane {
+  .neptlium-home > .authority-hero::after {
     right: -45vw;
     bottom: -9rem;
     width: 160vw;
     height: 18rem;
     min-height: 0;
-    opacity: 0.7;
+    opacity: 0.68;
   }
 
-  .landing-v3-hero-copy {
+  .neptlium-home > .authority-hero .authority-hero-inner {
+    grid-template-rows: minmax(0, 1fr) auto;
+    padding-top: 6.05rem;
+    padding-bottom: max(0.85rem, env(safe-area-inset-bottom));
+  }
+
+  .neptlium-home > .authority-hero .authority-hero-copy {
     align-self: start;
     width: 100%;
-    padding-bottom: 1.2rem;
+    padding-bottom: 1rem;
   }
 
-  .landing-v3-hero-copy .web-eyebrow {
+  .neptlium-home > .authority-hero .authority-hero-copy::after {
+    display: none;
+  }
+
+  .neptlium-home > .authority-hero .authority-hero-copy .web-eyebrow {
     max-width: 18rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.95rem;
     font-size: 0.64rem;
   }
 
-  .landing-v3-hero-copy h1 {
+  .neptlium-home > .authority-hero .authority-hero-copy h1 {
     max-width: 8.5ch;
     font-size: clamp(2.75rem, 13vw, 3.85rem);
     line-height: 0.96;
   }
 
-  .landing-v3-lead {
+  .neptlium-home > .authority-hero .authority-hero-copy > .authority-hero-lead {
     max-width: 31rem;
-    margin-top: 1.15rem;
+    margin-top: 1.1rem;
     font-size: 0.96rem;
-    line-height: 1.48;
+    line-height: 1.46;
   }
 
-  .landing-v3-actions {
+  .neptlium-home > .authority-hero .authority-actions {
     width: 100%;
-    margin-top: 1.25rem;
+    gap: 0.42rem;
+    margin-top: 1.15rem;
   }
 
-  .landing-primary-action {
+  .neptlium-home > .authority-hero .authority-actions .web-button.secondary {
     width: 100%;
-    min-height: 3.35rem;
+    min-height: 3.3rem;
   }
 
-  .landing-secondary-action {
-    min-height: 2.55rem;
+  .neptlium-home > .authority-hero .authority-actions .text-arrow-link.on-dark {
+    min-height: 2.45rem;
   }
 
-  .landing-v3-principle {
-    display: none;
+  .neptlium-home > .authority-hero .hero-wave-field {
+    right: -24vw;
+    bottom: 27%;
+    width: 110vw;
+    height: 5rem;
+    opacity: 0.28;
   }
 
-  .landing-v3-domain-rail {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    row-gap: 0.18rem;
-    padding-top: 0.25rem;
+  .neptlium-home > .authority-hero .hero-architecture {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 0.1rem;
   }
 
-  .landing-v3-domain-rail span {
-    padding: 0.52rem 0.35rem 0 0;
+  .neptlium-home > .authority-hero .hero-architecture-plane {
+    padding: 0.48rem 0.35rem 0 0;
+  }
+
+  .neptlium-home > .authority-hero .hero-architecture-plane h2 {
     font-size: 0.52rem;
     letter-spacing: 0.075em;
   }
 }
 
 @media (max-width: 430px) {
-  .landing-v3-hero-inner {
-    padding-top: 5.65rem;
+  .neptlium-home > .authority-hero .authority-hero-inner {
+    padding-top: 5.55rem;
   }
 
-  .landing-v3-hero-copy h1 {
+  .neptlium-home > .authority-hero .authority-hero-copy h1 {
     font-size: clamp(2.55rem, 12.4vw, 3.3rem);
-  }
-
-  .landing-v3-lead {
-    max-width: 28rem;
   }
 }
 
 @media (max-width: 430px) and (max-height: 740px) {
-  .landing-v3-hero-inner {
-    padding-top: 5.25rem;
-    padding-bottom: 0.65rem;
+  .neptlium-home > .authority-hero .authority-hero-inner {
+    padding-top: 5.15rem;
+    padding-bottom: 0.6rem;
   }
 
-  .landing-v3-hero-copy .web-eyebrow {
-    margin-bottom: 0.72rem;
+  .neptlium-home > .authority-hero .authority-hero-copy .web-eyebrow {
+    margin-bottom: 0.7rem;
   }
 
-  .landing-v3-hero-copy h1 {
+  .neptlium-home > .authority-hero .authority-hero-copy h1 {
     font-size: clamp(2.3rem, 11.2vw, 2.9rem);
   }
 
-  .landing-v3-lead {
-    margin-top: 0.85rem;
-    font-size: 0.89rem;
-    line-height: 1.4;
+  .neptlium-home > .authority-hero .authority-hero-copy > .authority-hero-lead {
+    margin-top: 0.82rem;
+    font-size: 0.88rem;
+    line-height: 1.38;
   }
 
-  .landing-v3-actions {
-    gap: 0.45rem;
-    margin-top: 0.9rem;
+  .neptlium-home > .authority-hero .authority-actions {
+    margin-top: 0.82rem;
   }
 
-  .landing-primary-action {
-    min-height: 3rem;
+  .neptlium-home > .authority-hero .authority-actions .web-button.secondary {
+    min-height: 2.95rem;
   }
 
-  .landing-secondary-action {
-    min-height: 2.25rem;
+  .neptlium-home > .authority-hero .authority-actions .text-arrow-link.on-dark {
+    min-height: 2.15rem;
   }
 
-  .landing-v3-domain-rail span:nth-child(n + 4) {
+  .neptlium-home > .authority-hero .hero-architecture-plane:nth-child(n + 3) {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .landing-primary-action {
+  .neptlium-home > .authority-hero .authority-actions .web-button.secondary {
     transition: none;
   }
 }
