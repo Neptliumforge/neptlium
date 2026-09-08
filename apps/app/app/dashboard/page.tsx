@@ -12,6 +12,7 @@ import {
   type TransferActivity,
 } from '@/lib/api/financial';
 import { FinancialValue, ProductStateBadge, ProductStateMessage } from '@/components/product/ProductState';
+import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 
 function activityState(state: string) {
   if (['AVAILABLE', 'RECONCILED', 'SETTLED'].includes(state)) return 'AVAILABLE' as const;
@@ -59,6 +60,7 @@ export default async function DashboardPage() {
 
   const pendingApprovals = transfers.filter((item) => item.state === 'PENDING_APPROVAL');
   const enabledFunding = capabilities.filter((item) => item.state === 'ENABLED');
+  const canFund = !capabilityError && enabledFunding.length > 0;
   const attention = [
     ...(balanceError ? [{ title: 'Capital state could not be loaded', detail: 'Review the canonical Capital Account before taking consequential action.', href: '/dashboard/wallet', label: 'Review capital' }] : []),
     ...(activityError ? [{ title: 'Capital activity could not be loaded', detail: 'Recent governed movement is temporarily unavailable.', href: '/dashboard/transactions', label: 'Review activity' }] : []),
@@ -89,19 +91,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-10 lg:space-y-12">
-      <header className="flex flex-col gap-5 border-b border-border-hairline pb-6 lg:flex-row lg:items-end lg:justify-between lg:pb-7">
-        <div className="max-w-2xl">
-          <p className="neptlium-meta">Operating context</p>
-          <h1 className="mt-2.5 text-text-primary">Overview</h1>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-text-secondary">
-            Canonical capital state, operational attention, and governed activity in the current workspace.
-          </p>
-        </div>
-        <div className="flex items-center gap-2.5 text-xs text-text-muted">
-          <span className="size-1.5 bg-text-primary" aria-hidden="true" />
-          <span>Canonical state · {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-        </div>
-      </header>
+      <WorkspaceHeader
+        eyebrow="Operating context"
+        title="Overview"
+        description="Canonical capital state, operational attention, and governed activity in the current workspace."
+        meta={
+          <>
+            <span className="size-1.5 bg-text-primary" aria-hidden="true" />
+            <span>Canonical state · {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </>
+        }
+      />
 
       <section aria-labelledby="capital-position-title">
         <div className="mb-4 flex items-end justify-between gap-5">
@@ -157,8 +157,15 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 border-t border-border-hairline bg-black/[.018] px-5 py-3.5 sm:px-7 lg:px-8">
-            <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-9 items-center bg-[#111111] px-4 text-sm font-medium text-white hover:bg-[#262626]">Fund capital</Link>
+            {canFund ? (
+              <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-9 items-center bg-[#111111] px-4 text-sm font-medium text-white hover:bg-[#262626]">Fund capital</Link>
+            ) : capabilityError ? (
+              <span className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-muted">Funding state unavailable</span>
+            ) : (
+              <Link href="/dashboard/wallet" className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-secondary hover:text-text-primary">Review funding state <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
+            )}
             <Link href="/dashboard/treasury" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Review movement <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
+            <Link href="/dashboard/allocations" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Review allocation <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
           </div>
         </div>
       </section>
