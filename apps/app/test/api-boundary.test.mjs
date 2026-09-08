@@ -9,6 +9,7 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 const dashboardPages = [
   'app/dashboard/page.tsx',
   'app/dashboard/portfolio/page.tsx',
+  'app/dashboard/capital-account/page.tsx',
   'app/dashboard/wallet/page.tsx',
   'app/dashboard/treasury/page.tsx',
   'app/dashboard/allocations/page.tsx',
