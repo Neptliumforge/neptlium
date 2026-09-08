@@ -115,20 +115,36 @@ export function validateThesisCriterion(input: ThesisCriterionInput): ThesisCrit
   assertBasisPoints(input.weightBps, 'Criterion weight');
   if (!Number.isInteger(input.position) || input.position < 0 || input.position > 10_000) throw new ApiError(422, 'thesis_criterion_invalid', 'Criterion position is invalid');
 
-  const numericOperators: readonly ThesisCriterionOperator[] = ['GT', 'GTE', 'LT', 'LTE'];
-  if (numericOperators.includes(input.operator) && typeof input.numericValue !== 'number')
-    throw new ApiError(422, 'thesis_criterion_invalid', `${input.operator} requires numericValue`);
-  if (input.operator === 'BETWEEN') {
-    if (typeof input.numericMin !== 'number' || typeof input.numericMax !== 'number' || input.numericMin > input.numericMax)
-      throw new ApiError(422, 'thesis_criterion_invalid', 'BETWEEN requires numericMin less than or equal to numericMax');
-  }
-  if (input.operator === 'CONTAINS' && !input.textValue?.trim()) throw new ApiError(422, 'thesis_criterion_invalid', 'CONTAINS requires textValue');
-  if ((input.operator === 'IS_TRUE' || input.operator === 'IS_FALSE') && metric.valueType !== 'BOOLEAN')
-    throw new ApiError(422, 'thesis_criterion_invalid', `${input.operator} requires a boolean metric`);
   if (input.kind === 'QUALITATIVE' && !metric.qualitative)
     throw new ApiError(422, 'thesis_criterion_invalid', `Metric ${input.metricKey} is not registered as qualitative`);
   if (input.kind === 'QUANTITATIVE' && metric.qualitative)
     throw new ApiError(422, 'thesis_criterion_invalid', `Metric ${input.metricKey} is registered as qualitative`);
+
+  const numericValueTypes = new Set(['PERCENTAGE', 'CURRENCY', 'MULTIPLE', 'NUMBER']);
+  const numericOperators: readonly ThesisCriterionOperator[] = ['GT', 'GTE', 'LT', 'LTE'];
+  if (numericOperators.includes(input.operator)) {
+    if (!numericValueTypes.has(metric.valueType)) throw new ApiError(422, 'thesis_criterion_invalid', `${input.operator} requires a numeric metric`);
+    if (typeof input.numericValue !== 'number') throw new ApiError(422, 'thesis_criterion_invalid', `${input.operator} requires numericValue`);
+  }
+  if (input.operator === 'BETWEEN') {
+    if (!numericValueTypes.has(metric.valueType)) throw new ApiError(422, 'thesis_criterion_invalid', 'BETWEEN requires a numeric metric');
+    if (typeof input.numericMin !== 'number' || typeof input.numericMax !== 'number' || input.numericMin > input.numericMax)
+      throw new ApiError(422, 'thesis_criterion_invalid', 'BETWEEN requires numericMin less than or equal to numericMax');
+  }
+  if (input.operator === 'CONTAINS') {
+    if (metric.valueType !== 'TEXT') throw new ApiError(422, 'thesis_criterion_invalid', 'CONTAINS requires a text metric');
+    if (!input.textValue?.trim()) throw new ApiError(422, 'thesis_criterion_invalid', 'CONTAINS requires textValue');
+  }
+  if (input.operator === 'EQ') {
+    if (metric.valueType === 'BOOLEAN') throw new ApiError(422, 'thesis_criterion_invalid', 'Boolean metrics require IS_TRUE or IS_FALSE');
+    if (numericValueTypes.has(metric.valueType) && typeof input.numericValue !== 'number')
+      throw new ApiError(422, 'thesis_criterion_invalid', 'EQ requires numericValue for numeric metrics');
+    if (metric.valueType === 'TEXT' && !input.textValue?.trim())
+      throw new ApiError(422, 'thesis_criterion_invalid', 'EQ requires textValue for text metrics');
+  }
+  if (input.operator === 'IS_TRUE' || input.operator === 'IS_FALSE') {
+    if (metric.valueType !== 'BOOLEAN') throw new ApiError(422, 'thesis_criterion_invalid', `${input.operator} requires a boolean metric`);
+  }
 
   const textValue = input.textValue?.trim();
   const rationale = input.rationale?.trim();
