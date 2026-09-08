@@ -1,7 +1,7 @@
 import { requireProvisionedUser } from '@/lib/auth';
 import { getAllocationWorkspace } from '@/lib/api/allocation';
+import { AllocationHeader } from '@/components/product/AllocationIntelligence';
 import { ProductStateMessage } from '@/components/product/ProductState';
-import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 import { AllocationWorkspace } from './AllocationWorkspace';
 
 export default async function AllocationsPage() {
@@ -11,13 +11,12 @@ export default async function AllocationsPage() {
   } catch {
     return (
       <div className="space-y-8">
-        <WorkspaceHeader
-          eyebrow="Policy and authorization"
-          title="Allocation"
-          description="Observe canonical capital, define policy, review drift, and authorize decisions while execution remains an explicit capability boundary."
-        />
+        <AllocationHeader />
         <div className="border-y border-border-hairline">
-          <ProductStateMessage state="ERROR" title="Allocation workspace unavailable">The governed Allocation API could not establish the current owner-scoped workspace. No observed, modeled, or authorized state is inferred.</ProductStateMessage>
+          <ProductStateMessage state="ERROR" title="Allocation intelligence unavailable">
+            Current allocation information could not be established. No observed, modeled, or
+            authorized state is inferred.
+          </ProductStateMessage>
         </div>
       </div>
     );
