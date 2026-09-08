@@ -611,6 +611,60 @@
 }
 @media (prefers-reduced-motion: reduce) { .operating-panel { animation: none; } .pillar-row, .audience-list > a { transition: none; } }
 
+/* Stage 5: platform environment as connected intelligence surfaces. */
+.platform-ecosystem { padding-top: clamp(6rem, 12vw, 11rem); }
+.platform-ecosystem .experience-heading { align-items: end; }
+.platform-ecosystem .experience-heading h2 { max-width: 12ch; font-size: clamp(2.5rem, 4.5vw, 4.5rem); font-weight: 500; line-height: 1.03; letter-spacing: -.055em; }
+.platform-ecosystem .experience-heading > p { max-width: 31rem; }
+.platform-relationship-map { margin-top: clamp(3.5rem, 7vw, 6rem); padding: 1.5rem 2rem 2rem; border: 1px solid rgb(245 243 238 / 18%); background: var(--web-carbon-soft); }
+.platform-map-title { color: var(--web-teal-interaction); font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.platform-map-grid { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, 3.5rem); align-items: center; justify-items: center; min-height: 17.5rem; margin-top: 1rem; }
+.platform-map-node { position: relative; z-index: 1; display: inline-flex; align-items: center; min-height: 2.6rem; padding: .65rem .8rem; border: 1px solid rgb(245 243 238 / 15%); background: var(--web-carbon-soft); color: var(--web-ivory); font-size: .75rem; font-weight: 500; text-align: center; }
+.platform-map-node::before { width: .35rem; height: .35rem; margin-right: .5rem; border: 1px solid var(--web-teal); border-radius: 50%; content: ''; }
+.platform-map-overview { grid-column: 3; grid-row: 1; border-color: var(--web-teal); }
+.platform-map-portfolio { grid-column: 1; grid-row: 3; }
+.platform-map-account { grid-column: 3; grid-row: 3; border-color: rgb(245 243 238 / 32%); }
+.platform-map-treasury { grid-column: 5; grid-row: 3; }
+.platform-map-allocation { grid-column: 3; grid-row: 5; }
+.platform-map-research { grid-column: 5; grid-row: 5; }
+.platform-map-line { position: absolute; z-index: 0; background: rgb(245 243 238 / 18%); }
+.platform-map-line-horizontal { top: 50%; right: 8%; left: 8%; height: 1px; }
+.platform-map-line-vertical { top: 10%; bottom: 10%; left: 50%; width: 1px; }
+.platform-surfaces { margin-top: clamp(3.5rem, 7vw, 6rem); border-top: 1px solid var(--web-rule-dark); }
+.platform-surface-row { display: grid; grid-template-columns: 3rem minmax(0, 1fr) minmax(13rem, .7fr); gap: 1.5rem; align-items: start; padding: 1.8rem 0; border-bottom: 1px solid var(--web-rule-dark); transition: background-color 220ms var(--web-ease); }
+.platform-surface-row:hover { background: rgb(245 243 238 / 4%); }
+.platform-surface-index { color: var(--web-teal-interaction); font: .68rem var(--font-mono, monospace); }
+.platform-surface-row h3, .platform-surface-row strong, .platform-surface-row p { margin: 0; }
+.platform-surface-row h3 { font-size: 1.05rem; font-weight: 520; }
+.platform-surface-row strong { display: block; margin-top: .55rem; color: rgb(245 243 238 / 68%); font-size: .86rem; font-weight: 450; }
+.platform-surface-row p { max-width: 34rem; margin-top: .5rem; color: rgb(245 243 238 / 55%); font-size: .86rem; line-height: 1.6; }
+.platform-surface-signals { display: flex; flex-wrap: wrap; gap: .5rem 1rem; padding-top: .15rem; }
+.platform-surface-signals span { color: rgb(245 243 238 / 48%); font: .67rem var(--font-mono, monospace); letter-spacing: .04em; }
+.platform-surface-signals span::before { margin-right: .35rem; color: var(--web-teal); content: '—'; }
+.platform-closing { max-width: 35rem; margin: clamp(3.5rem, 7vw, 6rem) 0 0; color: rgb(245 243 238 / 76%); font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 450; line-height: 1.25; letter-spacing: -.03em; }
+@media (max-width: 48rem) {
+  .platform-ecosystem .experience-heading { display: block; }
+  .platform-ecosystem .experience-heading > p { margin-top: 1.5rem; }
+  .platform-relationship-map { padding-inline: 1rem; }
+  .platform-map-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, 3.25rem); min-height: 16.25rem; }
+  .platform-map-overview { grid-column: 2; grid-row: 1; }
+  .platform-map-portfolio { grid-column: 1; grid-row: 3; }
+  .platform-map-account { grid-column: 2; grid-row: 3; }
+  .platform-map-treasury { grid-column: 3; grid-row: 3; }
+  .platform-map-allocation { grid-column: 2; grid-row: 5; }
+  .platform-map-research { grid-column: 3; grid-row: 5; }
+  .platform-map-line-horizontal { right: 4%; left: 4%; }
+  .platform-surface-row { grid-template-columns: 2rem minmax(0, 1fr); gap: .8rem 1rem; }
+  .platform-surface-signals { grid-column: 2; }
+}
+@media (max-width: 30rem) {
+  .platform-ecosystem .experience-heading h2 { font-size: clamp(2.25rem, 9vw, 3.25rem); }
+  .platform-map-node { padding-inline: .45rem; font-size: .68rem; }
+  .platform-map-node::before { margin-right: .3rem; }
+  .platform-surface-row { padding-block: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { .platform-surface-row { transition: none; } }
+
 /* Stage 3: intelligence architecture as a connected institutional system. */
 .architecture-section { background: var(--web-ivory-high); }
 .architecture-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 31rem); align-items: end; gap: clamp(3rem, 10vw, 10rem); padding-bottom: clamp(3.5rem, 7vw, 6rem); }
