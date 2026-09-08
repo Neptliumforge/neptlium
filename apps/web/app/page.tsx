@@ -1,13 +1,13 @@
 import Link from 'next/link';
-import { ArrowDown, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { PRODUCTS, SOLUTIONS } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata = createPageMetadata({
-  title: 'The Operating System for Capital',
+  title: 'Capital, Understood Before It Moves',
   description:
-    'Neptlium is capital operating infrastructure for portfolio context, treasury, allocation, capital movement, governance and intelligence.',
+    'Neptlium brings portfolio context, allocation, treasury and capital intelligence into one coherent operating environment.',
   path: '/',
 });
 
@@ -43,28 +43,43 @@ export default function HomePage() {
       <section className="authority-hero" aria-labelledby="home-hero-title">
         <div className="web-shell authority-hero-inner">
           <div className="authority-hero-copy">
-            <p className="web-eyebrow">Capital operating infrastructure</p>
-            <h1 id="home-hero-title">The operating system for capital.</h1>
-            <p className="authority-hero-lead"><strong>See capital clearly. Coordinate what comes next. Govern how it moves.</strong></p>
-            <p className="authority-hero-lead">Neptlium brings portfolio context, treasury, allocation and capital movement into one operating environment.</p>
+            <p className="web-eyebrow">Capital intelligence</p>
+            <h1 id="home-hero-title">Capital, understood before it moves.</h1>
+            <p className="authority-hero-lead">Understand what you own, how it is positioned, and what deserves attention — from one intelligent capital environment.</p>
             <div className="authority-actions">
               <Link className="web-button secondary" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel} <ArrowRight aria-hidden="true" /></Link>
-              <Link className="text-arrow-link on-dark" href="#operating-context">Explore the platform <ArrowDown aria-hidden="true" /></Link>
+              <Link className="hero-sign-in" href={SITE.signInUrl}>Sign in</Link>
             </div>
           </div>
 
-          <svg className="hero-wave-field" viewBox="0 0 1200 180" width="100%" height="180" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <path d="M0 108 C170 28 330 150 500 88 S830 26 1200 96" fill="none" stroke="currentColor" strokeOpacity="0.22" />
-            <path d="M0 126 C180 50 350 160 530 104 S870 44 1200 112" fill="none" stroke="currentColor" strokeOpacity="0.14" />
-            <path d="M0 90 C150 12 315 132 480 72 S800 10 1200 78" fill="none" stroke="currentColor" strokeOpacity="0.1" />
-          </svg>
-          <div className="hero-architecture" aria-label="Capital operating domains">
-            {['Portfolio context', 'Treasury', 'Allocation', 'Governance'].map((item, index) => (
-              <section className="hero-architecture-plane" key={item}>
-                <span className="hero-architecture-kicker">{String(index + 1).padStart(2, '0')}</span>
-                <h2>{item}</h2>
-              </section>
-            ))}
+          <div className="hero-product-preview" aria-label="Neptlium operating environment preview">
+            <div className="hero-preview-bar">
+              <span>NEPTLIUM</span>
+              <span>Capital intelligence</span>
+            </div>
+            <div className="hero-preview-body">
+              <nav className="hero-preview-nav" aria-label="Preview navigation">
+                <span>Overview</span>
+                <span>Portfolio</span>
+                <span>Capital Account</span>
+                <span>Treasury</span>
+                <span>Allocation</span>
+              </nav>
+              <div className="hero-preview-stage">
+                <p className="hero-preview-label">Operating view</p>
+                <h2>Capital context</h2>
+                <div className="hero-preview-lines" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="hero-preview-relationships">
+                  <span>Portfolio <small>Context</small></span>
+                  <span>Allocation <small>Intent</small></span>
+                  <span>Treasury <small>Liquidity</small></span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
