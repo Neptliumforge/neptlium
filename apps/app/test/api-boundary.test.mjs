@@ -13,6 +13,7 @@ const dashboardPages = [
   'app/dashboard/wallet/page.tsx',
   'app/dashboard/treasury/page.tsx',
   'app/dashboard/allocations/page.tsx',
+  'app/dashboard/company-intelligence/page.tsx',
   'app/dashboard/transactions/page.tsx',
   'app/dashboard/notifications/page.tsx',
   'app/dashboard/documents/page.tsx',

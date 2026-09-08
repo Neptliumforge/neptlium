@@ -21,7 +21,7 @@ export const dashboardNavItems: readonly RoleAwareNavItem[] = [
   { label: 'Overview', href: '/dashboard', minRole: 'user', group: 'Overview', icon: <LayoutDashboard className="size-4" /> },
   { label: 'Capital Account', href: '/dashboard/capital-account', minRole: 'user', group: 'Capital', icon: <Wallet className="size-4" /> },
   { label: 'Treasury', href: '/dashboard/treasury', minRole: 'user', group: 'Capital', icon: <Landmark className="size-4" /> },
-  { label: 'Company Intelligence', href: '/dashboard/research', minRole: 'user', group: 'Investment context', icon: <Building2 className="size-4" /> },
+  { label: 'Company Intelligence', href: '/dashboard/company-intelligence', minRole: 'user', group: 'Investment context', icon: <Building2 className="size-4" /> },
   { label: 'Allocation', href: '/dashboard/allocations', minRole: 'user', group: 'Investment context', icon: <SlidersHorizontal className="size-4" /> },
   { label: 'Portfolio Intelligence', href: '/dashboard/portfolio', minRole: 'user', group: 'Investment context', icon: <Briefcase className="size-4" /> },
 ];
@@ -30,7 +30,7 @@ export const dashboardMobilePrimaryNavItems: readonly RoleAwareNavItem[] = [
   { label: 'Overview', href: '/dashboard', minRole: 'user', icon: <LayoutDashboard className="size-4" /> },
   { label: 'Capital Account', href: '/dashboard/capital-account', minRole: 'user', icon: <Wallet className="size-4" /> },
   { label: 'Treasury', href: '/dashboard/treasury', minRole: 'user', icon: <Landmark className="size-4" /> },
-  { label: 'Company Intelligence', href: '/dashboard/research', minRole: 'user', icon: <Building2 className="size-4" /> },
+  { label: 'Company Intelligence', href: '/dashboard/company-intelligence', minRole: 'user', icon: <Building2 className="size-4" /> },
   { label: 'Allocation', href: '/dashboard/allocations', minRole: 'user', icon: <SlidersHorizontal className="size-4" /> },
   { label: 'Portfolio Intelligence', href: '/dashboard/portfolio', minRole: 'user', icon: <Briefcase className="size-4" /> },
 ];
