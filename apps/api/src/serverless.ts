@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { buildApp, type InjectionResponse } from './app.js';
+import { type InjectionResponse } from './app.js';
+import { buildThesisApp } from './thesis-app.js';
 import { loadConfig } from './config.js';
 import { SupabaseRepository } from './supabase-repository.js';
 import { SupabaseRateLimiter } from './security.js';
@@ -67,7 +68,7 @@ async function buildProductionApplication() {
   const config = loadConfig();
   if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY || !config.SUPABASE_SERVICE_ROLE_KEY)
     throw new Error('Production serverless runtime requires durable Supabase credentials');
-  return buildApp({
+  return buildThesisApp({
     config,
     repository: new SupabaseRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY),
     rateLimiter: new SupabaseRateLimiter(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY),
