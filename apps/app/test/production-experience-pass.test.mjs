@@ -53,7 +53,7 @@ test('onboarding is a two-step personal account flow without organization-first 
   const steps = read('app/onboarding/wizard-steps.ts');
 
   assert.match(wizard, /investorType: 'individual'/);
-  assert.match(wizard, /totalSteps={2}/);
+  assert.match(wizard, /totalSteps=\{2\}/);
   assert.match(wizard, /Organization details are not required for your personal account/);
   assert.match(wizard, /organizationName: ''/);
   assert.match(wizard, /companyRole: ''/);
