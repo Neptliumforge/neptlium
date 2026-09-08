@@ -1,0 +1,222 @@
+import type { ThesisDecisionEvent } from './thesis-compounding.js';
+import type { ThesisCriterionInput, ThesisCriterionOperator, ThesisCriterionRecord } from './thesis-domain.js';
+import type { ThesisEvaluationSnapshot } from './thesis-repository.js';
+import { getThesisMetricDefinition, thesisMetricRegistry } from './thesis-metric-registry.js';
+
+export const REVEALED_THESIS_THRESHOLDS = Object.freeze({
+  minimumRelevantDecisions: 6,
+  minimumResolvedMetricSamples: 6,
+  minimumComparisonCohort: 3,
+  minimumConfidenceBps: 6500,
+  minimumStrengthBps: 2000,
+  minimumFrequencyGapBps: 2500,
+});
+
+export type RevealedObservationType = 'PREFERRED_RANGE' | 'AVOIDED_RANGE' | 'MINIMUM_THRESHOLD' | 'MAXIMUM_THRESHOLD' | 'POSITIVE_ASSOCIATION' | 'NEGATIVE_ASSOCIATION' | 'EVIDENCE_QUALITY_PREFERENCE';
+export type RevealedDecisionCohort = 'POSITIVE' | 'NEGATIVE' | 'ALL';
+
+export interface RevealedCohortSummary {
+  readonly resolvedCount: number;
+  readonly median?: number;
+  readonly q1?: number;
+  readonly q3?: number;
+  readonly matchingCount?: number;
+  readonly matchingBps?: number;
+}
+
+export interface RevealedThesisObservation {
+  readonly id: string;
+  readonly ownerId: string;
+  readonly thesisId: string;
+  readonly thesisVersions: readonly number[];
+  readonly metricKey: string;
+  readonly observationType: RevealedObservationType;
+  readonly derivedOperator?: ThesisCriterionOperator;
+  readonly derivedValue?: number | string;
+  readonly derivedMin?: number;
+  readonly derivedMax?: number;
+  readonly supportCount: number;
+  readonly contradictionCount: number;
+  readonly sampleSize: number;
+  readonly confidenceBps: number;
+  readonly strengthBps: number;
+  readonly decisionCohort: RevealedDecisionCohort;
+  readonly positiveCohort: RevealedCohortSummary;
+  readonly negativeCohort: RevealedCohortSummary;
+  readonly evidenceEvaluationIds: readonly string[];
+  readonly evidenceDecisionIds: readonly string[];
+  readonly firstObservedAt: string;
+  readonly lastObservedAt: string;
+  readonly computedAt: string;
+  readonly versionScope: 'CURRENT_ONLY' | 'MIXED';
+}
+
+export interface RevealedThesisAnalysis {
+  readonly state: 'VALUE' | 'INSUFFICIENT_HISTORY';
+  readonly thesisId: string;
+  readonly thesisVersion: number;
+  readonly relevantDecisionCount: number;
+  readonly observations: readonly RevealedThesisObservation[];
+}
+
+export interface ThesisAlignment {
+  readonly metricKey: string;
+  readonly relationship: 'ALIGNED' | 'REVEALED_STRICTER' | 'REVEALED_LOOSER' | 'UNSTATED_PREFERENCE' | 'CONTRADICTORY' | 'INSUFFICIENT_HISTORY';
+  readonly statedCriterion?: ThesisCriterionRecord;
+  readonly revealedObservation?: RevealedThesisObservation;
+  readonly confidenceBps: number;
+  readonly explanationCode: string;
+}
+
+export interface RevealedThesisAdoptionProposal {
+  readonly observationId: string;
+  readonly action: 'ADD_CRITERION' | 'TIGHTEN_CRITERION' | 'LOOSEN_CRITERION' | 'NO_CHANGE';
+  readonly proposedCriterion?: ThesisCriterionInput;
+  readonly rationale: string;
+  readonly confidenceBps: number;
+}
+
+type Sample = { decision: ThesisDecisionEvent; evaluation: ThesisEvaluationSnapshot; value: number | boolean | string; evidenceConfidenceBps: number };
+
+const positive = new Set(['INTERESTED', 'INVESTED']);
+const negative = new Set(['PASS']);
+const clampBps = (value: number) => Math.max(0, Math.min(10_000, Math.round(value)));
+const ratioBps = (part: number, total: number) => total ? clampBps(part * 10_000 / total) : 0;
+
+function quantile(values: readonly number[], q: number) {
+  const sorted = [...values].sort((a, b) => a - b);
+  if (!sorted.length) return 0;
+  const position = (sorted.length - 1) * q;
+  const lower = Math.floor(position); const upper = Math.ceil(position);
+  if (lower === upper) return sorted[lower]!;
+  return sorted[lower]! + (sorted[upper]! - sorted[lower]!) * (position - lower);
+}
+function numericSummary(values: readonly number[]): RevealedCohortSummary {
+  return values.length ? { resolvedCount: values.length, median: quantile(values, .5), q1: quantile(values, .25), q3: quantile(values, .75) } : { resolvedCount: 0 };
+}
+function observationId(thesisId: string, version: number, metricKey: string, operator: string, value: unknown) {
+  const token = `${thesisId}:${version}:${metricKey}:${operator}:${String(value)}`;
+  let hash = 2166136261;
+  for (let i = 0; i < token.length; i += 1) hash = Math.imul(hash ^ token.charCodeAt(i), 16777619);
+  return `revealed_${(hash >>> 0).toString(16).padStart(8, '0')}`;
+}
+function sampleTimes(samples: readonly Sample[]) {
+  const times = samples.map((sample) => sample.decision.decidedAt).sort();
+  return { first: times[0]!, last: times[times.length - 1]! };
+}
+function confidence(sampleSize: number, averageEvidence: number, consistency: number, separation: number) {
+  const sufficiency = clampBps(Math.min(1, sampleSize / 12) * 10_000);
+  return clampBps(.25 * sufficiency + .2 * averageEvidence + .25 * consistency + .3 * separation);
+}
+function samplesForMetric(metricKey: string, decisions: readonly ThesisDecisionEvent[], evaluations: ReadonlyMap<string, ThesisEvaluationSnapshot>) {
+  return decisions.flatMap((decision): Sample[] => {
+    if (!decision.evaluationId) return [];
+    const evaluation = evaluations.get(decision.evaluationId);
+    if (!evaluation || evaluation.thesisVersion !== decision.thesisVersion || evaluation.subjectType !== decision.subjectType || evaluation.subjectKey !== decision.subjectKey) return [];
+    const criterion = evaluation.summary.criteria.find((item) => item.criterion.metricKey === metricKey);
+    if (!criterion?.resolved || criterion.resolved.value === undefined) return [];
+    return [{ decision, evaluation, value: criterion.resolved.value, evidenceConfidenceBps: criterion.resolved.evidence.confidenceBps }];
+  });
+}
+
+function numericObservation(ownerId: string, thesisId: string, version: number, metricKey: string, samples: readonly Sample[], computedAt: string): RevealedThesisObservation | null {
+  const pos = samples.filter((s) => positive.has(s.decision.status) && typeof s.value === 'number');
+  const neg = samples.filter((s) => negative.has(s.decision.status) && typeof s.value === 'number');
+  if (pos.length < REVEALED_THESIS_THRESHOLDS.minimumComparisonCohort || neg.length < REVEALED_THESIS_THRESHOLDS.minimumComparisonCohort) return null;
+  const p = pos.map((s) => s.value as number); const n = neg.map((s) => s.value as number);
+  const pMedian = quantile(p, .5); const nMedian = quantile(n, .5);
+  const direction: 'GTE' | 'LTE' = pMedian >= nMedian ? 'GTE' : 'LTE';
+  const threshold = (pMedian + nMedian) / 2;
+  const matches = (value: number, cohort: 'positive' | 'negative') => direction === 'GTE' ? (cohort === 'positive' ? value >= threshold : value < threshold) : (cohort === 'positive' ? value <= threshold : value > threshold);
+  const support = p.filter((v) => matches(v, 'positive')).length;
+  const negativeSeparated = n.filter((v) => matches(v, 'negative')).length;
+  const contradictions = p.length - support;
+  const consistency = ratioBps(support + negativeSeparated, p.length + n.length);
+  const pooledIqr = Math.max(1e-9, (Math.abs(quantile(p, .75) - quantile(p, .25)) + Math.abs(quantile(n, .75) - quantile(n, .25))) / 2);
+  const strength = clampBps(Math.min(1, Math.abs(pMedian - nMedian) / (Math.abs(pMedian) + Math.abs(nMedian) + pooledIqr)) * 10_000);
+  const avgEvidence = samples.reduce((sum, s) => sum + s.evidenceConfidenceBps, 0) / samples.length;
+  const confidenceBps = confidence(samples.length, avgEvidence, consistency, strength);
+  if (samples.length < REVEALED_THESIS_THRESHOLDS.minimumResolvedMetricSamples || strength < REVEALED_THESIS_THRESHOLDS.minimumStrengthBps || confidenceBps < REVEALED_THESIS_THRESHOLDS.minimumConfidenceBps) return null;
+  const times = sampleTimes(samples);
+  return {
+    id: observationId(thesisId, version, metricKey, direction, threshold), ownerId, thesisId, thesisVersions: [version], metricKey,
+    observationType: direction === 'GTE' ? 'MINIMUM_THRESHOLD' : 'MAXIMUM_THRESHOLD', derivedOperator: direction, derivedValue: threshold,
+    supportCount: support, contradictionCount: contradictions, sampleSize: samples.length, confidenceBps, strengthBps: strength, decisionCohort: 'POSITIVE',
+    positiveCohort: { ...numericSummary(p), matchingCount: support, matchingBps: ratioBps(support, p.length) },
+    negativeCohort: { ...numericSummary(n), matchingCount: negativeSeparated, matchingBps: ratioBps(negativeSeparated, n.length) },
+    evidenceEvaluationIds: samples.map((s) => s.evaluation.id), evidenceDecisionIds: samples.map((s) => s.decision.id), firstObservedAt: times.first, lastObservedAt: times.last, computedAt, versionScope: 'CURRENT_ONLY',
+  };
+}
+
+function qualitativeObservation(ownerId: string, thesisId: string, version: number, metricKey: string, samples: readonly Sample[], computedAt: string): RevealedThesisObservation | null {
+  const pos = samples.filter((s) => positive.has(s.decision.status)); const neg = samples.filter((s) => negative.has(s.decision.status));
+  if (pos.length < REVEALED_THESIS_THRESHOLDS.minimumComparisonCohort || neg.length < REVEALED_THESIS_THRESHOLDS.minimumComparisonCohort) return null;
+  const normalized = (value: Sample['value']) => typeof value === 'string' ? value.trim().toLowerCase() : value;
+  const candidates = [...new Set(pos.map((s) => normalized(s.value)))];
+  let best: { value: boolean | string; gap: number; posMatches: number; negMatches: number } | null = null;
+  for (const value of candidates) {
+    const posMatches = pos.filter((s) => normalized(s.value) === value).length; const negMatches = neg.filter((s) => normalized(s.value) === value).length;
+    const gap = ratioBps(posMatches, pos.length) - ratioBps(negMatches, neg.length);
+    if (!best || Math.abs(gap) > Math.abs(best.gap)) best = { value, gap, posMatches, negMatches };
+  }
+  if (!best || Math.abs(best.gap) < REVEALED_THESIS_THRESHOLDS.minimumFrequencyGapBps) return null;
+  const strength = clampBps(Math.abs(best.gap)); const positiveAssociation = best.gap > 0;
+  const support = positiveAssociation ? best.posMatches : pos.length - best.posMatches;
+  const contradictions = pos.length - support;
+  const consistency = clampBps((ratioBps(support, pos.length) + (positiveAssociation ? 10_000 - ratioBps(best.negMatches, neg.length) : ratioBps(best.negMatches, neg.length))) / 2);
+  const avgEvidence = samples.reduce((sum, s) => sum + s.evidenceConfidenceBps, 0) / samples.length;
+  const confidenceBps = confidence(samples.length, avgEvidence, consistency, strength);
+  if (samples.length < REVEALED_THESIS_THRESHOLDS.minimumResolvedMetricSamples || confidenceBps < REVEALED_THESIS_THRESHOLDS.minimumConfidenceBps) return null;
+  const times = sampleTimes(samples); const isBoolean = typeof best.value === 'boolean';
+  return {
+    id: observationId(thesisId, version, metricKey, 'EQ', best.value), ownerId, thesisId, thesisVersions: [version], metricKey,
+    observationType: positiveAssociation ? 'POSITIVE_ASSOCIATION' : 'NEGATIVE_ASSOCIATION', derivedOperator: isBoolean ? (best.value ? 'IS_TRUE' : 'IS_FALSE') : 'EQ', ...(isBoolean ? {} : { derivedValue: String(best.value) }),
+    supportCount: support, contradictionCount: contradictions, sampleSize: samples.length, confidenceBps, strengthBps: strength, decisionCohort: 'POSITIVE',
+    positiveCohort: { resolvedCount: pos.length, matchingCount: best.posMatches, matchingBps: ratioBps(best.posMatches, pos.length) }, negativeCohort: { resolvedCount: neg.length, matchingCount: best.negMatches, matchingBps: ratioBps(best.negMatches, neg.length) },
+    evidenceEvaluationIds: samples.map((s) => s.evaluation.id), evidenceDecisionIds: samples.map((s) => s.decision.id), firstObservedAt: times.first, lastObservedAt: times.last, computedAt, versionScope: 'CURRENT_ONLY',
+  };
+}
+
+export function analyzeRevealedThesis(input: { ownerId: string; thesisId: string; thesisVersion: number; decisions: readonly ThesisDecisionEvent[]; evaluations: readonly ThesisEvaluationSnapshot[]; computedAt?: string }): RevealedThesisAnalysis {
+  const relevant = input.decisions.filter((d) => d.thesisVersion === input.thesisVersion && (positive.has(d.status) || negative.has(d.status)));
+  if (relevant.length < REVEALED_THESIS_THRESHOLDS.minimumRelevantDecisions) return { state: 'INSUFFICIENT_HISTORY', thesisId: input.thesisId, thesisVersion: input.thesisVersion, relevantDecisionCount: relevant.length, observations: [] };
+  const evaluationMap = new Map(input.evaluations.filter((e) => e.thesisVersion === input.thesisVersion).map((e) => [e.id, e]));
+  const computedAt = input.computedAt ?? new Date().toISOString();
+  const observations = thesisMetricRegistry.flatMap((metric) => {
+    const samples = samplesForMetric(metric.key, relevant, evaluationMap);
+    if (samples.length < REVEALED_THESIS_THRESHOLDS.minimumResolvedMetricSamples) return [];
+    const observation = metric.valueType === 'BOOLEAN' || metric.valueType === 'TEXT' ? qualitativeObservation(input.ownerId, input.thesisId, input.thesisVersion, metric.key, samples, computedAt) : numericObservation(input.ownerId, input.thesisId, input.thesisVersion, metric.key, samples, computedAt);
+    return observation ? [observation] : [];
+  });
+  return { state: observations.length ? 'VALUE' : 'INSUFFICIENT_HISTORY', thesisId: input.thesisId, thesisVersion: input.thesisVersion, relevantDecisionCount: relevant.length, observations };
+}
+
+function numericRelationship(stated: ThesisCriterionRecord, revealed: RevealedThesisObservation): ThesisAlignment['relationship'] {
+  if (typeof revealed.derivedValue !== 'number' || typeof stated.numericValue !== 'number') return 'CONTRADICTORY';
+  if ((stated.operator === 'GTE' || stated.operator === 'GT') && (revealed.derivedOperator === 'GTE' || revealed.derivedOperator === 'GT')) return revealed.derivedValue > stated.numericValue ? 'REVEALED_STRICTER' : revealed.derivedValue < stated.numericValue ? 'REVEALED_LOOSER' : 'ALIGNED';
+  if ((stated.operator === 'LTE' || stated.operator === 'LT') && (revealed.derivedOperator === 'LTE' || revealed.derivedOperator === 'LT')) return revealed.derivedValue < stated.numericValue ? 'REVEALED_STRICTER' : revealed.derivedValue > stated.numericValue ? 'REVEALED_LOOSER' : 'ALIGNED';
+  return 'CONTRADICTORY';
+}
+export function compareStatedAndRevealed(criteria: readonly ThesisCriterionRecord[], observations: readonly RevealedThesisObservation[]): ThesisAlignment[] {
+  const stated = new Map(criteria.map((c) => [c.metricKey, c])); const revealed = new Map(observations.map((o) => [o.metricKey, o]));
+  const keys = new Set([...stated.keys(), ...revealed.keys()]);
+  return [...keys].map((metricKey) => {
+    const criterion = stated.get(metricKey); const observation = revealed.get(metricKey);
+    if (!observation) return { metricKey, relationship: 'INSUFFICIENT_HISTORY', ...(criterion ? { statedCriterion: criterion } : {}), confidenceBps: 0, explanationCode: 'NO_REVEALED_OBSERVATION' };
+    if (!criterion) return { metricKey, relationship: 'UNSTATED_PREFERENCE', revealedObservation: observation, confidenceBps: observation.confidenceBps, explanationCode: 'REVEALED_WITHOUT_STATED_CRITERION' };
+    const metric = getThesisMetricDefinition(metricKey); let relationship: ThesisAlignment['relationship'];
+    if (metric && !metric.qualitative) relationship = numericRelationship(criterion, observation);
+    else relationship = criterion.operator === observation.derivedOperator && (criterion.textValue?.toLowerCase() ?? '') === (typeof observation.derivedValue === 'string' ? observation.derivedValue.toLowerCase() : '') ? 'ALIGNED' : 'CONTRADICTORY';
+    return { metricKey, relationship, statedCriterion: criterion, revealedObservation: observation, confidenceBps: observation.confidenceBps, explanationCode: `STATED_REVEALED_${relationship}` };
+  });
+}
+
+export function proposeRevealedThesisAdoption(observation: RevealedThesisObservation, stated?: ThesisCriterionRecord): RevealedThesisAdoptionProposal {
+  const metric = getThesisMetricDefinition(observation.metricKey);
+  if (!metric || !observation.derivedOperator) return { observationId: observation.id, action: 'NO_CHANGE', rationale: 'Observation cannot be represented as a governed thesis criterion.', confidenceBps: observation.confidenceBps };
+  const base: ThesisCriterionInput = { metricKey: observation.metricKey, kind: metric.qualitative ? 'QUALITATIVE' : 'QUANTITATIVE', operator: observation.derivedOperator, ...(typeof observation.derivedValue === 'number' ? { numericValue: observation.derivedValue } : {}), ...(typeof observation.derivedValue === 'string' ? { textValue: observation.derivedValue } : {}), ...(typeof observation.derivedMin === 'number' ? { numericMin: observation.derivedMin } : {}), ...(typeof observation.derivedMax === 'number' ? { numericMax: observation.derivedMax } : {}), weightBps: stated?.weightBps ?? 1000, importance: stated?.importance ?? 'INFORMATIONAL', rationale: 'Candidate only: derived from explicit historical Thesis decisions; requires user review before adoption.', position: stated?.position ?? 10_000 };
+  if (!stated) return { observationId: observation.id, action: 'ADD_CRITERION', proposedCriterion: base, rationale: 'Observed preference is not represented in the stated thesis.', confidenceBps: observation.confidenceBps };
+  const relationship = compareStatedAndRevealed([stated], [observation])[0]!.relationship;
+  const action = relationship === 'REVEALED_STRICTER' ? 'TIGHTEN_CRITERION' : relationship === 'REVEALED_LOOSER' ? 'LOOSEN_CRITERION' : 'NO_CHANGE';
+  return { observationId: observation.id, action, ...(action === 'NO_CHANGE' ? {} : { proposedCriterion: base }), rationale: action === 'NO_CHANGE' ? 'No deterministic criterion change is indicated.' : 'Candidate change only; explicit user-authorized thesis mutation is required separately.', confidenceBps: observation.confidenceBps };
+}
