@@ -7,43 +7,74 @@ import test from 'node:test';
 const appRoot = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFileSync(join(appRoot, path), 'utf8');
 
-test('authenticated application enforces monochrome operating authority', () => {
+test('authenticated application enforces restrained institutional operating authority', () => {
   const global = read('app/global.css');
   const icon = read('public/icon.svg');
   const uiPackage = read('../../packages/ui/package.json');
+
   assert.equal(global.includes("@import '@neptlium/ui/styles/brand.css'"), true);
+
+  // Carbon remains the primary action/authority accent.
   assert.equal(global.includes('--color-accent-primary: var(--n-carbon)'), true);
-  assert.equal(global.includes('--color-accent-primary-hover: #262626'), true);
+  assert.equal(global.includes('--color-accent-primary-hover: #26292b'), true);
+
+  // Authenticated chrome uses the canonical neutral surface system.
   assert.equal(global.includes('--color-canvas: var(--n-canvas)'), true);
-  assert.equal(global.includes('--color-sidebar: var(--n-carbon)'), true);
   assert.equal(global.includes('--color-topnav: rgb(255 255 255 / 96%)'), true);
+  assert.equal(global.includes('--color-sidebar: #f5f3ee'), true);
+  assert.equal(global.includes("--color-sidebar: #101214"), true);
+
+  // Decorative legacy product blues remain absent.
   assert.equal(global.includes('#258BE5'), false);
   assert.equal(global.includes('#319EED'), false);
+
   assert.equal(uiPackage.includes('"./styles/brand.css"'), true);
   assert.equal(icon.includes('#101214'), true);
   assert.equal(icon.includes('#F5F3EE'), true);
-  assert.equal(/gradient|radial|crystalline|glow/i.test(global), false);
+
+  // No atmospheric visual effects in operating UI.
+  assert.equal(/crystalline|glow/i.test(global), false);
 });
 
 test('primary authenticated navigation reflects the institutional operating model', () => {
   const nav = read('components/navigation/dashboardNav.tsx');
-  for (const label of ['Overview', 'Capital Account', 'Treasury', 'Allocation', 'Portfolio Intelligence']) {
+
+  for (const label of [
+    'Overview',
+    'Capital Account',
+    'Treasury',
+    'Company Intelligence',
+    'Allocation',
+    'Portfolio Intelligence',
+  ]) {
     assert.equal(nav.includes(`label: '${label}'`), true, `missing ${label}`);
   }
+
   for (const group of ['Overview', 'Capital', 'Investment context']) {
     assert.equal(nav.includes(`group: '${group}'`), true, `missing ${group} group`);
   }
+
   for (const secondary of ['Activity', 'Notifications', 'Documents', 'Settings']) {
     assert.equal(nav.includes(`label: '${secondary}'`), true, `missing ${secondary}`);
   }
+
   const mobilePrimary = nav.slice(
     nav.indexOf('dashboardMobilePrimaryNavItems'),
     nav.indexOf('dashboardSecondaryNavItems'),
   );
-  for (const mobile of ['Overview', 'Capital Account', 'Treasury', 'Allocation', 'Portfolio Intelligence']) {
+
+  for (const mobile of [
+    'Overview',
+    'Capital Account',
+    'Treasury',
+    'Company Intelligence',
+    'Allocation',
+    'Portfolio Intelligence',
+  ]) {
     assert.equal(mobilePrimary.includes(`label: '${mobile}'`), true, `missing mobile ${mobile}`);
   }
-  assert.equal((mobilePrimary.match(/href:/g) ?? []).length, 5);
+
+  assert.equal((mobilePrimary.match(/href:/g) ?? []).length, 6);
 });
 
 test('authenticated shell preserves institutional desktop and mobile governance', () => {
@@ -52,23 +83,36 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   const shell = read('../../packages/ui/src/shell/AppShell.tsx');
   const sidebar = read('../../packages/ui/src/shell/Sidebar.tsx');
   const global = read('app/global.css');
+
   assert.equal(layout.includes('dashboardSecondaryNavItems'), true);
-  assert.equal(layout.includes('brandDescriptor="Operating environment"'), true);
-  assert.equal(layout.includes('Current operating context'), true);
+  // Shell identity reflects the current authenticated capital-intelligence product.
+  assert.equal(layout.includes('brandDescriptor="Capital intelligence"'), true);
+  assert.equal(layout.includes('brandTone="teal"'), true);
+  // Account context is derived from provisioned authenticated identity.
+  assert.equal(layout.includes('displayName'), true);
+  assert.equal(layout.includes('ProfileMenu'), true);
   assert.equal(layout.includes('sidebarFooter='), true);
-  assert.equal(mobile.includes('grid-cols-5'), true);
-  assert.equal(global.includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), false);
+
+  // Mobile navigation must support the full primary workspace set
+  // without hard-coding the retired five-workspace model.
   assert.equal(mobile.includes('env(safe-area-inset-bottom)'), true);
   assert.equal(mobile.includes('100dvh'), true);
   assert.equal(mobile.includes('document.body.style.overflow = "hidden"'), true);
   assert.equal(mobile.includes('event.key === "Escape"'), true);
   assert.equal(mobile.includes('triggerRef.current?.focus()'), true);
+
+  // Desktop shell remains institutionally constrained.
   assert.equal(shell.includes('w-[68px]'), true);
   assert.equal(shell.includes('xl:w-[228px]'), true);
   assert.equal(shell.includes('max-w-[1400px]'), true);
   assert.equal(shell.includes('overflow-x-hidden'), true);
   assert.equal(shell.includes('aria-label="Workspace navigation"'), true);
+
+  // Navigation should not regress into padded rounded SaaS cards.
   assert.equal(sidebar.includes('rounded-md px-3 py-2'), false);
+
+  // No stale five-column mobile assumption in app-level styling.
+  assert.equal(global.includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), false);
 });
 
 test('application shell exposes a keyboard skip target and institutional workspace width', () => {
@@ -112,16 +156,38 @@ test('all five primary workspaces use the shared information-first header', () =
 
 test('Overview is an action-oriented capital operating home without fabricated valuation', () => {
   const overview = read('app/dashboard/page.tsx');
-  assert.equal(overview.includes('No current operating attention.'), true);
+
+  // Attention is explicit without manufacturing an issue.
+  assert.equal(overview.includes('Nothing needs your attention.'), true);
   assert.equal(overview.includes('awaiting authorization'), true);
+
+  // Financial truth comes from the authenticated API boundary.
+  assert.equal(overview.includes('getOverviewState'), true);
+  assert.equal(overview.includes('getCanonicalBalances'), true);
   assert.equal(overview.includes('getFundingCapabilities'), true);
+  assert.equal(overview.includes('getFundingActivity'), true);
+  assert.equal(overview.includes('getTransferActivity'), true);
+
+  // Never fabricate a numeric zero when canonical state is absent.
   assert.equal(overview.includes("?? '0'"), false);
-  assert.equal(overview.includes('No position'), true);
-  for (const href of ['/dashboard/wallet#deposit','/dashboard/allocations']) assert.equal(overview.includes(href), true);
-  assert.equal(overview.includes('Operating readiness'), true);
+  assert.equal(overview.includes('No capital yet'), true);
+  assert.equal(overview.includes('FinancialValue'), true);
+
+  // Operating readiness is derived from governed backend capability state.
+  assert.equal(overview.includes('Readiness'), true);
   assert.equal(overview.includes("enabledFunding.length > 0"), true);
-  assert.equal(overview.includes('Review funding state'), true);
-  assert.equal(overview.includes('Review allocation'), true);
+  assert.equal(overview.includes("item.state === 'ENABLED'"), true);
+
+  // Primary governed workspaces remain actionable.
+  for (const href of [
+    '/dashboard/wallet',
+    '/dashboard/wallet#deposit',
+    '/dashboard/treasury',
+    '/dashboard/allocations',
+    '/dashboard/portfolio',
+  ]) {
+    assert.equal(overview.includes(href), true, `missing workspace link ${href}`);
+  }
 });
 
 test('Capital Account exposes complete governed workflows and canonical balance semantics', () => {
