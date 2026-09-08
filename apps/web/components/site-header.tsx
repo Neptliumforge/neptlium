@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Brand } from './brand';
+import chrome from './site-chrome.module.css';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 
@@ -249,7 +250,7 @@ export function SiteHeader() {
           <Link className="mobile-explore-action" href="/platform">
             Explore platform
           </Link>
-          <Link className="mobile-enter-action" href={SITE.publicAccessUrl}>
+          <Link className={chrome.mobileEntryAction} href={SITE.publicAccessUrl}>
             {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
           </Link>
         </div>
@@ -274,7 +275,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="command-actions">
-            <Link className="button command-primary-action" href={SITE.publicAccessUrl}>
+            <Link className={chrome.entryAction} href={SITE.publicAccessUrl}>
               {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
             </Link>
           </div>
