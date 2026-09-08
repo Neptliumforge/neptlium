@@ -44,3 +44,49 @@ test('mixed Alchemy environment/RPC configuration fails', () => {
 test('Alchemy webhook authentication is mandatory', () => {
   assert.throws(() => verifyAlchemyWebhook({ rawBody: Buffer.from('{}'), signatureHeader: undefined, signingKey: 'secret' }));
 });
+
+test('product economic gates fail closed independently from provider configuration', () => {
+  assert.throws(
+    () => loadConfig({
+      NODE_ENV: 'test',
+      ENABLE_CRYPTO_DEPOSITS: 'true',
+    }),
+    /ENABLE_MAINNET/,
+  );
+
+  assert.throws(
+    () => loadConfig({
+      NODE_ENV: 'test',
+      ENABLE_MAINNET: 'true',
+      ENABLE_CRYPTO_DEPOSITS: 'true',
+    }),
+    /Circle and Alchemy/,
+  );
+
+  assert.throws(
+    () => loadConfig({
+      NODE_ENV: 'test',
+      ENABLE_MAINNET: 'true',
+      ENABLE_FIAT_DEPOSITS: 'true',
+    }),
+    /Stripe Treasury/,
+  );
+
+  const shadow = loadConfig({
+    NODE_ENV: 'test',
+    ENABLE_MAINNET: 'true',
+    CIRCLE_ENVIRONMENT: 'production',
+    CIRCLE_API_KEY: 'key',
+    CIRCLE_ENTITY_SECRET: 'secret',
+    ALCHEMY_ENVIRONMENT: 'production',
+    ALCHEMY_API_KEY: 'key',
+    ALCHEMY_RPC_URL: 'https://base-mainnet.g.alchemy.com/v2/key',
+  });
+
+  assert.equal(shadow.ENABLE_CRYPTO_DEPOSITS, false);
+  assert.equal(shadow.ENABLE_CRYPTO_WITHDRAWALS, false);
+  assert.equal(shadow.ENABLE_FIAT_DEPOSITS, false);
+  assert.equal(shadow.ENABLE_FIAT_WITHDRAWALS, false);
+  assert.equal(shadow.ENABLE_WALLET_PROVISIONING, false);
+  assert.equal(shadow.ENABLE_CONVERSIONS, false);
+});

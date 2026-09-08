@@ -5,6 +5,7 @@ import type { CapabilityState } from './funding-domain.js';
 import { publicFundingDefinitions } from './asset-registry.js';
 import { StripeTreasuryAdapter } from './stripe-treasury.js';
 import { verifyStripeWebhook } from './stripe-webhook.js';
+import { verifyAlchemyWebhook } from './alchemy-observation.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
 import {
   requestDigest,
@@ -157,6 +158,71 @@ export async function handleFinancialRoute(
       principal: async () => ({ id: await deps.ownerId() }),
     });
     if (allocation) return allocation;
+  }
+
+  const durableAlchemyIngressConfigured =
+    deps.config.ALCHEMY_ENVIRONMENT === 'production';
+
+  if (
+    method === 'POST' &&
+    path === '/v1/webhooks/alchemy' &&
+    durableAlchemyIngressConfigured
+  ) {
+    if (!deps.config.SUPABASE_URL || !deps.config.SUPABASE_SERVICE_ROLE_KEY)
+      throw new ApiError(
+        503,
+        'financial_storage_unavailable',
+        'Durable webhook storage is not configured',
+      );
+
+    if (!deps.config.ALCHEMY_ENVIRONMENT || !deps.config.ALCHEMY_WEBHOOK_SIGNING_KEY)
+      throw new ApiError(
+        503,
+        'provider_not_configured',
+        'Alchemy production webhook verification is not configured',
+      );
+
+    verifyAlchemyWebhook({
+      rawBody: context.rawBody,
+      signatureHeader: context.headers['x-alchemy-signature'],
+      signingKey: deps.config.ALCHEMY_WEBHOOK_SIGNING_KEY,
+    });
+
+    assertObject(context.body);
+
+    const providerEventId =
+      typeof context.body.id === 'string' ? context.body.id.trim() : '';
+
+    if (!providerEventId || providerEventId.length > 200)
+      throw new ApiError(
+        422,
+        'validation_failed',
+        'Alchemy webhook event identity is missing or invalid',
+      );
+
+    const operations = new SupabaseFinancialOperations(
+      deps.config.SUPABASE_URL,
+      deps.config.SUPABASE_SERVICE_ROLE_KEY,
+    );
+
+    const insertion = await operations.recordWebhook({
+      provider: 'alchemy',
+      environment:
+        deps.config.ALCHEMY_ENVIRONMENT === 'production' ? 'live' : 'test',
+      providerEventId,
+      payloadDigest: createHash('sha256').update(context.rawBody).digest('hex'),
+      payload: context.body,
+      signatureVerifiedAt: new Date().toISOString(),
+    });
+
+    // Alchemy retries non-successful delivery. Durable acceptance is therefore
+    // acknowledged only after verified evidence has reached the inbox.
+    return {
+      data: {
+        received: true,
+        duplicate: insertion === 'duplicate',
+      },
+    };
   }
 
   if (method === 'POST' && path === '/v1/webhooks/stripe') {
