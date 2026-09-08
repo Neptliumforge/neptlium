@@ -103,10 +103,19 @@ test('production auth environment contract is explicit and fails closed on inval
 
 test('API client is server-only, uses Clerk bearer authentication, request correlation and bounded timeouts', () => {
   const client = read('lib/api/client.ts');
+
   assert.match(client, /import 'server-only'/);
   assert.match(client, /getToken\(\)/);
-  assert.match(client, /authorization: `Bearer \$\{token\}`/);
-  assert.match(client, /'x-request-id': requestId/);
+
+  // Auth and request correlation are owned by the unified transport layer.
+  assert.match(client, /new Headers\(init\.headers\)/);
+  assert.match(client, /headers\.set\('authorization', `Bearer \$\{token\}`\)/);
+  assert.match(client, /headers\.set\('x-request-id', requestId\)/);
+
+  // Governed mutations receive transport-level idempotency automatically.
+  assert.match(client, /!headers\.has\('idempotency-key'\)/);
+  assert.match(client, /headers\.set\('idempotency-key', randomUUID\(\)\)/);
+
   assert.match(client, /8_000/);
   assert.match(client, /api_timeout/);
   assert.match(client, /api_unavailable/);

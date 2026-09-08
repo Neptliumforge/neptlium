@@ -37,6 +37,25 @@ export async function apiRequest<T>(path: `/v1/${string}`, init: RequestInit = {
 
   const method = (init.method ?? 'GET').toUpperCase();
   const requestId = randomUUID();
+
+  // The server-only client owns transport metadata for every customer API call.
+  // Caller-provided idempotency keys are preserved; otherwise governed
+  // mutations receive a stable key for the lifetime of this request.
+  const headers = new Headers(init.headers);
+  headers.set('accept', 'application/json');
+  if (init.body && !headers.has('content-type')) {
+    headers.set('content-type', 'application/json');
+  }
+  headers.set('authorization', `Bearer ${token}`);
+  headers.set('x-request-id', requestId);
+
+  if (
+    !['GET', 'HEAD', 'OPTIONS'].includes(method) &&
+    !headers.has('idempotency-key')
+  ) {
+    headers.set('idempotency-key', randomUUID());
+  }
+
   const attempts = method === 'GET' ? 2 : 1;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     const controller = new AbortController();
@@ -46,13 +65,7 @@ export async function apiRequest<T>(path: `/v1/${string}`, init: RequestInit = {
         ...init,
         method,
         cache: 'no-store',
-        headers: {
-          accept: 'application/json',
-          ...(init.body ? { 'content-type': 'application/json' } : {}),
-          ...init.headers,
-          authorization: `Bearer ${token}`,
-          'x-request-id': requestId,
-        },
+        headers,
         signal: controller.signal,
       });
       const payload = (await response.json().catch(() => ({}))) as {
@@ -168,27 +181,6 @@ export interface AllocationState {
   readonly reconciled: ResourceState;
 }
 
-export interface CapitalAccountState {
-  readonly canonical: {
-    readonly total: ResourceState;
-    readonly available: ResourceState;
-    readonly reserved: ResourceState;
-    readonly pending: ResourceState;
-  };
-  readonly provider_observation: ResourceState<{
-    readonly balances: ReadonlyArray<{
-      readonly asset: 'USDC';
-      readonly network: 'BASE-SEPOLIA';
-      readonly available: string;
-      readonly observedAt: string;
-      readonly synchronizationState: 'provider_observed';
-    }>;
-    readonly reconciliation_state: string;
-    readonly environment: 'testnet';
-  }>;
-  readonly funding: ResourceState<{ readonly environment: 'testnet' }>;
-}
-
 export interface AccountSettings {
   readonly profile: AccountContext;
   readonly organization: null | {
@@ -269,9 +261,6 @@ export function getTreasuryState(): Promise<TreasuryState> {
 export function getAllocationState(): Promise<AllocationState> {
   return apiRequest('/v1/customer/allocation');
 }
-export function getCapitalAccountState(): Promise<CapitalAccountState> {
-  return apiRequest('/v1/capital-account/state');
-}
 
 export function getCapitalActivity(params: {
   readonly offset?: number;
@@ -290,16 +279,6 @@ export function getCapitalActivity(params: {
   if (params.q) search.set('q', params.q);
   const query = search.toString();
   return apiRequest(`/v1/capital-activity${query ? `?${query}` : ''}`);
-}
-
-export function getCapitalAccountDepositAddress() {
-  return apiRequest<{
-    asset: 'USDC';
-    network: 'BASE-SEPOLIA';
-    address: string;
-    provider_state: string;
-    environment: 'testnet';
-  }>('/v1/capital-account/deposit-address?asset=USDC&network=BASE-SEPOLIA');
 }
 
 export function getNotifications() {

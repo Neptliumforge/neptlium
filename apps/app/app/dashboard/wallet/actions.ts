@@ -24,7 +24,6 @@ export async function createFundingIntentAction(
   try {
     const intent = await apiRequest<FundingActivity>("/v1/funding/intents", {
       method: "POST",
-      headers: { "idempotency-key": globalThis.crypto.randomUUID() },
       body: JSON.stringify({
         capability,
         ...(amountAtomic ? { amount_atomic: amountAtomic } : {}),
