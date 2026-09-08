@@ -46,7 +46,7 @@ export default function HomePage() {
         <div className="authority-hero-copy">
           <SectionLabel>Capital intelligence</SectionLabel>
           <h1 id="hero-title">Capital,<br />understood<br />before it moves.</h1>
-          <p className="authority-hero-lead">Neptlium is an intelligent capital operating environment that transforms fragmented financial information into clear decisions, strategic positioning, and institutional insight.</p>
+          <p className="authority-hero-lead">An intelligent layer for understanding position, change, and strategic attention.</p>
           <div className="authority-actions">
             <Link className="web-button primary" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link>
             <a className="hero-sign-in" href="#contact">Contact Sales</a>

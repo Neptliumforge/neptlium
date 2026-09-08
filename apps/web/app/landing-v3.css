@@ -242,6 +242,99 @@
   font-weight: 500;
 }
 
+/* Minimal centered hero direction: quiet like Vercel, editorial like a technology institution. */
+.neptlium-home > .authority-hero {
+  min-height: calc(100svh - 4.5rem);
+  background: var(--web-carbon);
+}
+
+.neptlium-home > .authority-hero .authority-hero-inner {
+  align-items: center;
+  justify-content: center;
+  padding-block: clamp(5rem, 13vh, 9rem);
+  text-align: center;
+}
+
+.neptlium-home > .authority-hero .authority-hero-copy {
+  display: flex;
+  width: min(100%, 52rem);
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 0;
+}
+
+.neptlium-home > .authority-hero .authority-hero-copy .web-eyebrow {
+  margin-bottom: 1.5rem;
+  color: var(--web-teal);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.neptlium-home > .authority-hero .authority-hero-copy h1 {
+  max-width: 9ch;
+  font-size: clamp(3.8rem, 8vw, 7rem);
+  font-weight: 600;
+  line-height: 0.96;
+  letter-spacing: -0.075em;
+}
+
+.neptlium-home > .authority-hero .authority-hero-copy > .authority-hero-lead {
+  max-width: 31rem;
+  margin-top: 1.75rem;
+  color: rgb(245 243 238 / 64%);
+  font-size: clamp(1rem, 1.4vw, 1.14rem);
+  line-height: 1.55;
+}
+
+.neptlium-home > .authority-hero .authority-actions {
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.neptlium-home > .authority-hero .authority-actions .web-button.primary {
+  min-width: 0;
+  min-height: 2.75rem;
+  gap: 0.55rem;
+  padding: 0.72rem 0.15rem;
+  border: 0;
+  border-bottom: 1px solid var(--web-ivory);
+  border-radius: 0;
+  background: transparent;
+  color: var(--web-ivory);
+  font-size: 0.88rem;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  box-shadow: none;
+}
+
+.neptlium-home > .authority-hero .authority-actions .web-button.primary svg {
+  transition: transform 180ms var(--web-ease);
+}
+
+.neptlium-home > .authority-hero .authority-actions .web-button.primary:hover,
+.neptlium-home > .authority-hero .authority-actions .web-button.primary:focus-visible {
+  border-color: var(--web-teal);
+  color: var(--web-teal);
+}
+
+.neptlium-home > .authority-hero .authority-actions .web-button.primary:hover svg,
+.neptlium-home > .authority-hero .authority-actions .web-button.primary:focus-visible svg {
+  transform: translateX(0.2rem);
+}
+
+.neptlium-home > .authority-hero .hero-sign-in {
+  min-height: 2.75rem;
+  color: rgb(245 243 238 / 58%);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.neptlium-home > .authority-hero .hero-sign-in:hover,
+.neptlium-home > .authority-hero .hero-sign-in:focus-visible {
+  color: var(--web-ivory);
+}
+
 @media (max-width: 767px) {
   .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] {
     position: sticky;
