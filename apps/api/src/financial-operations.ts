@@ -92,9 +92,87 @@ export class SupabaseFinancialOperations {
         processing_state: 'received',
       }),
     });
-    if (response.status === 409) return 'duplicate' as const;
-    if (!response.ok) throw new ApiError(503, 'webhook_inbox_unavailable', 'Verified provider event could not be persisted');
+    if (response.status === 409) {
+      const existing = await this.rest(
+        `provider_webhook_inbox?provider=eq.${encodeURIComponent(input.provider)}` +
+          `&environment=eq.${encodeURIComponent(input.environment)}` +
+          `&provider_event_id=eq.${encodeURIComponent(input.providerEventId)}` +
+          `&select=payload_digest&limit=1`,
+      );
+      if (!existing.ok)
+        throw new ApiError(
+          503,
+          'webhook_inbox_unavailable',
+          'Existing provider event could not be verified',
+        );
+
+      const rows = (await existing.json()) as Array<{ payload_digest: string }>;
+      const prior = rows[0]?.payload_digest;
+      if (!prior)
+        throw new ApiError(
+          503,
+          'webhook_inbox_unavailable',
+          'Existing provider event identity is unavailable',
+        );
+
+      if (prior !== input.payloadDigest)
+        throw new ApiError(
+          409,
+          'webhook_replay_detected',
+          'Provider event identity was reused with different payload evidence',
+        );
+
+      return 'duplicate' as const;
+    }
+    if (!response.ok)
+      throw new ApiError(
+        503,
+        'webhook_inbox_unavailable',
+        'Verified provider event could not be persisted',
+      );
     return 'inserted' as const;
+  }
+
+  claimWebhook(
+    provider: Provider,
+    environment: Environment,
+    providerEventId: string,
+    leaseSeconds = 60,
+  ) {
+    return this.rpc<Record<string, unknown>>('claim_provider_webhook', {
+      p_provider: provider,
+      p_environment: environment,
+      p_provider_event_id: providerEventId,
+      p_lease_seconds: leaseSeconds,
+    });
+  }
+
+  completeWebhook(
+    provider: Provider,
+    environment: Environment,
+    providerEventId: string,
+  ) {
+    return this.rpc<Record<string, unknown>>('complete_provider_webhook', {
+      p_provider: provider,
+      p_environment: environment,
+      p_provider_event_id: providerEventId,
+    });
+  }
+
+  failWebhook(
+    provider: Provider,
+    environment: Environment,
+    providerEventId: string,
+    errorCode: string,
+    maxAttempts = 8,
+  ) {
+    return this.rpc<Record<string, unknown>>('fail_provider_webhook', {
+      p_provider: provider,
+      p_environment: environment,
+      p_provider_event_id: providerEventId,
+      p_error_code: errorCode,
+      p_max_attempts: maxAttempts,
+    });
   }
 
   async recordSettlementEvidence(input: {
