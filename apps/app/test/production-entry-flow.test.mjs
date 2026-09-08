@@ -10,7 +10,7 @@ test('application root is the server-side Clerk state router', () => {
   const page = read('app/page.tsx');
   assert.match(page, /from '@clerk\/nextjs\/server'/);
   assert.match(page, /await auth\(\)/);
-  assert.match(page, /redirect\(userId \? "\/auth\/complete" : "\/auth\/sign-in"\)/);
+  assert.match(page, /redirect\(userId \? "\/auth\/complete" : "\/auth\/sign-up"\)/);
   assert.doesNotMatch(page, /useEffect|localStorage|window\.location/);
 });
 
