@@ -12,11 +12,11 @@ test('authenticated application enforces monochrome operating authority', () => 
   const icon = read('public/icon.svg');
   const uiPackage = read('../../packages/ui/package.json');
   assert.equal(global.includes("@import '@neptlium/ui/styles/brand.css'"), true);
-  assert.equal(global.includes('--color-accent-primary: #101214'), true);
-  assert.equal(global.includes('--color-accent-primary-hover: #1b1e21'), true);
-  assert.equal(global.includes('--color-canvas: #ffffff'), true);
-  assert.equal(global.includes('--color-sidebar: #ffffff'), true);
-  assert.equal(global.includes('--color-topnav: #ffffff'), true);
+  assert.equal(global.includes('--color-accent-primary: var(--n-carbon)'), true);
+  assert.equal(global.includes('--color-accent-primary-hover: #262626'), true);
+  assert.equal(global.includes('--color-canvas: var(--n-canvas)'), true);
+  assert.equal(global.includes('--color-sidebar: var(--n-carbon)'), true);
+  assert.equal(global.includes('--color-topnav: rgb(255 255 255 / 96%)'), true);
   assert.equal(global.includes('#258BE5'), false);
   assert.equal(global.includes('#319EED'), false);
   assert.equal(uiPackage.includes('"./styles/brand.css"'), true);
@@ -30,7 +30,7 @@ test('primary authenticated navigation reflects the institutional operating mode
   for (const label of ['Overview', 'Capital Account', 'Treasury', 'Allocation', 'Portfolio Intelligence']) {
     assert.equal(nav.includes(`label: '${label}'`), true, `missing ${label}`);
   }
-  for (const group of ['Workspace', 'Capital', 'Investment context']) {
+  for (const group of ['Overview', 'Capital', 'Investment context']) {
     assert.equal(nav.includes(`group: '${group}'`), true, `missing ${group} group`);
   }
   for (const secondary of ['Activity', 'Notifications', 'Documents', 'Settings']) {
@@ -40,7 +40,7 @@ test('primary authenticated navigation reflects the institutional operating mode
     nav.indexOf('dashboardMobilePrimaryNavItems'),
     nav.indexOf('dashboardSecondaryNavItems'),
   );
-  for (const mobile of ['Overview', 'Capital', 'Treasury', 'Allocation', 'Portfolio']) {
+  for (const mobile of ['Overview', 'Capital Account', 'Treasury', 'Allocation', 'Portfolio Intelligence']) {
     assert.equal(mobilePrimary.includes(`label: '${mobile}'`), true, `missing mobile ${mobile}`);
   }
   assert.equal((mobilePrimary.match(/href:/g) ?? []).length, 5);
@@ -54,7 +54,7 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   const global = read('app/global.css');
   assert.equal(layout.includes('dashboardSecondaryNavItems'), true);
   assert.equal(layout.includes('brandDescriptor="Operating environment"'), true);
-  assert.equal(layout.includes('Current workspace'), true);
+  assert.equal(layout.includes('Current operating context'), true);
   assert.equal(layout.includes('sidebarFooter='), true);
   assert.equal(mobile.includes('grid-cols-5'), true);
   assert.equal(global.includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), false);
@@ -63,9 +63,9 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   assert.equal(mobile.includes('document.body.style.overflow = "hidden"'), true);
   assert.equal(mobile.includes('event.key === "Escape"'), true);
   assert.equal(mobile.includes('triggerRef.current?.focus()'), true);
-  assert.equal(shell.includes('w-[72px]'), true);
-  assert.equal(shell.includes('xl:w-[252px]'), true);
-  assert.equal(shell.includes('max-w-[1600px]'), true);
+  assert.equal(shell.includes('w-[68px]'), true);
+  assert.equal(shell.includes('xl:w-[228px]'), true);
+  assert.equal(shell.includes('max-w-[1400px]'), true);
   assert.equal(shell.includes('overflow-x-hidden'), true);
   assert.equal(shell.includes('aria-label="Workspace navigation"'), true);
   assert.equal(sidebar.includes('rounded-md px-3 py-2'), false);
@@ -112,15 +112,15 @@ test('all five primary workspaces use the shared information-first header', () =
 
 test('Overview is an action-oriented capital operating home without fabricated valuation', () => {
   const overview = read('app/dashboard/page.tsx');
-  assert.equal(overview.includes('You&apos;re all caught up.'), true);
-  assert.equal(overview.includes('awaiting approval'), true);
+  assert.equal(overview.includes('No current operating attention.'), true);
+  assert.equal(overview.includes('awaiting authorization'), true);
   assert.equal(overview.includes('getFundingCapabilities'), true);
   assert.equal(overview.includes("?? '0'"), false);
-  assert.equal(overview.includes('0 canonical positions'), true);
-  for (const href of ['/dashboard/wallet#deposit','/dashboard/wallet#withdraw','/dashboard/allocations']) assert.equal(overview.includes(href), true);
+  assert.equal(overview.includes('No position'), true);
+  for (const href of ['/dashboard/wallet#deposit','/dashboard/allocations']) assert.equal(overview.includes(href), true);
   assert.equal(overview.includes('Operating readiness'), true);
   assert.equal(overview.includes("enabledFunding.length > 0"), true);
-  assert.equal(overview.includes('Review withdrawal'), true);
+  assert.equal(overview.includes('Review funding state'), true);
   assert.equal(overview.includes('Review allocation'), true);
 });
 
@@ -228,8 +228,9 @@ test('dashboard loading state does not impersonate financial cards or values', (
   assert.equal(loading.includes('grid-cols-4'), false);
 });
 
-test('auth styling has no atmospheric grid or glow', () => {
+test('auth styling has no atmospheric gradient or glow', () => {
+  const shell = read('app/(auth)/components/AuthShell.tsx');
   const background = read('app/(auth)/components/AuthBackground.tsx');
-  const runtimeMarkup = background.replace(/never Blue atmosphere, glow, or decorative grid effects\./i, '');
-  assert.equal(/radial|gradient|glow|grid/i.test(runtimeMarkup), false);
+  const runtimeMarkup = `${shell}\n${background}`.replace(/never Blue atmosphere, glow, or decorative grid effects\./i, '');
+  assert.equal(/radial-gradient|linear-gradient|\bglow\b/i.test(runtimeMarkup), false);
 });

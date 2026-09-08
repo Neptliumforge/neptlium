@@ -10,7 +10,9 @@ test('Clerk completion routes existing accounts into the one-time linking flow',
   const complete = read('app/auth/complete/page.tsx');
   assert.match(complete, /bootstrapClerkIdentity/);
   assert.match(complete, /status === 'link_required'/);
-  assert.match(complete, /redirect\('\/auth\/link-existing'\)/);
+  assert.match(complete, /destination = '\/auth\/link-existing'/);
+  assert.match(complete, /redirect\(destination\)/);
+  assert.match(complete, /next\/navigation redirects throw internally/);
 });
 
 test('existing-account bridge verifies legacy credentials then links through apps\/api', () => {

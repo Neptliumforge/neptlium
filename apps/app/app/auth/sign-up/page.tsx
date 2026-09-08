@@ -13,10 +13,10 @@ function AuthMountFallback() {
 export default function SignUpPage() {
   return (
     <AuthShell>
-      <div className="space-y-8">
-        <div className="space-y-3">
+      <div className="space-y-7">
+        <div className="space-y-2.5">
           <p className="neptlium-meta">Create access</p>
-          <h1 className="text-[2rem] font-medium leading-[1.05] tracking-[-0.045em] text-text-primary sm:text-[2.35rem]">
+          <h1 className="text-[1.8rem] font-medium leading-[1.08] tracking-[-0.035em] text-text-primary sm:text-[2rem]">
             Create your account
           </h1>
           <p className="max-w-sm text-sm leading-6 text-text-secondary">
@@ -24,7 +24,7 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        <div className="w-full border-t border-border-hairline pt-7">
+        <div className="w-full border-t border-border-hairline pt-6">
           <SignUp
             routing="hash"
             fallback={<AuthMountFallback />}
@@ -37,11 +37,11 @@ export default function SignUpPage() {
                 card: 'w-full border-0 bg-transparent p-0 shadow-none',
                 headerTitle: 'hidden',
                 headerSubtitle: 'hidden',
-                socialButtonsBlockButton: 'border-border-default bg-transparent shadow-none hover:bg-black/[.03]',
-                formFieldInput: 'border-border-default bg-white/70 shadow-none focus:border-[#0f8f86]',
-                formButtonPrimary: 'bg-[#111312] text-[#f4f0e8] shadow-none hover:bg-[#242724]',
+                socialButtonsBlockButton: 'border-border-default bg-transparent shadow-none hover:bg-black/[.035]',
+                formFieldInput: 'border-border-default bg-white shadow-none focus:border-[#111111]',
+                formButtonPrimary: 'bg-[#111111] text-white shadow-none hover:bg-[#262626]',
                 footer: 'bg-transparent',
-                footerActionLink: 'text-[#0b746d] hover:text-[#0f8f86]',
+                footerActionLink: 'text-[#111111] underline-offset-4 hover:underline',
               },
             }}
           />
