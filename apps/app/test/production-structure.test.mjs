@@ -151,7 +151,6 @@ test('all five primary workspaces use the shared information-first header', () =
     'app/dashboard/page.tsx',
     'app/dashboard/portfolio/page.tsx',
     'app/dashboard/treasury/TreasuryView.tsx',
-    'app/dashboard/allocations/AllocationWorkspace.tsx',
   ]) {
     assert.equal(
       read(path).includes('WorkspaceHeader'),
@@ -161,6 +160,10 @@ test('all five primary workspaces use the shared information-first header', () =
   }
   assert.equal(
     read('components/product/CapitalAccountExperience.tsx').includes('WorkspaceHeader'),
+    true,
+  );
+  assert.equal(
+    read('components/product/AllocationIntelligence.tsx').includes('WorkspaceHeader'),
     true,
   );
 });
@@ -391,8 +394,10 @@ test('Activity is sourced from governed funding and transfer APIs', () => {
   assert.equal(page.includes('No capital activity yet'), true);
 });
 
-test('Allocation exposes policy, drift, authorization, classes, measures, and an execution gate', () => {
+test('Allocation exposes policy, decision intelligence, lifecycle truth, and an execution gate', () => {
   const allocation = read('app/dashboard/allocations/AllocationWorkspace.tsx');
+  const intelligence = read('components/product/AllocationIntelligence.tsx');
+  const surface = `${allocation}\n${intelligence}`;
   for (const label of [
     'Observed',
     'Modeled',
@@ -405,20 +410,17 @@ test('Allocation exposes policy, drift, authorization, classes, measures, and an
     'Opportunity',
     'Restricted',
   ])
-    assert.equal(allocation.includes(label), true, `Allocation missing ${label}`);
-  for (const measure of [
-    'Concentration',
-    'Liquidity',
-    'Volatility',
-    'Reserve coverage',
-    'Network',
-    'Counterparty',
-    'Drift',
-    'Utilization',
+    assert.equal(surface.includes(label), true, `Allocation missing ${label}`);
+  for (const section of [
+    'Observed Capital',
+    'Capital Policy',
+    'Decision Intelligence',
+    'Modeled Decisions',
+    'Allocation Context',
   ])
-    assert.equal(allocation.includes(measure), true, `Allocation missing measure ${measure}`);
+    assert.equal(surface.includes(section), true, `Allocation missing ${section}`);
   assert.equal(allocation.includes('Execution unavailable'), true);
-  assert.equal(allocation.includes('Authorization can establish a governed decision'), true);
+  assert.equal(allocation.includes('Authorization records an approved decision'), true);
 });
 
 test('dashboard loading state does not impersonate financial cards or values', () => {
