@@ -32,20 +32,13 @@ export default async function DashboardLayout({ children }: { readonly children:
     <>
       <Link href="#app-workspace" className="app-skip-link">Skip to application workspace</Link>
       <AppShell
-        brandDescriptor="Operating environment"
+        brandDescriptor="Capital intelligence"
+        brandTone="teal"
         sidebar={<Sidebar items={navItems} />}
         sidebarFooter={<Sidebar items={secondaryItems} />}
         header={
-          <div className="flex min-w-0 items-center gap-4">
-            <div className="min-w-0">
-              <p className="neptlium-meta">Current operating context</p>
-              <p className="mt-0.5 truncate text-sm font-medium text-text-primary">{displayName}</p>
-            </div>
-            <span className="hidden h-7 w-px bg-border-hairline xl:block" aria-hidden="true" />
-            <div className="hidden xl:block">
-              <p className="text-[11px] font-medium text-text-secondary">Capital state</p>
-              <p className="mt-0.5 text-[11px] text-text-muted">Canonical and governed where available</p>
-            </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-text-primary">{displayName}</p>
           </div>
         }
         utility={<div className="flex items-center gap-3">{profileMenu}</div>}
