@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function DepositRoute() {
-  redirect('/dashboard/capital-account');
+  redirect('/dashboard/capital-account#funding');
 }
