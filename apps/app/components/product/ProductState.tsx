@@ -23,11 +23,11 @@ const labels: Record<ProductStateName, string> = {
   AVAILABLE: 'Available',
   READY: 'Ready',
   PENDING: 'Pending',
-  AWAITING_PROVISIONING: 'Awaiting provisioning',
-  CAPABILITY_DISABLED: 'Capability disabled',
+  AWAITING_PROVISIONING: 'Setting up',
+  CAPABILITY_DISABLED: 'Unavailable',
   RESERVED: 'Reserved',
   RESTRICTED: 'Restricted',
-  NOT_CONFIGURED: 'Not configured',
+  NOT_CONFIGURED: 'Unavailable',
   INELIGIBLE: 'Ineligible',
   UNAVAILABLE: 'Unavailable',
   NO_ACTIVITY: 'No activity',
@@ -35,6 +35,18 @@ const labels: Record<ProductStateName, string> = {
   REQUIRES_APPROVAL: 'Approval required',
   ERROR: 'Error',
 };
+
+const descriptions: Partial<Record<ProductStateName, string>> = {
+  AWAITING_PROVISIONING: 'Your account is still being prepared. Try again shortly.',
+  CAPABILITY_DISABLED: 'This action is not currently available for your account.',
+  NOT_CONFIGURED: 'This feature is not currently available for your account.',
+  UNAVAILABLE: 'This information is temporarily unavailable. Try again shortly.',
+  NO_ACTIVITY: 'There is no activity in this section yet.',
+  NO_POSITION: 'There are no positions in this section yet.',
+  ERROR: 'We could not load this information. Your existing account state is unchanged.',
+};
+
+const implementationLanguage = /\b(api|backend|canonical|governed|provider|provisioning)\b|will appear here/i;
 
 const tones: Record<ProductStateName, 'success' | 'warning' | 'danger' | 'neutral'> = {
   LOADING: 'neutral',
@@ -69,13 +81,17 @@ export function ProductStateMessage({
   readonly children?: ReactNode;
   readonly compact?: boolean;
 }) {
+  const body = typeof children === 'string' && implementationLanguage.test(children)
+    ? descriptions[state]
+    : children;
+
   return (
     <div className={compact ? 'py-3' : 'py-5'} role={state === 'ERROR' ? 'alert' : state === 'LOADING' ? 'status' : undefined} aria-live={state === 'LOADING' ? 'polite' : undefined}>
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-sm font-medium text-text-primary">{title ?? labels[state]}</p>
         <ProductStateBadge state={state} />
       </div>
-      {children ? <div className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">{children}</div> : null}
+      {body ? <div className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">{body}</div> : null}
     </div>
   );
 }
