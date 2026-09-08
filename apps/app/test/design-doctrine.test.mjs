@@ -49,19 +49,17 @@ test('overview capital empty state stays truthful without repeated fabricated va
   assert.doesNotMatch(capitalPosition, /\$0(?:\.00)?/);
 });
 
-test('overview funding actions and balances remain capability- and ledger-gated', () => {
-  // Funding actions are authorized only by governed capability state.
-  assert.match(dashboard, /const canFund = !capabilityError && enabledFunding\.length > 0/);
-  assert.match(dashboard, /capabilities\.filter\(\(item\) => item\.state === 'ENABLED'\)/);
-  assert.match(dashboard, /canFund \? \(/);
+test('overview represents governed capital state without valuation or execution actions', () => {
+  // Capability and canonical balance inputs remain API-authoritative.
+  assert.match(dashboard, /getFundingCapabilities/);
+  assert.match(dashboard, /getTransferCapabilities/);
+  assert.match(dashboard, /item\.state === 'ENABLED'/);
+  assert.match(dashboard, /balances\.length > 0/);
 
-  // Capability failures do not impersonate enabled funding.
-  assert.match(dashboard, /Funding unavailable/);
-  assert.match(dashboard, /Funding not enabled/);
-
-  // Canonical balances remain ledger-backed and absence is non-numeric.
-  assert.match(dashboard, /balances\.length === 0/);
-  assert.match(dashboard, /No capital yet/);
-  assert.match(dashboard, /FinancialValue valueAtomic=\{balance\.total_atomic\}/);
+  // The operating home communicates state without exposing amounts or shortcuts.
+  assert.match(dashboard, /Capital Operating Environment/);
+  assert.match(dashboard, /Capital state/);
+  assert.match(dashboard, /No items require your attention\./);
+  assert.doesNotMatch(dashboard, /FinancialValue|Fund capital|#deposit/);
   assert.doesNotMatch(dashboard, /balance\?\.total_atomic\s*\?\?\s*['\"]0['\"]/);
 });
