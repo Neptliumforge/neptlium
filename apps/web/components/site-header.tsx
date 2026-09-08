@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { createPortal } from 'react-dom';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Brand } from './brand';
 import { NAVIGATION } from '@/lib/content/public-architecture';
@@ -125,12 +126,15 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
 export function SiteHeader() {
   const path = usePathname();
   const isHome = path === '/';
+  const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSection, setMobileSection] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -180,110 +184,116 @@ export function SiteHeader() {
     };
   }, [mobileOpen]);
 
-  return (
-    <header
-      className="site-header capital-command-bar"
-      data-home={isHome ? 'true' : 'false'}
-      data-scrolled={scrolled ? 'true' : 'false'}
-    >
-      <div className="nav-shell">
-        <Brand tone="current" />
+  const mobileNavigation = mobileOpen ? (
+    <div className="mobile-command-wrap" role="dialog" aria-modal="true" aria-label="Navigation">
+      <div id="mobile-command-sheet" className="mobile-command-sheet" ref={panel}>
+        <div className="mobile-command-head">
+          <Brand tone="current" />
+          <button
+            ref={close}
+            type="button"
+            aria-label="Close navigation"
+            onClick={() => setMobileOpen(false)}
+          >
+            <X aria-hidden="true" />
+          </button>
+        </div>
 
-        <nav className="desktop-command-nav" aria-label="Primary navigation">
-          {NAVIGATION.map((item) => (
-            <DesktopDisclosure item={item} path={path} key={item.label} />
-          ))}
+        <nav className="mobile-command-nav" aria-label="Mobile navigation">
+          {NAVIGATION.map((item) => {
+            const expandable = item.links.length > 1 || item.links[0]?.href !== item.href;
+            const expanded = mobileSection === item.label;
+            const controls = `mobile-${item.label.toLowerCase()}`;
+
+            return (
+              <section key={item.label} data-expanded={expanded ? 'true' : 'false'}>
+                <div className="mobile-domain-row">
+                  <Link href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+                    {item.label}
+                  </Link>
+                  {expandable ? (
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      aria-controls={controls}
+                      aria-label={`${expanded ? 'Hide' : 'Show'} ${item.label} links`}
+                      onClick={() => setMobileSection(expanded ? null : item.label)}
+                    >
+                      <ChevronDown aria-hidden="true" />
+                    </button>
+                  ) : null}
+                </div>
+
+                {expandable ? (
+                  <div id={controls} hidden={!expanded} className="mobile-domain-children">
+                    {item.links
+                      .filter((link) => link.href !== item.href)
+                      .map((link) => (
+                        <Link
+                          href={link.href}
+                          key={link.href}
+                          aria-current={path === link.href ? 'page' : undefined}
+                        >
+                          <strong>{link.label}</strong>
+                          <small>{link.description}</small>
+                        </Link>
+                      ))}
+                  </div>
+                ) : null}
+              </section>
+            );
+          })}
         </nav>
 
-        <div className="command-actions">
-          <Link className="button command-primary-action" href={SITE.publicAccessUrl}>
+        <div className="mobile-command-actions" aria-label="Primary actions">
+          <Link className="mobile-explore-action" href="/platform">
+            Explore platform
+          </Link>
+          <Link className="mobile-enter-action" href={SITE.publicAccessUrl}>
             {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
           </Link>
         </div>
-
-        <button
-          ref={trigger}
-          className="command-mobile-trigger"
-          type="button"
-          aria-expanded={mobileOpen}
-          aria-controls="mobile-command-sheet"
-          aria-label="Open navigation"
-          onClick={() => setMobileOpen(true)}
-        >
-          <Menu aria-hidden="true" />
-        </button>
       </div>
+    </div>
+  ) : null;
 
-      {mobileOpen ? (
-        <div className="mobile-command-wrap" role="dialog" aria-modal="true" aria-label="Navigation">
-          <div id="mobile-command-sheet" className="mobile-command-sheet" ref={panel}>
-            <div className="mobile-command-head">
-              <Brand tone="current" />
-              <button ref={close} type="button" aria-label="Close navigation" onClick={() => setMobileOpen(false)}>
-                <X aria-hidden="true" />
-              </button>
-            </div>
+  return (
+    <>
+      <header
+        className="site-header capital-command-bar"
+        data-home={isHome ? 'true' : 'false'}
+        data-scrolled={scrolled ? 'true' : 'false'}
+      >
+        <div className="nav-shell">
+          <Brand tone="current" />
 
-            <nav className="mobile-command-nav" aria-label="Mobile navigation">
-              {NAVIGATION.map((item) => {
-                const expandable = item.links.length > 1 || item.links[0]?.href !== item.href;
-                const expanded = mobileSection === item.label;
-                const controls = `mobile-${item.label.toLowerCase()}`;
+          <nav className="desktop-command-nav" aria-label="Primary navigation">
+            {NAVIGATION.map((item) => (
+              <DesktopDisclosure item={item} path={path} key={item.label} />
+            ))}
+          </nav>
 
-                return (
-                  <section key={item.label} data-expanded={expanded ? 'true' : 'false'}>
-                    <div className="mobile-domain-row">
-                      <Link
-                        href={item.href}
-                        aria-current={path === item.href ? 'page' : undefined}
-                      >
-                        {item.label}
-                      </Link>
-                      {expandable ? (
-                        <button
-                          type="button"
-                          aria-expanded={expanded}
-                          aria-controls={controls}
-                          aria-label={`${expanded ? 'Hide' : 'Show'} ${item.label} links`}
-                          onClick={() => setMobileSection(expanded ? null : item.label)}
-                        >
-                          <ChevronDown aria-hidden="true" />
-                        </button>
-                      ) : null}
-                    </div>
-
-                    {expandable ? (
-                      <div id={controls} hidden={!expanded} className="mobile-domain-children">
-                        {item.links
-                          .filter((link) => link.href !== item.href)
-                          .map((link) => (
-                            <Link
-                              href={link.href}
-                              key={link.href}
-                              aria-current={path === link.href ? 'page' : undefined}
-                            >
-                              <strong>{link.label}</strong>
-                              <small>{link.description}</small>
-                            </Link>
-                          ))}
-                      </div>
-                    ) : null}
-                  </section>
-                );
-              })}
-            </nav>
-
-            <div className="mobile-command-actions" aria-label="Primary actions">
-              <Link className="mobile-explore-action" href="/platform">
-                Explore platform
-              </Link>
-              <Link className="mobile-enter-action" href={SITE.publicAccessUrl}>
-                {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
-              </Link>
-            </div>
+          <div className="command-actions">
+            <Link className="button command-primary-action" href={SITE.publicAccessUrl}>
+              {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
+            </Link>
           </div>
+
+          <button
+            ref={trigger}
+            className="command-mobile-trigger"
+            type="button"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-command-sheet"
+            aria-label="Open navigation"
+            onClick={() => setMobileOpen(true)}
+          >
+            <Menu aria-hidden="true" />
+          </button>
         </div>
-      ) : null}
-    </header>
+      </header>
+
+      {mounted && mobileNavigation ? createPortal(mobileNavigation, document.body) : null}
+    </>
   );
 }
