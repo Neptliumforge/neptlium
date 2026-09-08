@@ -54,10 +54,11 @@ test('homepage expresses the full institutional landing architecture without fab
   for (const obsolete of ['Provider Evidence', 'Canonical Ledger', 'Provisioning', 'Testnet']) assert.doesNotMatch(page, new RegExp(obsolete, 'i'));
 });
 
-test('public CTA authority keeps Enter Neptlium primary and platform discovery secondary', () => {
+test('public CTA authority keeps Enter Neptlium primary and routes new visitors to account creation', () => {
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
   assert.match(site, /appOrigin:\s*'https:\/\/app\.neptlium\.com'/);
-  assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/'/);
+  assert.match(site, /accessUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
+  assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
   assert.match(site, /signInUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
   assert.match(site, /signUpUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
   for (const source of [page, header]) assert.match(source, /SITE\.publicAccess/);
