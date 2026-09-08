@@ -30,29 +30,25 @@ export default async function DashboardLayout({ children }: { readonly children:
 
   return (
     <>
-      <Link href="#app-workspace" className="app-skip-link">
-        Skip to application workspace
-      </Link>
+      <Link href="#app-workspace" className="app-skip-link">Skip to application workspace</Link>
       <AppShell
-        brandDescriptor="Operating environment"
+        brandDescriptor="Capital operating environment"
         sidebar={<Sidebar items={navItems} />}
         sidebarFooter={<Sidebar items={secondaryItems} />}
         header={
-          <div className="flex min-w-0 items-center gap-6">
+          <div className="flex min-w-0 items-center gap-5">
             <div className="min-w-0">
-              <p className="text-[11px] font-medium tracking-[0.03em] text-text-muted">Current workspace</p>
-              <p className="truncate text-sm font-medium text-text-primary">{displayName}</p>
+              <p className="neptlium-meta">Workspace</p>
+              <p className="mt-1 truncate text-sm font-medium text-text-primary">{displayName}</p>
             </div>
-            <span className="hidden h-7 w-px bg-border-hairline xl:block" aria-hidden="true" />
-            <p className="hidden text-xs text-text-muted xl:block">Capital operating environment</p>
+            <span className="hidden h-8 w-px bg-border-hairline xl:block" aria-hidden="true" />
+            <div className="hidden xl:block">
+              <p className="text-[11px] font-medium text-text-secondary">Capital state</p>
+              <p className="mt-0.5 text-[11px] text-text-muted">Governed operating context</p>
+            </div>
           </div>
         }
-        utility={
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard/settings#support" className="text-sm text-text-muted hover:text-text-primary">Support</Link>
-            {profileMenu}
-          </div>
-        }
+        utility={<div className="flex items-center gap-3">{profileMenu}</div>}
         mobileNav={
           <MobileNavigation
             primaryItems={mobilePrimaryItems}
@@ -61,9 +57,7 @@ export default async function DashboardLayout({ children }: { readonly children:
           />
         }
       >
-        <div id="app-workspace" tabIndex={-1}>
-          {children}
-        </div>
+        <div id="app-workspace" tabIndex={-1}>{children}</div>
       </AppShell>
     </>
   );
