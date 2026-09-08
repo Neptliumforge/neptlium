@@ -114,3 +114,6 @@ supabase/.cache/
 !.github/
 !README.md
 !LICENSE
+
+# Local production-provider credential workspace
+.circle-walletset/

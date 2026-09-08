@@ -20,6 +20,8 @@ const requiredRuntimeModules = [
   'admin-repository.js',
   'financial-repository.js',
   'financial-routes.js',
+  'financial-operations.js',
+  'alchemy-observation.js',
   'funding-domain.js',
   'allocation-domain.js',
   'allocation-repository.js',
