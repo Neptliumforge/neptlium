@@ -62,51 +62,45 @@ export default async function DashboardPage() {
   const enabledFunding = capabilities.filter((item) => item.state === 'ENABLED');
   const canFund = !capabilityError && enabledFunding.length > 0;
   const attention = [
-    ...(balanceError ? [{ title: 'Capital state could not be loaded', detail: 'Review the canonical Capital Account before taking consequential action.', href: '/dashboard/wallet', label: 'Review capital' }] : []),
-    ...(activityError ? [{ title: 'Capital activity could not be loaded', detail: 'Recent governed movement is temporarily unavailable.', href: '/dashboard/transactions', label: 'Review activity' }] : []),
-    ...(pendingApprovals.length ? [{ title: `${pendingApprovals.length} transfer${pendingApprovals.length === 1 ? '' : 's'} awaiting authorization`, detail: 'Treasury movement is held until the required approval state is satisfied.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
+    ...(balanceError ? [{ title: 'Capital position is unavailable', detail: 'Your latest balance information could not be loaded.', href: '/dashboard/wallet', label: 'Open Capital Account' }] : []),
+    ...(activityError ? [{ title: 'Recent activity is unavailable', detail: 'Your latest capital activity could not be loaded.', href: '/dashboard/transactions', label: 'Open activity' }] : []),
+    ...(pendingApprovals.length ? [{ title: `${pendingApprovals.length} transfer${pendingApprovals.length === 1 ? '' : 's'} awaiting authorization`, detail: 'Review the transfer before it can progress.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
   ];
   const capitalContextLinks = [
     {
       label: 'Capital Account',
       href: '/dashboard/wallet',
-      detail: capabilityError ? 'State unavailable' : enabledFunding.length ? `${enabledFunding.length} funding rail${enabledFunding.length === 1 ? '' : 's'} enabled` : 'Review funding state',
+      detail: capabilityError ? 'Temporarily unavailable' : enabledFunding.length ? `${enabledFunding.length} funding rail${enabledFunding.length === 1 ? '' : 's'} enabled` : 'Funding not enabled',
     },
     {
       label: 'Treasury',
       href: '/dashboard/treasury',
-      detail: pendingApprovals.length ? `${pendingApprovals.length} awaiting authorization` : 'No approval attention',
+      detail: pendingApprovals.length ? `${pendingApprovals.length} awaiting authorization` : 'No approvals waiting',
     },
     {
       label: 'Allocation',
       href: '/dashboard/allocations',
-      detail: overview?.allocation.state === 'VALUE' ? 'Allocation state available' : 'Policy context available',
+      detail: overview?.allocation.state === 'VALUE' ? 'Allocation available' : 'No allocation set',
     },
     {
       label: 'Portfolio Intelligence',
       href: '/dashboard/portfolio',
-      detail: 'Portfolio context',
+      detail: 'Portfolio view',
     },
   ] as const;
 
   return (
     <div className="space-y-10 lg:space-y-12">
       <WorkspaceHeader
-        eyebrow="Operating context"
+        eyebrow="Neptlium"
         title="Overview"
-        description="Canonical capital state, operational attention, and governed activity in the current workspace."
-        meta={
-          <>
-            <span className="size-1.5 bg-text-primary" aria-hidden="true" />
-            <span>Canonical state · {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-          </>
-        }
+        description="Your capital position, activity, portfolio context, and items that need attention."
       />
 
       <section aria-labelledby="capital-position-title">
         <div className="mb-4 flex items-end justify-between gap-5">
           <div>
-            <p className="neptlium-meta">Capital state</p>
+            <p className="neptlium-meta">Capital</p>
             <h2 id="capital-position-title" className="mt-2 text-text-primary">Capital position</h2>
           </div>
           <Link href="/dashboard/wallet" className="hidden items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-text-primary sm:inline-flex">
@@ -117,23 +111,23 @@ export default async function DashboardPage() {
         <div className="neptlium-plane overflow-hidden rounded-[2px]">
           <div className="px-5 py-6 sm:px-7 sm:py-7 lg:px-8 lg:py-8">
             {balanceError ? (
-              <ProductStateMessage state="ERROR" title="Capital position unavailable">Canonical balances could not be loaded. No position value is inferred.</ProductStateMessage>
+              <ProductStateMessage state="ERROR" title="Capital position unavailable">We could not load your latest balances. No value is shown until they are available.</ProductStateMessage>
             ) : balances.length === 0 ? (
               <div className="max-w-xl py-2">
-                <p className="text-[clamp(2rem,4vw,3.5rem)] font-medium leading-none tracking-[-0.05em] text-text-primary">No position</p>
-                <p className="mt-4 text-sm leading-6 text-text-secondary">No canonical capital position exists yet. Funding readiness remains governed independently.</p>
+                <p className="text-[clamp(2rem,4vw,3.5rem)] font-medium leading-none tracking-[-0.05em] text-text-primary">No capital yet</p>
+                <p className="mt-4 text-sm leading-6 text-text-secondary">Your Capital Account is ready for supported funding when funding is enabled.</p>
               </div>
             ) : (
               <div className="grid gap-7 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,.7fr)] lg:items-end">
                 <div>
-                  <p className="text-xs font-medium text-text-muted">Canonical positions</p>
+                  <p className="text-xs font-medium text-text-muted">Positions</p>
                   <div className="mt-4 space-y-4">
                     {balances.slice(0, 3).map((balance, index) => (
                       <div key={`${balance.asset}:${balance.network ?? ''}`} className={index === 0 ? '' : 'border-t border-border-hairline pt-4'}>
                         <div className="flex items-baseline justify-between gap-6">
                           <div>
                             <p className="text-sm font-medium text-text-primary">{balance.asset}</p>
-                            <p className="mt-1 text-xs text-text-muted">{balance.network ?? 'Canonical denomination'}</p>
+                            <p className="mt-1 text-xs text-text-muted">{balance.network ?? 'Account balance'}</p>
                           </div>
                           <div className="text-right text-[clamp(1.6rem,3vw,2.9rem)] font-medium leading-none tracking-[-0.045em] text-text-primary" data-numeric>
                             <FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} />
@@ -145,11 +139,11 @@ export default async function DashboardPage() {
                 </div>
 
                 <div className="border-t border-border-hairline pt-5 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
-                  <p className="neptlium-meta">Operating readiness</p>
+                  <p className="neptlium-meta">Readiness</p>
                   <dl className="mt-4 space-y-3.5">
                     <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Funding</dt><dd className="text-sm font-medium text-text-primary">{capabilityError ? 'Unavailable' : enabledFunding.length ? `${enabledFunding.length} enabled` : 'Not enabled'}</dd></div>
-                    <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Treasury</dt><dd className="text-sm font-medium text-text-primary">{pendingApprovals.length ? `${pendingApprovals.length} to authorize` : 'No attention'}</dd></div>
-                    <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Allocation</dt><dd className="text-sm font-medium text-text-primary">{overview?.allocation.state === 'VALUE' ? 'Available' : 'Review available'}</dd></div>
+                    <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Treasury</dt><dd className="text-sm font-medium text-text-primary">{pendingApprovals.length ? `${pendingApprovals.length} to authorize` : 'Clear'}</dd></div>
+                    <div className="flex items-center justify-between gap-6"><dt className="text-sm text-text-muted">Allocation</dt><dd className="text-sm font-medium text-text-primary">{overview?.allocation.state === 'VALUE' ? 'Available' : 'Not set'}</dd></div>
                   </dl>
                 </div>
               </div>
@@ -158,27 +152,27 @@ export default async function DashboardPage() {
 
           <div className="flex flex-wrap items-center gap-2 border-t border-border-hairline bg-black/[.018] px-5 py-3.5 sm:px-7 lg:px-8">
             {canFund ? (
-              <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-9 items-center bg-[#111111] px-4 text-sm font-medium text-white hover:bg-[#262626]">Fund capital</Link>
+              <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-9 items-center bg-[#101214] px-4 text-sm font-medium text-white hover:bg-[#26292b]">Fund capital</Link>
             ) : capabilityError ? (
-              <span className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-muted">Funding state unavailable</span>
+              <span className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-muted">Funding unavailable</span>
             ) : (
-              <Link href="/dashboard/wallet" className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-secondary hover:text-text-primary">Review funding state <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
+              <Link href="/dashboard/wallet" className="inline-flex min-h-9 items-center px-1 text-sm font-medium text-text-secondary hover:text-text-primary">Open Capital Account <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
             )}
-            <Link href="/dashboard/treasury" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Review movement <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
-            <Link href="/dashboard/allocations" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Review allocation <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
+            <Link href="/dashboard/treasury" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Treasury <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
+            <Link href="/dashboard/allocations" className="inline-flex min-h-9 items-center px-3 text-sm font-medium text-text-secondary hover:text-text-primary">Allocation <ArrowRight className="ml-1.5 size-4" aria-hidden="true" /></Link>
           </div>
         </div>
       </section>
 
       <section aria-labelledby="attention-title">
         <div className="mb-3.5 flex items-center justify-between gap-4">
-          <div><p className="neptlium-meta">Governed work</p><h2 id="attention-title" className="mt-2 text-text-primary">Attention</h2></div>
+          <div><p className="neptlium-meta">Review</p><h2 id="attention-title" className="mt-2 text-text-primary">Attention</h2></div>
         </div>
         <div className="border-y border-border-hairline">
           {attention.length === 0 ? (
             <div className="grid gap-2 py-5 sm:grid-cols-[1fr_auto] sm:items-center">
-              <div><p className="text-sm font-medium text-text-primary">No current operating attention.</p><p className="mt-1 text-sm text-text-muted">Nothing exposed by the governed product state currently requires review.</p></div>
-              <span className="mt-2 text-xs font-medium text-text-secondary sm:mt-0">State clear</span>
+              <div><p className="text-sm font-medium text-text-primary">Nothing needs your attention.</p><p className="mt-1 text-sm text-text-muted">Approvals and account issues that require action are shown here.</p></div>
+              <span className="mt-2 text-xs font-medium text-text-secondary sm:mt-0">Clear</span>
             </div>
           ) : attention.map((item) => (
             <Link key={item.title} href={item.href} className="group grid gap-3 border-b border-border-hairline py-4.5 last:border-0 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-8">
@@ -191,16 +185,16 @@ export default async function DashboardPage() {
 
       <section aria-labelledby="context-title">
         <div className="mb-4 flex items-end justify-between gap-5">
-          <div><p className="neptlium-meta">Operating activity</p><h2 id="context-title" className="mt-2 text-text-primary">Capital context</h2></div>
+          <div><p className="neptlium-meta">Recent</p><h2 id="context-title" className="mt-2 text-text-primary">Activity</h2></div>
           <Link href="/dashboard/transactions" className="text-sm font-medium text-text-secondary hover:text-text-primary">View all activity</Link>
         </div>
 
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,.7fr)] lg:gap-10">
           <div className="border-y border-border-hairline">
             {activityError ? (
-              <ProductStateMessage state="ERROR" title="Activity unavailable">The Neptlium API could not load canonical activity.</ProductStateMessage>
+              <ProductStateMessage state="ERROR" title="Activity unavailable">We could not load your recent activity. Your existing account state is unchanged.</ProductStateMessage>
             ) : recent.length === 0 ? (
-              <div className="py-5"><p className="text-sm font-medium text-text-primary">No capital activity yet.</p><p className="mt-1 text-sm text-text-muted">Governed movement will appear here when canonical intents exist.</p></div>
+              <div className="py-5"><p className="text-sm font-medium text-text-primary">No activity yet.</p><p className="mt-1 text-sm text-text-muted">Deposits and transfers are listed here after you create them.</p></div>
             ) : recent.map((item) => (
               <div key={`${item.kind}:${item.id}`} className="grid gap-3 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-6">
                 <div className="min-w-0"><p className="text-sm font-medium text-text-primary">{item.kind} · {item.asset}</p><p className="mt-1 truncate text-xs text-text-muted">{item.network ?? item.rail} · {new Date(item.created_at).toLocaleString()}</p></div>
@@ -210,7 +204,7 @@ export default async function DashboardPage() {
             ))}
           </div>
 
-          <nav aria-label="Capital context" className="border-t border-border-hairline lg:border-y">
+          <nav aria-label="Workspace" className="border-t border-border-hairline lg:border-y">
             {capitalContextLinks.map(({ label, href, detail }) => (
               <Link key={href} href={href} className="group flex items-center justify-between gap-5 border-b border-border-hairline py-3.5 last:border-0">
                 <div><p className="text-sm font-medium text-text-primary">{label}</p><p className="mt-1 text-xs text-text-muted">{detail}</p></div>
@@ -223,7 +217,7 @@ export default async function DashboardPage() {
 
       {!capabilityError && capabilities.length > 0 ? (
         <footer className="border-t border-border-hairline pt-4 text-xs text-text-muted">
-          Funding capability: {capabilities.map((capability) => `${capability.asset} · ${capability.network} · ${fundingLabel(capability.state)}`).join('  /  ')}
+          Funding: {capabilities.map((capability) => `${capability.asset} · ${capability.network} · ${fundingLabel(capability.state)}`).join('  /  ')}
         </footer>
       ) : null}
     </div>

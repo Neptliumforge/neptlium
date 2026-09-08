@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from 'react';
-import { NeptliumMark } from './NeptliumMark';
+import { NeptliumMark, type NeptliumMarkTone } from './NeptliumMark';
 
 export interface AppShellProps {
   readonly children: ReactNode;
@@ -9,6 +9,7 @@ export interface AppShellProps {
   readonly utility?: ReactNode;
   readonly header?: ReactNode;
   readonly brandDescriptor?: string;
+  readonly brandTone?: NeptliumMarkTone;
 }
 
 export function AppShell({
@@ -19,12 +20,13 @@ export function AppShell({
   utility,
   header,
   brandDescriptor,
+  brandTone = 'paper',
 }: AppShellProps): ReactElement {
   return (
     <div className="neptlium-environment min-h-screen overflow-x-hidden text-text-primary">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[68px] flex-col border-r border-sidebar-border-hairline bg-sidebar lg:flex xl:w-[228px]">
         <div className="flex h-[64px] shrink-0 items-center justify-center gap-2.5 border-b border-sidebar-border-hairline px-3 xl:justify-start xl:px-5">
-          <NeptliumMark size={22} tone="paper" />
+          <NeptliumMark size={22} tone={brandTone} />
           <div className="hidden min-w-0 xl:block">
             <p className="truncate text-[12px] font-semibold uppercase tracking-[0.16em] text-sidebar-text-primary">NEPTLIUM</p>
             {brandDescriptor ? <p className="mt-0.5 truncate text-[10px] font-medium text-sidebar-text-muted">{brandDescriptor}</p> : null}
@@ -48,7 +50,7 @@ export function AppShell({
         <header className="sticky top-0 z-30 h-[60px] shrink-0 border-b border-border-hairline bg-topnav lg:hidden">
           {mobileNav ?? (
             <div className="flex h-full items-center px-4">
-              <NeptliumMark size={21} tone="ink" />
+              <NeptliumMark size={21} tone={brandTone === 'paper' ? 'ink' : brandTone} />
             </div>
           )}
         </header>

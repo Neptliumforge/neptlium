@@ -3,11 +3,9 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Check } from 'lucide-react';
 import { Button, Field, FieldError, Input, Label } from '@neptlium/ui';
 import {
   onboardingPayloadSchema,
-  type InvestorType,
   type ProvisioningPayload,
 } from '@neptlium/lib/validation';
 import { OnboardingShell } from './components/OnboardingShell';
@@ -17,18 +15,6 @@ import { onboardingSteps } from './wizard-steps';
 
 type DraftData = Partial<ProvisioningPayload>;
 
-const accountTypes: ReadonlyArray<{ value: InvestorType; label: string }> = [
-  { value: 'individual', label: 'Individual' },
-  { value: 'business', label: 'Business' },
-  { value: 'family_office', label: 'Family office' },
-  { value: 'treasury_team', label: 'Treasury team' },
-  { value: 'investment_firm', label: 'Investment firm' },
-];
-
-function requiresOrganization(type: InvestorType | undefined): boolean {
-  return Boolean(type && type !== 'individual');
-}
-
 function runtimeDefaults(): Pick<ProvisioningPayload, 'timezone' | 'language'> {
   return {
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
@@ -36,10 +22,17 @@ function runtimeDefaults(): Pick<ProvisioningPayload, 'timezone' | 'language'> {
   };
 }
 
+function accountDefaults(): Pick<ProvisioningPayload, 'investorType' | 'securityChoices'> {
+  return {
+    investorType: 'individual',
+    securityChoices: [],
+  };
+}
+
 export function OnboardingWizard({ email }: { readonly email: string }) {
   const router = useRouter();
   const [stepIndex, setStepIndex] = useState(0);
-  const [data, setData] = useState<DraftData>({ securityChoices: [] });
+  const [data, setData] = useState<DraftData>(accountDefaults());
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [provisioning, setProvisioning] = useState(false);
@@ -48,11 +41,11 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
     getOnboardingDraft()
       .then((draft) => {
         const restoredStep = Math.min(Math.max(draft.stepIndex, 0), onboardingSteps.length - 1);
-        setData({ securityChoices: [], ...runtimeDefaults(), ...draft.data });
+        setData({ ...accountDefaults(), ...runtimeDefaults(), ...draft.data });
         setStepIndex(restoredStep);
       })
       .catch(() => {
-        setData((current) => ({ ...runtimeDefaults(), ...current }));
+        setData((current) => ({ ...accountDefaults(), ...runtimeDefaults(), ...current }));
         setError('We could not restore your saved progress. You can continue here.');
       })
       .finally(() => setReady(true));
@@ -60,14 +53,6 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
   function update<K extends keyof ProvisioningPayload>(key: K, value: ProvisioningPayload[K]) {
     setData((current) => ({ ...current, [key]: value }));
-  }
-
-  function selectAccountType(value: InvestorType) {
-    setData((current) => ({
-      ...current,
-      investorType: value,
-      ...(value === 'individual' ? { organizationName: '', companyRole: '', website: '' } : {}),
-    }));
   }
 
   async function persist(nextStep: number, nextData: DraftData = data) {
@@ -79,48 +64,29 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
     event.preventDefault();
     setError(null);
 
-    if (stepIndex === 0) {
-      if (!data.firstName?.trim() || !data.lastName?.trim() || !data.country?.trim()) {
-        setError('Enter your first name, last name, and country.');
-        return;
-      }
-      const normalized = { ...data, region: data.country };
-      setData(normalized);
-      await persist(1, normalized).catch(() =>
-        setError('Your progress could not be saved. Check your connection and try again.'),
-      );
+    if (!data.firstName?.trim() || !data.lastName?.trim() || !data.country?.trim()) {
+      setError('Enter your first name, last name, and country.');
       return;
     }
 
-    if (stepIndex === 1) {
-      if (!data.investorType) {
-        setError('Select an account type.');
-        return;
-      }
-      const nextStep = requiresOrganization(data.investorType) ? 2 : 3;
-      await persist(nextStep).catch(() =>
-        setError('Your progress could not be saved. Check your connection and try again.'),
-      );
-      return;
-    }
-
-    if (stepIndex === 2) {
-      if (!data.organizationName?.trim()) {
-        setError('Enter your organization name.');
-        return;
-      }
-      await persist(3).catch(() =>
-        setError('Your progress could not be saved. Check your connection and try again.'),
-      );
-    }
+    const normalized: DraftData = {
+      ...accountDefaults(),
+      ...data,
+      region: data.country,
+      organizationName: '',
+      companyRole: '',
+      website: '',
+    };
+    setData(normalized);
+    await persist(1, normalized).catch(() =>
+      setError('Your progress could not be saved. Check your connection and try again.'),
+    );
   }
 
   async function goBack() {
     setError(null);
-    const previous =
-      stepIndex === 3 && !requiresOrganization(data.investorType) ? 1 : Math.max(0, stepIndex - 1);
     try {
-      await persist(previous);
+      await persist(0);
     } catch {
       setError('Your progress could not be saved. Check your connection and try again.');
     }
@@ -135,9 +101,14 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
     }
 
     const completedData: DraftData = {
+      ...accountDefaults(),
       ...runtimeDefaults(),
       ...data,
+      investorType: 'individual',
       region: data.region?.trim() || data.country || '',
+      organizationName: '',
+      companyRole: '',
+      website: '',
       securityChoices: data.securityChoices ?? [],
     };
     const parsed = onboardingPayloadSchema.safeParse(completedData);
@@ -148,7 +119,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
     setProvisioning(true);
     try {
-      await saveOnboardingDraft({ data: parsed.data, stepIndex: 3 });
+      await saveOnboardingDraft({ data: parsed.data, stepIndex: 1 });
       const result = await submitProvisioning(parsed.data);
       if (!result.ok) {
         setError(result.error);
@@ -165,16 +136,16 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
   if (!ready) {
     return (
-      <OnboardingShell step={1} totalSteps={4}>
+      <OnboardingShell step={1} totalSteps={2}>
         <p className="text-sm text-text-muted" role="status">
-          Loading your account…
+          Preparing your account…
         </p>
       </OnboardingShell>
     );
   }
 
   return (
-    <OnboardingShell step={stepIndex + 1} totalSteps={4}>
+    <OnboardingShell step={stepIndex + 1} totalSteps={2}>
       <OnboardingPanel>
         <div aria-live="polite" className="sr-only">
           {error ?? (provisioning ? 'Finishing account setup.' : '')}
@@ -182,7 +153,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
         {stepIndex === 0 && (
           <form onSubmit={advance} className="space-y-5">
-            <Heading title="Your details" copy="Tell us who will use this account." />
+            <Heading title="Welcome to Neptlium" copy="A few details are all we need to prepare your personal account." />
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField
                 label="First name"
@@ -215,88 +186,19 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
         )}
 
         {stepIndex === 1 && (
-          <form onSubmit={advance} className="space-y-5">
-            <Heading
-              title="Account type"
-              copy="Choose the option that best describes this account."
-            />
-            <div className="space-y-2" role="radiogroup" aria-label="Account type">
-              {accountTypes.map((option) => {
-                const selected = data.investorType === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    onClick={() => selectAccountType(option.value)}
-                    className={`flex min-h-12 w-full items-center justify-between rounded-sm border px-4 text-left text-sm font-medium transition-colors focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] ${selected ? 'border-accent-primary bg-accent-primary/8 text-text-primary' : 'border-border-default text-text-secondary hover:border-border-hover hover:text-text-primary'}`}
-                  >
-                    {option.label}
-                    <span
-                      className={`flex size-5 items-center justify-center rounded-full border ${selected ? 'border-accent-primary bg-accent-primary text-canvas' : 'border-border-strong'}`}
-                    >
-                      {selected && <Check className="size-3" aria-hidden="true" />}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <ErrorMessage error={error} />
-            <Actions onBack={goBack} />
-          </form>
-        )}
-
-        {stepIndex === 2 && (
-          <form onSubmit={advance} className="space-y-5">
-            <Heading
-              title="Organization"
-              copy="Add the organization associated with this account."
-            />
-            <TextField
-              label="Organization name"
-              id="organization"
-              value={data.organizationName ?? ''}
-              onChange={(value) => update('organizationName', value)}
-              autoComplete="organization"
-            />
-            <TextField
-              label="Your role (optional)"
-              id="company-role"
-              value={data.companyRole ?? ''}
-              onChange={(value) => update('companyRole', value)}
-              autoComplete="organization-title"
-            />
-            <TextField
-              label="Website (optional)"
-              id="website"
-              value={data.website ?? ''}
-              onChange={(value) => update('website', value)}
-              autoComplete="url"
-              placeholder="https://example.com"
-            />
-            <ErrorMessage error={error} />
-            <Actions onBack={goBack} />
-          </form>
-        )}
-
-        {stepIndex === 3 && (
           <form onSubmit={finish} className="space-y-6">
-            <Heading title="Review" copy="Confirm your details before finishing account setup." />
+            <Heading title="Review your account" copy="Confirm your details and enter Neptlium." />
             <dl className="divide-y divide-border-hairline border-y border-border-default">
               <ReviewRow
                 label="Name"
                 value={`${data.firstName ?? ''} ${data.lastName ?? ''}`.trim()}
               />
               <ReviewRow label="Country" value={data.country ?? ''} />
-              <ReviewRow
-                label="Account type"
-                value={accountTypes.find((type) => type.value === data.investorType)?.label ?? ''}
-              />
-              {requiresOrganization(data.investorType) && (
-                <ReviewRow label="Organization" value={data.organizationName ?? ''} />
-              )}
+              <ReviewRow label="Account" value="Personal" />
             </dl>
+            <p className="text-sm leading-6 text-text-secondary">
+              Organization details are not required for your personal account.
+            </p>
             <label className="flex cursor-pointer gap-3 text-sm leading-5 text-text-secondary">
               <input
                 type="checkbox"
@@ -306,11 +208,11 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
               />
               <span>
                 I agree to the{' '}
-                <Link className="text-accent-primary underline underline-offset-2" href="/terms">
+                <Link className="neptlium-teal underline underline-offset-2" href="/terms">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link className="text-accent-primary underline underline-offset-2" href="/privacy">
+                <Link className="neptlium-teal underline underline-offset-2" href="/privacy">
                   Privacy Policy
                 </Link>
                 .
@@ -327,7 +229,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
                 loading={provisioning}
                 className="w-full sm:w-auto sm:min-w-48"
               >
-                Finish account setup
+                Enter Neptlium
               </Button>
             </div>
           </form>
@@ -354,14 +256,12 @@ function TextField({
   value,
   onChange,
   autoComplete,
-  placeholder,
 }: {
   readonly label: string;
   readonly id: string;
   readonly value: string;
   readonly onChange: (value: string) => void;
   readonly autoComplete: string;
-  readonly placeholder?: string;
 }) {
   return (
     <Field>
@@ -371,7 +271,6 @@ function TextField({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         autoComplete={autoComplete}
-        placeholder={placeholder}
       />
     </Field>
   );
@@ -379,19 +278,6 @@ function TextField({
 
 function ErrorMessage({ error }: { readonly error: string | null }) {
   return error ? <FieldError role="alert">{error}</FieldError> : null;
-}
-
-function Actions({ onBack }: { readonly onBack: () => void }) {
-  return (
-    <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
-      <Button type="button" variant="ghost" onClick={onBack}>
-        Back
-      </Button>
-      <Button type="submit" variant="accent" className="w-full sm:w-auto sm:min-w-36">
-        Continue
-      </Button>
-    </div>
-  );
 }
 
 function ReviewRow({ label, value }: { readonly label: string; readonly value: string }) {
