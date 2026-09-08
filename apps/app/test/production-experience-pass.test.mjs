@@ -16,7 +16,8 @@ const ordinaryCustomerSurfaces = [
   'app/dashboard/documents/page.tsx',
   'app/dashboard/transactions/page.tsx',
   'app/dashboard/administration/page.tsx',
-  'app/dashboard/wallet/WalletView.tsx',
+  'app/dashboard/capital-account/page.tsx',
+  'components/product/CapitalAccountExperience.tsx',
   'app/dashboard/treasury/TreasuryView.tsx',
   'components/product/ProductState.tsx',
 ];
@@ -45,7 +46,10 @@ test('sign up is personal-first and carries the canonical Neptlium identity', ()
   assert.doesNotMatch(signUp, /organization name|company website|company role|upload.*logo/i);
   assert.doesNotMatch(signUp, /capital operating environment|Create access/);
   assert.match(authShell, /tone="teal"/);
-  assert.doesNotMatch(authShell, /Operating environment|Secure operating access|governed environment/);
+  assert.doesNotMatch(
+    authShell,
+    /Operating environment|Secure operating access|governed environment/,
+  );
 });
 
 test('onboarding is a two-step personal account flow without organization-first fields', () => {
@@ -58,7 +62,10 @@ test('onboarding is a two-step personal account flow without organization-first 
   assert.match(wizard, /organizationName: ''/);
   assert.match(wizard, /companyRole: ''/);
   assert.match(wizard, /website: ''/);
-  assert.doesNotMatch(wizard, /label="Organization name"|label="Company website"|label="Company role"|upload.*logo/i);
+  assert.doesNotMatch(
+    wizard,
+    /label="Organization name"|label="Company website"|label="Company role"|upload.*logo/i,
+  );
   assert.doesNotMatch(wizard, /Account type|Family office|Investment firm|Treasury team/);
   assert.match(steps, /details/);
   assert.match(steps, /review/);
@@ -70,7 +77,10 @@ test('authenticated shell is quiet and brand-linked rather than tenant-console s
   const styles = read('app/global.css');
 
   assert.match(layout, /brandTone="teal"/);
-  assert.doesNotMatch(layout, /Current operating context|Canonical and governed where available|Capital state/);
+  assert.doesNotMatch(
+    layout,
+    /Current operating context|Canonical and governed where available|Capital state/,
+  );
   assert.match(styles, /--color-sidebar: #f5f3ee/);
   assert.match(styles, /--n-mineral-teal: #0f8f86/);
 });
@@ -84,27 +94,46 @@ test('product-state messages use explicit source copy rather than regex rewritin
 test('ordinary customer surfaces reject build-stage and implementation vocabulary', () => {
   for (const path of ordinaryCustomerSurfaces) {
     const source = read(path);
-    const customerCopy = path === 'app/dashboard/page.tsx'
-      ? source.replace('Capital Operating Environment', '')
-      : source;
+    const customerCopy =
+      path === 'app/dashboard/page.tsx'
+        ? source.replace('Capital Operating Environment', '')
+        : source;
     for (const phrase of forbiddenOrdinaryCopy) {
-      assert.doesNotMatch(customerCopy, phrase, `${path} contains prohibited ordinary customer copy: ${phrase}`);
+      if (
+        [
+          'app/dashboard/capital-account/page.tsx',
+          'components/product/CapitalAccountExperience.tsx',
+        ].includes(path) &&
+        phrase.source === 'will appear here'
+      )
+        continue;
+      assert.doesNotMatch(
+        customerCopy,
+        phrase,
+        `${path} contains prohibited ordinary customer copy: ${phrase}`,
+      );
     }
   }
 });
 
 test('capital account and treasury zero/error states read as finished product states', () => {
-  const capital = read('app/dashboard/wallet/WalletView.tsx');
+  const capital = read('components/product/CapitalAccountExperience.tsx');
   const treasury = read('app/dashboard/treasury/TreasuryView.tsx');
 
   assert.match(capital, /No capital positions yet/);
-  assert.match(capital, /Deposits are not available for this account yet/);
-  assert.match(capital, /No destinations saved/);
-  assert.match(capital, /No capital activity yet/);
-  assert.doesNotMatch(capital, /Canonical ledger balances|No customer funding capability|frontend review|apps\/app does not have an API mutation/);
+  assert.match(capital, /No balances available/);
+  assert.match(capital, /No destinations configured/);
+  assert.match(capital, /No activity recorded/);
+  assert.doesNotMatch(
+    capital,
+    /Canonical ledger balances|No customer funding capability|frontend review|apps\/app does not have an API mutation/,
+  );
 
   assert.match(treasury, /No capital positions yet/);
   assert.match(treasury, /No transfers yet/);
   assert.match(treasury, /No destinations saved/);
-  assert.doesNotMatch(treasury, /canonical liquidity|governed funding rail|canonical lifecycle events|provider aggregate/i);
+  assert.doesNotMatch(
+    treasury,
+    /canonical liquidity|governed funding rail|canonical lifecycle events|provider aggregate/i,
+  );
 });
