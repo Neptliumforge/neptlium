@@ -45,7 +45,6 @@ function resourceState(resource: ResourceState | undefined, unavailable: boolean
   }
   return { label: 'Unavailable', detail: resource.reason, state: 'UNAVAILABLE' };
 }
-
 function allocationState(resource: ResourceState | undefined, unavailable: boolean): GovernedState {
   const current = resourceState(resource, unavailable);
   if (current.label === 'Observed') {
@@ -99,7 +98,7 @@ export default async function DashboardPage() {
 
   const attention = [
     ...(overviewResult.status === 'rejected' ? [{ title: 'Operating context is unavailable', detail: 'Current portfolio and allocation state could not be loaded.', href: '/dashboard', label: 'Review Overview' }] : []),
-    ...(balancesResult.status === 'rejected' ? [{ title: 'Capital Account state is unavailable', detail: 'Canonical liquidity information could not be loaded.', href: '/dashboard/wallet', label: 'Open Capital Account' }] : []),
+    ...(balancesResult.status === 'rejected' ? [{ title: 'Capital Account state is unavailable', detail: 'Canonical liquidity information could not be loaded.', href: '/dashboard/capital-account', label: 'Open Capital Account' }] : []),
     ...(fundingCapabilitiesResult.status === 'rejected' || transferCapabilitiesResult.status === 'rejected' ? [{ title: 'Capability state is unavailable', detail: 'Current funding or treasury capability could not be confirmed.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
     ...(pendingApprovals.length > 0 ? [{ title: `${pendingApprovals.length} item${pendingApprovals.length === 1 ? '' : 's'} require review`, detail: 'Treasury instructions are awaiting authorization.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
   ];
@@ -130,7 +129,7 @@ export default async function DashboardPage() {
 
   const workspaces = [
     { title: 'Portfolio Intelligence', description: 'Understand positions and exposure.', href: '/dashboard/portfolio', context: capitalStates[0].label },
-    { title: 'Capital Account', description: 'Understand funding and availability.', href: '/dashboard/wallet', context: fundingCapabilitiesResult.status === 'rejected' ? 'Unavailable' : fundingCapabilities.some((item) => item.state === 'ENABLED') ? 'Capability available' : 'Not configured' },
+    { title: 'Capital Account', description: 'Understand funding, availability, and movement capability.', href: '/dashboard/capital-account', context: fundingCapabilitiesResult.status === 'rejected' ? 'Unavailable' : fundingCapabilities.some((item) => item.state === 'ENABLED') ? 'Capability available' : 'Not configured' },
     { title: 'Allocation', description: 'Understand policy and structure.', href: '/dashboard/allocations', context: capitalStates[2].label },
     { title: 'Treasury', description: 'Understand movement capability and controls.', href: '/dashboard/treasury', context: capitalStates[3].label },
   ] as const;

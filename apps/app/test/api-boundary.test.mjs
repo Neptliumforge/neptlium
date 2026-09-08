@@ -30,7 +30,7 @@ test('customer product pages do not directly access Supabase product tables or s
 test('server-only API client is the customer product data boundary', () => {
   const source = read('lib/api/client.ts');
   const financial = read('lib/api/financial.ts');
-  const walletActions = read('app/dashboard/wallet/actions.ts');
+  const capitalAccountActions = read('app/dashboard/capital-account/actions.ts');
 
   assert.match(source, /import 'server-only'/);
   assert.match(source, /NEPTLIUM_API_URL/);
@@ -75,12 +75,12 @@ test('server-only API client is the customer product data boundary', () => {
 
   // Product actions consume the financial domain boundary instead of
   // owning raw transport routes or manufacturing request identity.
-  assert.match(walletActions, /createFundingIntent/);
-  assert.match(walletActions, /getDepositInstructionsForIntent/);
-  assert.match(walletActions, /createTransferAlias/);
-  assert.doesNotMatch(walletActions, /apiRequest/);
-  assert.doesNotMatch(walletActions, /\/v1\//);
-  assert.doesNotMatch(walletActions, /globalThis\.crypto\.randomUUID/);
+  assert.match(capitalAccountActions, /createFundingIntent/);
+  assert.match(capitalAccountActions, /getDepositInstructionsForIntent/);
+  assert.match(capitalAccountActions, /createTransferAlias/);
+  assert.doesNotMatch(capitalAccountActions, /apiRequest/);
+  assert.doesNotMatch(capitalAccountActions, /\/v1\//);
+  assert.doesNotMatch(capitalAccountActions, /globalThis\.crypto\.randomUUID/);
 });
 
 test('production runtime configuration names the canonical API origin explicitly', () => {

@@ -17,7 +17,7 @@ const ordinaryCustomerSurfaces = [
   'app/dashboard/transactions/page.tsx',
   'app/dashboard/administration/page.tsx',
   'app/dashboard/capital-account/page.tsx',
-  'components/product/CapitalAccountExperience.tsx',
+  'app/dashboard/capital-account/CapitalAccountView.tsx',
   'app/dashboard/treasury/TreasuryView.tsx',
   'components/product/ProductState.tsx',
 ];
@@ -99,14 +99,6 @@ test('ordinary customer surfaces reject build-stage and implementation vocabular
         ? source.replace('Capital Operating Environment', '')
         : source;
     for (const phrase of forbiddenOrdinaryCopy) {
-      if (
-        [
-          'app/dashboard/capital-account/page.tsx',
-          'components/product/CapitalAccountExperience.tsx',
-        ].includes(path) &&
-        phrase.source === 'will appear here'
-      )
-        continue;
       assert.doesNotMatch(
         customerCopy,
         phrase,
@@ -117,13 +109,12 @@ test('ordinary customer surfaces reject build-stage and implementation vocabular
 });
 
 test('capital account and treasury zero/error states read as finished product states', () => {
-  const capital = read('components/product/CapitalAccountExperience.tsx');
+  const capital = read('app/dashboard/capital-account/CapitalAccountView.tsx');
   const treasury = read('app/dashboard/treasury/TreasuryView.tsx');
 
   assert.match(capital, /No capital positions yet/);
-  assert.match(capital, /No balances available/);
-  assert.match(capital, /No destinations configured/);
-  assert.match(capital, /No activity recorded/);
+  assert.match(capital, /No destinations saved/);
+  assert.match(capital, /No capital context yet/);
   assert.doesNotMatch(
     capital,
     /Canonical ledger balances|No customer funding capability|frontend review|apps\/app does not have an API mutation/,

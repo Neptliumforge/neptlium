@@ -23,8 +23,8 @@ test('Capital Account and Treasury consume canonical financial API contracts', (
   assert.doesNotMatch(financial, /BASE-SEPOLIA|testnet/i);
 });
 
-test('wallet server actions consume financial-domain commands rather than raw routes', () => {
-  const actions = read('app/dashboard/wallet/actions.ts');
+test('Capital Account server actions consume financial-domain commands rather than raw routes', () => {
+  const actions = read('app/dashboard/capital-account/actions.ts');
 
   assert.match(actions, /createFundingIntent/);
   assert.match(actions, /getDepositInstructionsForIntent/);
@@ -45,10 +45,13 @@ test('Treasury distinguishes execution closed from capability retrieval failure'
 });
 
 test('withdrawal submission remains inert until governed reservation authority exists', () => {
-  const wallet = read('app/dashboard/wallet/WalletView.tsx');
+  const capitalAccount = read('app/dashboard/capital-account/CapitalAccountView.tsx');
 
-  assert.match(wallet, /Withdrawal submission unavailable/);
-  assert.match(wallet, /No request has been sent\./);
-  assert.match(wallet, /Reviewing a withdrawal does not reserve or move capital/);
-  assert.match(wallet, /<Button className="mt-4" disabled>Submit withdrawal<\/Button>/);
+  assert.match(capitalAccount, /Movement request unavailable/);
+  assert.match(capitalAccount, /No request has been\s+sent\./);
+  assert.match(capitalAccount, /Reviewing a movement does not reserve or move capital/);
+  assert.match(
+    capitalAccount,
+    /<Button className="mt-4" disabled>\s*Request movement\s*<\/Button>/,
+  );
 });
