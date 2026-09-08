@@ -14,7 +14,8 @@ create table if not exists public.theses (
   version integer not null check (version > 0) default 1,
   created_by uuid not null references auth.users(id) on delete restrict,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint theses_id_owner_unique unique (id, owner_id)
 );
 
 create unique index if not exists theses_one_default_per_owner_idx
@@ -26,7 +27,7 @@ create index if not exists theses_owner_updated_idx
 
 create table if not exists public.thesis_criteria (
   id uuid primary key default gen_random_uuid(),
-  thesis_id uuid not null references public.theses(id) on delete restrict,
+  thesis_id uuid not null,
   owner_id uuid not null references auth.users(id) on delete restrict,
   metric_key text not null check (metric_key ~ '^[a-z][a-z0-9_]*$'),
   kind text not null check (kind in ('QUANTITATIVE','QUALITATIVE')),
@@ -41,13 +42,16 @@ create table if not exists public.thesis_criteria (
   position integer not null check (position between 0 and 10000),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
+  constraint thesis_criteria_thesis_owner_fk foreign key (thesis_id, owner_id)
+    references public.theses(id, owner_id) on delete restrict,
   unique(thesis_id, metric_key, position),
   check (numeric_min is null or numeric_max is null or numeric_min <= numeric_max),
   check (
-    (operator in ('GT','GTE','LT','LTE') and numeric_value is not null)
-    or (operator = 'BETWEEN' and numeric_min is not null and numeric_max is not null)
-    or (operator = 'CONTAINS' and text_value is not null and char_length(trim(text_value)) > 0)
-    or (operator in ('EQ','IS_TRUE','IS_FALSE'))
+    (operator in ('GT','GTE','LT','LTE') and numeric_value is not null and numeric_min is null and numeric_max is null and text_value is null)
+    or (operator = 'BETWEEN' and numeric_value is null and numeric_min is not null and numeric_max is not null and text_value is null)
+    or (operator = 'CONTAINS' and numeric_value is null and numeric_min is null and numeric_max is null and text_value is not null and char_length(trim(text_value)) > 0)
+    or (operator = 'EQ' and numeric_min is null and numeric_max is null and ((numeric_value is not null and text_value is null) or (numeric_value is null and text_value is not null and char_length(trim(text_value)) > 0)))
+    or (operator in ('IS_TRUE','IS_FALSE') and numeric_value is null and numeric_min is null and numeric_max is null and text_value is null)
   )
 );
 
