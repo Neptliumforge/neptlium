@@ -8,83 +8,84 @@
 @layer base {
   html {
     color-scheme: light;
-    --n-carbon: #111111;
-    --n-carbon-soft: #1c1c1c;
+    --n-carbon: #101214;
+    --n-carbon-soft: #1c1f21;
     --n-white: #ffffff;
-    --n-canvas: #f7f7f5;
+    --n-canvas: #f5f3ee;
     --n-surface: #ffffff;
-    --n-subtle: #f0f0ed;
-    --n-muted: #e7e7e3;
+    --n-subtle: #eceae5;
+    --n-muted: #d8d5ce;
+    --n-mineral-teal: #0f8f86;
     --color-accent-primary: var(--n-carbon);
-    --color-accent-primary-hover: #262626;
-    --color-accent-primary-pressed: #050505;
+    --color-accent-primary-hover: #26292b;
+    --color-accent-primary-pressed: #050607;
     --color-primary: var(--n-carbon);
-    --color-border-interactive: #555555;
-    --color-border-focus: #111111;
+    --color-border-interactive: #55595c;
+    --color-border-focus: #101214;
     --color-border-selected: var(--n-carbon);
-    --color-info: #525252;
+    --color-info: #52575a;
     --font-sans: var(--n-font-product);
     --font-numeric: var(--n-font-product);
-    --shadow-focus-ring: 0 0 0 3px rgb(17 17 17 / 18%);
+    --shadow-focus-ring: 0 0 0 3px rgb(15 143 134 / 18%);
   }
 
   html[data-theme='light'], html:not([data-theme]) {
     color-scheme: light;
     --color-canvas: var(--n-canvas);
     --color-surface-1: var(--n-surface);
-    --color-surface-2: #fafaf9;
+    --color-surface-2: #faf9f6;
     --color-surface-3: var(--n-subtle);
-    --color-surface-inset: #ededeb;
+    --color-surface-inset: #e8e5df;
     --color-text-primary: var(--n-carbon);
-    --color-text-secondary: #444444;
-    --color-text-muted: #737373;
-    --color-text-disabled: #a3a3a3;
-    --color-border-hairline: rgb(17 17 17 / 9%);
-    --color-border-default: rgb(17 17 17 / 15%);
-    --color-border-strong: rgb(17 17 17 / 26%);
+    --color-text-secondary: #44494c;
+    --color-text-muted: #747879;
+    --color-text-disabled: #a3a3a0;
+    --color-border-hairline: rgb(16 18 20 / 9%);
+    --color-border-default: rgb(16 18 20 / 15%);
+    --color-border-strong: rgb(16 18 20 / 26%);
     --color-topnav: rgb(255 255 255 / 96%);
-    --color-sidebar: var(--n-carbon);
-    --color-sidebar-surface-secondary: #191919;
-    --color-sidebar-surface-raised: #242424;
-    --color-sidebar-text-primary: #ffffff;
-    --color-sidebar-text-secondary: #cfcfcf;
-    --color-sidebar-text-muted: #858585;
-    --color-sidebar-border-hairline: rgb(255 255 255 / 10%);
-    --color-sidebar-border-default: rgb(255 255 255 / 16%);
-    --color-sidebar-border-strong: rgb(255 255 255 / 24%);
+    --color-sidebar: #f5f3ee;
+    --color-sidebar-surface-secondary: #eceae5;
+    --color-sidebar-surface-raised: #e3e0d9;
+    --color-sidebar-text-primary: #101214;
+    --color-sidebar-text-secondary: #44494c;
+    --color-sidebar-text-muted: #777a78;
+    --color-sidebar-border-hairline: rgb(16 18 20 / 10%);
+    --color-sidebar-border-default: rgb(16 18 20 / 16%);
+    --color-sidebar-border-strong: rgb(16 18 20 / 24%);
   }
 
   html[data-theme='dark'] {
     color-scheme: dark;
-    --color-canvas: #0a0a0a;
-    --color-surface-1: #111111;
-    --color-surface-2: #171717;
-    --color-surface-3: #202020;
-    --color-surface-inset: #0e0e0e;
-    --color-text-primary: #fafafa;
-    --color-text-secondary: #d4d4d4;
-    --color-text-muted: #9a9a9a;
-    --color-text-disabled: #666666;
+    --color-canvas: #0a0b0c;
+    --color-surface-1: #111315;
+    --color-surface-2: #17191b;
+    --color-surface-3: #202326;
+    --color-surface-inset: #0e1011;
+    --color-text-primary: #faf9f6;
+    --color-text-secondary: #d4d4d1;
+    --color-text-muted: #9a9b98;
+    --color-text-disabled: #666865;
     --color-border-hairline: rgb(255 255 255 / 10%);
     --color-border-default: rgb(255 255 255 / 16%);
     --color-border-strong: rgb(255 255 255 / 25%);
-    --color-topnav: rgb(10 10 10 / 96%);
-    --color-sidebar: #080808;
-    --color-sidebar-surface-secondary: #111111;
-    --color-sidebar-surface-raised: #1c1c1c;
-    --color-sidebar-text-primary: #fafafa;
-    --color-sidebar-text-secondary: #d4d4d4;
-    --color-sidebar-text-muted: #8a8a8a;
+    --color-topnav: rgb(10 11 12 / 96%);
+    --color-sidebar: #101214;
+    --color-sidebar-surface-secondary: #17191b;
+    --color-sidebar-surface-raised: #202326;
+    --color-sidebar-text-primary: #faf9f6;
+    --color-sidebar-text-secondary: #d4d4d1;
+    --color-sidebar-text-muted: #8a8d8b;
     --color-sidebar-border-hairline: rgb(255 255 255 / 10%);
     --color-sidebar-border-default: rgb(255 255 255 / 16%);
     --color-sidebar-border-strong: rgb(255 255 255 / 24%);
-    --color-accent-primary: #fafafa;
+    --color-accent-primary: #faf9f6;
     --color-accent-primary-hover: #ffffff;
-    --color-accent-primary-pressed: #d8d8d8;
-    --color-primary: #fafafa;
+    --color-accent-primary-pressed: #d8d8d5;
+    --color-primary: #faf9f6;
     --color-border-focus: #ffffff;
-    --color-border-selected: #fafafa;
-    --shadow-focus-ring: 0 0 0 3px rgb(255 255 255 / 22%);
+    --color-border-selected: #faf9f6;
+    --shadow-focus-ring: 0 0 0 3px rgb(32 175 163 / 22%);
   }
 
   body {
@@ -106,7 +107,7 @@
   :where(code, pre, kbd, samp) { font-family: var(--font-mono); }
   :focus-visible { outline: none; box-shadow: var(--shadow-focus-ring); }
 
-  ::selection { background: rgb(17 17 17 / 14%); color: var(--color-text-primary); }
+  ::selection { background: rgb(15 143 134 / 14%); color: var(--color-text-primary); }
   * { scrollbar-color: var(--color-border-strong) transparent; scrollbar-width: thin; }
   *::-webkit-scrollbar { width: 10px; height: 10px; }
   *::-webkit-scrollbar-thumb { background-color: var(--color-border-strong); border: 2px solid transparent; border-radius: var(--radius-full); background-clip: content-box; }
@@ -131,7 +132,7 @@ main > div { max-width: 100rem; }
 .neptlium-plane { background: var(--color-surface-1); border: 1px solid var(--color-border-hairline); }
 .neptlium-inset { background: var(--color-surface-3); border: 1px solid var(--color-border-hairline); }
 .neptlium-meta { font-size: .65625rem; font-weight: 650; letter-spacing: .115em; text-transform: uppercase; color: var(--color-text-muted); }
-.neptlium-teal { color: var(--color-text-primary); }
+.neptlium-teal { color: var(--n-mineral-teal); }
 
 .app-skip-link {
   position: fixed;
