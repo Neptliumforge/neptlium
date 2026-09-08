@@ -72,7 +72,7 @@ export default function HomePage() {
   return <div className="neptlium-home institutional-home">
     <section className="authority-hero editorial-hero" aria-labelledby="hero-title">
       <div className="web-shell editorial-hero-inner">
-        <div className="editorial-hero-copy"><Label>Neptlium · Capital intelligence infrastructure</Label><h1 id="hero-title">The intelligence layer for modern capital.</h1><p className="authority-hero-lead">Neptlium connects ownership, markets, decisions, and capital operations into one intelligent environment.</p><div className="authority-actions"><Link className="hero-text-cta" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link><a className="hero-secondary-link" href="#intelligence">Explore Intelligence</a></div></div>
+        <div className="editorial-hero-copy"><Label>Capital intelligence</Label><h1 id="hero-title">Capital,<br />understood before<br />it moves.</h1><p className="authority-hero-lead">An intelligent layer for understanding position, change, and strategic attention.</p><div className="authority-actions"><Link className="hero-text-cta" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link><a className="hero-secondary-link" href="#intelligence">Explore Intelligence</a></div></div>
         <OperatingPanel />
       </div>
     </section>

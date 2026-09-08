@@ -1091,6 +1091,130 @@
   }
 }
 
+/* Stage 6: one quiet, institutional rhythm across the complete experience. */
+.neptlium-home {
+  position: relative;
+  isolation: isolate;
+  background: var(--web-ivory-high);
+}
+
+.neptlium-home::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(circle at 76% 8%, rgb(15 143 136 / 4%), transparent 26rem), linear-gradient(180deg, rgb(16 18 20 / 1%), transparent 22rem);
+  content: '';
+  pointer-events: none;
+}
+
+.neptlium-home > section {
+  position: relative;
+  border-top: 1px solid color-mix(in oklab, var(--web-carbon) 8%, transparent);
+}
+
+.neptlium-home > .authority-hero {
+  border-top: 0;
+}
+
+.neptlium-home > .authority-hero.editorial-hero {
+  background-color: #080a0b;
+  background-image: linear-gradient(rgb(241 241 236 / 2.5%) 1px, transparent 1px), linear-gradient(90deg, rgb(241 241 236 / 2.5%) 1px, transparent 1px), radial-gradient(circle at 68% 38%, rgb(15 143 136 / 8%), transparent 32rem);
+  background-size: 4rem 4rem, 4rem 4rem, auto;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy h1 {
+  max-width: 13ch;
+  font-size: clamp(2.85rem, 5vw, 4rem) !important;
+  font-weight: 480;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.neptlium-home > .authority-hero.editorial-hero .authority-hero-copy .web-eyebrow {
+  margin-bottom: 0;
+}
+
+.neptlium-home > .context-statement,
+.neptlium-home > .intelligence-pillars,
+.neptlium-home > .solutions-section,
+.neptlium-home > .ai-section {
+  padding-block: clamp(7rem, 12vw, 11rem);
+}
+
+.neptlium-home > .product-experience,
+.neptlium-home > .ecosystem-map,
+.neptlium-home > .institutional-intelligence {
+  padding-block: clamp(7rem, 12vw, 11rem);
+}
+
+.neptlium-home .web-eyebrow {
+  font-weight: 550;
+  letter-spacing: .15em;
+}
+
+.neptlium-home h1,
+.neptlium-home h2,
+.neptlium-home h3,
+.neptlium-home strong {
+  font-weight: 500;
+}
+
+.neptlium-home p {
+  text-wrap: pretty;
+}
+
+@keyframes neptlium-entrance {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.neptlium-home > .authority-hero .web-eyebrow,
+.neptlium-home > .authority-hero h1,
+.neptlium-home > .authority-hero .authority-hero-lead,
+.neptlium-home > .authority-hero .authority-actions,
+.neptlium-home > .authority-hero .operating-panel {
+  opacity: 0;
+  animation: neptlium-entrance 700ms var(--web-ease) forwards;
+}
+
+.neptlium-home > .authority-hero h1 { animation-delay: 100ms; }
+.neptlium-home > .authority-hero .authority-hero-lead { animation-delay: 180ms; }
+.neptlium-home > .authority-hero .authority-actions { animation-delay: 260ms; }
+.neptlium-home > .authority-hero .operating-panel { animation-delay: 320ms; }
+
+@supports (animation-timeline: view()) {
+  .neptlium-home > section:not(.authority-hero) {
+    animation: neptlium-entrance linear both;
+    animation-timeline: view(block 78% 12%);
+    animation-range: entry 0% cover 24%;
+  }
+}
+
+@media (max-width: 48rem) {
+  .neptlium-home > .context-statement,
+  .neptlium-home > .intelligence-pillars,
+  .neptlium-home > .product-experience,
+  .neptlium-home > .ecosystem-map,
+  .neptlium-home > .institutional-intelligence,
+  .neptlium-home > .solutions-section,
+  .neptlium-home > .ai-section {
+    padding-block: 5.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neptlium-home > .authority-hero .web-eyebrow,
+  .neptlium-home > .authority-hero h1,
+  .neptlium-home > .authority-hero .authority-hero-lead,
+  .neptlium-home > .authority-hero .authority-actions,
+  .neptlium-home > .authority-hero .operating-panel,
+  .neptlium-home > section:not(.authority-hero) {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (max-width: 30rem) {
   .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
     gap: 2rem;
