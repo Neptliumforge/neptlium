@@ -611,6 +611,49 @@
 }
 @media (prefers-reduced-motion: reduce) { .operating-panel { animation: none; } .pillar-row, .audience-list > a { transition: none; } }
 
+/* Stage 3: intelligence architecture as a connected institutional system. */
+.architecture-section { background: var(--web-ivory-high); }
+.architecture-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 31rem); align-items: end; gap: clamp(3rem, 10vw, 10rem); padding-bottom: clamp(3.5rem, 7vw, 6rem); }
+.architecture-intro h2 { max-width: 15ch; margin: .9rem 0 0; font-size: clamp(2.5rem, 4.5vw, 4.5rem); font-weight: 500; line-height: 1.03; letter-spacing: -.055em; }
+.architecture-intro > p { max-width: 31rem; margin: 0 0 .2rem; color: var(--web-graphite); font-size: 1rem; line-height: 1.7; }
+.architecture-map { display: grid; grid-template-columns: 10rem minmax(0, 1fr); align-items: center; gap: 2rem; min-height: 18rem; padding: 2rem; border: 1px solid var(--web-stone); background: var(--web-ivory); }
+.architecture-map-title { align-self: start; color: var(--web-teal); font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.architecture-map-grid { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, 3.5rem); align-items: center; justify-items: center; min-height: 12rem; }
+.architecture-map-node { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .5rem; padding: .65rem .85rem; background: var(--web-ivory); color: var(--web-carbon); font-size: .8rem; font-weight: 550; }
+.architecture-map-node::before { width: .35rem; height: .35rem; border: 1px solid var(--web-teal); border-radius: 50%; content: ''; }
+.architecture-map-ownership { grid-column: 2; grid-row: 1; }
+.architecture-map-markets { grid-column: 1; grid-row: 2; }
+.architecture-map-context { grid-column: 2; grid-row: 2; border: 1px solid var(--web-stone); }
+.architecture-map-decisions { grid-column: 3; grid-row: 2; }
+.architecture-map-operations { grid-column: 2; grid-row: 3; }
+.architecture-map-line { position: absolute; z-index: 0; background: var(--web-stone); }
+.architecture-map-line-horizontal { top: 50%; right: 16%; left: 16%; height: 1px; }
+.architecture-map-line-vertical { top: 16%; bottom: 16%; left: 50%; width: 1px; }
+.architecture-layers { margin-top: clamp(3rem, 7vw, 6rem); }
+.architecture-layer { grid-template-columns: 3rem minmax(0, 1fr) minmax(14rem, .8fr) auto; gap: 1.5rem; padding-block: 2rem; }
+.architecture-layer:hover { padding-inline: 1rem; }
+.architecture-layer p { max-width: 34rem; }
+.architecture-signals { display: flex; flex-wrap: wrap; align-items: start; gap: .45rem 1rem; padding-top: .2rem; }
+.architecture-signals span { color: var(--web-graphite); font: .67rem var(--font-mono, monospace); letter-spacing: .04em; }
+.architecture-signals span::before { margin-right: .35rem; color: var(--web-teal); content: '—'; }
+.architecture-closing { margin: clamp(3.5rem, 8vw, 7rem) 0 0; color: var(--web-carbon); font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -.04em; }
+@media (max-width: 48rem) {
+  .architecture-intro { grid-template-columns: 1fr; gap: 1.5rem; }
+  .architecture-intro h2 { font-size: clamp(2.35rem, 9vw, 3.5rem); }
+  .architecture-map { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.25rem; }
+  .architecture-map-title { align-self: auto; }
+  .architecture-layer { grid-template-columns: 2rem minmax(0, 1fr) auto; gap: .8rem 1rem; }
+  .architecture-signals { grid-column: 2 / 4; }
+  .architecture-layer > svg { grid-column: 3; grid-row: 1; }
+}
+@media (max-width: 30rem) {
+  .architecture-map-grid { grid-template-rows: repeat(3, 3rem); }
+  .architecture-map-node { padding-inline: .45rem; font-size: .72rem; }
+  .architecture-layer { padding-block: 1.5rem; }
+  .architecture-signals { gap: .35rem .7rem; }
+}
+
+
 /* Canonical institutional hero: left-led editorial composition at every breakpoint. */
 .neptlium-home > .authority-hero.editorial-hero .authority-hero-inner {
   align-items: center;
