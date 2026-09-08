@@ -26,15 +26,15 @@ export default async function DocumentsPage() {
     <Stack>
       <header>
         <h1>Documents</h1>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">Account statements, reports, and compliance documents supplied by the Neptlium API.</p>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">Statements, reports, and account documents in one place.</p>
       </header>
 
-      <Section title="Document repository">
+      <Section title="Documents">
         <div className="border-y border-border-hairline">
           {loadError ? (
-            <ProductStateMessage state="ERROR" title="Documents unavailable">Document state could not be loaded.</ProductStateMessage>
+            <ProductStateMessage state="ERROR" title="Documents unavailable">We could not load your documents. Try again shortly.</ProductStateMessage>
           ) : documents.length === 0 ? (
-            <ProductStateMessage state="NO_ACTIVITY" title="No documents yet">Statements, reports, and compliance documents will appear here when they are issued.</ProductStateMessage>
+            <ProductStateMessage state="NO_ACTIVITY" title="No documents yet">You do not have any statements, reports, or account documents yet.</ProductStateMessage>
           ) : (
             documents.map((document) => (
               <div key={document.id} className="flex flex-col gap-3 border-b border-border-hairline py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
