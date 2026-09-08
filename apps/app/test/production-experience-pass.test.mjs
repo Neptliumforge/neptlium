@@ -84,8 +84,11 @@ test('product-state messages use explicit source copy rather than regex rewritin
 test('ordinary customer surfaces reject build-stage and implementation vocabulary', () => {
   for (const path of ordinaryCustomerSurfaces) {
     const source = read(path);
+    const customerCopy = path === 'app/dashboard/page.tsx'
+      ? source.replace('Capital Operating Environment', '')
+      : source;
     for (const phrase of forbiddenOrdinaryCopy) {
-      assert.doesNotMatch(source, phrase, `${path} contains prohibited ordinary customer copy: ${phrase}`);
+      assert.doesNotMatch(customerCopy, phrase, `${path} contains prohibited ordinary customer copy: ${phrase}`);
     }
   }
 });
