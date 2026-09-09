@@ -2,15 +2,8 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Section, Stack } from '@neptlium/ui';
 import type { CanonicalBalance, FundingCapability, TransferActivity, TransferAlias } from '@/lib/api/financial';
-import { FinancialValue, ProductStateBadge, ProductStateMessage } from '@/components/product/ProductState';
+import { FinancialValue, ProductStateBadge, ProductStateMessage, productStateFromCapability } from '@/components/product/ProductState';
 import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
-
-function capabilityState(state: FundingCapability['state']) {
-  if (state === 'ENABLED') return 'READY' as const;
-  if (state === 'INELIGIBLE') return 'INELIGIBLE' as const;
-  if (state === 'NOT_CONFIGURED') return 'NOT_CONFIGURED' as const;
-  return 'UNAVAILABLE' as const;
-}
 
 function transferState(state: string) {
   if (['RECONCILED', 'SETTLED'].includes(state)) return 'AVAILABLE' as const;
@@ -68,21 +61,21 @@ export function TreasuryView({
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Treasury position</p>
           <div className="mt-2 text-[2rem] font-medium leading-none tracking-[-0.025em] text-text-primary sm:text-[2.4rem]">
-            {balanceError ? 'Unavailable' : balances.length === 0 ? '0 positions' : singleBalance ? <FinancialValue valueAtomic={singleBalance.available_atomic} asset={singleBalance.asset} /> : `${balances.length} assets`}
+            {balanceError ? 'Not loaded' : balances.length === 0 ? '0 positions' : singleBalance ? <FinancialValue valueAtomic={singleBalance.available_atomic} asset={singleBalance.asset} /> : `${balances.length} assets`}
           </div>
           <p className="mt-2 max-w-xl text-sm leading-6 text-text-muted">
-            {balanceError ? 'Balances are temporarily unavailable.' : balances.length === 0 ? 'No capital positions yet.' : singleBalance ? 'Available capital in your current position.' : 'Balances are shown separately by asset.'}
+            {balanceError ? 'The Neptlium API did not return balances.' : balances.length === 0 ? 'No capital positions yet.' : singleBalance ? 'Available capital in your current position.' : 'Balances are shown separately by asset.'}
           </p>
         </div>
-        <div><p className="text-xs text-text-muted">Deposit routes</p><p className="mt-1 text-sm font-medium text-text-primary">{fundingError ? 'Unavailable' : `${enabledFunding.length} enabled`}</p></div>
-        <div><p className="text-xs text-text-muted">Verified destinations</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Unavailable' : verifiedAliases.length}</p></div>
-        <div><p className="text-xs text-text-muted">Withdrawals</p><p className="mt-1 text-sm font-medium text-text-primary">{transferCapabilityError ? 'Unavailable' : enabledTransfers.length ? 'Available' : 'Unavailable'}</p></div>
+        <div><p className="text-xs text-text-muted">Deposit routes</p><p className="mt-1 text-sm font-medium text-text-primary">{fundingError ? 'Not loaded' : `${enabledFunding.length} enabled`}</p></div>
+        <div><p className="text-xs text-text-muted">Verified destinations</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Not loaded' : verifiedAliases.length}</p></div>
+        <div><p className="text-xs text-text-muted">Movement</p><p className="mt-1 text-sm font-medium text-text-primary">{transferCapabilityError ? 'Not loaded' : enabledTransfers.length ? 'Available' : 'Not configured'}</p></div>
       </section>
 
       <Section title="Liquidity">
         <div className="border-y border-border-hairline">
           {balanceError ? (
-            <ProductStateMessage state="ERROR" title="Balances unavailable">We couldn't load your balances. Try again.</ProductStateMessage>
+            <ProductStateMessage state="ERROR" title="Balances could not be loaded">The Neptlium API did not return balances.</ProductStateMessage>
           ) : balances.length === 0 ? (
             <div className="grid gap-5 py-6 sm:grid-cols-[1fr_auto] sm:items-center">
               <ProductStateMessage state="NO_POSITION" title="No capital positions yet" />
@@ -112,14 +105,14 @@ export function TreasuryView({
       <Section title="Deposit readiness">
         <div className="border-y border-border-hairline">
           {fundingError ? (
-            <ProductStateMessage state="ERROR" title="Deposits unavailable">We couldn't load deposit availability. Try again.</ProductStateMessage>
+            <ProductStateMessage state="ERROR" title="Funding capability could not be loaded">The Neptlium API did not return funding capability.</ProductStateMessage>
           ) : fundingCapabilities.length === 0 ? (
             <ProductStateMessage state="NOT_CONFIGURED" title="Deposits are not available for this account yet" />
           ) : (
             fundingCapabilities.map((item) => (
               <div key={item.code} className="grid gap-3 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto] sm:items-center">
                 <div><p className="text-sm font-medium">{item.asset} · {item.network}</p><p className="mt-1 text-xs text-text-muted">Deposit route</p></div>
-                <ProductStateBadge state={capabilityState(item.state)}>{item.state.replaceAll('_', ' ').toLowerCase()}</ProductStateBadge>
+                <ProductStateBadge state={productStateFromCapability(item.state)}>{item.state.replaceAll('_', ' ').toLowerCase()}</ProductStateBadge>
               </div>
             ))
           )}
@@ -133,7 +126,7 @@ export function TreasuryView({
             <div className="mb-3 flex items-end justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Recent transfers</p><p className="mt-1 text-xs text-text-muted">Latest transfer status</p></div><Link href="/dashboard/capital-account#capital-context" className="text-sm font-medium text-accent-primary">All activity</Link></div>
             <div className="border-y border-border-hairline">
               {transferError ? (
-                <ProductStateMessage state="ERROR" title="Transfer activity unavailable">We couldn't load transfer activity. Try again.</ProductStateMessage>
+                <ProductStateMessage state="ERROR" title="Transfer activity could not be loaded">The Neptlium API did not return transfer activity.</ProductStateMessage>
               ) : transfers.length === 0 ? (
                 <ProductStateMessage state="NO_ACTIVITY" title="No transfers yet">Your deposits and transfers will be shown here.</ProductStateMessage>
               ) : (
@@ -152,7 +145,7 @@ export function TreasuryView({
             <div className="mb-3 flex items-end justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Destinations</p><p className="mt-1 text-xs text-text-muted">Saved movement destinations</p></div><Link href="/dashboard/capital-account#destinations" className="text-sm font-medium text-accent-primary">Manage</Link></div>
             <div className="border-y border-border-hairline">
               {aliasError ? (
-                <ProductStateMessage state="ERROR" title="Destinations unavailable">We couldn't load your destinations. Try again.</ProductStateMessage>
+                <ProductStateMessage state="ERROR" title="Destinations could not be loaded">The Neptlium API did not return destinations.</ProductStateMessage>
               ) : aliases.length === 0 ? (
                 <ProductStateMessage state="NO_ACTIVITY" title="No destinations saved">Add a withdrawal destination in Capital Account.</ProductStateMessage>
               ) : (
@@ -168,11 +161,11 @@ export function TreasuryView({
         </div>
 
         <div className="mt-6 grid gap-4 border-y border-border-hairline py-5 sm:grid-cols-3">
-          <div><p className="text-xs text-text-muted">Active destinations</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Unavailable' : activeAliases.length}</p></div>
-          <div><p className="text-xs text-text-muted">Verified and active</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Unavailable' : verifiedAliases.length}</p></div>
-          <div><p className="text-xs text-text-muted">Withdrawals</p><p className="mt-1 text-sm font-medium text-text-primary">{transferCapabilityError ? 'Unavailable' : enabledTransfers.length ? 'Available' : 'Unavailable'}</p></div>
+          <div><p className="text-xs text-text-muted">Active destinations</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Not loaded' : activeAliases.length}</p></div>
+          <div><p className="text-xs text-text-muted">Verified and active</p><p className="mt-1 text-sm font-medium text-text-primary">{aliasError ? 'Not loaded' : verifiedAliases.length}</p></div>
+          <div><p className="text-xs text-text-muted">Movement</p><p className="mt-1 text-sm font-medium text-text-primary">{transferCapabilityError ? 'Not loaded' : enabledTransfers.length ? 'Available' : 'Not configured'}</p></div>
         </div>
-        <p className="mt-3 text-xs leading-5 text-text-muted">A transfer is not complete until its status reaches settlement and reconciliation. Withdrawal preparation stops before any unavailable action.</p>
+        <p className="mt-3 text-xs leading-5 text-text-muted">A transfer is not complete until its status reaches settlement and reconciliation. The current backend capability state controls which preparation paths are shown.</p>
       </Section>
 
       <Section title="Treasury controls">

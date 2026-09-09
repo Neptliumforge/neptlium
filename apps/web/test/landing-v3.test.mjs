@@ -6,32 +6,31 @@ const page = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../app/landing-v3.css', import.meta.url), 'utf8');
 
-test('landing v3 keeps canonical first-view proposition and actions', () => {
-  assert.match(page, /Capital operating infrastructure/);
-  assert.match(page, /The operating system for capital\./);
-  assert.match(page, /See capital clearly\. Coordinate what comes next\. Govern how it moves\./);
-  assert.match(page, /SITE\.publicAccessLabel/);
-  assert.match(page, /Explore the platform/);
+test('current landing layer preserves the canonical capital-intelligence hero', () => {
+  assert.match(page, /Capital,<br \/>understood before<br \/>it moves\./);
+  assert.match(page, /href=\{SITE\.publicAccessUrl\}>Enter Neptlium/);
+  assert.match(page, /href="#intelligence">Explore Intelligence/);
+  assert.equal((page.match(/<h1/g) ?? []).length, 1);
 });
 
-test('landing v3 is image-independent and loaded after the canonical visual system', () => {
-  assert.match(layout, /import '\.\/landing-v3\.css'/);
+test('current landing layer remains image-independent and ordered after the canonical visual system', () => {
+  const visualIndex = layout.indexOf("import './neptlium-visual-direction.css'");
+  const landingIndex = layout.indexOf("import './landing-v3.css'");
+  assert.ok(visualIndex >= 0 && landingIndex > visualIndex);
   assert.doesNotMatch(page, /<Image|<img|\.png|\.webp|\.jpe?g/i);
-  assert.match(css, /CSS\/SVG only; no decorative image asset/);
-  assert.match(css, /radial-gradient/);
-  assert.match(css, /\.hero-wave-field/);
+  assert.match(css, /\.neptlium-home > \.authority-hero/);
+  assert.doesNotMatch(css, /url\([^)]*\.(?:png|webp|jpe?g)/i);
 });
 
-test('landing v3 preserves first-view CTA authority on mobile and short heights', () => {
-  assert.match(css, /min-height:\s*100svh/);
-  assert.match(css, /\.authority-actions \.web-button\.secondary/);
-  assert.match(css, /width:\s*100%/);
-  assert.match(css, /@media \(max-width: 430px\) and \(max-height: 740px\)/);
-  assert.match(css, /\.authority-actions \.text-arrow-link\.on-dark/);
+test('current landing layer retains responsive and reduced-motion behavior', () => {
+  assert.match(css, /@media \(max-width: 430px\)/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(css, /\.authority-actions/);
 });
 
-test('landing v3 compresses existing hero architecture into a restrained domain rail', () => {
-  assert.match(css, /grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
-  assert.match(css, /text-transform:\s*uppercase/);
-  assert.match(css, /hero-architecture-kicker[\s\S]*display:\s*none/);
+test('hero architecture presents governed relationships rather than a dashboard simulation', () => {
+  assert.match(page, /className="operating-panel capital-context-map"/);
+  for (const context of ['Ownership', 'Markets', 'Context', 'Decisions', 'Operations'])
+    assert.match(page, new RegExp(context));
+  assert.doesNotMatch(page, /dashboard mockup|trading terminal|portfolio balance/i);
 });

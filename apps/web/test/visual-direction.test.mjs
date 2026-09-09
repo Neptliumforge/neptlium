@@ -13,42 +13,44 @@ const architecture = read('lib/content/public-architecture.ts');
 test('homepage implements an image-independent Neptlium-native hero', () => {
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   for (const copy of [
-    'Capital operating platform',
-    'Digital capital,',
-    'organized',
-    'around you.',
-    'capital movement, treasury, allocation and portfolio context',
+    'Capital intelligence',
+    'Capital,',
+    'understood before',
+    'it moves.',
+    'understanding position, change, and strategic attention',
   ])
     assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
-  assert.match(page, /SITE\.publicAccessLabel/);
+  assert.match(page, /href=\{SITE\.publicAccessUrl\}/);
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
   assert.match(site, /exploreLabel:\s*'Explore platform'/);
-  assert.match(page, /className="hero-system"/);
+  assert.match(page, /className="authority-hero editorial-hero"/);
+  assert.match(page, /className="operating-panel capital-context-map"/);
   for (const product of ['Capital Account', 'Treasury', 'Allocation', 'Portfolio Intelligence'])
     assert.match(page, new RegExp(product));
   assert.doesNotMatch(page, /ProductContextIllustration|HeroArchitecture|<Image|<img|\.png|\.webp|\.jpe?g/i);
 });
 
-test('homepage is a continuous route into the wider public system rather than the entire website', () => {
+test('homepage presents a continuous institutional capital-intelligence narrative', () => {
   for (const className of [
-    'operating-environment',
-    'capital-organization',
-    'homepage-solutions',
-    'intelligence-section',
-    'reason-section',
-    'final-authority',
+    'context-statement',
+    'intelligence-pillars architecture-section',
+    'product-experience platform-ecosystem',
+    'ecosystem-map',
+    'institutional-intelligence',
+    'solutions-section',
+    'ai-section',
   ])
     assert.match(page, new RegExp(`className="${className}`));
-  for (const route of ['/platform', '/products', '/solutions', '/resources', '/company'])
-    assert.match(page, new RegExp(route.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+  for (const surface of ['Portfolio Intelligence', 'Capital Account', 'Treasury', 'Allocation Intelligence'])
+    assert.match(page, new RegExp(surface));
 });
 
 test('marketing palette, structural composition and responsive contracts are explicit', () => {
   for (const value of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
     assert.match(css, new RegExp(value));
-  assert.match(css, /\.hero-system-rule/);
-  assert.match(css, /\.architecture-page/);
-  assert.match(css, /\.solution-essays/);
+  assert.match(css, /\.authority-hero/);
+  assert.match(css, /\.architecture-section/);
+  assert.match(css, /\.solutions-section/);
   assert.doesNotMatch(css, /radial-gradient|linear-gradient|filter:\s*blur|backdrop-filter:\s*blur/i);
   for (const media of ['68rem', '56rem', '40rem', '24.5rem'])
     assert.match(css, new RegExp(`max-width:\\s*${media.replace('.', '\\.')}`));
@@ -73,12 +75,13 @@ test('navigation uses five canonical domains with direct destinations plus acces
   assert.doesNotMatch(header, />\s*Request access\s*</i);
 });
 
-test('footer mirrors the public architecture and conversational closing', () => {
-  assert.match(footer, /Keep your capital work connected\./);
-  assert.match(footer, /SITE\.publicAccessLabel/);
-  for (const label of ['Platform', 'Products', 'Solutions', 'Resources', 'Company', 'Legal'])
+test('footer preserves institutional identity, public channels and legal access', () => {
+  assert.match(footer, /A capital operating environment for understanding, coordinating and governing what you own\./);
+  for (const label of ['Bluesky', 'X', 'YouTube', 'TikTok'])
     assert.match(footer, new RegExp(`label: '${label}'`));
-  assert.doesNotMatch(footer, /Capital, organized with precision\./);
+  for (const label of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility'])
+    assert.match(footer, new RegExp(`label: '${label}'`));
+  assert.match(footer, /rel="noopener noreferrer"/);
 });
 
 test('homepage makes no fabricated financial claims or values', () => {
@@ -86,5 +89,8 @@ test('homepage makes no fabricated financial claims or values', () => {
     page,
     /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|partnership|licensed/i,
   );
-  assert.match(page, /No customer balances, transactions or performance data are shown\./);
+  assert.doesNotMatch(
+    page,
+    /guaranteed returns?|projected returns?|portfolio performance|gain\/loss|net worth/i,
+  );
 });

@@ -101,7 +101,7 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
         <span className="flex size-9 items-center justify-center rounded-full border border-border-default bg-surface-2 text-xs font-semibold">{initials}</span>
         <span className="hidden min-w-0 text-left sm:block">
           <span className="block max-w-36 truncate text-sm text-text-primary">{name}</span>
-          <span className="block text-[11px] text-text-muted">{email || 'Email unavailable'}</span>
+          <span className="block text-[11px] text-text-muted">{email || 'Email not provided'}</span>
         </span>
         <ChevronDown className="size-4 text-text-muted" aria-hidden="true" />
       </button>
@@ -117,9 +117,9 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
           <button type="button" aria-label="Close profile menu" onClick={() => setOpen(false)} className="absolute right-3 top-3 flex size-11 items-center justify-center sm:hidden"><X className="size-5" /></button>
           <div className="border-b border-border-hairline px-2 pb-3 pr-12 sm:pr-2">
             <p className="truncate text-sm font-medium">{name || 'Account'}</p>
-            <p className="truncate text-xs text-text-muted">{email || 'Email unavailable'}</p>
+            <p className="truncate text-xs text-text-muted">{email || 'Email not provided'}</p>
             {verified && <p className="mt-1 text-xs text-success">Verified account</p>}
-            <p className="mt-1 text-xs text-text-muted">{email ? 'Authenticated account' : 'Email unavailable'}</p>
+            <p className="mt-1 text-xs text-text-muted">{email ? 'Authenticated account' : 'Email not provided'}</p>
           </div>
           <nav aria-label="Account settings" className="py-2">
             {destinations.map(([label, hash]) => (

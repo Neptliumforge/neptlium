@@ -43,9 +43,9 @@ export default async function PortfolioPage() {
     balanceError
       ? {
           label: 'Position status',
-          value: 'Unavailable',
-          detail: 'Canonical positions could not be loaded.',
-          state: 'UNAVAILABLE',
+          value: 'Not loaded',
+          detail: 'The Neptlium API did not return canonical positions.',
+          state: 'ERROR',
         }
       : balances.length === 0
         ? {
@@ -62,16 +62,16 @@ export default async function PortfolioPage() {
           },
     {
       label: 'Data freshness',
-      value: 'Unavailable',
-      detail: 'The canonical balance contract does not expose a position observation time.',
-      state: 'UNAVAILABLE',
+      value: 'Not reported',
+      detail: 'The canonical balance response does not include a position observation time.',
+      state: 'NO_ACTIVITY',
     },
     portfolioResult.status === 'rejected'
       ? {
           label: 'Availability',
-          value: 'Unavailable',
-          detail: 'Portfolio reporting context could not be loaded.',
-          state: 'UNAVAILABLE',
+          value: 'Not loaded',
+          detail: 'The Neptlium API did not return portfolio reporting context.',
+          state: 'ERROR',
         }
       : portfolio?.positions.state === 'PENDING'
         ? {
@@ -82,26 +82,26 @@ export default async function PortfolioPage() {
           }
         : {
             label: 'Availability',
-            value: balanceError ? 'Unavailable' : 'Available',
+            value: balanceError ? 'Not loaded' : 'Available',
             detail: balanceError
-              ? 'Position evidence is unavailable.'
+              ? 'The Neptlium API did not return position evidence.'
               : 'The canonical holdings source responded.',
-            state: balanceError ? 'UNAVAILABLE' : 'AVAILABLE',
+            state: balanceError ? 'ERROR' : 'AVAILABLE',
           },
   ];
 
   const concentration: IntelligenceItem = balanceError
     ? {
         label: 'Concentration',
-        value: 'Unavailable',
-        detail: 'Exposure analysis unavailable while canonical positions cannot be loaded.',
-        state: 'UNAVAILABLE',
+        value: 'Not loaded',
+        detail: 'Exposure context cannot be established because canonical positions were not returned.',
+        state: 'ERROR',
       }
     : balances.length === 0
       ? {
           label: 'Concentration',
           value: 'Not established',
-          detail: 'Exposure analysis unavailable without sufficient portfolio data.',
+          detail: 'Exposure analysis requires canonical portfolio positions.',
           state: 'NO_POSITION',
         }
       : balances.length === 1
@@ -114,17 +114,19 @@ export default async function PortfolioPage() {
           }
         : {
             label: 'Concentration',
-            value: 'Unavailable',
-            detail: 'Cross-asset concentration requires authoritative valuation evidence.',
-            state: 'UNAVAILABLE',
+            value: portfolio?.value.state === 'UNAVAILABLE' ? 'Unavailable' : 'Not reported',
+            detail: portfolio?.value.state === 'UNAVAILABLE'
+              ? portfolio.value.reason
+              : 'The portfolio API did not return authoritative valuation evidence.',
+            state: portfolio?.value.state === 'UNAVAILABLE' ? 'UNAVAILABLE' : 'NO_ACTIVITY',
           };
 
   const allocationContext: IntelligenceItem = allocationError
     ? {
         label: 'Allocation context',
-        value: 'Unavailable',
-        detail: 'Governed allocation state could not be loaded.',
-        state: 'UNAVAILABLE',
+        value: 'Not loaded',
+        detail: 'The Neptlium API did not return governed allocation state.',
+        state: 'ERROR',
       }
     : !allocationPolicy
       ? {
@@ -177,9 +179,9 @@ export default async function PortfolioPage() {
     balanceError || allocationError
       ? {
           label: 'Relationships',
-          value: 'Unavailable',
-          detail: 'Position and allocation evidence are both required to establish relationships.',
-          state: 'UNAVAILABLE',
+          value: 'Not loaded',
+          detail: 'The Neptlium API must return position and allocation evidence before relationships can be established.',
+          state: 'ERROR',
         }
       : !allocationPolicy
         ? {
@@ -199,18 +201,18 @@ export default async function PortfolioPage() {
     ...(balanceError
       ? [
           {
-            id: 'positions-unavailable',
-            title: 'Position source unavailable',
-            detail: 'Canonical holdings could not be loaded. No position state is inferred.',
+            id: 'positions-not-loaded',
+            title: 'Position source was not loaded',
+            detail: 'The Neptlium API did not return canonical holdings. No position state is inferred.',
           },
         ]
       : []),
     ...(allocationError
       ? [
           {
-            id: 'allocation-unavailable',
-            title: 'Allocation context unavailable',
-            detail: 'Authoritative policy relationships could not be loaded.',
+            id: 'allocation-not-loaded',
+            title: 'Allocation context was not loaded',
+            detail: 'The Neptlium API did not return authoritative policy relationships.',
           },
         ]
       : []),
@@ -236,7 +238,7 @@ export default async function PortfolioPage() {
     balanceError
       ? {
           id: 'position-source',
-          title: 'Position source unavailable',
+          title: 'Position source was not loaded',
           detail: 'The canonical holdings collection could not be retrieved.',
         }
       : balances.length === 0
@@ -253,7 +255,7 @@ export default async function PortfolioPage() {
     allocationError
       ? {
           id: 'allocation-source',
-          title: 'Allocation context unavailable',
+          title: 'Allocation context was not loaded',
           detail: 'No policy or drift relationship is inferred.',
         }
       : {
@@ -264,10 +266,15 @@ export default async function PortfolioPage() {
             : 'No active allocation policy is recorded.',
           ...(allocation?.observed.asOf ? { occurredAt: allocation.observed.asOf } : {}),
         },
-    concentration.state === 'UNAVAILABLE' || concentration.state === 'NO_POSITION'
+    ['UNAVAILABLE', 'NO_POSITION', 'NO_ACTIVITY', 'ERROR'].includes(concentration.state)
       ? {
           id: 'exposure-context',
-          title: 'Exposure analysis unavailable',
+          title:
+            concentration.state === 'UNAVAILABLE'
+              ? 'Exposure analysis unavailable'
+              : concentration.state === 'ERROR'
+                ? 'Exposure context was not loaded'
+                : 'Exposure analysis not established',
           detail: concentration.detail,
         }
       : {

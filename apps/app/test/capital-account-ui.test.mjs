@@ -64,8 +64,9 @@ test('financial mutations remain server-owned and lifecycle-gated', () => {
   assert.match(actions, /getDepositInstructionsForIntent/);
   assert.match(actions, /createTransferAlias/);
   assert.doesNotMatch(actions, /apiRequest|\/v1\/|circle|alchemy|stripe|supabase/i);
-  assert.match(view, /Movement request unavailable/);
-  assert.match(view, /No request has been\s+sent\./);
+  assert.match(view, /productStateFromCapability/);
+  assert.match(view, /Movement capability enabled/);
+  assert.doesNotMatch(view, /<Button[^>]*>\s*Request movement/);
   assert.match(view, /Reviewing a movement does not reserve or move capital/);
 });
 

@@ -53,7 +53,7 @@ test('unknown allocation states use explicit non-financial placeholders', () => 
   for (const state of [
     'No positions available',
     'Policy has not been established',
-    'Drift analysis unavailable',
+    'Drift analysis not established',
     'No modeled allocation plan yet',
     'No allocation decisions recorded',
   ]) {

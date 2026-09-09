@@ -367,12 +367,12 @@ export async function handleAdminRoute(
 
   // New canonical withdrawals routes
   if (method === 'GET' && path === '/v1/admin/withdrawals/canonical') {
-    const data = await deps.repository.listCanonicalWithdrawals(query, false as any);
+    const data = await deps.repository.listCanonicalWithdrawals(query, false);
     await audit('admin.withdrawals.canonical.list', 'withdrawals', null);
     return { data };
   }
   if (method === 'GET' && path === '/v1/admin/withdrawals/pending/canonical') {
-    const data = await deps.repository.listCanonicalWithdrawals(query, true as any);
+    const data = await deps.repository.listCanonicalWithdrawals(query, true);
     await audit('admin.withdrawals.canonical.pending.list', 'withdrawals', null);
     return { data };
   }

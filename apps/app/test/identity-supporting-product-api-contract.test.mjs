@@ -79,10 +79,9 @@ test('Thesis and revealed Thesis remain API-authoritative', () => {
 test('reports no longer instruct the customer to connect product persistence directly', () => {
   const reports = read('app/dashboard/reports/page.tsx');
 
-  assert.match(
-    reports,
-    /No governed reports have been published to this account yet/,
-  );
+  assert.match(reports, /getDocuments/);
+  assert.match(reports, /document\.category === 'report'/);
+  assert.match(reports, /current API response contains no reports/);
 
   assert.doesNotMatch(reports, /Connect to Supabase/i);
   assert.doesNotMatch(reports, /createClient|createServerClient|\.from\(|\.rpc\(/);

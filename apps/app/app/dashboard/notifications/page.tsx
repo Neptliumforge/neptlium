@@ -27,7 +27,7 @@ export default async function NotificationsPage() {
       <Section title="Recent notifications" action={hasUnread ? <MarkAllReadButton /> : undefined}>
         <div className="border-y border-border-hairline">
           {loadError ? (
-            <ProductStateMessage state="ERROR" title="Notifications unavailable">Notification state could not be loaded from the Neptlium API.</ProductStateMessage>
+            <ProductStateMessage state="ERROR" title="Notifications could not be loaded">The Neptlium API did not return notification state.</ProductStateMessage>
           ) : notifications.length === 0 ? (
             <ProductStateMessage state="NO_ACTIVITY" title="No notifications">You are up to date.</ProductStateMessage>
           ) : (
