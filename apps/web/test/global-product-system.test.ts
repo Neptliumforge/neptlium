@@ -12,7 +12,11 @@ test('public site consumes shared tokens and one canonical Web visual authority'
     webFile('app/layout.tsx'),
   ]);
   assert.equal(globals.includes('packages/ui/src/styles/tokens.css'), true);
-  assert.equal(brand.includes('--n-brand-blue: #258be5'), true);
+  assert.equal(brand.includes('--n-brand-green: #0F8F86'), true);
+  assert.equal(brand.includes('--n-brand-carbon: #101214'), true);
+  assert.equal(brand.includes('--n-brand-ivory: #F5F3EE'), true);
+  assert.equal(brand.includes('--n-space-tight: 8px'), true);
+  assert.equal(brand.includes('--n-motion-fast: 140ms'), true);
   assert.match(visualDirection, /--web-ivory:\s*#f5f3ee/);
   assert.match(visualDirection, /--web-carbon:\s*#101214/);
   assert.match(visualDirection, /--web-teal:\s*#0f8f86/);
