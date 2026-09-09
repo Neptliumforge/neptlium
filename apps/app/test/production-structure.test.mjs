@@ -346,7 +346,10 @@ test('Portfolio is an API-authoritative intelligence surface without execution a
   assert.equal(portfolio.includes('getCanonicalBalances'), true);
   assert.equal(portfolio.includes('getAllocationWorkspace'), true);
   assert.equal(portfolio.includes('Portfolio Intelligence'), true);
-  assert.equal(portfolio.includes('Understand positions, exposure, and capital context.'), true);
+  assert.equal(
+    portfolio.includes('Understand holdings, exposure, relationships, and strategic position.'),
+    true,
+  );
   for (const section of [
     'PortfolioState',
     'HoldingsTable',
@@ -357,7 +360,7 @@ test('Portfolio is an API-authoritative intelligence surface without execution a
     assert.equal(portfolio.includes(section), true, `missing ${section}`);
   for (const column of ['Asset', 'Quantity', 'Source', 'Status'])
     assert.equal(components.includes(`>${column}<`), true, `missing ${column}`);
-  assert.equal(components.includes('No portfolio positions available.'), true);
+  assert.equal(components.includes('No portfolio positions are currently available.'), true);
   assert.equal(components.includes('No portfolio items require attention.'), true);
   assert.equal(portfolio.includes("balance?.available_atomic ?? '0'"), false);
   for (const forbidden of [

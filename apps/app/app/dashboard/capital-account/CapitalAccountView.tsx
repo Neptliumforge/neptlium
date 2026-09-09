@@ -57,6 +57,92 @@ function lifecycleState(state: string) {
   return 'PENDING' as const;
 }
 
+const fundingStages = [
+  { label: 'Funding intent', states: ['CREATED', 'AUTHORIZED'] },
+  { label: 'Deposit route', states: ['PROVIDER_SUBMITTED'] },
+  { label: 'Provider observation', states: ['PENDING', 'PROVIDER_CONFIRMED'] },
+  { label: 'Reconciliation', states: ['LEDGER_POSTED', 'RECONCILED'] },
+  { label: 'Capital state update', states: ['AVAILABLE'] },
+] as const;
+
+const movementStages = [
+  { label: 'Request', states: ['REQUESTED'] },
+  { label: 'Destination verification', states: [] },
+  { label: 'Reservation', states: ['RESERVED'] },
+  { label: 'Approval', states: ['PENDING_APPROVAL', 'APPROVED'] },
+  { label: 'Provider submission', states: ['SUBMITTED'] },
+  { label: 'Settlement', states: ['SETTLED'] },
+  { label: 'Completion', states: ['RECONCILED'] },
+] as const;
+
+function fundingNextAction(state: string | undefined) {
+  if (!state) return 'Create a funding instruction';
+  if (['FAILED', 'RETURNED', 'REVERSED', 'CANCELLED'].includes(state))
+    return 'Review the recorded outcome';
+  if (state === 'AVAILABLE') return 'No further action required';
+  if (['CREATED', 'AUTHORIZED'].includes(state)) return 'Await deposit route availability';
+  if (['PROVIDER_SUBMITTED', 'PENDING'].includes(state)) return 'Await provider confirmation';
+  if (state === 'PROVIDER_CONFIRMED') return 'Await canonical ledger posting';
+  if (state === 'LEDGER_POSTED') return 'Await reconciliation';
+  if (state === 'RECONCILED') return 'Await capital state update';
+  return 'Await authoritative lifecycle update';
+}
+
+function movementNextAction(state: string | undefined) {
+  if (!state) return 'Movement requests are not activated';
+  if (['FAILED', 'REVERSED', 'CANCELLED'].includes(state)) return 'Review the recorded outcome';
+  if (state === 'RECONCILED') return 'No further action required';
+  if (state === 'REQUESTED') return 'Await capital reservation';
+  if (state === 'RESERVED') return 'Await approval review';
+  if (state === 'PENDING_APPROVAL') return 'Administrator approval required';
+  if (state === 'APPROVED') return 'Await provider submission';
+  if (state === 'SUBMITTED') return 'Await provider settlement';
+  if (state === 'SETTLED') return 'Await reconciliation';
+  return 'Await authoritative lifecycle update';
+}
+
+function LifecycleTimeline({
+  label,
+  stages,
+  currentState,
+}: {
+  readonly label: string;
+  readonly stages: readonly { readonly label: string; readonly states: readonly string[] }[];
+  readonly currentState?: string;
+}) {
+  const currentIndex = stages.findIndex((stage) =>
+    (stage.states as readonly string[]).includes(currentState ?? ''),
+  );
+  return (
+    <ol
+      className="grid border-y border-border-hairline sm:grid-cols-3 xl:grid-cols-7"
+      aria-label={label}
+    >
+      {stages.map((stage, index) => {
+        const reached = currentIndex >= index;
+        const current = currentIndex === index;
+        return (
+          <li
+            key={stage.label}
+            className="border-b border-border-hairline py-3 last:border-b-0 sm:border-b-0 sm:border-r sm:px-3 sm:last:border-r-0"
+            aria-current={current ? 'step' : undefined}
+          >
+            <span
+              className={`text-[11px] tabular-nums ${reached ? 'text-accent-primary' : 'text-text-muted'}`}
+            >
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <p className="mt-1 text-xs font-medium text-text-primary">{stage.label}</p>
+            <p className="mt-1 text-[11px] text-text-muted">
+              {current ? currentState?.replaceAll('_', ' ') : reached ? 'Recorded' : 'Awaiting'}
+            </p>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 function normalizedNetwork(value: string | null | undefined) {
   return (value ?? '').replaceAll('-', '_').toUpperCase();
 }
@@ -157,6 +243,8 @@ export function CapitalAccountView({
       ].sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at)),
     [fundingActivity, transferActivity],
   );
+  const latestFunding = fundingActivity[0];
+  const latestTransfer = transferActivity[0];
 
   const zeroPosition = !balanceError && balances.length === 0;
   const singleBalance = balances.length === 1 ? balances[0] : undefined;
@@ -396,6 +484,38 @@ export function CapitalAccountView({
 
       {active === 'Funding' && (
         <Section title="Create funding instruction">
+          <div className="mb-8">
+            <div className="mb-4 grid gap-4 sm:grid-cols-3">
+              <div>
+                <p className="text-xs text-text-muted">Current state</p>
+                <div className="mt-2">
+                  <ProductStateBadge
+                    state={latestFunding ? lifecycleState(latestFunding.state) : 'NO_ACTIVITY'}
+                  >
+                    {latestFunding ? latestFunding.state.replaceAll('_', ' ') : 'Not established'}
+                  </ProductStateBadge>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-text-muted">Required next action</p>
+                <p className="mt-2 text-sm font-medium text-text-primary">
+                  {fundingNextAction(latestFunding?.state)}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-text-muted">Authority boundary</p>
+                <p className="mt-2 text-sm leading-5 text-text-secondary">
+                  Capital becomes available only after provider evidence, ledger posting, and
+                  reconciliation.
+                </p>
+              </div>
+            </div>
+            <LifecycleTimeline
+              label="Funding lifecycle"
+              stages={fundingStages}
+              {...(latestFunding ? { currentState: latestFunding.state } : {})}
+            />
+          </div>
           {capabilityError ? (
             <ProductStateMessage state="ERROR" title="Funding unavailable">
               We couldn't load funding route availability. Try again.
@@ -574,6 +694,31 @@ export function CapitalAccountView({
 
       {active === 'Movement' && (
         <Section title="Movement">
+          <div className="mb-8 grid gap-4 sm:grid-cols-3">
+            <div>
+              <p className="text-xs text-text-muted">Current state</p>
+              <div className="mt-2">
+                <ProductStateBadge
+                  state={latestTransfer ? lifecycleState(latestTransfer.state) : 'UNAVAILABLE'}
+                >
+                  {latestTransfer ? latestTransfer.state.replaceAll('_', ' ') : 'Unavailable'}
+                </ProductStateBadge>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-text-muted">Required next action</p>
+              <p className="mt-2 text-sm font-medium text-text-primary">
+                {movementNextAction(latestTransfer?.state)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-text-muted">Authority boundary</p>
+              <p className="mt-2 text-sm leading-5 text-text-secondary">
+                Approval does not submit or settle a movement; each stage requires separate
+                evidence.
+              </p>
+            </div>
+          </div>
           <div className="grid gap-8 xl:grid-cols-[minmax(0,0.9fr)_minmax(20rem,1.1fr)]">
             <div className="space-y-5">
               <div>
@@ -736,28 +881,13 @@ export function CapitalAccountView({
             </div>
           </div>
 
-          <ol
-            className="mt-8 grid border-y border-border-hairline sm:grid-cols-4 xl:grid-cols-7"
-            aria-label="Movement lifecycle"
-          >
-            {[
-              'Requested',
-              'Reserved',
-              'Pending approval',
-              'Approved',
-              'Submitted',
-              'Settled',
-              'Reconciled',
-            ].map((stage, index) => (
-              <li
-                key={stage}
-                className="border-b border-border-hairline py-3 last:border-b-0 sm:border-b-0 sm:border-r sm:px-3 sm:last:border-r-0"
-              >
-                <span className="text-[11px] tabular-nums text-accent-primary">0{index + 1}</span>
-                <p className="mt-1 text-xs font-medium text-text-primary">{stage}</p>
-              </li>
-            ))}
-          </ol>
+          <div className="mt-8">
+            <LifecycleTimeline
+              label="Movement lifecycle"
+              stages={movementStages}
+              {...(latestTransfer ? { currentState: latestTransfer.state } : {})}
+            />
+          </div>
         </Section>
       )}
 

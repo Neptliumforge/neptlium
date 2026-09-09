@@ -69,6 +69,38 @@ test('financial mutations remain server-owned and lifecycle-gated', () => {
   assert.match(view, /Reviewing a movement does not reserve or move capital/);
 });
 
+test('Capital Account exposes governed funding and movement lifecycles', () => {
+  for (const stage of [
+    'Funding intent',
+    'Deposit route',
+    'Provider observation',
+    'Reconciliation',
+    'Capital state update',
+    'Destination verification',
+    'Reservation',
+    'Provider submission',
+    'Settlement',
+  ]) {
+    assert.match(view, new RegExp(stage), `missing lifecycle stage ${stage}`);
+  }
+  assert.match(view, /Required next action/);
+  assert.match(view, /Authority boundary/);
+  assert.match(view, /Approval does not submit or settle a movement/);
+  assert.match(
+    view,
+    /Capital becomes available only after provider evidence, ledger posting, and\s+reconciliation/,
+  );
+});
+
+test('admin operations do not overstate completion authority', () => {
+  const deposits = read('../admin/app/(admin)/dashboard/deposits/page.tsx');
+  const withdrawals = read('../admin/app/(admin)/dashboard/withdrawals/page.tsx');
+  assert.match(deposits, /Awaiting governed reconciliation/);
+  assert.doesNotMatch(deposits, /Mark Completed/);
+  assert.match(withdrawals, /Approval does not submit to a provider or confirm settlement/);
+  assert.match(withdrawals, /Rejection unavailable/);
+});
+
 test('canonical and compatibility routes converge on Capital Account', () => {
   const navigation = read('components/navigation/dashboardNav.tsx');
   const legacy = read('app/dashboard/wallet/page.tsx');

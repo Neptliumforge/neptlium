@@ -3,6 +3,7 @@ import { getPortfolioState } from '@/lib/api/client';
 import { getAllocationWorkspace } from '@/lib/api/allocation';
 import { getCanonicalBalances } from '@/lib/api/financial';
 import {
+  AllocationRelationship,
   AttentionState,
   ExposurePanel,
   HoldingsTable,
@@ -281,12 +282,13 @@ export default async function PortfolioPage() {
       <WorkspaceHeader
         eyebrow="Portfolio"
         title="Portfolio Intelligence"
-        description="Understand positions, exposure, and capital context."
+        description="Understand holdings, exposure, relationships, and strategic position."
       />
 
       <PortfolioState items={portfolioState} />
       <HoldingsTable balances={balances} loadError={balanceError} />
-      <ExposurePanel items={[concentration, allocationContext, relationships]} />
+      <ExposurePanel items={[concentration]} />
+      <AllocationRelationship items={[allocationContext, relationships]} />
       <AttentionState items={attention} />
       <PortfolioContext items={context} />
     </div>

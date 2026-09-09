@@ -16,7 +16,7 @@ const financial = read('lib/api/financial.ts');
 test('Portfolio consumes canonical balances as financial position evidence', () => {
   assert.equal(portfolio.includes('getCanonicalBalances'), true);
   assert.equal(portfolio.includes('getPortfolioState'), true);
-  assert.equal(portfolioComponents.includes('Neptlium canonical ledger'), true);
+  assert.equal(portfolioComponents.includes('Capital Account'), true);
   assert.equal(financial.includes('readonly available_atomic: string;'), true);
   assert.equal(financial.includes('readonly pending_atomic: string;'), true);
   assert.equal(financial.includes('readonly reserved_atomic: string;'), true);
@@ -44,12 +44,12 @@ test('Portfolio never manufactures zero from missing canonical evidence', () => 
 });
 
 test('confirmed canonical zero and non-zero values remain numeric evidence', () => {
-  assert.equal(productState.includes('formatAtomicAmount(valueAtomic, asset)'), true);
+  assert.match(productState, /formatAtomicAmount\(valueAtomic, asset, decimals \?\? undefined\)/);
 
   assert.equal(productState.includes('const digits = negative ? value.slice(1) : value;'), true);
 
   assert.equal(
-    productState.includes("const whole = precision ? padded.slice(0, -precision) || '0' : padded;"),
+    productState.includes("const whole = decimals ? padded.slice(0, -decimals) || '0' : padded;"),
     true,
   );
 });
@@ -73,7 +73,7 @@ test('funding capability cannot manufacture a Portfolio holding', () => {
 
 test('Portfolio distinguishes canonical empty state from API failure', () => {
   assert.equal(
-    portfolioComponents.includes('No portfolio positions available.'),
+    portfolioComponents.includes('No portfolio positions are currently available.'),
     true,
     'Successful canonical emptiness must remain an explicit non-actionable state',
   );
@@ -164,6 +164,15 @@ test('Portfolio attention and context are evidence-bound rather than transaction
   assert.equal(portfolio.includes('allocationOutsidePolicy'), true);
   assert.equal(portfolio.includes('allocationReview'), true);
   assert.equal(portfolioSurface.includes('transaction feed'), false);
+});
+
+test('Portfolio Intelligence presents holdings, exposure, and allocation as separate contexts', () => {
+  assert.match(portfolio, /Understand holdings, exposure, relationships, and strategic position\./);
+  assert.match(portfolioComponents, /Holdings intelligence/);
+  assert.match(portfolioComponents, /Exposure context/);
+  assert.match(portfolioComponents, /Allocation relationship/);
+  assert.match(portfolioComponents, /href="\/dashboard\/allocations"/);
+  assert.match(portfolio, /getAllocationWorkspace/);
 });
 
 test('App remains provider-neutral for Stripe', () => {
