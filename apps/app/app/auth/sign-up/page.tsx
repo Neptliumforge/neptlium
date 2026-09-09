@@ -4,17 +4,27 @@ import { AuthShell } from '@/app/(auth)/components/AuthShell';
 function AuthMountFallback() {
   return (
     <div className="w-full py-8" role="status" aria-live="polite">
-      <div className="space-y-2.5">
-  <p className="neptlium-meta">Get started</p>
+      <p className="text-sm font-medium text-text-primary">Preparing sign up…</p>
+      <p className="mt-1 text-sm leading-6 text-text-muted">This should only take a moment.</p>
+    </div>
+  );
+}
 
-  <h1 className="text-[1.8rem] font-medium leading-[1.08] tracking-[-0.035em] text-text-primary sm:text-[2rem]">
-    Create your Neptlium account
-  </h1>
+export default function SignUpPage() {
+  return (
+    <AuthShell>
+      <div className="space-y-7">
+        <div className="space-y-2.5">
+          <p className="neptlium-meta">Get started</p>
 
-  <p className="max-w-sm text-sm leading-6 text-text-secondary">
-    Create your account to begin using Neptlium.
-    Organization details are not required to get started.
-  </p>
+          <h1 className="text-[1.8rem] font-medium leading-[1.08] tracking-[-0.035em] text-text-primary sm:text-[2rem]">
+            Create your Neptlium account
+          </h1>
+
+          <p className="max-w-sm text-sm leading-6 text-text-secondary">
+            Create your account to begin using Neptlium.
+            Organization details are not required to get started.
+          </p>
         </div>
 
         <div className="w-full border-t border-border-hairline pt-6">
