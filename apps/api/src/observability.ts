@@ -24,6 +24,20 @@ export interface Observer {
   lifecycle?(record: LifecycleRecord): void;
 }
 
+function requestLifecycle(record: LogRecord): LifecycleRecord | undefined {
+  if (record.operation !== 'http.request' || !record.requestId || !record.outcome) return undefined;
+  const failed = record.outcome === 'failure';
+  return {
+    event: failed ? 'observation.failed' : 'observation.completed',
+    entityType: 'http.request',
+    entityId: record.requestId,
+    lifecycleState: record.outcome,
+    timestamp: new Date().toISOString(),
+    correlationId: record.requestId,
+    source: 'api',
+  };
+}
+
 export class MemoryObserver implements Observer {
   readonly logs: LogRecord[] = [];
   readonly lifecycleEvents: LifecycleRecord[] = [];
@@ -31,6 +45,10 @@ export class MemoryObserver implements Observer {
   readonly timings = new Map<string, number[]>();
   log(record: LogRecord) {
     this.logs.push({ ...record });
+    const lifecycle = requestLifecycle(record);
+    if (lifecycle) {
+      this.lifecycleEvents.push(lifecycle);
+    }
   }
   lifecycle(record: LifecycleRecord) {
     this.lifecycleEvents.push({ ...record });
@@ -49,6 +67,10 @@ export class MemoryObserver implements Observer {
 export class JsonObserver implements Observer {
   log(record: LogRecord) {
     process.stdout.write(`${JSON.stringify({ timestamp: new Date().toISOString(), ...record })}\n`);
+    const lifecycle = requestLifecycle(record);
+    if (lifecycle) {
+      process.stdout.write(`${JSON.stringify(lifecycle)}\n`);
+    }
   }
   lifecycle(record: LifecycleRecord) {
     process.stdout.write(`${JSON.stringify(record)}\n`);
