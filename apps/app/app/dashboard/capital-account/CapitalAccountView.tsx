@@ -17,6 +17,7 @@ import {
   FinancialValue,
   ProductStateBadge,
   ProductStateMessage,
+  productStateFromCapability,
 } from '@/components/product/ProductState';
 import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 
@@ -39,13 +40,6 @@ const tabHashes: Record<Tab, string> = {
 
 function tabHash(tab: Tab) {
   return tabHashes[tab];
-}
-
-function capabilityState(state: FundingCapability['state']) {
-  if (state === 'ENABLED') return 'READY' as const;
-  if (state === 'INELIGIBLE') return 'INELIGIBLE' as const;
-  if (state === 'NOT_CONFIGURED') return 'NOT_CONFIGURED' as const;
-  return 'UNAVAILABLE' as const;
 }
 
 function lifecycleState(state: string) {
@@ -312,7 +306,7 @@ export function CapitalAccountView({
           </p>
           <div className="mt-2 text-[2rem] font-medium leading-none tracking-[-0.025em] text-text-primary sm:text-[2.4rem]">
             {balanceError ? (
-              'Unavailable'
+              'Not loaded'
             ) : zeroPosition ? (
               '0 positions'
             ) : singleBalance ? (
@@ -326,7 +320,7 @@ export function CapitalAccountView({
           </div>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
             {balanceError
-              ? 'Balances are temporarily unavailable.'
+              ? 'The Neptlium API did not return balances.'
               : zeroPosition
                 ? 'No capital positions yet.'
                 : balances.length === 1
@@ -375,7 +369,7 @@ export function CapitalAccountView({
         <Section title="Capital State">
           <div className="border-y border-border-hairline">
             {balanceError ? (
-              <ProductStateMessage state="ERROR" title="Balances unavailable">
+            <ProductStateMessage state="ERROR" title="Balances could not be loaded">
                 We couldn't load your balances. Try again.
               </ProductStateMessage>
             ) : balances.length === 0 ? (
@@ -463,7 +457,7 @@ export function CapitalAccountView({
             )}
           </div>
           <p className="mt-3 text-xs text-text-muted">
-            A recorded zero balance is shown as zero. Missing balances remain unavailable.
+            A recorded zero balance is shown as zero. Missing balances remain unreported.
           </p>
         </Section>
       )}
@@ -503,7 +497,7 @@ export function CapitalAccountView({
             />
           </div>
           {capabilityError ? (
-            <ProductStateMessage state="ERROR" title="Funding unavailable">
+            <ProductStateMessage state="ERROR" title="Funding capability could not be loaded">
               We couldn't load funding route availability. Try again.
             </ProductStateMessage>
           ) : capabilities.length === 0 ? (
@@ -540,7 +534,7 @@ export function CapitalAccountView({
                       <p className="text-sm font-medium">{selected.asset} funding route</p>
                       <p className="mt-1 text-xs text-text-muted">Network · {selected.network}</p>
                     </div>
-                    <ProductStateBadge state={capabilityState(selected.state)}>
+                    <ProductStateBadge state={productStateFromCapability(selected.state)}>
                       {selected.state.replaceAll('_', ' ').toLowerCase()}
                     </ProductStateBadge>
                   </div>
@@ -552,9 +546,9 @@ export function CapitalAccountView({
                 {!selected || selected.state !== 'ENABLED' ? (
                   <div className="mt-4 border-y border-border-hairline">
                     <ProductStateMessage
-                      state={selected ? capabilityState(selected.state) : 'UNAVAILABLE'}
+                      state={selected ? productStateFromCapability(selected.state) : 'NO_POSITION'}
                       title={
-                        selected ? `${selected.asset} funding unavailable` : 'Funding unavailable'
+                        selected ? `${selected.asset} funding capability` : 'No funding capability returned'
                       }
                     >
                       Funding instructions are available only for enabled routes.
@@ -667,9 +661,9 @@ export function CapitalAccountView({
               <p className="text-xs text-text-muted">Current state</p>
               <div className="mt-2">
                 <ProductStateBadge
-                  state={latestTransfer ? lifecycleState(latestTransfer.state) : 'UNAVAILABLE'}
+                  state={latestTransfer ? lifecycleState(latestTransfer.state) : 'NO_ACTIVITY'}
                 >
-                  {latestTransfer ? latestTransfer.state.replaceAll('_', ' ') : 'Unavailable'}
+                  {latestTransfer ? latestTransfer.state.replaceAll('_', ' ') : 'No activity'}
                 </ProductStateBadge>
               </div>
             </div>
@@ -762,7 +756,7 @@ export function CapitalAccountView({
                   </p>
                 </div>
                 {selectedTransfer ? (
-                  <ProductStateBadge state={capabilityState(selectedTransfer.state)}>
+                  <ProductStateBadge state={productStateFromCapability(selectedTransfer.state)}>
                     {selectedTransfer.state.replaceAll('_', ' ').toLowerCase()}
                   </ProductStateBadge>
                 ) : null}
@@ -785,7 +779,7 @@ export function CapitalAccountView({
                         asset={selectedTransfer.asset}
                       />
                     ) : (
-                      <span className="text-text-muted">Unavailable</span>
+                      <span className="text-text-muted">Not reported</span>
                     )}
                   </dd>
                 </div>
@@ -805,24 +799,24 @@ export function CapitalAccountView({
                 </div>
                 <div className="flex items-center justify-between gap-4 py-3">
                   <dt className="text-xs text-text-muted">Fee</dt>
-                  <dd className="text-sm font-medium text-text-muted">Unavailable</dd>
+                  <dd className="text-sm font-medium text-text-muted">Not reported</dd>
                 </div>
               </dl>
 
               <div className="mt-5">
                 {transferCapabilityError ? (
-                  <ProductStateMessage state="ERROR" title="Movement unavailable" compact>
+                  <ProductStateMessage state="ERROR" title="Movement capability could not be loaded" compact>
                     We couldn't load movement capability. Try again.
                   </ProductStateMessage>
                 ) : !selectedTransfer || selectedTransfer.state !== 'ENABLED' ? (
                   <ProductStateMessage
                     state={
-                      selectedTransfer ? capabilityState(selectedTransfer.state) : 'UNAVAILABLE'
+                      selectedTransfer ? productStateFromCapability(selectedTransfer.state) : 'NO_POSITION'
                     }
-                    title="Movement unavailable"
+                    title={selectedTransfer ? 'Movement capability' : 'No movement capability returned'}
                     compact
                   >
-                    This movement route is not available for your account.
+                    {selectedTransfer?.reason ?? 'The current API response contains no movement route.'}
                   </ProductStateMessage>
                 ) : verifiedAliases.length === 0 ? (
                   <ProductStateMessage
@@ -833,19 +827,11 @@ export function CapitalAccountView({
                     Add a destination and complete verification before reviewing movement.
                   </ProductStateMessage>
                 ) : (
-                  <ProductStateMessage
-                    state="REQUIRES_APPROVAL"
-                    title="Movement request unavailable"
-                    compact
-                  >
-                    Movement requests are not available for this account yet. No request has been
-                    sent.
+                  <ProductStateMessage state="READY" title="Movement capability enabled" compact>
+                    The current backend capability response permits this route. No execution action is exposed here.
                   </ProductStateMessage>
                 )}
               </div>
-              <Button className="mt-4" disabled>
-                Request movement
-              </Button>
             </div>
           </div>
 
@@ -935,7 +921,7 @@ export function CapitalAccountView({
               </div>
               <div className="mt-4 border-y border-border-hairline">
                 {aliasError ? (
-                  <ProductStateMessage state="ERROR" title="Destinations unavailable">
+                  <ProductStateMessage state="ERROR" title="Destinations could not be loaded">
                     We couldn't load your destinations. Try again.
                   </ProductStateMessage>
                 ) : aliases.length === 0 ? (
@@ -993,7 +979,7 @@ export function CapitalAccountView({
           </div>
           <div className="border-y border-border-hairline">
             {fundingActivityError && transferActivityError ? (
-              <ProductStateMessage state="ERROR" title="Capital context unavailable">
+              <ProductStateMessage state="ERROR" title="Capital context could not be loaded">
                 We couldn't load your capital context. Try again.
               </ProductStateMessage>
             ) : activity.length === 0 ? (
@@ -1018,7 +1004,7 @@ export function CapitalAccountView({
                     {item.amount_atomic ? (
                       <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} />
                     ) : (
-                      <span className="text-text-muted">Amount unavailable</span>
+                      <span className="text-text-muted">Amount not reported</span>
                     )}
                   </div>
                   <ProductStateBadge state={lifecycleState(item.state)}>

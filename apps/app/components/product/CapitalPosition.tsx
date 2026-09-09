@@ -17,7 +17,7 @@ type EmptyAction = {
 const defaultEmptyAction: EmptyAction = {
   href: '/dashboard/capital-account',
   label: 'View Capital Account',
-  detail: 'Funding availability is shown only from the current governed capability state. Open the Capital Account to review what is available, disabled, or unsupported.',
+  detail: 'Funding availability is shown only from the current governed capability response. Open the Capital Account to review the latest account state.',
 };
 
 function firstBalance(
@@ -64,7 +64,7 @@ export function CapitalPosition({
           <p id="capital-position-title" className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">{title}</p>
           <div className="mt-2 text-[2.25rem] font-medium leading-none tracking-[-0.025em] text-text-primary sm:text-[2.6rem]">
             {loadError ? (
-              'Capital state unavailable'
+              'Capital state not loaded'
             ) : empty ? (
               <span className="block max-w-[18ch] text-[1.65rem] leading-[1.08] tracking-[-0.02em] sm:text-[2rem]">Capital not established yet.</span>
             ) : multiAsset ? (
@@ -72,12 +72,12 @@ export function CapitalPosition({
             ) : total ? (
               <FinancialValue valueAtomic={total.value} asset={total.asset} />
             ) : (
-              'Unavailable'
+              'Not reported'
             )}
           </div>
           <p className="mt-2 max-w-xl text-sm leading-6 text-text-muted">
             {loadError
-              ? 'Canonical capital state could not be loaded from the Neptlium API.'
+              ? 'The Neptlium API did not return canonical capital state.'
               : multiAsset
                 ? 'Asset balances remain separate. Neptlium does not fabricate a cross-asset total without a canonical valuation source.'
                 : empty
@@ -101,7 +101,7 @@ export function CapitalPosition({
             <div key={label} className="min-w-0">
               <dt className="text-xs text-text-muted">{label}</dt>
               <dd className="mt-1 truncate text-sm font-medium text-text-primary sm:text-base">
-                {multiAsset ? 'By asset' : value ? <FinancialValue valueAtomic={value.value} asset={value.asset} /> : 'Unavailable'}
+                {multiAsset ? 'By asset' : value ? <FinancialValue valueAtomic={value.value} asset={value.asset} /> : 'Not reported'}
               </dd>
             </div>
           ))}

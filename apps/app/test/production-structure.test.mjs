@@ -259,8 +259,8 @@ test('Capital Account is the API-authoritative funding and movement workspace', 
     assert.equal(view.includes(`'${tab}'`), true, `missing ${tab}`);
   assert.equal(view.includes('CapitalAccountView'), true);
   assert.equal(view.includes('WalletView'), false);
-  assert.equal(view.includes('Movement request unavailable'), true);
-  assert.equal(/No request has been\s+sent\./.test(view), true);
+  assert.equal(view.includes('productStateFromCapability'), true);
+  assert.equal(view.includes('No execution action is exposed here'), true);
 });
 
 test('Funding UX is capability-driven, copyable, and never hardcodes a treasury destination', () => {
@@ -289,12 +289,8 @@ test('Withdrawal UX never manufactures availability and remains inert before res
   const actions = read('app/dashboard/capital-account/actions.ts');
   assert.equal(view.includes("active === 'Movement'"), true);
   assert.equal(view.includes('Select verified destination'), true);
-  assert.equal(view.includes('Movement request unavailable'), true);
-  assert.equal(/No request has been\s+sent\./.test(view), true);
-  assert.equal(
-    /<Button className="mt-4" disabled>\s*Request movement\s*<\/Button>/.test(view),
-    true,
-  );
+  assert.equal(view.includes('productStateFromCapability'), true);
+  assert.equal(/<Button[^>]*>\s*Request movement\s*<\/Button>/.test(view), false);
   assert.equal(view.includes('valueAtomic={selectedTransferBalance.available_atomic}'), true);
   assert.equal(view.includes("selectedTransferBalance ? '0'"), false);
   assert.equal(view.includes("selectedTransferBalance.available_atomic ?? '0'"), false);

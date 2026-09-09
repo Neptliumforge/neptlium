@@ -57,7 +57,7 @@ test('Portfolio intelligence consumes governed allocation state', () => {
   assert.match(page, /allocationValuationUnavailable/);
 
   assert.match(page, /No authoritative allocation policy is established/);
-  assert.match(page, /cross-asset valuation evidence is unavailable/);
+  assert.match(page, /portfolio\?\.value\.state === 'UNAVAILABLE'/);
   assert.match(page, /href: '\/dashboard\/allocations'/);
   assert.doesNotMatch(
     page,
@@ -72,5 +72,5 @@ test('Portfolio quantities remain canonical and valuation does not become fabric
   assert.match(page, /getCanonicalBalances/);
   assert.match(components, /Capital Account/);
   assert.match(components, /Assets are not\s+combined without authoritative valuation evidence/);
-  assert.match(page, /Cross-asset concentration requires authoritative valuation evidence/);
+  assert.match(page, /portfolio API did not return authoritative valuation evidence/);
 });

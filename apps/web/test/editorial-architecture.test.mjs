@@ -30,8 +30,8 @@ const footer = read('components/site-footer.tsx');
 
 test('institutional public architecture covers every canonical editorial surface', () => {
   for (const phrase of [
-    'The operating system for capital.',
-    'Capital should remain intelligible as it moves.',
+    'Capital,',
+    'understood before',
     'Capital Account',
     'Treasury',
     'Allocation',

@@ -80,9 +80,9 @@ export function HoldingsTable({
       </div>
       <div className="border-y border-border-hairline">
         {loadError ? (
-          <ProductStateMessage state="UNAVAILABLE" title="Portfolio positions unavailable">
-            Authoritative position records could not be loaded. No holdings or quantities are
-            inferred.
+          <ProductStateMessage state="ERROR" title="Portfolio positions could not be loaded">
+            The Neptlium API did not return authoritative position records. No holdings or
+            quantities are inferred.
           </ProductStateMessage>
         ) : balances.length === 0 ? (
           <ProductStateMessage
@@ -115,7 +115,11 @@ export function HoldingsTable({
                       </p>
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-text-primary" data-numeric>
-                      <FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} decimals={balance.decimals} />
+                      <FinancialValue
+                        valueAtomic={balance.total_atomic}
+                        asset={balance.asset}
+                        decimals={balance.decimals}
+                      />
                     </td>
                     <td className="px-6 py-4 text-sm text-text-muted">Capital Account</td>
                     <td className="py-4 pl-6">
@@ -211,7 +215,7 @@ export function AttentionState({ items }: { readonly items: readonly PortfolioAt
         {items.length === 0 ? (
           <div className="flex items-center justify-between gap-6 py-5">
             <p className="text-sm leading-6 text-text-muted">
-              No unavailable position sources or allocation review states are currently identified.
+              No position-source errors or allocation review states are currently identified.
             </p>
             <ProductStateBadge state="READY">Clear</ProductStateBadge>
           </div>

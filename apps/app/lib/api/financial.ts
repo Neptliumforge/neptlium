@@ -5,8 +5,8 @@ import { apiRequest } from './client';
 export type CapabilityState = 'ENABLED' | 'DISABLED' | 'NOT_CONFIGURED' | 'INELIGIBLE';
 export interface FundingCapability {
   readonly code: 'USDC_BASE' | 'ETH_BASE' | 'BTC_BITCOIN' | 'XRP_XRPL';
-  readonly asset: 'USD' | 'USDC' | 'ETH' | 'BTC' | 'XRP';
-  readonly network: 'ACH' | 'BASE' | 'BITCOIN' | 'XRPL';
+  readonly asset: 'USDC' | 'ETH' | 'BTC' | 'XRP';
+  readonly network: 'BASE' | 'BITCOIN' | 'XRPL';
   readonly decimals: number;
   readonly atomicPrecision: number;
   readonly state: CapabilityState;

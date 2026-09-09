@@ -18,16 +18,25 @@ export type ProductStateName =
   | 'REQUIRES_APPROVAL'
   | 'ERROR';
 
+export type BackendCapabilityState = 'ENABLED' | 'DISABLED' | 'NOT_CONFIGURED' | 'INELIGIBLE';
+
+export function productStateFromCapability(state: BackendCapabilityState): ProductStateName {
+  if (state === 'ENABLED') return 'READY';
+  if (state === 'INELIGIBLE') return 'INELIGIBLE';
+  if (state === 'NOT_CONFIGURED') return 'NOT_CONFIGURED';
+  return 'CAPABILITY_DISABLED';
+}
+
 const labels: Record<ProductStateName, string> = {
   LOADING: 'Loading',
   AVAILABLE: 'Available',
   READY: 'Ready',
   PENDING: 'Pending',
   AWAITING_PROVISIONING: 'Setting up',
-  CAPABILITY_DISABLED: 'Unavailable',
+  CAPABILITY_DISABLED: 'Disabled',
   RESERVED: 'Reserved',
   RESTRICTED: 'Restricted',
-  NOT_CONFIGURED: 'Unavailable',
+  NOT_CONFIGURED: 'Not configured',
   INELIGIBLE: 'Ineligible',
   UNAVAILABLE: 'Unavailable',
   NO_ACTIVITY: 'No activity',
@@ -112,7 +121,7 @@ export function FinancialValue({
   valueAtomic,
   asset,
   decimals,
-  unavailableLabel = 'Unavailable',
+  unavailableLabel = 'Not reported',
   className = '',
 }: {
   readonly valueAtomic?: string | null;

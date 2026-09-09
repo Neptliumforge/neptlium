@@ -152,13 +152,13 @@ export function AllocationWorkspace({ workspace }: { readonly workspace: Workspa
       label: 'Executed',
       detail: 'Capital action completed',
       state: lifecycleState(workspace, 'Executed'),
-      status: 'Unavailable',
+      status: workspace.capabilities.executionState === 'UNAVAILABLE' ? 'Unavailable' : 'Not established',
     },
     {
       label: 'Reconciled',
       detail: 'Outcome verified',
       state: lifecycleState(workspace, 'Reconciled'),
-      status: 'Unavailable',
+      status: workspace.capabilities.canReconcile ? 'Not established' : 'Unavailable',
     },
   ];
 
@@ -365,7 +365,7 @@ export function AllocationWorkspace({ workspace }: { readonly workspace: Workspa
               : 'Draft policy'
             : 'Awaiting policy'
         }
-        driftStatus={!policy ? 'Awaiting policy' : workspace.drift ? 'Available' : 'Unavailable'}
+        driftStatus={!policy ? 'Awaiting policy' : workspace.drift ? 'Available' : 'Not established'}
         reviewStatus={
           workspace.drift?.rows.some(
             (row) => row.status === 'REVIEW' || row.status === 'OUTSIDE_POLICY',
@@ -375,7 +375,7 @@ export function AllocationWorkspace({ workspace }: { readonly workspace: Workspa
               ? 'No review identified'
               : 'Not established'
         }
-        modelStatus={workspace.capabilities.canModel ? 'Available' : 'Unavailable'}
+        modelStatus={workspace.capabilities.canModel ? 'Available' : 'Not configured'}
       >
         <div className="border-y border-border-hairline">
           {!policy ? (
@@ -384,7 +384,9 @@ export function AllocationWorkspace({ workspace }: { readonly workspace: Workspa
               structure.
             </ProductStateMessage>
           ) : !workspace.drift ? (
-            <ProductStateMessage state="UNAVAILABLE" title="Drift analysis unavailable" />
+            <ProductStateMessage state="NO_POSITION" title="Drift analysis not established">
+              The current allocation API response contains no drift analysis.
+            </ProductStateMessage>
           ) : (
             workspace.drift.rows.map((row) => (
               <div
@@ -491,7 +493,7 @@ export function AllocationWorkspace({ workspace }: { readonly workspace: Workspa
                           ? 'Valuation required before a movement quantity can be established.'
                           : movement.reason === 'restricted_capital'
                             ? 'Restricted capital cannot enter execution.'
-                            : 'Execution unavailable.'}
+                            : workspace.capabilities.reason}
                       </p>
                     </div>
                   ))
@@ -502,7 +504,9 @@ export function AllocationWorkspace({ workspace }: { readonly workspace: Workspa
                 )}
               </div>
               <div className="mt-4 border-t border-border-hairline pt-4">
-                <ProductStateBadge state="UNAVAILABLE">Execution unavailable</ProductStateBadge>
+                <ProductStateBadge state="UNAVAILABLE">
+                  {workspace.capabilities.executionState === 'UNAVAILABLE' ? 'Execution unavailable' : 'Execution state not reported'}
+                </ProductStateBadge>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
                   Authorization records an approved decision. It does not move capital or establish
                   an executed or reconciled outcome.

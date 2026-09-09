@@ -43,8 +43,8 @@ test('overview capital empty state stays truthful without repeated fabricated va
   assert.match(capitalPosition, /Balances appear only after governed capital is available and reconciled\./);
   assert.match(capitalPosition, /Provider observations are never presented as canonical balance\./);
   assert.match(capitalPosition, /View Capital Account/);
-  assert.match(capitalPosition, /current governed capability state/);
-  assert.match(capitalPosition, /available, disabled, or unsupported/);
+  assert.match(capitalPosition, /current governed capability response/);
+  assert.doesNotMatch(capitalPosition, /unsupported|coming soon/i);
   assert.match(capitalPosition, /!empty \?/);
   assert.doesNotMatch(capitalPosition, /\$0(?:\.00)?/);
 });

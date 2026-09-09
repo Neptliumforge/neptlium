@@ -112,10 +112,8 @@ test('Portfolio does not manufacture valuation, performance, or risk scores', ()
     'Provider-derived values must never populate Portfolio financial values',
   );
 
-  assert.equal(
-    portfolio.includes('Cross-asset concentration requires authoritative valuation evidence.'),
-    true,
-  );
+  assert.match(portfolio, /portfolio\?\.value\.state === 'UNAVAILABLE'/);
+  assert.match(portfolio, /portfolio\.value\.reason/);
   assert.match(
     portfolioComponents,
     /Assets are not\s+combined without authoritative valuation evidence\./,
@@ -133,9 +131,9 @@ test('Portfolio holdings are source-backed and preserve explicit unknown states'
   assert.equal(portfolioComponents.includes('Observed'), true);
   assert.equal(portfolioSurface.includes('Unavailable'), true);
   assert.equal(portfolioSurface.includes('Awaiting source'), true);
-  assert.equal(
-    portfolioComponents.includes('FinancialValue valueAtomic={balance.total_atomic}'),
-    true,
+  assert.match(
+    portfolioComponents,
+    /<FinancialValue[\s\S]*valueAtomic=\{balance\.total_atomic\}[\s\S]*decimals=\{balance\.decimals\}/,
   );
 });
 

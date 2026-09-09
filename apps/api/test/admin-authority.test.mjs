@@ -24,7 +24,9 @@ function fakeRepository(role = 'super_admin', sessionEmail = null) {
     updateUserRole: async () => {},
     setCompliance: async () => {},
     listDeposits: async () => ({ rows: [], total: 0 }),
+    listCanonicalFundings: async () => ({ rows: [], total: 0 }),
     listWithdrawals: async () => ({ rows: [], total: 0, totalAmount: 0 }),
+    listCanonicalWithdrawals: async () => ({ rows: [], total: 0 }),
     approveWithdrawal: async (...args) => {
       approvals.push(args);
     },
@@ -32,6 +34,9 @@ function fakeRepository(role = 'super_admin', sessionEmail = null) {
     listAllocations: async (_query, pending) => (pending ? [] : { rows: [], total: 0 }),
     listLoginHistory: async () => [],
     listTrustedDevices: async () => [],
+    listReconciliationRuns: async () => ({ rows: [], total: 0 }),
+    listReconciliationItems: async () => ({ rows: [], total: 0 }),
+    listProviderWebhooks: async () => ({ rows: [], total: 0 }),
     audit: async (...args) => {
       auditEntries.push(args);
     },

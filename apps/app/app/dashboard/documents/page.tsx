@@ -32,7 +32,7 @@ export default async function DocumentsPage() {
       <Section title="Documents">
         <div className="border-y border-border-hairline">
           {loadError ? (
-            <ProductStateMessage state="ERROR" title="Documents unavailable">We could not load your documents. Try again shortly.</ProductStateMessage>
+            <ProductStateMessage state="ERROR" title="Documents could not be loaded">The Neptlium API did not return document state.</ProductStateMessage>
           ) : documents.length === 0 ? (
             <ProductStateMessage state="NO_ACTIVITY" title="No documents yet">You do not have any statements, reports, or account documents yet.</ProductStateMessage>
           ) : (

@@ -12,12 +12,17 @@ export interface AdminRepository {
   updateUserRole(userId: string, role: string): Promise<void>;
   setCompliance(userId: string, status: 'active' | 'suspended'): Promise<void>;
   listDeposits(query: URLSearchParams): Promise<Record<string, unknown>>;
+  listCanonicalFundings(query: URLSearchParams): Promise<Record<string, unknown>>;
   listWithdrawals(query: URLSearchParams, pendingOnly?: boolean): Promise<Record<string, unknown>>;
+  listCanonicalWithdrawals(query: URLSearchParams, pendingOnly?: boolean): Promise<Record<string, unknown>>;
   approveWithdrawal(transferExecutionId: string, actorId: string, requestId: string, idempotencyKey: string): Promise<void>;
   listTransactions(query: URLSearchParams): Promise<Record<string, unknown>>;
   listAllocations(query: URLSearchParams, pendingOnly?: boolean): Promise<unknown>;
   listLoginHistory(query: URLSearchParams): Promise<unknown[]>;
   listTrustedDevices(): Promise<unknown[]>;
+  listReconciliationRuns(query: URLSearchParams): Promise<Record<string, unknown>>;
+  listReconciliationItems(query: URLSearchParams): Promise<Record<string, unknown>>;
+  listProviderWebhooks(query: URLSearchParams): Promise<Record<string, unknown>>;
   audit(actorId: string, operation: string, resourceType: string, resourceId: string | null, requestId: string, metadata?: Record<string, unknown>): Promise<void>;
 }
 
@@ -31,12 +36,17 @@ export class DisabledAdminRepository implements AdminRepository {
   async updateUserRole(): Promise<void> { return this.unavailable(); }
   async setCompliance(): Promise<void> { return this.unavailable(); }
   async listDeposits(): Promise<Record<string, unknown>> { return this.unavailable(); }
+  async listCanonicalFundings(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async listWithdrawals(): Promise<Record<string, unknown>> { return this.unavailable(); }
+  async listCanonicalWithdrawals(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async approveWithdrawal(): Promise<void> { return this.unavailable(); }
   async listTransactions(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async listAllocations(): Promise<unknown> { return this.unavailable(); }
   async listLoginHistory(): Promise<unknown[]> { return this.unavailable(); }
   async listTrustedDevices(): Promise<unknown[]> { return this.unavailable(); }
+  async listReconciliationRuns(): Promise<Record<string, unknown>> { return this.unavailable(); }
+  async listReconciliationItems(): Promise<Record<string, unknown>> { return this.unavailable(); }
+  async listProviderWebhooks(): Promise<Record<string, unknown>> { return this.unavailable(); }
   async audit(): Promise<void> { return this.unavailable(); }
 }
 
@@ -173,6 +183,28 @@ export class SupabaseAdminRepository implements AdminRepository {
     return this.listLegacyTransactions(query, 'deposit');
   }
 
+  async listCanonicalFundings(query: URLSearchParams) {
+    const page = Number(query.get('page') ?? 0);
+    const filters = [
+      'select=id,owner_id,asset,network,rail,amount_atomic,state,environment,created_at,updated_at',
+      'order=created_at.desc',
+    ];
+    const state = query.get('state');
+    if (state) filters.push(`state=eq.${encodeURIComponent(state)}`);
+    const result = await this.page(`funding_intents?${filters.join('&')}`, page);
+    const profiles = await this.profileMap([
+      ...new Set(result.rows.map((row) => String(row.owner_id))),
+    ]);
+    return {
+      rows: result.rows.map((row) => ({
+        ...row,
+        user_email: profiles.get(String(row.owner_id))?.email ?? null,
+        user_name: profiles.get(String(row.owner_id))?.full_name ?? null,
+      })),
+      total: result.total,
+    };
+  }
+
   async listWithdrawals(query: URLSearchParams, pendingOnly = false) {
     const result = await this.listLegacyTransactions(query, 'withdrawal');
     const rows: Row[] = result.rows.map((row) => ({ ...row, governed: false }));
@@ -180,6 +212,28 @@ export class SupabaseAdminRepository implements AdminRepository {
     return pendingOnly
       ? { rows: pending, totalAmount: pending.reduce((sum, row) => sum + Number(row.amount ?? 0), 0) }
       : { rows, total: result.total };
+  }
+
+  async listCanonicalWithdrawals(query: URLSearchParams, pendingOnly = false) {
+    const page = Number(query.get('page') ?? 0);
+    const filters = [
+      'select=id,owner_id,alias_id,asset,network,rail,amount_atomic,state,environment,created_at,updated_at',
+      'order=created_at.desc',
+    ];
+    if (pendingOnly) filters.push('state=in.(requested,reserved,pending_approval)');
+    else if (query.get('state')) filters.push(`state=eq.${encodeURIComponent(query.get('state')!)}`);
+    const result = await this.page(`transfer_executions?${filters.join('&')}`, page);
+    const profiles = await this.profileMap([
+      ...new Set(result.rows.map((row) => String(row.owner_id))),
+    ]);
+    return {
+      rows: result.rows.map((row) => ({
+        ...row,
+        user_email: profiles.get(String(row.owner_id))?.email ?? null,
+        user_name: profiles.get(String(row.owner_id))?.full_name ?? null,
+      })),
+      total: result.total,
+    };
   }
 
   async approveWithdrawal(transferExecutionId: string, actorId: string, requestId: string, idempotencyKey: string) {
@@ -227,6 +281,44 @@ export class SupabaseAdminRepository implements AdminRepository {
     const rows = await this.rows<Row>('trusted_devices?select=id,user_id,device_id,user_agent,last_seen_at&order=last_seen_at.desc');
     const profiles = await this.profileMap([...new Set(rows.map((row) => String(row.user_id)))]);
     return rows.map((row) => ({ ...row, user_email: profiles.get(String(row.user_id))?.email ?? null }));
+  }
+
+  async listReconciliationRuns(query: URLSearchParams) {
+    const page = Number(query.get('page') ?? 0);
+    const filters = [
+      'select=id,scope,environment,state,started_at,completed_at',
+      'order=started_at.desc',
+    ];
+    const state = query.get('state');
+    if (state) filters.push(`state=eq.${encodeURIComponent(state)}`);
+    const result = await this.page(`reconciliation_runs?${filters.join('&')}`, page);
+    return { rows: result.rows, total: result.total };
+  }
+
+  async listReconciliationItems(query: URLSearchParams) {
+    const page = Number(query.get('page') ?? 0);
+    const filters = [
+      'select=id,run_id,owner_id,funding_intent_id,transfer_execution_id,state,discrepancy_codes,resolved_at,created_at',
+      'order=created_at.desc',
+    ];
+    const state = query.get('state');
+    if (state) filters.push(`state=eq.${encodeURIComponent(state)}`);
+    const result = await this.page(`reconciliation_items?${filters.join('&')}`, page);
+    return { rows: result.rows, total: result.total };
+  }
+
+  async listProviderWebhooks(query: URLSearchParams) {
+    const page = Number(query.get('page') ?? 0);
+    const filters = [
+      'select=id,provider,environment,provider_event_id,signature_verified_at,processing_state,attempts,last_error_code,received_at,processed_at',
+      'order=received_at.desc',
+    ];
+    const provider = query.get('provider');
+    if (provider) filters.push(`provider=eq.${encodeURIComponent(provider)}`);
+    const state = query.get('state');
+    if (state) filters.push(`processing_state=eq.${encodeURIComponent(state)}`);
+    const result = await this.page(`provider_webhook_inbox?${filters.join('&')}`, page);
+    return { rows: result.rows, total: result.total };
   }
 
   async audit(actorId: string, operation: string, resourceType: string, resourceId: string | null, requestId: string, metadata: Record<string, unknown> = {}) {

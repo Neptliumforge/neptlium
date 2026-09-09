@@ -342,7 +342,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                           </span>
                         </div>
                         <p className="mt-1 max-w-[220px] truncate text-xs text-text-muted">
-                          {peer.sicDescription || 'Classification unavailable'}
+                          {peer.sicDescription || 'Classification not reported'}
                         </p>
                       </td>
                       <td className="py-3 tabular-nums text-text-secondary">

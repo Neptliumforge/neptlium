@@ -29,7 +29,7 @@ type CapitalContext = {
 
 function resourceState(resource: ResourceState | undefined, unavailable: boolean): GovernedState {
   if (unavailable || !resource) {
-    return { label: 'Unavailable', detail: 'Governed state could not be loaded.', state: 'UNAVAILABLE' };
+    return { label: 'Not loaded', detail: 'The Neptlium API did not return this state.', state: 'ERROR' };
   }
   if (resource.state === 'VALUE') {
     return { label: 'Observed', detail: 'Current governed information is available.', state: 'AVAILABLE' };
@@ -97,23 +97,23 @@ export default async function DashboardPage() {
   const pendingApprovals = transfers.filter((item) => item.state === 'PENDING_APPROVAL');
 
   const attention = [
-    ...(overviewResult.status === 'rejected' ? [{ title: 'Operating context is unavailable', detail: 'Current portfolio and allocation state could not be loaded.', href: '/dashboard', label: 'Review Overview' }] : []),
-    ...(balancesResult.status === 'rejected' ? [{ title: 'Capital Account state is unavailable', detail: 'Canonical liquidity information could not be loaded.', href: '/dashboard/capital-account', label: 'Open Capital Account' }] : []),
-    ...(fundingCapabilitiesResult.status === 'rejected' || transferCapabilitiesResult.status === 'rejected' ? [{ title: 'Capability state is unavailable', detail: 'Current funding or treasury capability could not be confirmed.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
+    ...(overviewResult.status === 'rejected' ? [{ title: 'Operating context was not loaded', detail: 'The Neptlium API did not return current portfolio and allocation state.', href: '/dashboard', label: 'Review Overview' }] : []),
+    ...(balancesResult.status === 'rejected' ? [{ title: 'Capital Account state was not loaded', detail: 'The Neptlium API did not return canonical liquidity information.', href: '/dashboard/capital-account', label: 'Open Capital Account' }] : []),
+    ...(fundingCapabilitiesResult.status === 'rejected' || transferCapabilitiesResult.status === 'rejected' ? [{ title: 'Capability state was not loaded', detail: 'The Neptlium API did not return current funding or movement capability.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
     ...(pendingApprovals.length > 0 ? [{ title: `${pendingApprovals.length} item${pendingApprovals.length === 1 ? '' : 's'} require review`, detail: 'Treasury instructions are awaiting authorization.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
   ];
 
   const hasPendingLiquidity = [...funding, ...transfers].some((item) => !['AVAILABLE', 'RECONCILED', 'SETTLED', 'FAILED', 'RETURNED', 'REVERSED', 'CANCELLED', 'CANCELED'].includes(item.state));
   const liquidity: GovernedState = balancesResult.status === 'rejected'
-    ? { label: 'Unavailable', detail: 'Canonical liquidity state could not be loaded.', state: 'UNAVAILABLE' }
+    ? { label: 'Not loaded', detail: 'The Neptlium API did not return canonical liquidity state.', state: 'ERROR' }
     : hasPendingLiquidity
       ? { label: 'Pending', detail: 'A governed capital instruction has not reached a settled state.', state: 'PENDING' }
       : balances.length > 0
         ? { label: 'Available', detail: 'Canonical liquidity positions are recorded by asset.', state: 'AVAILABLE' }
-        : { label: 'Unavailable', detail: 'No canonical liquidity position is currently observed.', state: 'UNAVAILABLE' };
+        : { label: 'No position', detail: 'The canonical ledger returned no liquidity position.', state: 'NO_POSITION' };
 
   const treasury: GovernedState = transferCapabilitiesResult.status === 'rejected'
-    ? { label: 'Unavailable', detail: 'Treasury capability could not be confirmed.', state: 'UNAVAILABLE' }
+    ? { label: 'Not loaded', detail: 'The Neptlium API did not return movement capability.', state: 'ERROR' }
     : pendingApprovals.length > 0
       ? { label: 'Review required', detail: 'A governed treasury instruction awaits authorization.', state: 'REQUIRES_APPROVAL' }
       : transferCapabilities.some((item) => item.state === 'ENABLED')
@@ -129,7 +129,7 @@ export default async function DashboardPage() {
 
   const workspaces = [
     { title: 'Portfolio Intelligence', description: 'Understand positions and exposure.', href: '/dashboard/portfolio', context: capitalStates[0].label },
-    { title: 'Capital Account', description: 'Understand funding, availability, and movement capability.', href: '/dashboard/capital-account', context: fundingCapabilitiesResult.status === 'rejected' ? 'Unavailable' : fundingCapabilities.some((item) => item.state === 'ENABLED') ? 'Capability available' : 'Not configured' },
+    { title: 'Capital Account', description: 'Understand funding, availability, and movement capability.', href: '/dashboard/capital-account', context: fundingCapabilitiesResult.status === 'rejected' ? 'Not loaded' : fundingCapabilities.some((item) => item.state === 'ENABLED') ? 'Capability available' : 'Not configured' },
     { title: 'Allocation', description: 'Understand policy and structure.', href: '/dashboard/allocations', context: capitalStates[2].label },
     { title: 'Treasury', description: 'Understand movement capability and controls.', href: '/dashboard/treasury', context: capitalStates[3].label },
   ] as const;
@@ -155,7 +155,7 @@ export default async function DashboardPage() {
         <div className="border-y border-border-hairline">
           {attention.length === 0 ? (
             <div className="flex items-center justify-between gap-6 py-5">
-              <p className="max-w-2xl text-sm leading-6 text-text-muted">There are no governed approvals or unavailable operating states requiring review.</p>
+              <p className="max-w-2xl text-sm leading-6 text-text-muted">There are no governed approvals, API errors, or backend review states requiring attention.</p>
               <ProductStateBadge state="READY">Clear</ProductStateBadge>
             </div>
           ) : attention.map((item) => (
@@ -196,7 +196,7 @@ export default async function DashboardPage() {
         <div className="mb-4"><p className="neptlium-meta">Recent</p><h2 id="recent-context-title" className="mt-2 text-text-primary">Capital context</h2></div>
         <div className="border-y border-border-hairline">
           {contextUnavailable ? (
-            <ProductStateMessage state="UNAVAILABLE" title="Capital context unavailable">Recent governed context could not be loaded. No activity or value is inferred.</ProductStateMessage>
+            <ProductStateMessage state="ERROR" title="Capital context was not loaded">The Neptlium API did not return recent governed context. No activity or value is inferred.</ProductStateMessage>
           ) : recentContext.length === 0 ? (
             <ProductStateMessage state="NO_ACTIVITY" title="No recent capital context">No governed funding or treasury instructions are currently recorded.</ProductStateMessage>
           ) : recentContext.map((item) => (

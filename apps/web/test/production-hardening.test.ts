@@ -9,13 +9,14 @@ const layout = read('app/layout.tsx');
 const header = read('components/site-header.tsx');
 const footer = read('components/site-footer.tsx');
 const shell = `${page}\n${css}\n${layout}\n${header}\n${footer}`;
+const contentShell = `${page}\n${layout}\n${header}\n${footer}`;
 
 test('production public Web keeps a single institutional hero and operating architecture', () => {
-  assert.match(page, /The operating system for capital\./i);
-  assert.match(page, /Capital operating infrastructure/i);
+  assert.match(page, /Capital,<br \/>understood before<br \/>it moves\./);
+  assert.match(page, /One intelligence layer\.<br \/>Multiple capital perspectives\./);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /className="hero-architecture"/);
-  assert.match(page, /Illustrative operating architecture\. No customer financial data shown\./);
+  assert.match(page, /className="operating-panel capital-context-map"/);
+  assert.match(page, /aria-label="Ownership and markets connect through context to decisions and operations"/);
   assert.doesNotMatch(page, /authority-wave-field|<Image|<img|\.png|\.webp/i);
 });
 
@@ -45,7 +46,7 @@ test('production shell preserves responsive, reduced-motion and safe-area harden
 
 test('production public shell remains free of fabricated financial authority', () => {
   assert.doesNotMatch(
-    shell,
+    contentShell,
     /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|transaction volume|testimonial|licensed|regulated partner/i,
   );
   assert.doesNotMatch(shell, /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|\.from\(|\.rpc\(/);

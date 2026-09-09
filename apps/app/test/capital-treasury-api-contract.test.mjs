@@ -41,17 +41,17 @@ test('Treasury distinguishes execution closed from capability retrieval failure'
 
   assert.match(page, /transferCapabilityError=\{transferCapabilities\.status === 'rejected'\}/);
   assert.match(view, /readonly transferCapabilityError: boolean/);
-  assert.match(view, /transferCapabilityError \? 'Unavailable'/);
+  assert.match(view, /transferCapabilityError \? 'Not loaded'/);
 });
 
 test('withdrawal submission remains inert until governed reservation authority exists', () => {
   const capitalAccount = read('app/dashboard/capital-account/CapitalAccountView.tsx');
 
-  assert.match(capitalAccount, /Movement request unavailable/);
-  assert.match(capitalAccount, /No request has been\s+sent\./);
+  assert.match(capitalAccount, /productStateFromCapability/);
+  assert.match(capitalAccount, /No execution action is exposed here/);
   assert.match(capitalAccount, /Reviewing a movement does not reserve or move capital/);
-  assert.match(
+  assert.doesNotMatch(
     capitalAccount,
-    /<Button className="mt-4" disabled>\s*Request movement\s*<\/Button>/,
+    /<Button[^>]*>\s*Request movement\s*<\/Button>/,
   );
 });

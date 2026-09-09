@@ -13,7 +13,7 @@ export default async function AllocationsPage() {
       <div className="space-y-8">
         <AllocationHeader />
         <div className="border-y border-border-hairline">
-          <ProductStateMessage state="ERROR" title="Allocation intelligence unavailable">
+          <ProductStateMessage state="ERROR" title="Allocation intelligence could not be loaded">
             Current allocation information could not be established. No observed, modeled, or
             authorized state is inferred.
           </ProductStateMessage>

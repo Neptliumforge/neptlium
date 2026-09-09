@@ -28,7 +28,7 @@ test('mobile navigation owns an opaque viewport and stable action footer', () =>
 
 test('mobile menu preserves the canonical primary action and semantic disclosures', () => {
   assert.match(header, /SITE\.publicAccessLabel/);
-  assert.match(header, /className="mobile-enter-action"/);
+  assert.match(header, /className=\{chrome\.mobileEntryAction\}/);
   assert.match(header, /aria-expanded=\{expanded\}/);
   assert.match(header, /aria-controls=\{controls\}/);
   assert.match(header, /Explore platform/);

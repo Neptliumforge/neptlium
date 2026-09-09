@@ -1,26 +1,36 @@
-import { FileBarChart2 } from "lucide-react";
-import { Card, EmptyState } from "@neptlium/ui";
-import { requireRole } from "@/lib/auth";
+import { Badge, Section, Stack } from '@neptlium/ui';
+import { requireRole } from '@/lib/auth';
+import { getDocuments } from '@/lib/api/client';
+import { ProductStateMessage } from '@/components/product/ProductState';
+import { DownloadButton } from '../documents/DownloadButton';
 
 export default async function ReportsPage() {
   await requireRole("analyst");
+  let reports = [] as Awaited<ReturnType<typeof getDocuments>>['data'];
+  let loadError = false;
+  try {
+    reports = (await getDocuments()).data.filter((document) => document.category === 'report');
+  } catch {
+    loadError = true;
+  }
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      <div>
-        <h1 className="text-[1.35rem] font-semibold leading-tight tracking-tight text-text-primary sm:text-2xl">Reports</h1>
-        <p className="mt-2 text-sm leading-6 text-text-secondary">
-          Institutional statements, performance summaries, and audit reports
-        </p>
-      </div>
-
-      <Card>
-        <EmptyState
-          icon={<FileBarChart2 className="size-5" aria-hidden="true" />}
-          title="No reports available"
-          description="No governed reports have been published to this account yet."
-        />
-      </Card>
-    </div>
+    <Stack>
+      <header><h1>Reports</h1><p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">Governed reports published to this account.</p></header>
+      <Section title="Reports">
+        <div className="border-y border-border-hairline">
+          {loadError ? (
+            <ProductStateMessage state="ERROR" title="Reports could not be loaded">The Neptlium API did not return the current report state.</ProductStateMessage>
+          ) : reports.length === 0 ? (
+            <ProductStateMessage state="NO_ACTIVITY" title="No published reports">The current API response contains no reports for this account.</ProductStateMessage>
+          ) : reports.map((report) => (
+            <div key={report.id} className="flex flex-col gap-3 border-b border-border-hairline py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+              <div className="min-w-0"><Badge tone="neutral">Report</Badge><p className="mt-2 truncate text-sm font-medium text-text-primary">{report.title}</p><p className="mt-1 text-xs text-text-muted">{new Date(report.createdAt).toLocaleDateString()}</p></div>
+              <DownloadButton documentId={report.id} />
+            </div>
+          ))}
+        </div>
+      </Section>
+    </Stack>
   );
 }
