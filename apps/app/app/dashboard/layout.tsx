@@ -32,7 +32,7 @@ export default async function DashboardLayout({ children }: { readonly children:
     <>
       <Link href="#app-workspace" className="app-skip-link">Skip to application workspace</Link>
       <AppShell
-        brandDescriptor="Capital intelligence"
+        brandDescriptor="Operating environment"
         brandTone="teal"
         sidebar={<Sidebar items={navItems} />}
         sidebarFooter={<Sidebar items={secondaryItems} />}
