@@ -6,7 +6,8 @@ import {
   ArrowDownLeft,
   ArrowLeftRight,
   Shield,
-  Zap
+  Zap,
+  Activity,
 } from "lucide-react";
 import type { ReactElement } from "react";
 
@@ -47,6 +48,12 @@ export const adminNavItems: AdminNavItem[] = [
     href: "/dashboard/deposits",
     group: "Operations",
     icon: <ArrowDownLeft className="size-4" />
+  },
+  {
+    label: "Operational Visibility",
+    href: "/dashboard/operations",
+    group: "Operations",
+    icon: <Activity className="size-4" />
   },
   {
     label: "Transactions",
