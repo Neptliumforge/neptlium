@@ -1,9 +1,9 @@
 import type { CapabilityState, ProviderEnvironment } from './funding-domain.js';
 
-export type AssetClass = 'FIAT' | 'NATIVE_CRYPTO' | 'TOKEN';
-export type DepositMethod = 'BANK_REFERENCE' | 'UNIQUE_ADDRESS' | 'ADDRESS_WITH_MEMO_TAG';
-export type AddressFormat = 'BANK_PROVIDER_REFERENCE' | 'BITCOIN' | 'EVM' | 'XRPL' | 'SOLANA';
-export type ProviderCandidate = 'stripe' | 'circle' | 'unassigned';
+export type AssetClass = 'NATIVE_CRYPTO' | 'TOKEN';
+export type DepositMethod = 'UNIQUE_ADDRESS' | 'ADDRESS_WITH_MEMO_TAG';
+export type AddressFormat = 'BITCOIN' | 'EVM' | 'XRPL' | 'SOLANA';
+export type ProviderCandidate = 'circle' | 'unassigned';
 export type RegistryCapabilityState = CapabilityState;
 
 export interface GovernedAssetDefinition {
@@ -20,7 +20,7 @@ export interface GovernedAssetDefinition {
   readonly addressFormat: AddressFormat;
   readonly memoOrTag: 'REQUIRED' | 'OPTIONAL' | 'NOT_APPLICABLE';
   readonly finalityPolicy: {
-    readonly mode: 'BANK_SETTLEMENT' | 'BLOCK_CONFIRMATIONS' | 'PROVIDER_FINALITY';
+    readonly mode: 'BLOCK_CONFIRMATIONS' | 'PROVIDER_FINALITY';
     readonly minimumConfirmations?: number;
     readonly policyReference: string;
   };
@@ -40,31 +40,6 @@ export interface GovernedAssetDefinition {
  * publiclyAddressable set are intentionally invisible to customer capability APIs.
  */
 export const governedAssetRegistry: readonly GovernedAssetDefinition[] = [
-  {
-    capabilityCode: 'USD_ACH',
-    asset: 'USD',
-    displayName: 'US Dollar',
-    assetClass: 'FIAT',
-    atomicPrecision: 2,
-    ledgerDenomination: 'USD',
-    network: 'ACH',
-    networkIdentifier: 'US_ACH',
-    depositMethod: 'BANK_REFERENCE',
-    addressFormat: 'BANK_PROVIDER_REFERENCE',
-    memoOrTag: 'NOT_APPLICABLE',
-    finalityPolicy: {
-      mode: 'BANK_SETTLEMENT',
-      policyReference: 'provider_settlement_plus_reconciliation',
-    },
-    provider: 'stripe',
-    custodyCapability: 'NOT_CONFIGURED',
-    depositCapability: 'NOT_CONFIGURED',
-    withdrawalCapability: 'DISABLED',
-    reconciliationCapability: 'NOT_CONFIGURED',
-    environment: 'LIVE',
-    productionEnabled: false,
-    publiclyAddressable: true,
-  },
   {
     capabilityCode: 'BTC_BITCOIN',
     asset: 'BTC',

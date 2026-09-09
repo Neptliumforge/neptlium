@@ -78,7 +78,7 @@ Canonical desktop primary navigation remains:
 
 Canonical persistent mobile navigation remains Home, Portfolio, Capital, and Allocation, with Treasury reachable contextually.
 
-Capital Account currently retains the legacy internal route `/dashboard/wallet`; Allocation currently uses `/dashboard/allocations`. Route cleanup is separate product work and must preserve working flows.
+Capital Account is canonical at `/dashboard/capital-account`; `/dashboard/wallet` remains a compatibility redirect. Allocation currently uses `/dashboard/allocations`.
 
 ## 8. Capital Account
 

@@ -43,7 +43,7 @@ Applied migrations are append-only evidence. Never rewrite or delete them; corre
 - Store only safe headers and references; isolate raw sensitive payload access.
 - Process idempotently through durable jobs and record failures/dead letters.
 
-Alchemy and Coinbase routes fail closed without injected verifiers. Circle webhook ingestion is explicitly disabled. The test HMAC verifier is not production verification.
+Alchemy ingress fails closed without official signature verification. Circle webhook ingestion is explicitly disabled until reviewed implementation exists. Stripe ingress requires its webhook secret. Test verifiers are not production verification.
 
 ## Financial-operation security
 

@@ -45,7 +45,7 @@ Current runtime truth for these capabilities must be reverified from current sou
 
 ## Point-in-time provider conclusion
 
-At the remediation tree, Stripe Treasury was gated code rather than proven live eligibility; Circle had observation capability with provisioning/transfer execution inert; Alchemy was observation-only; Coinbase was legacy route/configuration groundwork without an active capital adapter; Fireblocks was not configured. No first live rail was established by that audit/remediation pass.
+At the remediation tree, Circle had observation capability with provisioning/transfer execution inert and Alchemy was observation-only. Later architecture cleanup removed the unused Stripe Treasury and legacy Coinbase runtime surfaces; Stripe remains evidence-only until a reviewed Payments/Onramp contract exists. No first live rail was established by that audit/remediation pass.
 
 **Current provider eligibility, configuration, approval, and availability are UNVERIFIED by this document.** Source support and credential presence are not live capability evidence.
 

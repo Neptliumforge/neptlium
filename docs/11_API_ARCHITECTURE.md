@@ -18,9 +18,9 @@ The dependency-light Node.js/TypeScript service supports:
 - `GET /v1/wallet/withdrawals/:withdrawal_id`
 - `POST /v1/wallet/withdrawals/:withdrawal_id/cancel`
 - `GET /v1/wallet/transactions`
-- `POST /v1/webhooks/alchemy`, `/v1/webhooks/coinbase`, `/v1/webhooks/circle`
+- `POST /v1/webhooks/alchemy`, `/v1/webhooks/circle`, `/v1/webhooks/stripe`
 
-Route presence does not prove production capability. Circle webhook verification is disabled. Alchemy/Coinbase ingestion requires an injected verifier. Several wallet routes reach unsupported durable repository methods in production and therefore fail closed.
+Route presence does not prove production capability. Circle webhook verification is disabled. Alchemy and Stripe ingestion require official verification. Several legacy wallet routes reach unsupported durable repository methods in production and therefore fail closed.
 
 ## Auth boundary
 
@@ -84,7 +84,7 @@ Read-only canonical liquidity projections, reserve requirement/coverage, restric
 
 ### Stripe APIs
 
-The current Stripe Treasury adapter supports eligibility- and execution-gated USD ACH inbound-transfer submission. Stripe Onramp is not implemented. Provider submission does not establish availability; verified webhook ingestion, attribution, ledger posting, return/failure handling, and reconciliation remain required.
+Stripe Treasury is excluded. The current Stripe route verifies and persists provider evidence; Stripe payment/onramp funding is not implemented. Provider evidence does not establish availability without attribution, ledger posting, failure/refund handling, and reconciliation.
 
 ## API invariants
 

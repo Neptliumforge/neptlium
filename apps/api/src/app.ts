@@ -40,7 +40,7 @@ export interface Dependencies {
   verifyClerkWebhook?: (request: Request) => Promise<ClerkWebhookEvent>;
   verifyClerkSubject?: (token: string, config: Config) => Promise<string | null>;
   verifyClerkIdentity?: (token: string, config: Config) => Promise<VerifiedClerkIdentity | null>;
-  webhookVerifiers?: Partial<Record<'alchemy' | 'coinbase', WebhookVerifier>>;
+  webhookVerifiers?: Partial<Record<'alchemy', WebhookVerifier>>;
   rateLimiter?: RateLimiter;
   observer?: Observer;
   capitalProvider?: CapitalProvider;
@@ -289,15 +289,14 @@ export async function buildApp(deps: Dependencies = {}) {
               : 'degraded',
           governed_financial_storage: governedFinancialStorageReady ? 'ready' : 'not_ready',
           providers: {
-            coinbase: 'not_configured',
             alchemy:
               config.alchemyConfigured &&
               Boolean(config.ALCHEMY_WEBHOOK_SIGNING_KEY)
                 ? 'configured_observation_only'
                 : 'not_configured',
             circle: capitalProvider.readiness(),
-            stripe_treasury: config.stripeTreasuryConfigured
-              ? 'configured_gated'
+            stripe: config.stripeConfigured
+              ? 'configured_webhook_evidence_only'
               : 'not_configured',
           },
         },
@@ -601,15 +600,9 @@ export async function buildApp(deps: Dependencies = {}) {
     }
     if (
       method === 'POST' &&
-      (path === '/v1/webhooks/alchemy' ||
-        path === '/v1/webhooks/coinbase' ||
-        path === '/v1/webhooks/circle')
+      (path === '/v1/webhooks/alchemy' || path === '/v1/webhooks/circle')
     ) {
-      const provider = path.endsWith('alchemy')
-        ? 'alchemy'
-        : path.endsWith('circle')
-          ? 'circle'
-          : 'coinbase';
+      const provider = path.endsWith('alchemy') ? 'alchemy' : 'circle';
       if (provider === 'circle')
         throw new ApiError(
           503,

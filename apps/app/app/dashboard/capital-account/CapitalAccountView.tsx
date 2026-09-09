@@ -147,13 +147,6 @@ function normalizedNetwork(value: string | null | undefined) {
   return (value ?? '').replaceAll('-', '_').toUpperCase();
 }
 
-function usdToAtomic(value: string) {
-  if (!/^\d+(?:\.\d{0,2})?$/.test(value)) return null;
-  const [whole = '0', fraction = ''] = value.split('.');
-  const atomic = BigInt(whole) * 100n + BigInt(fraction.padEnd(2, '0') || '0');
-  return atomic > 0n ? atomic.toString() : null;
-}
-
 export function CapitalAccountView({
   capabilities,
   capabilityError,
@@ -183,7 +176,6 @@ export function CapitalAccountView({
 }) {
   const [active, setActive] = useState<Tab>('Capital State');
   const [selectedCapability, setSelectedCapability] = useState(capabilities[0]?.code ?? '');
-  const [fundingAmount, setFundingAmount] = useState('');
   const [fundingResult, setFundingResult] = useState<DepositInstruction | null>(null);
   const [fundingError, setFundingError] = useState<string | null>(null);
   const [isFundingPending, startFunding] = useTransition();
@@ -230,8 +222,7 @@ export function CapitalAccountView({
     ? balances.find(
         (item) =>
           item.asset === selectedTransfer.asset &&
-          (selectedTransfer.network === 'ACH' ||
-            normalizedNetwork(item.network) === normalizedNetwork(selectedTransfer.network)),
+          normalizedNetwork(item.network) === normalizedNetwork(selectedTransfer.network),
       )
     : undefined;
   const selectedAlias = verifiedAliases.find((item) => item.id === selectedAliasId);
@@ -256,15 +247,10 @@ export function CapitalAccountView({
 
   function beginFunding() {
     if (!selected || selected.state !== 'ENABLED') return;
-    const amountAtomic = selected.code === 'USD_ACH' ? usdToAtomic(fundingAmount) : undefined;
-    if (selected.code === 'USD_ACH' && !amountAtomic) {
-      setFundingError('Enter a positive USD amount with no more than two decimal places.');
-      return;
-    }
     setFundingError(null);
     setFundingResult(null);
     startFunding(async () => {
-      const result = await createFundingIntentAction(selected.code, amountAtomic ?? undefined);
+      const result = await createFundingIntentAction(selected.code);
       if (!result.ok) {
         setFundingError(result.error);
         return;
@@ -557,24 +543,6 @@ export function CapitalAccountView({
                     <ProductStateBadge state={capabilityState(selected.state)}>
                       {selected.state.replaceAll('_', ' ').toLowerCase()}
                     </ProductStateBadge>
-                  </div>
-                ) : null}
-                {selected?.code === 'USD_ACH' && selected.state === 'ENABLED' ? (
-                  <div className="mt-5">
-                    <Label htmlFor="funding-amount">Funding amount (USD)</Label>
-                    <Input
-                      id="funding-amount"
-                      inputMode="decimal"
-                      value={fundingAmount}
-                      onChange={(event) =>
-                        setFundingAmount(event.target.value.replace(/[^0-9.]/g, ''))
-                      }
-                      placeholder="500.00"
-                      className="mt-2"
-                    />
-                    <p className="mt-2 text-xs text-text-muted">
-                      Review the amount before continuing.
-                    </p>
                   </div>
                 ) : null}
               </div>

@@ -10,9 +10,9 @@ Node.js/TypeScript API for `api.neptlium.com`. Versioned routes live under `/v1`
 - Circle Developer-Controlled Wallets code for existing-wallet/address/balance/transaction observation on configured Base Sepolia or Base environments, with explicit runtime environment and live-execution gates.
 - Ledger, idempotency, webhook inbox, treasury policy, reconciliation, worker, observability, and rate-limit contracts.
 
-Production rejects memory persistence and process-local rate limiting. Standalone and serverless runtimes use the service-role-only Supabase distributed limiter RPC. Durable deposit, withdrawal, transaction, and webhook operations remain unsupported and fail closed. Circle transfer execution and Circle webhook verification are disabled. Alchemy/Coinbase webhook routes require injected reviewed verification.
+Production rejects memory persistence and process-local rate limiting. Standalone and serverless runtimes use the service-role-only Supabase distributed limiter RPC. Durable deposit, withdrawal, transaction, and webhook operations remain unsupported and fail closed. Circle transfer execution and Circle webhook verification are disabled. Alchemy observations and Stripe payment evidence require verified webhook ingress.
 
-A gated Stripe Treasury inbound-transfer adapter exists; Stripe Onramp and Clerk are not implemented.
+Stripe Treasury is not part of the runtime architecture. Stripe payment/onramp capability is not implemented; configured Stripe webhooks record evidence only. Clerk is not implemented.
 
 ## Environment
 

@@ -26,9 +26,6 @@ const config = loadConfig({
   ENABLE_WALLET_PROVISIONING: 'false',
   ENABLE_CRYPTO_DEPOSITS: 'false',
   ENABLE_CRYPTO_WITHDRAWALS: 'false',
-  ENABLE_FIAT_DEPOSITS: 'false',
-  ENABLE_FIAT_WITHDRAWALS: 'false',
-  ENABLE_CONVERSIONS: 'false',
 });
 
 const payload = {

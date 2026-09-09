@@ -388,8 +388,9 @@ test('Treasury preserves liquidity and movement-governance semantics in producti
     treasury.includes('Reservation and approval remain separate from submission.'),
     true,
   );
-  assert.equal(treasury.includes('/dashboard/wallet#withdraw'), true);
-  assert.equal(treasury.includes('/dashboard/wallet#destinations'), true);
+  assert.equal(treasury.includes('/dashboard/capital-account#movement'), true);
+  assert.equal(treasury.includes('/dashboard/capital-account#destinations'), true);
+  assert.equal(treasury.includes('/dashboard/wallet#'), false);
 });
 
 test('Activity is sourced from governed funding and transfer APIs', () => {

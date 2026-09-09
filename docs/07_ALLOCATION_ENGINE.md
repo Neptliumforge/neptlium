@@ -134,7 +134,7 @@ canExecute    = false
 canReconcile  = false
 ```
 
-Provider configuration is never sufficient to enable execution. Future readiness requires the governed Allocation domain gate plus provider configuration, verified eligibility, and explicit execution enablement. Allocation is independent of pending Coinbase / Fireblocks or any other custody approval.
+Provider configuration is never sufficient to enable execution. Future readiness requires the governed Allocation domain gate plus provider configuration, verified eligibility, and explicit execution enablement. Allocation remains independent of provider approval.
 
 Authorization does not reserve capital. Reservation begins only when an authorized plan explicitly enters execution preparation and an executable movement exists.
 
