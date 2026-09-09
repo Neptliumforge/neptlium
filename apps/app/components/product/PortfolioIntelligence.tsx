@@ -75,17 +75,21 @@ export function HoldingsTable({
       <div className="mb-4">
         <p className="neptlium-meta">Source-backed positions</p>
         <h2 id="holdings-title" className="mt-2 text-text-primary">
-          Holdings
+          Holdings intelligence
         </h2>
       </div>
       <div className="border-y border-border-hairline">
         {loadError ? (
           <ProductStateMessage state="UNAVAILABLE" title="Portfolio positions unavailable">
-            Canonical position records could not be loaded. No holdings or quantities are inferred.
+            Authoritative position records could not be loaded. No holdings or quantities are
+            inferred.
           </ProductStateMessage>
         ) : balances.length === 0 ? (
-          <ProductStateMessage state="NO_POSITION" title="No portfolio positions available.">
-            The canonical holdings collection is empty.
+          <ProductStateMessage
+            state="NO_POSITION"
+            title="No portfolio positions are currently available."
+          >
+            Capital Account returned no position records.
           </ProductStateMessage>
         ) : (
           <div className="overflow-x-auto">
@@ -113,7 +117,7 @@ export function HoldingsTable({
                     <td className="px-6 py-4 text-sm font-medium text-text-primary" data-numeric>
                       <FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} />
                     </td>
-                    <td className="px-6 py-4 text-sm text-text-muted">Neptlium canonical ledger</td>
+                    <td className="px-6 py-4 text-sm text-text-muted">Capital Account</td>
                     <td className="py-4 pl-6">
                       <ProductStateBadge state="AVAILABLE">Observed</ProductStateBadge>
                     </td>
@@ -125,7 +129,7 @@ export function HoldingsTable({
         )}
       </div>
       <p className="mt-3 text-xs leading-5 text-text-muted">
-        Each quantity is rendered from its returned canonical balance record. Assets are not
+        Each quantity is rendered from its returned Capital Account balance record. Assets are not
         combined without authoritative valuation evidence.
       </p>
     </section>
@@ -138,7 +142,7 @@ export function ExposurePanel({ items }: { readonly items: readonly Intelligence
       <div className="mb-4">
         <p className="neptlium-meta">Structure</p>
         <h2 id="exposure-title" className="mt-2 text-text-primary">
-          Exposure intelligence
+          Exposure context
         </h2>
       </div>
       <div className="divide-y divide-border-hairline border-y border-border-hairline">
@@ -155,6 +159,39 @@ export function ExposurePanel({ items }: { readonly items: readonly Intelligence
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+export function AllocationRelationship({ items }: { readonly items: readonly IntelligenceItem[] }) {
+  return (
+    <section aria-labelledby="allocation-relationship-title">
+      <div className="mb-4">
+        <p className="neptlium-meta">Policy awareness</p>
+        <h2 id="allocation-relationship-title" className="mt-2 text-text-primary">
+          Allocation relationship
+        </h2>
+      </div>
+      <div className="divide-y divide-border-hairline border-y border-border-hairline">
+        {items.map((item) => (
+          <div
+            key={item.label}
+            className="grid gap-3 py-4 sm:grid-cols-[10rem_minmax(8rem,auto)_1fr] sm:items-center sm:gap-6"
+          >
+            <p className="text-sm font-medium text-text-primary">{item.label}</p>
+            <div>
+              <ProductStateBadge state={item.state}>{item.value}</ProductStateBadge>
+            </div>
+            <p className="text-sm leading-6 text-text-muted">{item.detail}</p>
+          </div>
+        ))}
+      </div>
+      <Link
+        href="/dashboard/allocations"
+        className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent-primary"
+      >
+        Open Allocation Intelligence <ArrowRight className="size-4" aria-hidden="true" />
+      </Link>
     </section>
   );
 }
