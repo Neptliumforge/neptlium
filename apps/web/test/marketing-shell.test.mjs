@@ -12,24 +12,26 @@ const css = read('app/neptlium-visual-direction.css');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
 
-test('hero establishes a concise capital-intelligence proposition and governed entry', () => {
-  assert.match(page, /Capital,<br \/>understood before<br \/>it moves\./);
-  assert.match(page, /understanding position, change, and strategic attention/);
+test('hero establishes a concise capital-operating proposition and governed entry', () => {
+  assert.match(page, /Capital should remain<br \/>intelligible as it moves\./);
+  assert.match(page, /Capital operating infrastructure/);
+  assert.match(page, /capital state, operating context, and governed work/i);
   assert.match(page, /className="operating-panel capital-context-map"/);
   assert.match(page, /href=\{SITE\.publicAccessUrl\}>Enter Neptlium/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   assert.doesNotMatch(page, /<Image|<img|\.png|\.webp|dashboard mockup/i);
 });
 
-test('homepage connects the institutional intelligence architecture without fabricated proof', () => {
+test('homepage connects the operating architecture without fabricated proof', () => {
   for (const copy of [
-    'Context is the advantage',
-    'One intelligence layer.',
-    'Connected capital intelligence.',
-    'Understanding capital as a connected system.',
-    'Built for institutional-scale intelligence.',
+    'Clarity before consequence',
+    'Capital state.',
+    'Operating context.',
+    'Governed work.',
+    'The operating system for capital.',
+    'The system should never claim more than the evidence supports.',
   ]) assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
-  for (const product of ['Portfolio Intelligence', 'Capital Account', 'Treasury', 'Allocation Intelligence'])
+  for (const product of ['Portfolio Intelligence', 'Capital Account', 'Treasury', 'Allocation'])
     assert.match(page, new RegExp(product));
   assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?/i);
 });
@@ -69,5 +71,6 @@ test('canonical brand and restrained visual authority remain intact', () => {
 test('marketing contains no privileged financial authority', () => {
   const marketing = `${page}\n${header}\n${footer}\n${architecture}`;
   assert.doesNotMatch(marketing, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|transaction volume|testimonial|licensed|regulated partner/i);
+  assert.doesNotMatch(marketing, /\bPredict\b|guaranteed|settlement authority/i);
   assert.doesNotMatch(`${marketing}\n${layout}`, /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|\.from\(|\.rpc\(/);
 });
