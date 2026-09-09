@@ -13,13 +13,12 @@ const architecture = read('lib/content/public-architecture.ts');
 test('homepage implements an image-independent Neptlium-native hero', () => {
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   for (const copy of [
-    'Capital intelligence',
-    'Capital,',
-    'understood before',
-    'it moves.',
-    'understanding position, change, and strategic attention',
+    'Capital operating infrastructure',
+    'Capital should remain',
+    'intelligible as it moves.',
+    'capital state, operating context, and governed work',
   ])
-    assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+    assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   assert.match(page, /href=\{SITE\.publicAccessUrl\}/);
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
   assert.match(site, /exploreLabel:\s*'Explore platform'/);
@@ -30,7 +29,7 @@ test('homepage implements an image-independent Neptlium-native hero', () => {
   assert.doesNotMatch(page, /ProductContextIllustration|HeroArchitecture|<Image|<img|\.png|\.webp|\.jpe?g/i);
 });
 
-test('homepage presents a continuous institutional capital-intelligence narrative', () => {
+test('homepage presents a continuous institutional capital-operating narrative', () => {
   for (const className of [
     'context-statement',
     'intelligence-pillars architecture-section',
@@ -41,6 +40,8 @@ test('homepage presents a continuous institutional capital-intelligence narrativ
     'ai-section',
   ])
     assert.match(page, new RegExp(`className="${className}`));
+  for (const phrase of ['Clarity before consequence', 'Capital state.', 'Operating context.', 'Governed work.', 'The operating system for capital.'])
+    assert.match(page, new RegExp(phrase.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   for (const surface of ['Portfolio Intelligence', 'Capital Account', 'Treasury', 'Allocation Intelligence'])
     assert.match(page, new RegExp(surface));
 });
@@ -91,6 +92,6 @@ test('homepage makes no fabricated financial claims or values', () => {
   );
   assert.doesNotMatch(
     page,
-    /guaranteed returns?|projected returns?|portfolio performance|gain\/loss|net worth/i,
+    /guaranteed returns?|projected returns?|portfolio performance|gain\/loss|net worth|\bPredict\b/i,
   );
 });
