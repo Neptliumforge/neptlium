@@ -42,10 +42,35 @@
   --n-motion-normal: 200ms;
   --n-motion-slow: 320ms;
   --n-motion-ease: cubic-bezier(0.2, 0, 0, 1);
-}
 
-/* Explicit compatibility aliases for consumers that still reference older names. */
-:root {
+  /* Compatibility aliases for older consumers; all resolve to canonical values. */
+  --n-brand-absolute-black: var(--n-brand-carbon);
+  --n-brand-obsidian: var(--n-brand-carbon);
+  --n-brand-blue-black: var(--n-brand-carbon);
+  --n-brand-ink-black: var(--n-brand-carbon);
+  --n-brand-midnight-surface: var(--n-brand-carbon);
+  --n-brand-deep-navy: var(--n-brand-carbon);
+  --n-brand-structural-navy: var(--n-brand-graphite);
+  --n-brand-blue: var(--n-brand-green);
+  --n-brand-blue-bright: var(--n-brand-green-interaction);
+  --n-brand-azure: var(--n-brand-green);
+  --n-brand-cyan: var(--n-brand-green-interaction);
+  --n-brand-canvas: var(--n-brand-white);
+  --n-brand-canvas-soft: var(--n-brand-mist);
+  --n-brand-surface-cool: var(--n-brand-mist);
+  --n-brand-surface-blue-soft: var(--n-brand-mist);
+  --n-brand-ink: var(--n-brand-carbon);
+  --n-brand-ink-strong: var(--n-brand-carbon);
+  --n-brand-ink-secondary: var(--n-brand-graphite);
+  --n-brand-ink-muted: var(--n-brand-graphite);
+  --n-brand-ink-quiet: var(--n-brand-graphite);
+  --n-brand-text-on-dark: var(--n-brand-ivory);
+  --n-brand-text-on-dark-secondary: var(--n-brand-ivory);
+  --n-brand-text-on-dark-supporting: var(--n-brand-stone);
+  --n-brand-text-on-dark-muted: var(--n-brand-stone);
+  --n-brand-border-standard: var(--n-brand-stone);
+  --n-brand-border-strong: var(--n-brand-stone);
+  --n-brand-border-blue: var(--n-brand-border);
   --n-brand-midnight: var(--n-brand-carbon);
   --n-brand-cobalt-deep: var(--n-brand-carbon);
   --n-brand-cobalt-core: var(--n-brand-graphite);
