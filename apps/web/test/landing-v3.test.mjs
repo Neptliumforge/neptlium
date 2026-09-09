@@ -6,10 +6,12 @@ const page = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../app/landing-v3.css', import.meta.url), 'utf8');
 
-test('current landing layer preserves the canonical capital-intelligence hero', () => {
-  assert.match(page, /Capital,<br \/>understood before<br \/>it moves\./);
+test('current landing layer preserves the canonical capital-operating hero', () => {
+  assert.match(page, /Capital should remain<br \/>intelligible as it moves\./);
+  assert.match(page, /Capital operating infrastructure/);
+  assert.match(page, /capital state, operating context, and governed work/i);
   assert.match(page, /href=\{SITE\.publicAccessUrl\}>Enter Neptlium/);
-  assert.match(page, /href="#intelligence">Explore Intelligence/);
+  assert.match(page, /href="#intelligence">See the operating model/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
 });
 
@@ -30,7 +32,8 @@ test('current landing layer retains responsive and reduced-motion behavior', () 
 
 test('hero architecture presents governed relationships rather than a dashboard simulation', () => {
   assert.match(page, /className="operating-panel capital-context-map"/);
-  for (const context of ['Ownership', 'Markets', 'Context', 'Decisions', 'Operations'])
+  for (const context of ['Capital state', 'Evidence', 'Operating context', 'Governed work', 'Consequence'])
     assert.match(page, new RegExp(context));
+  assert.match(page, /Clarity before consequence/);
   assert.doesNotMatch(page, /dashboard mockup|trading terminal|portfolio balance/i);
 });
