@@ -16,7 +16,7 @@ export default function SignInPage() {
       <div className="space-y-7">
         <div className="space-y-2.5">
           <p className="neptlium-meta">Welcome back</p>
-          <h1 className="text-[1.8rem] font-medium leading-[1.08] tracking-[-0.035em] text-text-primary sm:text-[2rem]">Sign in to Neptlium</h1>
+          <h1 className="text-[1.8rem] font-medium leading-[1.08] tracking-[-0.035em] text-text-primary sm:text-[2rem]">Enter Neptlium</h1>
           <p className="max-w-sm text-sm leading-6 text-text-secondary">Continue to your portfolio, intelligence, and capital workspace.</p>
         </div>
         <div className="w-full border-t border-border-hairline pt-6">
