@@ -1,57 +1,53 @@
-/* Neptlium unified brand semantics — authoritative shared identity layer.
+/* Neptlium unified brand system — shared identity authority.
  * Marketing establishes authority and meaning. Product establishes control and operation.
+ * Surface composition may differ; identity, foundation tokens, and motion remain coherent.
  */
 :root {
-  /* Dark foundation */
-  --n-brand-absolute-black: #000000;
-  --n-brand-obsidian: #05060b;
-  --n-brand-blue-black: #050b15;
-  --n-brand-ink-black: #0a111f;
-  --n-brand-midnight-surface: #0c1324;
-  --n-brand-deep-navy: #0d162a;
-  --n-brand-structural-navy: #151f3d;
+  /* Canonical identity palette */
+  --n-brand-green: #0F8F86;
+  --n-brand-green-interaction: #20AFA3;
+  --n-brand-carbon: #101214;
+  --n-brand-ivory: #F5F3EE;
+  --n-brand-graphite: #343A3F;
+  --n-brand-stone: #D8D5CE;
+  --n-brand-mist: #ECEAE5;
+  --n-brand-amber: #C88B28;
+  --n-brand-white: #FFFFFF;
 
-  /* Precision Blue — direction, never environment */
-  --n-brand-blue: #258be5;
-  --n-brand-blue-bright: #319eed;
-  --n-brand-azure: #16a8e8;
-  --n-brand-cyan: #12c6e3;
+  /* Semantic aliases */
+  --n-brand-surface: var(--n-brand-ivory);
+  --n-brand-surface-authority: var(--n-brand-carbon);
+  --n-brand-foreground: var(--n-brand-carbon);
+  --n-brand-foreground-inverse: var(--n-brand-ivory);
+  --n-brand-border: var(--n-brand-stone);
+  --n-brand-precision: var(--n-brand-green);
+  --n-brand-precision-hover: var(--n-brand-green-interaction);
 
-  /* Light foundation */
-  --n-brand-canvas: #ffffff;
-  --n-brand-canvas-soft: #f8f9fc;
-  --n-brand-surface-cool: #f3f5f8;
-  --n-brand-surface-blue-soft: #eef2f7;
-
-  /* Light text */
-  --n-brand-ink: #05060b;
-  --n-brand-ink-strong: #0a111f;
-  --n-brand-ink-secondary: #273247;
-  --n-brand-ink-muted: #596579;
-  --n-brand-ink-quiet: #778296;
-
-  /* Dark text */
-  --n-brand-text-on-dark: #f8f9fc;
-  --n-brand-text-on-dark-secondary: #e7eaf0;
-  --n-brand-text-on-dark-supporting: #b7bbc6;
-  --n-brand-text-on-dark-muted: #9297a4;
-
-  /* Borders */
-  --n-brand-border: #e5e9f0;
-  --n-brand-border-standard: #d8dee8;
-  --n-brand-border-strong: #c8d1df;
-  --n-brand-border-blue: color-mix(in srgb, var(--n-brand-blue) 28%, var(--n-brand-border));
-
-  /* Typography families. Font assets are supplied independently; fallbacks remain safe. */
+  /* Shared typography families. Font assets remain owned by each surface. */
   --n-font-display: 'Universal Sans', 'Helvetica Neue', Arial, sans-serif;
   --n-font-product: Geist, 'Helvetica Neue', Arial, system-ui, sans-serif;
 
-  /* Compatibility aliases for older brand consumers while migration completes. */
-  --n-brand-midnight: var(--n-brand-blue-black);
-  --n-brand-cobalt-deep: var(--n-brand-deep-navy);
-  --n-brand-cobalt-core: var(--n-brand-structural-navy);
-  --n-brand-ice: #d9f7fb;
+  /* Shared spacing rhythm */
+  --n-space-tight: 8px;
+  --n-space-comfortable: 16px;
+  --n-space-section: 48px;
 
-  /* Expressive marketing-only optical accent. Never use for product controls. */
-  --n-brand-gradient-signature: linear-gradient(112deg, var(--n-brand-blue-black) 0%, var(--n-brand-deep-navy) 36%, var(--n-brand-blue) 72%, var(--n-brand-cyan) 100%);
+  /* Shared geometry */
+  --n-radius-small: 4px;
+  --n-radius-medium: 8px;
+  --n-radius-large: 12px;
+
+  /* Shared motion */
+  --n-motion-fast: 140ms;
+  --n-motion-normal: 200ms;
+  --n-motion-slow: 320ms;
+  --n-motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Explicit compatibility aliases for consumers that still reference older names. */
+:root {
+  --n-brand-midnight: var(--n-brand-carbon);
+  --n-brand-cobalt-deep: var(--n-brand-carbon);
+  --n-brand-cobalt-core: var(--n-brand-graphite);
+  --n-brand-ice: var(--n-brand-mist);
 }
