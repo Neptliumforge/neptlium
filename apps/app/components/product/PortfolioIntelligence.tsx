@@ -115,7 +115,7 @@ export function HoldingsTable({
                       </p>
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-text-primary" data-numeric>
-                      <FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} />
+                      <FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} decimals={balance.decimals} />
                     </td>
                     <td className="px-6 py-4 text-sm text-text-muted">Capital Account</td>
                     <td className="py-4 pl-6">
