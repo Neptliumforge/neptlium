@@ -21,7 +21,7 @@ export interface Observer {
   log(record: LogRecord): void;
   increment(name: string, labels?: Readonly<Record<string, string>>): void;
   timing(name: string, milliseconds: number, labels?: Readonly<Record<string, string>>): void;
-  lifecycle(record: LifecycleRecord): void;
+  lifecycle?(record: LifecycleRecord): void;
 }
 
 export class MemoryObserver implements Observer {
