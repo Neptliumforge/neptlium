@@ -44,12 +44,12 @@ test('Portfolio never manufactures zero from missing canonical evidence', () => 
 });
 
 test('confirmed canonical zero and non-zero values remain numeric evidence', () => {
-  assert.equal(productState.includes('formatAtomicAmount(valueAtomic, asset)'), true);
+  assert.equal(productState.includes('formatAtomicAmount(valueAtomic, asset, decimals ?? undefined)'), true);
 
   assert.equal(productState.includes('const digits = negative ? value.slice(1) : value;'), true);
 
   assert.equal(
-    productState.includes("const whole = precision ? padded.slice(0, -precision) || '0' : padded;"),
+    productState.includes("const whole = decimals ? padded.slice(0, -decimals) || '0' : padded;"),
     true,
   );
 });
