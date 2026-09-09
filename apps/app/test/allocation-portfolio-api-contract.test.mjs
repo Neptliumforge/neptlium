@@ -70,7 +70,7 @@ test('Portfolio quantities remain canonical and valuation does not become fabric
   const components = read('components/product/PortfolioIntelligence.tsx');
 
   assert.match(page, /getCanonicalBalances/);
-  assert.match(components, /Neptlium canonical ledger/);
+  assert.match(components, /Capital Account/);
   assert.match(components, /Assets are not\s+combined without authoritative valuation evidence/);
   assert.match(page, /Cross-asset concentration requires authoritative valuation evidence/);
 });
