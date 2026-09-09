@@ -338,14 +338,6 @@ export async function handleAdminRoute(
   if (method === 'GET' && path === '/v1/admin/deposits')
     return { data: await deps.repository.listDeposits(query) };
 
-  // New canonical fundings route
-  if (method === 'GET' && path === '/v1/admin/fundings') {
-    const page = Number(query.get('page') ?? 0);
-    const data = await deps.repository.listCanonicalFundings(query);
-    await audit('admin.fundings.list', 'fundings', null, { page });
-    return { data };
-  }
-
   const depositCompletion = path.match(/^\/v1\/admin\/deposits\/([^/]+)\/complete$/);
   if (method === 'POST' && depositCompletion?.[1]) {
     requireIdempotencyKey(context);
@@ -364,19 +356,6 @@ export async function handleAdminRoute(
     return { data: await deps.repository.listWithdrawals(query, true) };
   if (method === 'GET' && path === '/v1/admin/withdrawals')
     return { data: await deps.repository.listWithdrawals(query, false) };
-
-  // New canonical withdrawals routes
-  if (method === 'GET' && path === '/v1/admin/withdrawals/canonical') {
-    const data = await deps.repository.listCanonicalWithdrawals(query, false as any);
-    await audit('admin.withdrawals.canonical.list', 'withdrawals', null);
-    return { data };
-  }
-  if (method === 'GET' && path === '/v1/admin/withdrawals/pending/canonical') {
-    const data = await deps.repository.listCanonicalWithdrawals(query, true as any);
-    await audit('admin.withdrawals.canonical.pending.list', 'withdrawals', null);
-    return { data };
-  }
-
   if (method === 'GET' && path === '/v1/admin/transactions')
     return { data: await deps.repository.listTransactions(query) };
 
@@ -441,25 +420,6 @@ export async function handleAdminRoute(
     return { data: await deps.repository.listLoginHistory(query) };
   if (method === 'GET' && path === '/v1/admin/security/trusted-devices')
     return { data: await deps.repository.listTrustedDevices() };
-
-  // Reconciliation visibility
-  if (method === 'GET' && path === '/v1/admin/reconciliation/runs') {
-    const data = await deps.repository.listReconciliationRuns(query);
-    await audit('admin.reconciliation.runs.list', 'reconciliation_runs', null);
-    return { data };
-  }
-  if (method === 'GET' && path === '/v1/admin/reconciliation/items') {
-    const data = await deps.repository.listReconciliationItems(query);
-    await audit('admin.reconciliation.items.list', 'reconciliation_items', null);
-    return { data };
-  }
-
-  // Provider webhook visibility
-  if (method === 'GET' && path === '/v1/admin/webhooks/provider') {
-    const data = await deps.repository.listProviderWebhooks(query);
-    await audit('admin.webhooks.provider.list', 'provider_webhooks', null);
-    return { data };
-  }
 
   throw new ApiError(404, 'admin_route_not_found', 'Administrative route was not found');
 }
