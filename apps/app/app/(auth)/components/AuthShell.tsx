@@ -15,10 +15,10 @@ export function AuthShell({ children }: AuthShellProps) {
       <div className="neptlium-environment flex min-h-dvh flex-col px-5 py-6 text-text-primary sm:px-8 sm:py-7 lg:px-10">
         <header className="flex h-10 shrink-0 items-center justify-between gap-6 border-b border-border-hairline pb-5">
           <div className="flex items-center gap-2.5" aria-label="Neptlium">
+            <span className="select-none text-[1rem] font-semibold tracking-[-0.02em] text-text-primary">Neptlium</span>
             <NeptliumMark size={25} tone="teal" />
-            <span className="select-none text-[12px] font-semibold uppercase tracking-[0.16em] text-text-primary">NEPTLIUM</span>
           </div>
-          <span className="hidden text-[11px] font-medium text-text-muted sm:block">Secure access</span>
+          <span className="hidden text-[11px] font-medium text-text-muted sm:block">Enter Neptlium</span>
         </header>
 
         <main className="mx-auto flex w-full max-w-[1080px] flex-1 items-center py-10 sm:py-14">
@@ -29,7 +29,7 @@ export function AuthShell({ children }: AuthShellProps) {
                 Your capital intelligence, in one place.
               </h2>
               <p className="mt-6 max-w-md text-sm leading-6 text-text-secondary">
-                Sign in or create an account to access your portfolio, company intelligence, thesis work, and capital activity.
+                Enter your Neptlium workspace for portfolio intelligence, company context, thesis work, and capital activity.
               </p>
             </div>
 
