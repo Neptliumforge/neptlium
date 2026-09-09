@@ -92,23 +92,16 @@ export function ProductStateMessage({
   );
 }
 
-const atomicPrecision: Readonly<Record<string, number>> = {
-  USD: 2,
-  USDC: 6,
-  ETH: 18,
-  BTC: 8,
-  XRP: 6,
-};
-
-export function formatAtomicAmount(value: string, asset: string): string {
-  const precision = atomicPrecision[asset];
-  if (precision === undefined || !/^-?\d+$/.test(value)) return `${value} atomic ${asset}`;
+export function formatAtomicAmount(value: string, asset: string, decimals?: number): string {
+  if (decimals === undefined || !Number.isInteger(decimals) || decimals < 0 || !/^-?\d+$/.test(value)) {
+    return `${value} atomic ${asset}`;
+  }
 
   const negative = value.startsWith('-');
   const digits = negative ? value.slice(1) : value;
-  const padded = digits.padStart(precision + 1, '0');
-  const whole = precision ? padded.slice(0, -precision) || '0' : padded;
-  const fraction = precision ? padded.slice(-precision).replace(/0+$/, '') : '';
+  const padded = digits.padStart(decimals + 1, '0');
+  const whole = decimals ? padded.slice(0, -decimals) || '0' : padded;
+  const fraction = decimals ? padded.slice(-decimals).replace(/0+$/, '') : '';
   const formattedWhole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   const number = `${negative ? '-' : ''}${formattedWhole}${fraction ? `.${fraction}` : ''}`;
 
@@ -118,16 +111,18 @@ export function formatAtomicAmount(value: string, asset: string): string {
 export function FinancialValue({
   valueAtomic,
   asset,
+  decimals,
   unavailableLabel = 'Unavailable',
   className = '',
 }: {
   readonly valueAtomic?: string | null;
   readonly asset?: string | null;
+  readonly decimals?: number | null;
   readonly unavailableLabel?: string;
   readonly className?: string;
 }) {
   if (valueAtomic === undefined || valueAtomic === null || !asset) {
     return <span className={`text-text-primary ${className}`}>{unavailableLabel}</span>;
   }
-  return <span className={`tabular-nums text-text-primary ${className}`}>{formatAtomicAmount(valueAtomic, asset)}</span>;
+  return <span className={`tabular-nums text-text-primary ${className}`}>{formatAtomicAmount(valueAtomic, asset, decimals ?? undefined)}</span>;
 }
