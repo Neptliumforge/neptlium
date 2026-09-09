@@ -7,16 +7,16 @@ export interface FundingCapability {
   readonly code: 'USD_ACH' | 'USDC_BASE' | 'ETH_BASE' | 'BTC_BITCOIN' | 'XRP_XRPL';
   readonly asset: 'USD' | 'USDC' | 'ETH' | 'BTC' | 'XRP';
   readonly network: 'ACH' | 'BASE' | 'BITCOIN' | 'XRPL';
-  readonly decimals: number;
-  readonly atomicPrecision: number;
+  readonly decimals: number | null;
+  readonly atomicPrecision: number | null;
   readonly state: CapabilityState;
   readonly reason?: string;
 }
 export interface CanonicalBalance {
   readonly asset: string;
   readonly network: string | null;
-  readonly decimals: number;
-  readonly atomicPrecision: number;
+  readonly decimals: number | null;
+  readonly atomicPrecision: number | null;
   readonly total_atomic: string;
   readonly available_atomic: string;
   readonly reserved_atomic: string;
@@ -27,8 +27,8 @@ export interface FundingActivity {
   readonly id: string;
   readonly asset: string;
   readonly network: string | null;
-  readonly decimals: number;
-  readonly atomicPrecision: number;
+  readonly decimals: number | null;
+  readonly atomicPrecision: number | null;
   readonly rail: string;
   readonly amount_atomic: string | null;
   readonly state: string;
@@ -60,8 +60,8 @@ export interface TransferActivity {
   readonly alias_id: string;
   readonly asset: string;
   readonly network: string | null;
-  readonly decimals: number;
-  readonly atomicPrecision: number;
+  readonly decimals: number | null;
+  readonly atomicPrecision: number | null;
   readonly rail: string;
   readonly amount_atomic: string;
   readonly state: string;

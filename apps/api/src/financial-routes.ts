@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { ApiError } from './errors.js';
 import type { Config } from './config.js';
 import type { CapabilityState } from './funding-domain.js';
-import { publicFundingDefinitions } from './asset-registry.js';
+import { financialPrecision, publicFundingDefinitions } from './asset-registry.js';
 import { StripeTreasuryAdapter } from './stripe-treasury.js';
 import { verifyStripeWebhook } from './stripe-webhook.js';
 import { verifyAlchemyWebhook } from './alchemy-observation.js';
@@ -33,6 +33,8 @@ type RouteResult = { status?: number; data: unknown };
 
 export type FinancialCapability = {
   code: string;
+  decimals: number | null;
+  atomicPrecision: number | null;
   asset: string;
   network: string;
   state: CapabilityState;
@@ -151,7 +153,7 @@ export function liveFundingCapabilities(config: Config): FinancialCapability[] {
       state: 'NOT_CONFIGURED' as const,
       reason: 'circle_live_asset_network_not_verified',
     };
-  });
+  }).map((item) => ({ ...item, ...financialPrecision(item.asset, item.network) }));
 }
 
 function capabilityByCode(config: Config, code: string): FinancialCapability {
@@ -164,7 +166,7 @@ function enabled(capability: FinancialCapability) {
     throw new ApiError(503, 'provider_capability_unavailable', capability.reason ?? 'Funding capability is unavailable');
 }
 function fundingPublic(value: FundingIntentRecord) {
-  return { id: value.id, asset: value.asset, network: value.network, rail: value.rail, amount_atomic: value.amountAtomic,
+  return { ...financialPrecision(value.asset, value.network, value.environment), id: value.id, asset: value.asset, network: value.network, rail: value.rail, amount_atomic: value.amountAtomic,
     state: value.state, environment: value.environment, created_at: value.createdAt, updated_at: value.updatedAt };
 }
 function aliasPublic(value: TransferAliasRecord) {
@@ -172,7 +174,7 @@ function aliasPublic(value: TransferAliasRecord) {
     activation_state: value.activationState, created_at: value.createdAt, updated_at: value.updatedAt };
 }
 function transferPublic(value: TransferExecutionRecord) {
-  return { id: value.id, alias_id: value.aliasId, asset: value.asset, network: value.network, rail: value.rail,
+  return { ...financialPrecision(value.asset, value.network, value.environment), id: value.id, alias_id: value.aliasId, asset: value.asset, network: value.network, rail: value.rail,
     amount_atomic: value.amountAtomic, state: value.state, environment: value.environment, created_at: value.createdAt, updated_at: value.updatedAt };
 }
 
@@ -325,6 +327,7 @@ export async function handleFinancialRoute(
   if (method === 'GET' && path === '/v1/capital-account/balances') {
     const data = await deps.repository.getCanonicalBalances(await deps.ownerId());
     return { data: { state: data.length ? 'VALUE' : 'EMPTY', source: 'NEPTLIUM_CANONICAL_LEDGER', balances: data.map((item) => ({
+      ...financialPrecision(item.asset, item.network),
       asset: item.asset, network: item.network, total_atomic: item.totalAtomic, available_atomic: item.availableAtomic,
       reserved_atomic: item.reservedAtomic, pending_atomic: item.pendingAtomic, restricted_atomic: item.restrictedAtomic,
     })) } };

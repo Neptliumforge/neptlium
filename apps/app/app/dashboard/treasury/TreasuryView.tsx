@@ -68,7 +68,7 @@ export function TreasuryView({
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Treasury position</p>
           <div className="mt-2 text-[2rem] font-medium leading-none tracking-[-0.025em] text-text-primary sm:text-[2.4rem]">
-            {balanceError ? 'Unavailable' : balances.length === 0 ? '0 positions' : singleBalance ? <FinancialValue valueAtomic={singleBalance.available_atomic} asset={singleBalance.asset} /> : `${balances.length} assets`}
+            {balanceError ? 'Unavailable' : balances.length === 0 ? '0 positions' : singleBalance ? <FinancialValue valueAtomic={singleBalance.available_atomic} asset={singleBalance.asset} decimals={singleBalance.decimals} /> : `${balances.length} assets`}
           </div>
           <p className="mt-2 max-w-xl text-sm leading-6 text-text-muted">
             {balanceError ? 'Balances are temporarily unavailable.' : balances.length === 0 ? 'No capital positions yet.' : singleBalance ? 'Available capital in your current position.' : 'Balances are shown separately by asset.'}
@@ -97,10 +97,10 @@ export function TreasuryView({
                 <div key={`${balance.asset}:${balance.network ?? ''}`} className="grid gap-4 border-b border-border-hairline py-5 last:border-0 lg:grid-cols-[minmax(8rem,1fr)_repeat(4,minmax(7rem,auto))] lg:items-center lg:gap-5">
                   <div><p className="text-sm font-medium">{balance.asset}</p><p className="mt-1 text-xs text-text-muted">{balance.network ?? 'Denomination'}</p></div>
                   <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:contents">
-                    <div><dt className="text-[11px] text-text-muted lg:hidden">Total</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} /></dd></div>
-                    <div><dt className="text-[11px] text-text-muted lg:hidden">Available</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.available_atomic} asset={balance.asset} /></dd></div>
-                    <div><dt className="text-[11px] text-text-muted lg:hidden">Reserved</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.reserved_atomic} asset={balance.asset} /></dd></div>
-                    <div><dt className="text-[11px] text-text-muted lg:hidden">Pending</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.pending_atomic} asset={balance.asset} /></dd></div>
+                    <div><dt className="text-[11px] text-text-muted lg:hidden">Total</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.total_atomic} asset={balance.asset} decimals={balance.decimals} /></dd></div>
+                    <div><dt className="text-[11px] text-text-muted lg:hidden">Available</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.available_atomic} asset={balance.asset} decimals={balance.decimals} /></dd></div>
+                    <div><dt className="text-[11px] text-text-muted lg:hidden">Reserved</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.reserved_atomic} asset={balance.asset} decimals={balance.decimals} /></dd></div>
+                    <div><dt className="text-[11px] text-text-muted lg:hidden">Pending</dt><dd className="mt-1 text-sm font-medium lg:mt-0"><FinancialValue valueAtomic={balance.pending_atomic} asset={balance.asset} decimals={balance.decimals} /></dd></div>
                   </dl>
                 </div>
               ))}
@@ -140,7 +140,7 @@ export function TreasuryView({
                 transfers.slice(0, 6).map((item) => (
                   <div key={item.id} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-5">
                     <div className="min-w-0"><p className="text-sm font-medium">{item.asset} · {item.network ?? item.rail}</p><p className="mt-1 truncate text-xs text-text-muted">{new Date(item.created_at).toLocaleString()}</p></div>
-                    <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} className="text-sm font-medium" />
+                    <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} decimals={item.decimals} className="text-sm font-medium" />
                     <ProductStateBadge state={transferState(item.state)}>{item.state.replaceAll('_', ' ')}</ProductStateBadge>
                   </div>
                 ))

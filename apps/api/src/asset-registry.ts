@@ -394,3 +394,18 @@ export function governedAssetDefinition(
       definition.environment === environment,
   );
 }
+
+/** Display metadata only; registry presence never enables execution.
+ * Canonical fiat ledger accounts use a null network for the USD denomination.
+ * Crypto identities require an explicit network; never guess from a symbol.
+ */
+export function financialPrecision(
+  asset: string,
+  network: string | null,
+  environment: ProviderEnvironment = 'LIVE',
+): { decimals: number | null; atomicPrecision: number | null } {
+  const identityNetwork = network ?? (asset === 'USD' ? 'ACH' : '');
+  const definition = governedAssetDefinition(asset, identityNetwork, environment);
+  const precision = definition?.atomicPrecision ?? null;
+  return { decimals: precision, atomicPrecision: precision };
+}

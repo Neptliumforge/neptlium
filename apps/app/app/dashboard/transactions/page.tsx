@@ -29,6 +29,7 @@ export default async function TransactionsPage() {
       network: item.network,
       rail: item.rail,
       amount: item.amount_atomic,
+      decimals: item.decimals,
       state: item.state,
       createdAt: item.created_at,
       updatedAt: item.updated_at,
@@ -40,6 +41,7 @@ export default async function TransactionsPage() {
       network: item.network,
       rail: item.rail,
       amount: item.amount_atomic,
+      decimals: item.decimals,
       state: item.state,
       createdAt: item.created_at,
       updatedAt: item.updated_at,
@@ -69,7 +71,7 @@ export default async function TransactionsPage() {
               <article key={`${row.type}:${row.id}`} className="grid gap-3 border-b border-border-hairline py-4 last:border-0 md:grid-cols-[minmax(7rem,0.8fr)_minmax(8rem,1fr)_minmax(8rem,auto)_auto_minmax(9rem,auto)] md:items-center md:gap-5">
                 <div><p className="text-sm font-medium text-text-primary">{row.type}</p><p className="mt-1 text-xs text-text-muted md:hidden">{new Date(row.createdAt).toLocaleString()}</p></div>
                 <div><p className="text-sm font-medium text-text-primary">{row.asset}</p><p className="mt-1 text-xs text-text-muted">{row.network ?? row.rail}</p></div>
-                <div className="text-sm font-medium">{row.amount ? <FinancialValue valueAtomic={row.amount} asset={row.asset} /> : <span className="text-text-muted">Amount unavailable</span>}</div>
+                <div className="text-sm font-medium">{row.amount ? <FinancialValue valueAtomic={row.amount} asset={row.asset} decimals={row.decimals} /> : <span className="text-text-muted">Amount unavailable</span>}</div>
                 <ProductStateBadge state={stateFor(row.state)}>{row.state.replaceAll('_', ' ')}</ProductStateBadge>
                 <time className="hidden text-xs text-text-muted md:block" dateTime={row.updatedAt}>{new Date(row.updatedAt).toLocaleString()}</time>
               </article>

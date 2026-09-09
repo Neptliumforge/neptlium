@@ -1,3 +1,4 @@
+import { financialPrecision } from './asset-registry.js';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import { loadConfig, type Config } from './config.js';
@@ -419,6 +420,7 @@ export async function buildApp(deps: Dependencies = {}) {
             ? {
                 state: 'VALUE',
                 value: balances.map((item) => ({
+                  ...financialPrecision(item.asset, item.network),
                   asset: item.asset,
                   network: item.network,
                   available_atomic: item.availableAtomic,
@@ -429,6 +431,7 @@ export async function buildApp(deps: Dependencies = {}) {
             ? {
                 state: 'VALUE',
                 value: balances.map((item) => ({
+                  ...financialPrecision(item.asset, item.network),
                   asset: item.asset,
                   network: item.network,
                   reserved_atomic: item.reservedAtomic,
@@ -440,6 +443,7 @@ export async function buildApp(deps: Dependencies = {}) {
           transfers: {
             state: transfers.length ? 'VALUE' : 'EMPTY',
             value: transfers.map((item) => ({
+              ...financialPrecision(item.asset, item.network, item.environment),
               id: item.id,
               state: item.state,
               asset: item.asset,
@@ -542,6 +546,7 @@ export async function buildApp(deps: Dependencies = {}) {
             total: {
               state: 'VALUE',
               value: canonicalBalances.map((item) => ({
+                ...financialPrecision(item.asset, item.network),
                 asset: item.asset,
                 network: item.network,
                 amount_atomic: item.totalAtomic,
@@ -550,6 +555,7 @@ export async function buildApp(deps: Dependencies = {}) {
             available: {
               state: 'VALUE',
               value: canonicalBalances.map((item) => ({
+                ...financialPrecision(item.asset, item.network),
                 asset: item.asset,
                 network: item.network,
                 amount_atomic: item.availableAtomic,
@@ -558,6 +564,7 @@ export async function buildApp(deps: Dependencies = {}) {
             reserved: {
               state: 'VALUE',
               value: canonicalBalances.map((item) => ({
+                ...financialPrecision(item.asset, item.network),
                 asset: item.asset,
                 network: item.network,
                 amount_atomic: item.reservedAtomic,
@@ -566,6 +573,7 @@ export async function buildApp(deps: Dependencies = {}) {
             pending: {
               state: 'VALUE',
               value: canonicalBalances.map((item) => ({
+                ...financialPrecision(item.asset, item.network),
                 asset: item.asset,
                 network: item.network,
                 amount_atomic: item.pendingAtomic,

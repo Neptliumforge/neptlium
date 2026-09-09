@@ -6,6 +6,7 @@ import { FinancialValue } from './ProductState';
 type CapitalBalanceValue = {
   readonly value: string;
   readonly asset: string;
+  readonly decimals: number | null;
 };
 
 type EmptyAction = {
@@ -26,7 +27,7 @@ function firstBalance(
 ): CapitalBalanceValue | null {
   const balance = balances[0];
   if (balances.length !== 1 || !balance) return null;
-  return { value: balance[key], asset: balance.asset };
+  return { value: balance[key], asset: balance.asset, decimals: balance.decimals };
 }
 
 const positionRows = (
@@ -70,7 +71,7 @@ export function CapitalPosition({
             ) : multiAsset ? (
               <span>{balances.length} canonical assets</span>
             ) : total ? (
-              <FinancialValue valueAtomic={total.value} asset={total.asset} />
+              <FinancialValue valueAtomic={total.value} asset={total.asset} decimals={total.decimals} />
             ) : (
               'Unavailable'
             )}
@@ -101,7 +102,7 @@ export function CapitalPosition({
             <div key={label} className="min-w-0">
               <dt className="text-xs text-text-muted">{label}</dt>
               <dd className="mt-1 truncate text-sm font-medium text-text-primary sm:text-base">
-                {multiAsset ? 'By asset' : value ? <FinancialValue valueAtomic={value.value} asset={value.asset} /> : 'Unavailable'}
+                {multiAsset ? 'By asset' : value ? <FinancialValue valueAtomic={value.value} asset={value.asset} decimals={value.decimals} /> : 'Unavailable'}
               </dd>
             </div>
           ))}

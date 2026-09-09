@@ -37,7 +37,7 @@ export interface AllocationPlan { readonly id: string; readonly ownerId: string;
 export interface AllocationEvent { readonly id: string; readonly action: string; readonly policyId: string | null; readonly policyVersion: number | null; readonly modelId: string | null; readonly planId: string | null; readonly previousState: string | null; readonly newState: string | null; readonly context: Record<string, unknown>; readonly createdAt: string; }
 export interface AllocationWorkspace {
   readonly capabilities: { readonly canModel: boolean; readonly canAuthorize: boolean; readonly canReserve: boolean; readonly canExecute: boolean; readonly canReconcile: boolean; readonly executionState: 'UNAVAILABLE'; readonly reason: string };
-  readonly observed: { readonly asOf: string; readonly source: 'NEPTLIUM_CANONICAL_LEDGER'; readonly positions: readonly ObservedPosition[]; readonly portfolioValue: null; readonly valuationState: 'UNAVAILABLE' };
+  readonly observed: { readonly asOf: string; readonly source: 'NEPTLIUM_CANONICAL_LEDGER'; readonly positions: readonly (ObservedPosition & { readonly decimals: number | null; readonly atomicPrecision: number | null })[]; readonly portfolioValue: null; readonly valuationState: 'UNAVAILABLE' };
   readonly activePolicy: AllocationPolicy | null;
   readonly policies: readonly AllocationPolicy[];
   readonly drift: null | { readonly rows: readonly DriftRow[]; readonly valuationState: 'NOT_REQUIRED' | 'REQUIRED_UNAVAILABLE' };

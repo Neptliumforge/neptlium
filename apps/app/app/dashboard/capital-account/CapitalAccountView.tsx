@@ -245,6 +245,7 @@ export function CapitalAccountView({
               <FinancialValue
                 valueAtomic={singleBalance.total_atomic}
                 asset={singleBalance.asset}
+                decimals={singleBalance.decimals}
               />
             ) : (
               `${balances.length} assets`
@@ -343,6 +344,7 @@ export function CapitalAccountView({
                           <FinancialValue
                             valueAtomic={balance.total_atomic}
                             asset={balance.asset}
+                            decimals={balance.decimals}
                           />
                         </dd>
                       </div>
@@ -352,6 +354,7 @@ export function CapitalAccountView({
                           <FinancialValue
                             valueAtomic={balance.available_atomic}
                             asset={balance.asset}
+                            decimals={balance.decimals}
                           />
                         </dd>
                       </div>
@@ -361,6 +364,7 @@ export function CapitalAccountView({
                           <FinancialValue
                             valueAtomic={balance.pending_atomic}
                             asset={balance.asset}
+                            decimals={balance.decimals}
                           />
                         </dd>
                       </div>
@@ -370,6 +374,7 @@ export function CapitalAccountView({
                           <FinancialValue
                             valueAtomic={balance.reserved_atomic}
                             asset={balance.asset}
+                            decimals={balance.decimals}
                           />
                         </dd>
                       </div>
@@ -379,6 +384,7 @@ export function CapitalAccountView({
                           <FinancialValue
                             valueAtomic={balance.restricted_atomic}
                             asset={balance.asset}
+                            decimals={balance.decimals}
                           />
                         </dd>
                       </div>
@@ -670,6 +676,7 @@ export function CapitalAccountView({
                       <FinancialValue
                         valueAtomic={selectedTransferBalance.available_atomic}
                         asset={selectedTransfer.asset}
+                        decimals={selectedTransferBalance.decimals}
                       />
                     ) : (
                       <span className="text-text-muted">Unavailable</span>
@@ -918,7 +925,7 @@ export function CapitalAccountView({
                   </div>
                   <div className="text-sm font-medium">
                     {item.amount_atomic ? (
-                      <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} />
+                      <FinancialValue valueAtomic={item.amount_atomic} asset={item.asset} decimals={item.decimals} />
                     ) : (
                       <span className="text-text-muted">Amount unavailable</span>
                     )}

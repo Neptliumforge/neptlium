@@ -90,7 +90,7 @@ export function ObservedCapital({
   drift,
   hasPolicy,
 }: {
-  readonly positions: readonly ObservedPosition[];
+  readonly positions: readonly (ObservedPosition & { readonly decimals: number | null })[];
   readonly drift: readonly DriftRow[] | null;
   readonly hasPolicy: boolean;
 }) {
@@ -127,6 +127,7 @@ export function ObservedCapital({
                 <FinancialValue
                   valueAtomic={position.totalAtomic}
                   asset={position.asset}
+                  decimals={position.decimals}
                   className="text-sm font-medium"
                 />
                 <span className="text-xs text-text-muted">

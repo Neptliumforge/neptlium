@@ -1,3 +1,4 @@
+import { financialPrecision } from './asset-registry.js';
 import { ApiError } from './errors.js';
 import type { FinancialRepository } from './financial-repository.js';
 import {
@@ -91,7 +92,7 @@ export async function handleAllocationRoute(
     const observed = observedFromCanonical(balances);
     const activePolicy = policies.find((policy) => policy.status === 'AUTHORIZED') ?? policies[0] ?? null;
     const drift = activePolicy ? calculateAllocationDrift(observed, activePolicy) : null;
-    return { data: { capabilities: allocationCapabilities, observed: { asOf: new Date().toISOString(), source: 'NEPTLIUM_CANONICAL_LEDGER', positions: observed, portfolioValue: null, valuationState: 'UNAVAILABLE' }, activePolicy, policies, drift, plans, activity } };
+    return { data: { capabilities: allocationCapabilities, observed: { asOf: new Date().toISOString(), source: 'NEPTLIUM_CANONICAL_LEDGER', positions: observed.map((position) => ({ ...position, ...financialPrecision(position.asset, position.network) })), portfolioValue: null, valuationState: 'UNAVAILABLE' }, activePolicy, policies, drift, plans, activity } };
   }
   if (method === 'GET' && path === '/v1/allocation/policies') return { data: { policies: await deps.repository.listPolicies(ownerId) } };
   if (method === 'POST' && path === '/v1/allocation/policies') {
