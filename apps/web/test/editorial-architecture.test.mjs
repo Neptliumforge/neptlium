@@ -32,6 +32,10 @@ test('institutional public architecture covers every canonical editorial surface
   for (const phrase of [
     'Capital,',
     'understood before',
+    'Position. Change. Attention.',
+    'Intelligence architecture',
+    'Institutional trust',
+    'Capital should remain intelligible as it moves.',
     'Capital Account',
     'Treasury',
     'Allocation',
@@ -47,12 +51,19 @@ test('institutional public architecture covers every canonical editorial surface
     'About',
     'Contact',
     'Press',
-  ]) assert.match(`${publicCopy}\n${architecture}\n${footer}`, new RegExp(phrase, 'i'));
+  ])
+    assert.match(`${publicCopy}\n${architecture}\n${footer}`, new RegExp(phrase, 'i'));
 });
 
 test('public copy avoids unsupported institutional proof and promotional shorthand', () => {
-  assert.doesNotMatch(publicCopy, /\bAUM\b|assets under management|customer count|transaction volume|guaranteed return|SOC\s*2|ISO\s*27001|licensed custodian|regulated bank|regulated broker/i);
-  assert.doesNotMatch(publicCopy, /revolutioni[sz]e|supercharge|all-in-one|next-generation|seamless experience|AI-powered/i);
+  assert.doesNotMatch(
+    publicCopy,
+    /\bAUM\b|assets under management|customer count|transaction volume|guaranteed return|SOC\s*2|ISO\s*27001|licensed custodian|regulated bank|regulated broker/i,
+  );
+  assert.doesNotMatch(
+    publicCopy,
+    /revolutioni[sz]e|supercharge|all-in-one|next-generation|seamless experience|AI-powered/i,
+  );
 });
 
 test('research and press remain truthful when verified material is unavailable', () => {
@@ -60,12 +71,19 @@ test('research and press remain truthful when verified material is unavailable',
   const press = read('app/press/page.tsx');
   assert.match(research, /when|published|available/i);
   assert.match(press, /verified|available|press/i);
-  assert.doesNotMatch(`${research}\n${press}`, /award-winning|featured in|as seen in|client story|case study/i);
+  assert.doesNotMatch(
+    `${research}\n${press}`,
+    /award-winning|featured in|as seen in|client story|case study/i,
+  );
 });
 
 test('primary discovery remains contracted while institutional footer remains complete', () => {
   assert.match(architecture, /PRIMARY_PRODUCTS = PRODUCTS\.slice\(0, 4\)/);
   assert.match(architecture, /PRIMARY_COMPANY = COMPANY\.slice\(0, 2\)/);
-  assert.doesNotMatch(architecture, /label: 'Press'[\s\S]*PRIMARY_COMPANY = COMPANY\.slice\(0, 3\)/);
-  for (const legal of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility']) assert.match(footer, new RegExp(legal));
+  assert.doesNotMatch(
+    architecture,
+    /label: 'Press'[\s\S]*PRIMARY_COMPANY = COMPANY\.slice\(0, 3\)/,
+  );
+  for (const legal of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility'])
+    assert.match(footer, new RegExp(legal));
 });

@@ -2,56 +2,57 @@
  * Marketing establishes authority and meaning. Product establishes control and operation.
  */
 :root {
-  /* Dark foundation */
+  /* Canonical institutional identity: Warm Ivory / Carbon / Mineral Teal. */
   --n-brand-absolute-black: #000000;
-  --n-brand-obsidian: #05060b;
-  --n-brand-blue-black: #050b15;
-  --n-brand-ink-black: #0a111f;
-  --n-brand-midnight-surface: #0c1324;
-  --n-brand-deep-navy: #0d162a;
-  --n-brand-structural-navy: #151f3d;
+  --n-brand-obsidian: #101214;
+  --n-brand-blue-black: #101214;
+  --n-brand-ink-black: #101214;
+  --n-brand-midnight-surface: #181b1d;
+  --n-brand-deep-navy: #23272a;
+  --n-brand-structural-navy: #343a3f;
 
-  /* Precision Blue — direction, never environment */
-  --n-brand-blue: #258be5;
-  --n-brand-blue-bright: #319eed;
-  --n-brand-azure: #16a8e8;
-  --n-brand-cyan: #12c6e3;
+  --n-brand-teal: #0f8f86;
+  --n-brand-teal-interaction: #20afa3;
+  /* Legacy blue names are compatibility aliases only; do not use for new work. */
+  --n-brand-blue: var(--n-brand-teal);
+  --n-brand-blue-bright: var(--n-brand-teal-interaction);
+  --n-brand-azure: var(--n-brand-teal-interaction);
+  --n-brand-cyan: var(--n-brand-teal-interaction);
 
   /* Light foundation */
-  --n-brand-canvas: #ffffff;
-  --n-brand-canvas-soft: #f8f9fc;
-  --n-brand-surface-cool: #f3f5f8;
-  --n-brand-surface-blue-soft: #eef2f7;
+  --n-brand-canvas: #f5f3ee;
+  --n-brand-canvas-soft: #fbfaf7;
+  --n-brand-surface-cool: #eceae5;
+  --n-brand-surface-blue-soft: #eceae5;
 
   /* Light text */
-  --n-brand-ink: #05060b;
-  --n-brand-ink-strong: #0a111f;
-  --n-brand-ink-secondary: #273247;
-  --n-brand-ink-muted: #596579;
-  --n-brand-ink-quiet: #778296;
+  --n-brand-ink: #101214;
+  --n-brand-ink-strong: #101214;
+  --n-brand-ink-secondary: #343a3f;
+  --n-brand-ink-muted: #62686c;
+  --n-brand-ink-quiet: #7a8084;
 
   /* Dark text */
-  --n-brand-text-on-dark: #f8f9fc;
-  --n-brand-text-on-dark-secondary: #e7eaf0;
-  --n-brand-text-on-dark-supporting: #b7bbc6;
-  --n-brand-text-on-dark-muted: #9297a4;
+  --n-brand-text-on-dark: #f5f3ee;
+  --n-brand-text-on-dark-secondary: #eceae5;
+  --n-brand-text-on-dark-supporting: #d8d5ce;
+  --n-brand-text-on-dark-muted: #aaa7a0;
 
   /* Borders */
-  --n-brand-border: #e5e9f0;
-  --n-brand-border-standard: #d8dee8;
-  --n-brand-border-strong: #c8d1df;
-  --n-brand-border-blue: color-mix(in srgb, var(--n-brand-blue) 28%, var(--n-brand-border));
+  --n-brand-border: #d8d5ce;
+  --n-brand-border-standard: #d8d5ce;
+  --n-brand-border-strong: #bcb8b0;
+  --n-brand-border-blue: color-mix(in srgb, var(--n-brand-teal) 28%, var(--n-brand-border));
 
   /* Typography families. Font assets are supplied independently; fallbacks remain safe. */
-  --n-font-display: 'Universal Sans', 'Helvetica Neue', Arial, sans-serif;
+  --n-font-display: Geist, 'Helvetica Neue', Arial, system-ui, sans-serif;
   --n-font-product: Geist, 'Helvetica Neue', Arial, system-ui, sans-serif;
 
   /* Compatibility aliases for older brand consumers while migration completes. */
   --n-brand-midnight: var(--n-brand-blue-black);
   --n-brand-cobalt-deep: var(--n-brand-deep-navy);
   --n-brand-cobalt-core: var(--n-brand-structural-navy);
-  --n-brand-ice: #d9f7fb;
+  --n-brand-ice: #e5f4f2;
 
-  /* Expressive marketing-only optical accent. Never use for product controls. */
-  --n-brand-gradient-signature: linear-gradient(112deg, var(--n-brand-blue-black) 0%, var(--n-brand-deep-navy) 36%, var(--n-brand-blue) 72%, var(--n-brand-cyan) 100%);
+  /* No signature gradient: institutional identity is structural, not decorative. */
 }

@@ -12,7 +12,9 @@ test('public site consumes shared tokens and one canonical Web visual authority'
     webFile('app/layout.tsx'),
   ]);
   assert.equal(globals.includes('packages/ui/src/styles/tokens.css'), true);
-  assert.equal(brand.includes('--n-brand-blue: #258be5'), true);
+  assert.equal(brand.includes('--n-brand-teal: #0f8f86'), true);
+  assert.equal(brand.includes('--n-brand-blue: var(--n-brand-teal)'), true);
+  assert.equal(brand.includes('--n-brand-blue-bright: var(--n-brand-teal-interaction)'), true);
   assert.match(visualDirection, /--web-ivory:\s*#f5f3ee/);
   assert.match(visualDirection, /--web-carbon:\s*#101214/);
   assert.match(visualDirection, /--web-teal:\s*#0f8f86/);
@@ -64,8 +66,14 @@ test('public product visuals never format unavailable state as money', async () 
 test('Capital Universe is canonical strategic product context without asset-availability claims', async () => {
   const universe = await webFile('app/products/capital-universe/page.tsx');
   assert.match(universe, /path:\s*'\/products\/capital-universe'/);
-  assert.equal(universe.includes('Classification describes operating context, not provider capability.'), true);
-  assert.match(universe, /does not establish asset,\s*legal-entity,\s*network,\s*custody,\s*market or execution availability\./i);
+  assert.equal(
+    universe.includes('Classification describes operating context, not provider capability.'),
+    true,
+  );
+  assert.match(
+    universe,
+    /does not establish asset,\s*legal-entity,\s*network,\s*custody,\s*market or execution availability\./i,
+  );
   assert.match(universe, /provider|infrastructure/i);
   assert.equal(universe.includes('USDC'), false);
   assert.equal(universe.includes('BTC'), false);

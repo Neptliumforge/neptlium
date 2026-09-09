@@ -9,16 +9,17 @@ const read = (path) => readFileSync(join(appRoot, path), 'utf8');
 
 test('authenticated application enforces neutral operating authority', () => {
   const global = read('app/global.css');
+  const tokens = read('../../packages/ui/src/styles/tokens.css');
   const icon = read('public/icon.svg');
   const uiPackage = read('../../packages/ui/package.json');
   assert.equal(global.includes("@import '@neptlium/ui/styles/brand.css'"), true);
-  assert.equal(global.includes('--color-accent-primary: var(--n-carbon)'), true);
-  assert.equal(global.includes('--color-accent-primary-hover: #26292b'), true);
-  assert.equal(global.includes('--color-canvas: var(--n-canvas)'), true);
-  assert.equal(global.includes('--color-sidebar: #f5f3ee'), true);
-  assert.equal(global.includes('--color-topnav: rgb(255 255 255 / 96%)'), true);
-  assert.equal(global.includes('#258BE5'), false);
-  assert.equal(global.includes('#319EED'), false);
+  assert.equal(global.includes("@import '@neptlium/ui/styles/tokens.css'"), true);
+  assert.equal(tokens.includes('--color-accent-primary: var(--n-ink)'), true);
+  assert.equal(tokens.includes('--color-canvas: var(--n-bg)'), true);
+  assert.equal(tokens.includes('--color-sidebar: var(--n-black)'), true);
+  assert.equal(tokens.includes('--color-topnav: var(--n-paper)'), true);
+  assert.equal(`${global}\n${tokens}`.includes('#258BE5'), false);
+  assert.equal(`${global}\n${tokens}`.includes('#319EED'), false);
   assert.equal(uiPackage.includes('"./styles/brand.css"'), true);
   assert.equal(icon.includes('#101214'), true);
   assert.equal(icon.includes('#F5F3EE'), true);
@@ -81,8 +82,8 @@ test('authenticated shell preserves institutional desktop and mobile governance'
   assert.equal(global.includes('grid-template-columns: repeat(5, minmax(0, 1fr))'), false);
   assert.equal(mobile.includes('env(safe-area-inset-bottom)'), true);
   assert.equal(mobile.includes('100dvh'), true);
-  assert.equal(mobile.includes('document.body.style.overflow = "hidden"'), true);
-  assert.equal(mobile.includes('event.key === "Escape"'), true);
+  assert.match(mobile, /document\.body\.style\.overflow = ['"]hidden['"]/);
+  assert.match(mobile, /event\.key === ['"]Escape['"]/);
   assert.equal(mobile.includes('triggerRef.current?.focus()'), true);
   assert.equal(shell.includes('w-[68px]'), true);
   assert.equal(shell.includes('xl:w-[228px]'), true);
@@ -98,7 +99,7 @@ test('application shell exposes a keyboard skip target and institutional workspa
   assert.equal(layout.includes('Skip to application workspace'), true);
   assert.equal(layout.includes('id="app-workspace"'), true);
   assert.equal(layout.includes('tabIndex={-1}'), true);
-  assert.equal(global.includes('main > div { max-width: 100rem; }'), true);
+  assert.match(global, /main > div\s*\{\s*max-width:\s*80rem;\s*\}/);
   assert.equal(global.includes('.app-skip-link:focus-visible'), true);
 });
 
@@ -120,6 +121,7 @@ test('System theme persists and follows operating-system changes', () => {
 
 test('product-wide state vocabulary is explicit and non-color-only', () => {
   const productState = read('components/product/ProductState.tsx');
+  const systemState = read('../../packages/ui/src/components/SystemState.tsx');
   for (const state of [
     'LOADING',
     'AVAILABLE',
@@ -141,6 +143,21 @@ test('product-wide state vocabulary is explicit and non-color-only', () => {
   }
   assert.equal(productState.includes("role={state === 'ERROR' ? 'alert'"), true);
   assert.equal(productState.includes("state === 'LOADING' ? 'status'"), true);
+  assert.equal(productState.includes('SystemStateLabel'), true);
+  for (const state of [
+    'UNKNOWN',
+    'ZERO',
+    'OBSERVED',
+    'MODELED',
+    'CONFIGURED',
+    'LIVE',
+    'UNAVAILABLE',
+    'AUTHORIZATION_REQUIRED',
+    'EXECUTABLE',
+    'NON_EXECUTABLE',
+  ]) {
+    assert.equal(systemState.includes(`'${state}'`), true, `missing system state ${state}`);
+  }
 });
 
 test('all five primary workspaces use the shared information-first header', () => {

@@ -50,7 +50,7 @@ test('all static internal Web links resolve to real App Router pages', () => {
   }
 });
 
-test('canonical product pages are authored independently rather than through FoundationPage', () => {
+test('canonical product pages retain explicit route responsibility rather than a generic page abstraction', () => {
   assert.equal(existsSync(join(webRoot, 'components/foundation-page.tsx')), false);
   const productPaths = [
     'products/capital-account',
@@ -60,15 +60,24 @@ test('canonical product pages are authored independently rather than through Fou
     'products/performance',
     'products/capital-universe',
   ];
+  const metadataPaths = new Set();
   for (const path of productPaths) {
     const source = readFileSync(join(appRoot, path, 'page.tsx'), 'utf8');
     assert.doesNotMatch(source, /FoundationPage|DetailPage/);
     assert.equal((source.match(/<h1/g) ?? []).length, 1, `Expected one H1 in ${path}`);
-    assert.match(source, /<section className=\{styles\.hero\}|className="[^"]*(?:story|hero)/, `Expected authored composition in ${path}`);
+    assert.match(source, /responsib|understand|context|state|boundary|capabilit/i);
+    const route = source.match(/path:\s*['"]([^'"]+)['"]/);
+    assert.ok(route, `Expected canonical metadata path in ${path}`);
+    metadataPaths.add(route[1]);
   }
+  assert.equal(
+    metadataPaths.size,
+    productPaths.length,
+    'Each product page must retain its own canonical route',
+  );
 });
 
-test('public access CTA resolves to the canonical application root while explicit auth routes remain distinct', () => {
+test('public access CTA resolves to account entry while explicit auth routes remain distinct', () => {
   const site = readFileSync(join(webRoot, 'lib/content/site.ts'), 'utf8');
   const publicMatch = site.match(/publicAccessUrl:\s*['"]([^'"]+)['"]/);
   const signInMatch = site.match(/signInUrl:\s*['"]([^'"]+)['"]/);
@@ -89,6 +98,7 @@ test('public access CTA resolves to the canonical application root while explici
 test('sitemap entries resolve to real pages and never fabricate freshness', () => {
   const sitemap = readFileSync(join(appRoot, 'sitemap.ts'), 'utf8');
   const routes = [...sitemap.matchAll(/['"](\/[^'"]*)['"]/g)].map((match) => match[1]);
-  for (const route of routes) assert.equal(routeExists(route), true, `Sitemap route has no page: ${route}`);
+  for (const route of routes)
+    assert.equal(routeExists(route), true, `Sitemap route has no page: ${route}`);
   assert.doesNotMatch(sitemap, /lastModified:\s*new Date\(/);
 });

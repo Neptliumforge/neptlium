@@ -75,14 +75,16 @@ test('onboarding is a two-step personal account flow without organization-first 
 test('authenticated shell is quiet and brand-linked rather than tenant-console styled', () => {
   const layout = read('app/dashboard/layout.tsx');
   const styles = read('app/global.css');
+  const tokens = read('../../packages/ui/src/styles/tokens.css');
 
   assert.match(layout, /brandTone="teal"/);
   assert.doesNotMatch(
     layout,
     /Current operating context|Canonical and governed where available|Capital state/,
   );
-  assert.match(styles, /--color-sidebar: #f5f3ee/);
-  assert.match(styles, /--n-mineral-teal: #0f8f86/);
+  assert.match(styles, /@neptlium\/ui\/styles\/tokens\.css/);
+  assert.match(tokens, /--color-sidebar:\s*var\(--n-black\)/);
+  assert.match(tokens, /--n-teal-500:\s*#0f8f86/);
 });
 
 test('product-state messages use explicit source copy rather than regex rewriting', () => {

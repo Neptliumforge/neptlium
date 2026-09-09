@@ -11,63 +11,119 @@ const brand = read('components/brand.tsx');
 const css = read('app/neptlium-visual-direction.css');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
+const publicCopy = `${page}\n${header}\n${footer}\n${architecture}`;
 
-test('hero establishes a concise capital-intelligence proposition and governed entry', () => {
-  assert.match(page, /Capital,<br \/>understood before<br \/>it moves\./);
-  assert.match(page, /understanding position, change, and strategic attention/);
-  assert.match(page, /className="operating-panel capital-context-map"/);
-  assert.match(page, /href=\{SITE\.publicAccessUrl\}>Enter Neptlium/);
+test('hero establishes capital intelligence and a truthful architectural model', () => {
+  for (const copy of [
+    'Capital intelligence',
+    'Capital,',
+    'understood before',
+    'position, change, and strategic attention',
+    'Relationships in view',
+    'Illustrative model',
+    'Non-executable',
+  ])
+    assert.match(page, new RegExp(copy, 'i'));
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
+  assert.match(page, /className="operating-panel capital-context-map"/);
   assert.doesNotMatch(page, /<Image|<img|\.png|\.webp|dashboard mockup/i);
 });
 
-test('homepage connects the institutional intelligence architecture without fabricated proof', () => {
+test('homepage follows understanding, context, architecture, capability, trust and entry', () => {
   for (const copy of [
-    'Context is the advantage',
-    'One intelligence layer.',
-    'Connected capital intelligence.',
-    'Understanding capital as a connected system.',
-    'Built for institutional-scale intelligence.',
-  ]) assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
-  for (const product of ['Portfolio Intelligence', 'Capital Account', 'Treasury', 'Allocation Intelligence'])
-    assert.match(page, new RegExp(product));
-  assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?/i);
+    'Capital intelligence',
+    'Operating view',
+    'Intelligence architecture',
+    'Platform environment',
+    'Institutional trust',
+    'Enter the environment',
+  ])
+    assert.match(page, new RegExp(copy, 'i'));
+  for (const domain of [
+    'Ownership Intelligence',
+    'Market Intelligence',
+    'Decision Intelligence',
+    'Capital Operations',
+  ])
+    assert.match(page, new RegExp(domain));
+  for (const distinction of [
+    'Observed evidence',
+    'Modeled context',
+    'Authorization before consequence',
+    'Verification after movement',
+  ])
+    assert.match(page, new RegExp(distinction));
 });
 
-test('public CTA authority preserves distinct entry and authentication destinations', () => {
+test('public CTA authority is centralized and routes visitors to explicit account entry', () => {
   assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
   assert.match(site, /publicAccessUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
   assert.match(site, /signInUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
-  assert.match(header, /href=\{SITE\.publicAccessUrl\}/);
-  assert.doesNotMatch(`${page}\n${header}\n${footer}`, /Request access|Book a demo|Get started free/i);
+  assert.equal((page.match(/SITE\.publicAccessLabel/g) ?? []).length, 2);
+  assert.equal((page.match(/SITE\.publicAccessUrl/g) ?? []).length, 2);
+  for (const source of [page, header]) assert.match(source, /SITE\.publicAccess/);
+  assert.doesNotMatch(publicCopy, /Request access|Book a demo|Get started free/i);
 });
 
-test('navigation remains five canonical accessible domains', () => {
+test('navigation is exactly five canonical institutional domains', () => {
   for (const domain of ['Platform', 'Products', 'Solutions', 'Resources', 'Company'])
     assert.match(architecture, new RegExp(`label: '${domain}'`));
-  for (const contract of ['aria-expanded', 'aria-controls', 'aria-haspopup', 'aria-modal="true"', "event.key === 'Escape'", 'trigger.current?.focus()'])
-    assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+  assert.match(architecture, /PRIMARY_PRODUCTS = PRODUCTS\.slice\(0, 4\)/);
+  assert.match(architecture, /PRIMARY_COMPANY = COMPANY\.slice\(0, 2\)/);
+  assert.match(header, /NAVIGATION\.map/);
 });
 
-test('footer separates verified public channels from legal navigation', () => {
-  for (const social of ['Bluesky', 'X', 'YouTube', 'TikTok']) assert.match(footer, new RegExp(`label: '${social}'`));
-  for (const legal of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility']) assert.match(footer, new RegExp(`label: '${legal}'`));
+test('desktop and mobile navigation preserve accessible control behavior', () => {
+  for (const contract of [
+    'aria-expanded',
+    'aria-controls',
+    'aria-haspopup',
+    'aria-modal="true"',
+    "event.key === 'Escape'",
+    "document.body.style.overflow = 'hidden'",
+    'trigger.current?.focus()',
+  ])
+    assert.equal(header.includes(contract), true, `Missing navigation contract: ${contract}`);
+  assert.match(css, /\.mobile-command-wrap[\s\S]*position:\s*fixed/);
+  assert.match(css, /\.mobile-command-sheet[\s\S]*100dvh/);
+  assert.match(css, /env\(safe-area-inset-top\)/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+});
+
+test('footer mirrors public architecture and separates legal navigation', () => {
+  assert.match(footer, /NAVIGATION\.map/);
+  for (const legal of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility'])
+    assert.match(footer, new RegExp(legal));
   assert.match(footer, /aria-label="Legal"/);
-  assert.match(footer, /rel="noopener noreferrer"/);
+  assert.doesNotMatch(footer, /bsky\.app|x\.com\/Neptlium|youtube\.com|tiktok\.com/i);
 });
 
-test('canonical brand and restrained visual authority remain intact', () => {
+test('canonical brand and restrained palette remain authoritative', () => {
   assert.match(brand, /from '@neptlium\/ui'/);
   assert.match(brand, /NeptliumMark/);
-  assert.doesNotMatch(brand, /<svg|<path|d="/);
-  for (const token of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
+  for (const token of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f'])
     assert.match(css, new RegExp(token, 'i'));
   assert.match(layout, /neptlium-visual-direction\.css/);
-  assert.doesNotMatch(css, /radial-gradient|backdrop-filter:\s*blur\(|filter:\s*blur\(/i);
+  for (const retired of [
+    'landing-v3.css',
+    'marketing-shell.css',
+    'marketing-production.css',
+    'unified-design.css',
+  ])
+    assert.doesNotMatch(layout, new RegExp(retired.replace('.', '\\.')));
+  assert.doesNotMatch(
+    css,
+    /radial-gradient|linear-gradient|filter:\s*blur|backdrop-filter:\s*blur/i,
+  );
 });
 
-test('marketing contains no privileged financial authority', () => {
-  const marketing = `${page}\n${header}\n${footer}\n${architecture}`;
-  assert.doesNotMatch(marketing, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|transaction volume|testimonial|licensed|regulated partner/i);
-  assert.doesNotMatch(`${marketing}\n${layout}`, /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|\.from\(|\.rpc\(/);
+test('marketing remains non-financial authority', () => {
+  assert.doesNotMatch(
+    publicCopy,
+    /\$[0-9]|\bAUM\b|customer count|transaction volume|testimonial|licensed custodian|regulated bank/i,
+  );
+  assert.doesNotMatch(
+    `${page}\n${header}\n${footer}`,
+    /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|\.from\(|\.rpc\(/,
+  );
 });

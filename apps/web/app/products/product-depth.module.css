@@ -23,7 +23,7 @@
 .darkSection h2,
 .close h2 {
   margin: 0;
-  font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
+  font-family: var(--font-sans, Geist, system-ui, sans-serif);
   font-weight: 400;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -57,7 +57,7 @@
 .heroLead strong,
 .statement strong {
   color: var(--web-carbon);
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .section,
@@ -116,7 +116,7 @@
 .sequence h3,
 .relationshipList h3 {
   font-size: 1rem;
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -192,7 +192,7 @@
   margin: 2.5rem 0 0;
   padding-top: 1.5rem;
   border-top: 1px solid var(--web-stone);
-  font-family: var(--font-display, Iowan Old Style, Baskerville, Georgia, serif);
+  font-family: var(--font-sans, Geist, system-ui, sans-serif);
   font-size: clamp(1.65rem, 3vw, 2.5rem);
   line-height: 1.15;
   letter-spacing: -0.03em;

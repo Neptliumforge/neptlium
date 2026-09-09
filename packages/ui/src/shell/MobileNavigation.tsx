@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
-import { cn } from "../components/utils/cn";
-import { NeptliumMark } from "./NeptliumMark";
-import type { NavItem } from "./Sidebar";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import { cn } from '../components/utils/cn';
+import { NeptliumMark } from './NeptliumMark';
+import type { NavItem } from './Sidebar';
 
-const DRAWER_ID = "dashboard-mobile-navigation";
-const BRAND_WORDMARK = "NEPTLIUM";
-const DRAWER_WIDTH = "min(88vw,22.5rem)";
-const DRAWER_MAX_WIDTH = "calc(100vw - 0.75rem)";
-const DRAWER_SAFE_AREA_PADDING = "max(env(safe-area-inset-bottom), 0.75rem)";
-const DRAWER_SAFE_AREA_TOP_PADDING = "max(env(safe-area-inset-top), 0.75rem)";
+const DRAWER_ID = 'dashboard-mobile-navigation';
+const BRAND_WORDMARK = 'NEPTLIUM';
+const DRAWER_WIDTH = 'min(88vw,22.5rem)';
+const DRAWER_MAX_WIDTH = 'calc(100vw - 0.75rem)';
+const DRAWER_SAFE_AREA_PADDING = 'max(env(safe-area-inset-bottom), 0.75rem)';
+const DRAWER_SAFE_AREA_TOP_PADDING = 'max(env(safe-area-inset-top), 0.75rem)';
 const FOCUSABLE_SELECTOR = [
-  "a[href]",
-  "button:not([disabled])",
+  'a[href]',
+  'button:not([disabled])',
   "[tabindex]:not([tabindex='-1'])",
-].join(",");
+].join(',');
 
 function isItemActive(pathname: string, href: string): boolean {
-  return pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`));
+  return pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`));
 }
 
 export interface MobileNavigationProps {
@@ -31,7 +31,12 @@ export interface MobileNavigationProps {
   readonly profile?: ReactNode;
 }
 
-export function MobileNavigation({ primaryItems, secondaryItems = [], footer, profile }: MobileNavigationProps) {
+export function MobileNavigation({
+  primaryItems,
+  secondaryItems = [],
+  footer,
+  profile,
+}: MobileNavigationProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -41,7 +46,7 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
     const active = [...primaryItems, ...secondaryItems]
       .sort((a, b) => b.href.length - a.href.length)
       .find((item) => isItemActive(pathname, item.href));
-    return active?.label ?? "Overview";
+    return active?.label ?? 'Overview';
   }, [pathname, primaryItems, secondaryItems]);
 
   useEffect(() => {
@@ -52,7 +57,7 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
     if (!open) return;
 
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     const drawer = drawerRef.current;
     const getFocusableElements = () =>
       Array.from(drawer?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? []);
@@ -61,11 +66,11 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
     else drawer?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         setOpen(false);
         return;
       }
-      if (event.key !== "Tab") return;
+      if (event.key !== 'Tab') return;
 
       const tabStops = getFocusableElements();
       if (tabStops.length === 0) {
@@ -85,9 +90,9 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
       }
     }
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = previousOverflow;
       triggerRef.current?.focus();
     };
@@ -98,8 +103,12 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
       <div className="flex h-full items-center gap-2 px-3">
         <NeptliumMark size={22} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[10px] font-medium tracking-[0.03em] text-text-muted">Operating environment</p>
-          <p className="truncate text-body-sm font-semibold tracking-tight text-text-primary">{title}</p>
+          <p className="truncate text-[10px] font-medium tracking-[0.03em] text-text-muted">
+            Operating environment
+          </p>
+          <p className="truncate text-body-sm font-semibold tracking-tight text-text-primary">
+            {title}
+          </p>
         </div>
         {profile}
         <button
@@ -125,16 +134,19 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
             <Link
               key={item.href}
               href={item.href}
-              aria-current={isActive ? "page" : undefined}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
-                "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring sm:px-1 sm:text-[11px]",
+                'relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring sm:px-1 sm:text-[11px]',
                 isActive
-                  ? "text-text-primary after:absolute after:inset-x-4 after:top-0 after:h-px after:bg-accent-primary"
-                  : "text-text-muted hover:text-text-secondary",
+                  ? 'text-text-primary after:absolute after:inset-x-4 after:top-0 after:h-px after:bg-accent-emerald'
+                  : 'text-text-muted hover:text-text-secondary',
               )}
             >
               {item.icon && (
-                <span className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")} aria-hidden="true">
+                <span
+                  className={cn('shrink-0', isActive ? 'text-accent-emerald' : 'text-text-muted')}
+                  aria-hidden="true"
+                >
                   {item.icon}
                 </span>
               )}
@@ -145,8 +157,11 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
       </nav>
 
       <div
-        className={cn("fixed inset-0 z-50 lg:hidden", open ? "pointer-events-auto" : "pointer-events-none")}
-        aria-hidden={open ? undefined : "true"}
+        className={cn(
+          'fixed inset-0 z-50 lg:hidden',
+          open ? 'pointer-events-auto' : 'pointer-events-none',
+        )}
+        aria-hidden={open ? undefined : 'true'}
       >
         <button
           type="button"
@@ -154,8 +169,8 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
           aria-label="Close navigation menu"
           onClick={() => setOpen(false)}
           className={cn(
-            "absolute inset-0 bg-surface-overlay transition-opacity duration-200 motion-reduce:transition-none",
-            open ? "opacity-100" : "opacity-0",
+            'absolute inset-0 bg-surface-overlay transition-opacity duration-200 motion-reduce:transition-none',
+            open ? 'opacity-100' : 'opacity-0',
           )}
         />
 
@@ -167,8 +182,8 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
           aria-label="Workspace navigation"
           tabIndex={-1}
           className={cn(
-            "relative flex h-[100dvh] flex-col border-r border-border-hairline bg-sidebar shadow-lg transition-transform duration-200 motion-reduce:transition-none",
-            open ? "translate-x-0" : "-translate-x-full",
+            'relative flex h-[100dvh] flex-col border-r border-border-hairline bg-sidebar shadow-[var(--floating-surface-shadow)] transition-transform duration-200 motion-reduce:transition-none',
+            open ? 'translate-x-0' : '-translate-x-full',
           )}
           style={{
             width: DRAWER_WIDTH,
@@ -181,8 +196,12 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
             <div className="flex min-w-0 items-center gap-2.5">
               <NeptliumMark size={26} />
               <div className="min-w-0">
-                <span className="block truncate text-body-sm font-semibold tracking-[0.08em] text-text-primary">{BRAND_WORDMARK}</span>
-                <span className="block truncate text-[10px] font-medium tracking-[0.03em] text-text-muted">Operating environment</span>
+                <span className="block truncate text-body-sm font-semibold tracking-[0.08em] text-text-primary">
+                  {BRAND_WORDMARK}
+                </span>
+                <span className="block truncate text-[10px] font-medium tracking-[0.03em] text-text-muted">
+                  Operating environment
+                </span>
               </div>
             </div>
             <button
@@ -204,14 +223,22 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    aria-current={isActive ? "page" : undefined}
+                    aria-current={isActive ? 'page' : undefined}
                     className={cn(
-                      "flex min-h-12 items-center gap-3 px-2 py-2 text-body-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring",
-                      isActive ? "text-text-primary" : "text-text-secondary hover:bg-surface-2 hover:text-text-primary",
+                      'flex min-h-12 items-center gap-3 px-2 py-2 text-body-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring',
+                      isActive
+                        ? 'text-text-primary'
+                        : 'text-text-secondary hover:bg-surface-2 hover:text-text-primary',
                     )}
                   >
                     {item.icon && (
-                      <span className={cn("shrink-0", isActive ? "text-accent-primary" : "text-text-muted")} aria-hidden="true">
+                      <span
+                        className={cn(
+                          'shrink-0',
+                          isActive ? 'text-accent-emerald' : 'text-text-muted',
+                        )}
+                        aria-hidden="true"
+                      >
                         {item.icon}
                       </span>
                     )}
@@ -222,7 +249,9 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
             </div>
           </nav>
 
-          {footer && <div className="shrink-0 border-t border-border-hairline px-3 pt-3">{footer}</div>}
+          {footer && (
+            <div className="shrink-0 border-t border-border-hairline px-3 pt-3">{footer}</div>
+          )}
         </div>
       </div>
     </>

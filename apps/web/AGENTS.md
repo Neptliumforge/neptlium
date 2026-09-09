@@ -69,7 +69,7 @@ Teal is a precision signal, not background paint.
 
 Use only repository-authoritative Neptlium mark geometry. Never redraw or create competing logo geometry.
 
-Marketing uses repository-supported editorial display/serif expression with restrained sans-serif utility/body typography. Keep public type medium-scale; authority comes from hierarchy and composition rather than enormous headlines. Do not introduce fonts without repository evidence, licensing review, and performance consideration.
+Marketing uses Geist as the primary family at restrained 400/500/600 weights. Editorial authority comes from hierarchy, measure, spacing, and composition rather than a competing display face or enormous headlines. Do not introduce fonts without repository evidence, licensing review, and performance consideration.
 
 ## Composition
 

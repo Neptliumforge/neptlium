@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Badge } from '@neptlium/ui';
+import { SystemStateLabel, type SystemState } from '@neptlium/ui';
 
 export type ProductStateName =
   | 'LOADING'
@@ -55,26 +55,39 @@ const descriptions: Partial<Record<ProductStateName, string>> = {
   ERROR: 'We could not load this information. Your existing account state is unchanged.',
 };
 
-const tones: Record<ProductStateName, 'success' | 'warning' | 'danger' | 'neutral'> = {
-  LOADING: 'neutral',
-  AVAILABLE: 'success',
-  READY: 'success',
-  PENDING: 'warning',
-  AWAITING_PROVISIONING: 'neutral',
-  CAPABILITY_DISABLED: 'neutral',
-  RESERVED: 'warning',
-  RESTRICTED: 'warning',
-  NOT_CONFIGURED: 'neutral',
-  INELIGIBLE: 'warning',
-  UNAVAILABLE: 'neutral',
-  NO_ACTIVITY: 'neutral',
-  NO_POSITION: 'neutral',
-  REQUIRES_APPROVAL: 'warning',
-  ERROR: 'danger',
+const systemStates: Record<ProductStateName, SystemState> = {
+  LOADING: 'UNKNOWN',
+  AVAILABLE: 'CONFIGURED',
+  READY: 'CONFIGURED',
+  PENDING: 'OBSERVED',
+  AWAITING_PROVISIONING: 'UNKNOWN',
+  CAPABILITY_DISABLED: 'UNAVAILABLE',
+  RESERVED: 'OBSERVED',
+  RESTRICTED: 'UNAVAILABLE',
+  NOT_CONFIGURED: 'UNAVAILABLE',
+  INELIGIBLE: 'UNAVAILABLE',
+  UNAVAILABLE: 'UNAVAILABLE',
+  NO_ACTIVITY: 'ZERO',
+  NO_POSITION: 'ZERO',
+  REQUIRES_APPROVAL: 'AUTHORIZATION_REQUIRED',
+  ERROR: 'UNKNOWN',
 };
 
-export function ProductStateBadge({ state, children }: { readonly state: ProductStateName; readonly children?: ReactNode }) {
-  return <Badge tone={tones[state]}>{children ?? labels[state]}</Badge>;
+export function ProductStateBadge({
+  state,
+  children,
+}: {
+  readonly state: ProductStateName;
+  readonly children?: ReactNode;
+}) {
+  return (
+    <SystemStateLabel
+      state={systemStates[state]}
+      className={state === 'ERROR' ? 'border-danger/35 bg-danger/8 text-danger' : undefined}
+    >
+      {children ?? labels[state]}
+    </SystemStateLabel>
+  );
 }
 
 export function ProductStateMessage({
@@ -91,7 +104,11 @@ export function ProductStateMessage({
   const body = children ?? descriptions[state];
 
   return (
-    <div className={compact ? 'py-3' : 'py-5'} role={state === 'ERROR' ? 'alert' : state === 'LOADING' ? 'status' : undefined} aria-live={state === 'LOADING' ? 'polite' : undefined}>
+    <div
+      className={compact ? 'py-3' : 'py-5'}
+      role={state === 'ERROR' ? 'alert' : state === 'LOADING' ? 'status' : undefined}
+      aria-live={state === 'LOADING' ? 'polite' : undefined}
+    >
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-sm font-medium text-text-primary">{title ?? labels[state]}</p>
         <ProductStateBadge state={state} />
@@ -102,7 +119,12 @@ export function ProductStateMessage({
 }
 
 export function formatAtomicAmount(value: string, asset: string, decimals?: number): string {
-  if (decimals === undefined || !Number.isInteger(decimals) || decimals < 0 || !/^-?\d+$/.test(value)) {
+  if (
+    decimals === undefined ||
+    !Number.isInteger(decimals) ||
+    decimals < 0 ||
+    !/^-?\d+$/.test(value)
+  ) {
     return `${value} atomic ${asset}`;
   }
 
@@ -133,5 +155,9 @@ export function FinancialValue({
   if (valueAtomic === undefined || valueAtomic === null || !asset) {
     return <span className={`text-text-primary ${className}`}>{unavailableLabel}</span>;
   }
-  return <span className={`tabular-nums text-text-primary ${className}`}>{formatAtomicAmount(valueAtomic, asset, decimals ?? undefined)}</span>;
+  return (
+    <span className={`tabular-nums text-text-primary ${className}`}>
+      {formatAtomicAmount(valueAtomic, asset, decimals ?? undefined)}
+    </span>
+  );
 }

@@ -7,7 +7,7 @@ const cardVariants = cva('rounded-md border border-border-default', {
     elevation: {
       flat: 'bg-surface-1 shadow-none',
       raised: 'bg-surface-1 shadow-none',
-      floating: 'bg-surface-2 shadow-md',
+      floating: 'bg-surface-2 shadow-[var(--shadow-elevation-2)]',
     },
   },
   defaultVariants: {

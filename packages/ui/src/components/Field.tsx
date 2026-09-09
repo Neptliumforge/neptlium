@@ -29,7 +29,7 @@ export function Label({ className, ...props }: LabelProps) {
 }
 
 const inputClasses =
-  'min-h-11 w-full rounded-xs border border-border-default bg-surface-2 px-3.5 py-2 text-body text-text-primary placeholder-text-muted transition-colors duration-150 ease-out focus:border-accent-primary focus:outline-none focus:shadow-[var(--shadow-focus-ring)] disabled:opacity-50 aria-[invalid=true]:border-danger';
+  'min-h-11 w-full rounded-xs border border-border-default bg-surface-2 px-3.5 py-2 text-body text-text-primary placeholder-text-muted transition-colors duration-150 ease-out focus:border-accent-emerald focus:outline-none focus:shadow-[var(--shadow-focus-ring)] disabled:opacity-50 aria-[invalid=true]:border-danger';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 

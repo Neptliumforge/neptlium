@@ -1,23 +1,19 @@
 import type { Metadata, Viewport } from 'next';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import './neptlium-visual-direction.css';
-import './mobile-navigation-fix.css';
-import './landing-v3.css';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
 import { SITE } from '@/lib/content/site';
 
-const socialDestinations = [
-  'https://bsky.app/profile/neptlium.bsky.social',
-  'https://x.com/Neptlium',
-  'https://youtube.com/@neptlium?si=fJ7q0r18UCoxjJth',
-  'https://www.tiktok.com/@neptlium?_r=1&_t=ZS-98quVuRhCNt',
-] as const;
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: 'Neptlium — Capital Operating Platform', template: '%s — Neptlium' },
+  title: {
+    default: 'Neptlium — Capital Intelligence Operating Environment',
+    template: '%s — Neptlium',
+  },
   description: SITE.description,
   applicationName: SITE.name,
   creator: SITE.name,
@@ -29,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: SITE.name,
-    title: 'Neptlium — Capital Operating Platform',
+    title: 'Neptlium — Capital Intelligence Operating Environment',
     description: SITE.description,
     url: SITE.url,
     locale: 'en_US',
@@ -38,13 +34,13 @@ export const metadata: Metadata = {
         url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'Neptlium — Capital Operating Platform',
+        alt: 'Neptlium — Capital Intelligence Operating Environment',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Neptlium — Capital Operating Platform',
+    title: 'Neptlium — Capital Intelligence Operating Environment',
     description: SITE.description,
     images: ['/opengraph-image'],
   },
@@ -66,12 +62,11 @@ const jsonLd = {
   logo: SITE.url + '/icon.svg',
   description: SITE.description,
   email: SITE.supportEmail,
-  sameAs: socialDestinations,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="light">
+    <html lang="en" data-theme="light" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
         <script
           type="application/ld+json"

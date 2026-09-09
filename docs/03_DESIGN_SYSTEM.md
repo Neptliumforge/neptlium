@@ -2,7 +2,7 @@
 
 **Status:** Authoritative  
 **Scope:** `neptlium.com`, `app.neptlium.com`, `admin.neptlium.com`, developer/API surfaces, research/intelligence surfaces, and shared brand expression  
-**Category:** Capital Operating Platform
+**Category:** Capital Intelligence Operating Environment
 
 This is the central design authority for Neptlium. It governs durable visual, interaction, information, state, accessibility, motion, and surface principles. It does not convert strategy, modeled architecture, provider configuration, or planned capability into current product capability. Historical design material under `docs/archive/**` is non-authoritative unless explicitly reinstated.
 
@@ -10,7 +10,7 @@ This is the central design authority for Neptlium. It governs durable visual, in
 
 Neptlium makes complex capital systems understandable, governable, and actionable. Its design communicates institutional authority, financial truth, operational control, computational intelligence, structural depth, technical precision, and calm confidence.
 
-The governing principles are **precision, restraint, depth, and certainty**.
+The governing principles are **understanding, context, architecture, capability, trust, and entry**.
 
 Sophistication must come from hierarchy, evidence, information quality, interaction clarity, and implementation coherence—not spectacle. The interface must never be more confident than the underlying domain.
 
@@ -19,6 +19,8 @@ The operating progression is:
 **Know → Understand → Decide → Authorize → Execute → Verify**
 
 These stages remain distinct. Recommendation is not authorization. Authorization is not execution. Execution is not settlement. Settlement is not reconciliation.
+
+Every surface must make it possible to determine what is being shown, why it matters, what is known, what is unknown, what can be done, what requires authorization, and what is modeled rather than executable.
 
 ## 2. Surface responsibilities
 
@@ -71,16 +73,16 @@ Application icons and favicons derive from the same canonical geometry. Product 
 
 ### Marketing identity palette
 
-| Name | Value | Role |
-| --- | --- | --- |
-| Warm Ivory | `#F5F3EE` | Primary editorial and Marketing canvas |
-| Carbon | `#101214` | Authority surface and primary dark tone |
-| Mineral Teal | `#0F8F86` | Marketing precision signal and selective primary action |
-| Interaction Teal | `#20AFA3` | Marketing hover/focus emphasis |
-| Graphite | `#343A3F` | Secondary dark neutral |
-| Stone | `#D8D5CE` | Structural divider |
-| Soft Mist | `#ECEAE5` | Secondary light surface |
-| Signal Amber | `#C88B28` | Warning/attention only |
+| Name             | Value     | Role                                                    |
+| ---------------- | --------- | ------------------------------------------------------- |
+| Warm Ivory       | `#F5F3EE` | Primary editorial and Marketing canvas                  |
+| Carbon           | `#101214` | Authority surface and primary dark tone                 |
+| Mineral Teal     | `#0F8F86` | Marketing precision signal and selective primary action |
+| Interaction Teal | `#20AFA3` | Marketing hover/focus emphasis                          |
+| Graphite         | `#343A3F` | Secondary dark neutral                                  |
+| Stone            | `#D8D5CE` | Structural divider                                      |
+| Soft Mist        | `#ECEAE5` | Secondary light surface                                 |
+| Signal Amber     | `#C88B28` | Warning/attention only                                  |
 
 **Ivory creates editorial space. Carbon creates authority. Teal signals precision. State communicates truth.**
 
@@ -92,7 +94,7 @@ Application and Admin are fundamentally **WHITE + BLACK + NEUTRAL**.
 
 Their default visual system derives from white, near-white, Carbon/black, near-black, graphite, gray, neutral dividers, neutral hover/selected states, and semantic exceptions.
 
-Do not use Mineral Teal, blue, green, amber, or red as broad brand decoration in authenticated/operator UI. Semantic color exists only when it materially communicates state.
+Mineral Teal marks active navigation, focus, links, intelligence indicators, and meaningful data emphasis. Interaction Teal is limited to hover, focus, and interaction feedback. Success, warning, and danger colors exist only when they materially communicate state.
 
 Product components should consume semantic neutral roles such as canvas, surface, inset, foreground-primary, foreground-secondary, foreground-muted, border-subtle, border-standard, border-strong, hover, selected, disabled, focus, overlay, and inverse rather than uncontrolled raw gray values.
 
@@ -102,18 +104,24 @@ Success, warning, danger, informational, disabled, focus, selected, loading, sta
 
 `UNKNOWN != ZERO`.
 
-| State | Meaning |
-| --- | --- |
-| Known | Required authoritative evidence supports the value |
-| Confirmed zero | Evidence confirms zero in the stated scope |
-| Unknown | Evidence cannot establish the value |
-| Unavailable | Capability/value cannot currently be supplied |
-| Loading | A bounded operation is in progress and implies no value |
-| Stale | Prior information exists but freshness requirements fail |
-| Error | Retrieval or processing failed |
-| Pending | Lifecycle progression has begun without reaching the next authoritative state |
-| Modeled | Computed scenario or estimate, not observed authoritative state |
-| Restricted | State may exist but permission/policy prevents access or action |
+| State                  | Meaning                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| Known                  | Required authoritative evidence supports the value                                  |
+| Confirmed zero         | Evidence confirms zero in the stated scope                                          |
+| Unknown                | Evidence cannot establish the value                                                 |
+| Unavailable            | Capability/value cannot currently be supplied                                       |
+| Loading                | A bounded operation is in progress and implies no value                             |
+| Stale                  | Prior information exists but freshness requirements fail                            |
+| Error                  | Retrieval or processing failed                                                      |
+| Pending                | Lifecycle progression has begun without reaching the next authoritative state       |
+| Modeled                | Computed scenario or estimate, not observed authoritative state                     |
+| Restricted             | State may exist but permission/policy prevents access or action                     |
+| Observed               | Evidence has been received but is not automatically canonical ledger truth          |
+| Configured             | Required configuration exists but does not prove live capability                    |
+| Live                   | The backend capability model establishes current availability                       |
+| Authorization required | The next consequence cannot proceed without governed authority                      |
+| Executable             | The backend establishes that the action may be submitted through supported controls |
+| Non-executable         | The representation is informational, modeled, or otherwise cannot move capital      |
 
 Never render `$0`, `$0.00`, `0%`, `0 units`, or an ambiguous dash unless the meaning is established. Provider-observed is not automatically canonical. Modeled is not observed. AI interpretation is not authoritative evidence.
 
@@ -127,9 +135,9 @@ Configured does not prove available. Planned does not prove implemented. Modeled
 
 Typography establishes hierarchy before containers or decoration.
 
-Marketing may combine restrained editorial display/serif authority with precise sans-serif body and utility typography. Public Web remains medium-scale: authority comes from composition and measure rather than poster-sized type.
+Geist is the primary family across Marketing, Application, Admin, and Research. Editorial authority comes from measure, spacing, structure, and weight rather than a competing display face. Primary weights are 400 for body and large statements, 500 for labels and emphasis, and 600 for headings and strong emphasis. Avoid 700+ without a specific semantic requirement.
 
-Application/Admin use quiet operational typography, concise body copy, stable navigation, tabular numerals, explicit units, and readable density. Geist/current operational typography remains the baseline where implemented.
+Marketing display is 56–88px on desktop and 40–56px on mobile. Product display is 32–48px; section headings are 20–28px; body is 14–17px; dense operational text is 13–14px; metadata is 11–12px and may use increased tracking. Application/Admin use quiet operational typography, concise body copy, stable navigation, tabular numerals, explicit units, and readable density.
 
 Conceptual roles: Display, H1, H2, H3, H4, Lead, Body, Small, Caption, Label, Navigation, Button, Numeric/Data, Code.
 
@@ -137,7 +145,7 @@ Do not manufacture hierarchy through excessive uppercase microcopy.
 
 ## 8. Spacing, grid, and hierarchy
 
-Prefer existing repository tokens and a 4/8-derived rhythm. Conceptual progression: `4, 8, 12, 16, 24, 32, 48, 64, 80, 96, 128, 160`.
+Use a 4px base rhythm: `4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96, 120, 160`. Marketing sections use 96–160px rhythm; Application and Admin use 40–80px. Desktop content width is at most 1280px on a 12-column architecture with 24px gutters. Mobile uses a conceptual four-column architecture with 16–20px outer margins.
 
 Build hierarchy in this order:
 
@@ -156,9 +164,9 @@ Do not default to card grids. Prefer rows, planes, tables, rules, whitespace, ti
 
 ## 9. Shape and elevation
 
-Neptlium is not soft, bubbly, or consumer-fintech oriented. Use radii sparingly and consistently. Avoid giant pill controls, rounded-card proliferation, nested containers, decorative shadows, glassmorphism, and floating panels without structural purpose.
+Neptlium is not soft, bubbly, or consumer-fintech oriented. Canonical radii are 0, 4, and 8px. Pills are exceptional and limited primarily to status, compact filters, and categorical metadata. Avoid rounded-card proliferation, nested containers, decorative shadows, glassmorphism, and floating panels without structural purpose.
 
-Elevation is a last resort.
+Default elevation is none. Shadows are reserved for menus, popovers, dialogs, and temporary overlays that genuinely float above content.
 
 ## 10. Marketing composition
 
@@ -166,7 +174,7 @@ Canonical direction: **warm architectural light + Carbon authority + Mineral Tea
 
 Marketing may use large editorial statements, original structural diagrams, data-derived abstraction, selective authority-dark sections, meaningful negative space, and subtle structural lines.
 
-The homepage should establish what Neptlium is, why it matters, verified capability, trust, and next action. It should progress through **Capital → Structure → Intelligence → Action**, not default to a generic hero/cards/features/CTA template.
+The homepage is a six-act argument: **Understand → Context → Architecture → Capability → Trust → Entry**. It uses an architectural intelligence visualization rather than a fabricated product screenshot and never defaults to a generic hero/cards/features/CTA template.
 
 Avoid token walls, candlesticks as decoration, order books, crypto imagery, glowing spheres, fabricated dashboards, unsupported provider imagery, generic AI particles, stock-photo finance, and speculative wealth imagery.
 
@@ -238,12 +246,12 @@ Motion communicates cause/effect, hierarchy, continuity, disclosure, spatial rel
 
 Conceptual timing bands:
 
-- Immediate: `80–140ms`
-- Fast: `120–200ms`
-- Standard: `160–280ms`
-- Deliberate: `280–500ms`
+- Immediate: `100–140ms`
+- Fast: `140–200ms`
+- Standard: `180–280ms`
+- Deliberate: `280–420ms`
 
-Longer motion requires specific justification. Define shared easing tokens rather than random easings.
+Longer motion requires specific justification. The preferred easing is `cubic-bezier(0.16, 1, 0.3, 1)`. Define shared easing tokens rather than random easings.
 
 Hover should feel immediate and precise. Button press may use subtle compression/contrast without cartoon scaling. Menus/popovers use short fade plus small spatial transition. Drawers move from their physical origin. Route transitions exist only when they improve orientation.
 
@@ -279,7 +287,14 @@ Use exact lifecycle verbs: Review, Approve, Authorize, Submit, Confirm, Retry, R
 
 ## 24. Component architecture
 
-Prefer: **Foundation tokens → Accessible primitives → Shared components → Surface components → Domain components → Page composition**.
+The component architecture has four implementation levels:
+
+1. **Foundations:** primitive and semantic colors, typography, spacing, radius, borders, elevation, motion, breakpoints, and content widths.
+2. **Primitives:** mark, wordmark, button, text link, eyebrow, divider, status, icon button, input, select, and tooltip.
+3. **Structural components:** header, navigation, section header, intelligence row, context rail, relationship map, evidence row, state block, table, review stepper, command bar, and navigation rail.
+4. **Patterns:** Intelligence Hero, Operating View, Intelligence Architecture, Research Perspective, Institutional Trust, Consequential Review, and explicit Unknown, Empty, Unavailable, Modeled, and Authorization states.
+
+Components expose semantic properties such as `density`, `state`, and `context`, never decorative variants such as glow, gradient, or futuristic.
 
 Do not place financial business logic inside generic visual primitives. Do not force Marketing components into Application merely to maximize reuse. Shared behavior does not require identical composition.
 

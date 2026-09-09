@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, ChevronDown, Search } from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import { SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -10,10 +10,18 @@ export const metadata = createPageMetadata({
 });
 
 const pillars = [
-  ['Ownership Intelligence', 'Understand what you own.', 'Holdings, exposure, concentration, and strategic position.'],
+  [
+    'Ownership Intelligence',
+    'Understand what you own.',
+    'Holdings, exposure, concentration, and strategic position.',
+  ],
   ['Market Intelligence', 'Understand what changes.', 'Market movement, opportunity, and context.'],
   ['Decision Intelligence', 'Understand what matters.', 'Move from data to context to decision.'],
-  ['Capital Operations', 'Understand what happens next.', 'Oversight, allocation, reporting, and planning.'],
+  [
+    'Capital Operations',
+    'Understand what happens next.',
+    'Oversight, allocation, reporting, and planning.',
+  ],
 ] as const;
 const ecosystem = [
   ['Markets', 'The forces shaping price, liquidity, and access.'],
@@ -24,16 +32,25 @@ const ecosystem = [
   ['Emerging Technologies', 'Technologies redefining future capital formation.'],
 ] as const;
 const audiences = [
-  ['Asset Managers', 'See portfolio position, allocation intelligence, and strategic awareness in context.'],
-  ['Corporations', 'Bring capital planning, treasury intelligence, and financial clarity together.'],
+  [
+    'Asset Managers',
+    'See portfolio position, allocation intelligence, and strategic awareness in context.',
+  ],
+  [
+    'Corporations',
+    'Bring capital planning, treasury intelligence, and financial clarity together.',
+  ],
   ['Family Offices', 'Create unified wealth intelligence and decision support.'],
   ['Institutions', 'Build research advantage and deeper capital understanding.'],
 ] as const;
 const principles = [
-  ['Continuous Intelligence', 'Context preserved across changing environments.'],
-  ['Global Perspective', 'Connected understanding across markets and systems.'],
-  ['Structured Decisions', 'Information organized for better judgment.'],
-  ['Transparent Understanding', 'Know what changed and why.'],
+  ['Evidence before assertion', 'Sources, timestamps, and provenance establish what is known.'],
+  ['State before action', 'Observed, modeled, configured, and live remain visibly distinct.'],
+  ['Authorization before consequence', 'Review and authority remain separate from execution.'],
+  [
+    'Verification after movement',
+    'Submission, settlement, and reconciliation are never collapsed.',
+  ],
 ] as const;
 const aiLayers = [
   ['Predict', 'Identify meaningful changes.'],
@@ -54,41 +71,426 @@ function OperatingPanel() {
     ['Operations', 'operations'],
   ] as const;
 
-  return <aside className="operating-panel capital-context-map" aria-label="Neptlium capital context map">
-    <div className="operating-panel-top"><span>NEPTLIUM</span><span>Capital context</span></div>
-    <div className="context-map-body">
-      <p className="context-map-label">Relationships in view</p>
-      <div className="context-map" role="img" aria-label="Ownership and markets connect through context to decisions and operations">
-        {relationships.map(([label, className]) => <div key={label} className={`context-node ${className}`}><span className="context-node-dot" aria-hidden="true" /><span>{label}</span></div>)}
-        <span className="context-line context-line-horizontal" aria-hidden="true" />
-        <span className="context-line context-line-vertical" aria-hidden="true" />
+  return (
+    <aside
+      className="operating-panel capital-context-map"
+      aria-label="Neptlium capital context map"
+    >
+      <div className="operating-panel-top">
+        <span>NEPTLIUM</span>
+        <span>Capital context</span>
       </div>
-      <p className="context-map-status"><span className="panel-status"><i />System state</span> Context connected</p>
-    </div>
-  </aside>;
+      <div className="context-map-body">
+        <p className="context-map-label">Relationships in view</p>
+        <div
+          className="context-map"
+          role="img"
+          aria-label="Ownership and markets connect through context to decisions and operations"
+        >
+          {relationships.map(([label, className]) => (
+            <div key={label} className={`context-node ${className}`}>
+              <span className="context-node-dot" aria-hidden="true" />
+              <span>{label}</span>
+            </div>
+          ))}
+          <span className="context-line context-line-horizontal" aria-hidden="true" />
+          <span className="context-line context-line-vertical" aria-hidden="true" />
+        </div>
+        <p className="context-map-status">
+          <span className="panel-status">
+            <i />
+            Illustrative model
+          </span>{' '}
+          Non-executable
+        </p>
+      </div>
+    </aside>
+  );
 }
 
 export default function HomePage() {
-  return <div className="neptlium-home institutional-home">
-    <section className="authority-hero editorial-hero" aria-labelledby="hero-title">
-      <div className="web-shell editorial-hero-inner">
-        <div className="editorial-hero-copy"><Label>Capital intelligence</Label><h1 id="hero-title">Capital,<br />understood before<br />it moves.</h1><p className="authority-hero-lead">An intelligent layer for understanding position, change, and strategic attention.</p><div className="authority-actions"><Link className="hero-text-cta" href={SITE.publicAccessUrl}>Enter Neptlium <ArrowRight aria-hidden="true" /></Link><a className="hero-secondary-link" href="#intelligence">Explore Intelligence</a></div></div>
-        <OperatingPanel />
-      </div>
-    </section>
+  return (
+    <div className="neptlium-home institutional-home">
+      <section className="authority-hero editorial-hero" aria-labelledby="hero-title">
+        <div className="web-shell editorial-hero-inner">
+          <div className="editorial-hero-copy">
+            <Label>Capital intelligence</Label>
+            <h1 id="hero-title">
+              Capital,
+              <br />
+              understood before
+              <br />
+              it moves.
+            </h1>
+            <p className="authority-hero-lead">
+              An intelligent layer for understanding position, change, and strategic attention.
+            </p>
+            <div className="authority-actions">
+              <Link className="hero-text-cta" href={SITE.publicAccessUrl}>
+                {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
+              </Link>
+              <a className="hero-secondary-link" href="#intelligence">
+                Explore Intelligence
+              </a>
+            </div>
+          </div>
+          <OperatingPanel />
+        </div>
+      </section>
 
-    <section className="context-statement" aria-labelledby="context-title"><div className="web-shell context-statement-inner"><div><Label>Context is the advantage</Label><h2 id="context-title">Capital becomes difficult<br />when information loses context.</h2></div><p>Neptlium reconnects the relationships between ownership, markets, and decisions.</p></div></section>
+      <section className="operating-view" aria-labelledby="operating-view-title">
+        <div className="web-shell operating-view-inner">
+          <div>
+            <Label>Operating view</Label>
+            <h2 id="operating-view-title">Position. Change. Attention.</h2>
+            <p>
+              A disciplined command layer for understanding what exists, what changed, and what
+              requires review before action.
+            </p>
+          </div>
+          <div
+            className="operating-view-list"
+            aria-label="Illustrative capital-context perspectives"
+          >
+            <div>
+              <span>01</span>
+              <div>
+                <strong>Position</strong>
+                <small>Observed evidence</small>
+              </div>
+            </div>
+            <div>
+              <span>02</span>
+              <div>
+                <strong>Change</strong>
+                <small>Modeled context</small>
+              </div>
+            </div>
+            <div>
+              <span>03</span>
+              <div>
+                <strong>Attention</strong>
+                <small>Review before action</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <section id="intelligence" className="intelligence-pillars architecture-section" aria-labelledby="pillars-title"><div className="web-shell"><div className="architecture-intro"><div><Label>Intelligence architecture</Label><h2 id="pillars-title">One intelligence layer.<br />Multiple capital perspectives.</h2></div><p>Capital decisions depend on relationships between ownership, markets, information, and operations. Neptlium connects these perspectives into one structured intelligence environment for clearer context and decision support.</p></div><div className="architecture-map" role="img" aria-label="Ownership and markets connect through context to decisions and operations"><div className="architecture-map-title">Capital intelligence</div><div className="architecture-map-grid"><span className="architecture-map-node architecture-map-ownership">Ownership</span><span className="architecture-map-node architecture-map-markets">Markets</span><span className="architecture-map-node architecture-map-context">Context</span><span className="architecture-map-node architecture-map-decisions">Decisions</span><span className="architecture-map-node architecture-map-operations">Operations</span><span className="architecture-map-line architecture-map-line-horizontal" aria-hidden="true" /><span className="architecture-map-line architecture-map-line-vertical" aria-hidden="true" /></div></div><div className="pillar-list architecture-layers">{pillars.map(([title, lead, description], index) => <article className="pillar-row architecture-layer" key={title}><span className="pillar-index">0{index + 1}</span><div><h3>{title}</h3><strong>{lead}</strong><p>{index === 0 ? 'See holdings, exposure, concentration, and ownership relationships across your capital environment.' : index === 1 ? 'Connect market movements, research, and external signals with the assets and systems they affect.' : index === 2 ? 'Transform complex information into clearer priorities, strategic awareness, and informed decisions.' : 'Govern allocation, treasury, reporting, and operational workflows through a connected environment.'}</p></div><div className="architecture-signals" aria-label={`${title} signals`}><span>{index === 0 ? 'Holdings' : index === 1 ? 'Markets' : index === 2 ? 'Context' : 'Allocation'}</span><span>{index === 0 ? 'Exposure' : index === 1 ? 'Research' : index === 2 ? 'Priorities' : 'Treasury'}</span><span>{index === 0 ? 'Structure' : index === 1 ? 'Signals' : index === 2 ? 'Decisions' : 'Governance'}</span></div><ArrowRight aria-hidden="true" /></article>)}</div><p className="architecture-closing">Understanding capital as a connected system.</p></div></section>
+      <section
+        id="intelligence"
+        className="intelligence-pillars architecture-section"
+        aria-labelledby="pillars-title"
+      >
+        <div className="web-shell">
+          <div className="architecture-intro">
+            <div>
+              <Label>Intelligence architecture</Label>
+              <h2 id="pillars-title">
+                One intelligence layer.
+                <br />
+                Multiple capital perspectives.
+              </h2>
+            </div>
+            <p>
+              Capital decisions depend on relationships between ownership, markets, information, and
+              operations. Neptlium connects these perspectives into one structured intelligence
+              environment for clearer context and decision support.
+            </p>
+          </div>
+          <div
+            className="architecture-map"
+            role="img"
+            aria-label="Ownership and markets connect through context to decisions and operations"
+          >
+            <div className="architecture-map-title">Capital intelligence</div>
+            <div className="architecture-map-grid">
+              <span className="architecture-map-node architecture-map-ownership">Ownership</span>
+              <span className="architecture-map-node architecture-map-markets">Markets</span>
+              <span className="architecture-map-node architecture-map-context">Context</span>
+              <span className="architecture-map-node architecture-map-decisions">Decisions</span>
+              <span className="architecture-map-node architecture-map-operations">Operations</span>
+              <span
+                className="architecture-map-line architecture-map-line-horizontal"
+                aria-hidden="true"
+              />
+              <span
+                className="architecture-map-line architecture-map-line-vertical"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+          <div className="pillar-list architecture-layers">
+            {pillars.map(([title, lead, description], index) => (
+              <article className="pillar-row architecture-layer" key={title}>
+                <span className="pillar-index">0{index + 1}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <strong>{lead}</strong>
+                  <p>
+                    {index === 0
+                      ? 'See holdings, exposure, concentration, and ownership relationships across your capital environment.'
+                      : index === 1
+                        ? 'Connect market movements, research, and external signals with the assets and systems they affect.'
+                        : index === 2
+                          ? 'Transform complex information into clearer priorities, strategic awareness, and informed decisions.'
+                          : 'Govern allocation, treasury, reporting, and operational workflows through a connected environment.'}
+                  </p>
+                </div>
+                <div className="architecture-signals" aria-label={`${title} signals`}>
+                  <span>
+                    {index === 0
+                      ? 'Holdings'
+                      : index === 1
+                        ? 'Markets'
+                        : index === 2
+                          ? 'Context'
+                          : 'Allocation'}
+                  </span>
+                  <span>
+                    {index === 0
+                      ? 'Exposure'
+                      : index === 1
+                        ? 'Research'
+                        : index === 2
+                          ? 'Priorities'
+                          : 'Treasury'}
+                  </span>
+                  <span>
+                    {index === 0
+                      ? 'Structure'
+                      : index === 1
+                        ? 'Signals'
+                        : index === 2
+                          ? 'Decisions'
+                          : 'Governance'}
+                  </span>
+                </div>
+                <ArrowRight aria-hidden="true" />
+              </article>
+            ))}
+          </div>
+          <p className="architecture-closing">Understanding capital as a connected system.</p>
+        </div>
+      </section>
 
-    <section className="product-experience platform-ecosystem" aria-labelledby="experience-title"><div className="web-shell"><div className="experience-heading"><div><Label dark>Platform environment</Label><h2 id="experience-title">One environment.<br />Connected capital intelligence.</h2></div><p>Neptlium connects portfolio intelligence, capital operations, allocation, treasury, and research into a unified environment for understanding and governing capital.</p></div><div className="platform-relationship-map" role="img" aria-label="Overview connects Portfolio Intelligence, Capital Account, Treasury, Allocation Intelligence, and Research"><div className="platform-map-title">Connected intelligence surfaces</div><div className="platform-map-grid"><span className="platform-map-node platform-map-overview">Overview</span><span className="platform-map-node platform-map-portfolio">Portfolio Intelligence</span><span className="platform-map-node platform-map-account">Capital Account</span><span className="platform-map-node platform-map-treasury">Treasury</span><span className="platform-map-node platform-map-allocation">Allocation Intelligence</span><span className="platform-map-node platform-map-research">Research</span><span className="platform-map-line platform-map-line-horizontal" aria-hidden="true" /><span className="platform-map-line platform-map-line-vertical" aria-hidden="true" /></div></div><div className="platform-surfaces" aria-label="Neptlium intelligence surfaces">{[['Overview', 'Capital operating view', 'Understand current capital context, attention areas, and connected intelligence across the environment.', ['Context', 'Attention', 'State']], ['Portfolio Intelligence', 'Understanding holdings and exposure', 'Understand positions, relationships, concentration, and strategic portfolio context.', ['Holdings', 'Exposure', 'Relationships']], ['Capital Account', 'Understanding capital availability and movement', 'Understand funding, availability, lifecycle states, and governed capital operations.', ['Funding', 'Availability', 'Movement']], ['Allocation Intelligence', 'Understanding policy and structure', 'Understand allocation frameworks, objectives, and relationships between strategy and capital.', ['Policy', 'Structure', 'Alignment']], ['Treasury', 'Understanding controlled movement and operational capability', 'Understand treasury relationships, destinations, controls, and operational readiness.', ['Controls', 'Infrastructure', 'Governance']]].map(([title, role, description, signals], index) => <article className="platform-surface-row" key={title as string}><span className="platform-surface-index">0{index + 1}</span><div><h3>{title}</h3><strong>{role}</strong><p>{description}</p></div><div className="platform-surface-signals">{(signals as string[]).map((signal) => <span key={signal}>{signal}</span>)}</div></article>)}</div><p className="platform-closing">Every perspective remains connected to the capital context around it.</p></div></section>
+      <section className="product-experience platform-ecosystem" aria-labelledby="experience-title">
+        <div className="web-shell">
+          <div className="experience-heading">
+            <div>
+              <Label dark>Platform environment</Label>
+              <h2 id="experience-title">
+                One environment.
+                <br />
+                Connected capital intelligence.
+              </h2>
+            </div>
+            <p>
+              Neptlium connects portfolio intelligence, capital operations, allocation, treasury,
+              and research into a unified environment for understanding and governing capital.
+            </p>
+          </div>
+          <div
+            className="platform-relationship-map"
+            role="img"
+            aria-label="Overview connects Portfolio Intelligence, Capital Account, Treasury, Allocation Intelligence, and Research"
+          >
+            <div className="platform-map-title">Connected intelligence surfaces</div>
+            <div className="platform-map-grid">
+              <span className="platform-map-node platform-map-overview">Overview</span>
+              <span className="platform-map-node platform-map-portfolio">
+                Portfolio Intelligence
+              </span>
+              <span className="platform-map-node platform-map-account">Capital Account</span>
+              <span className="platform-map-node platform-map-treasury">Treasury</span>
+              <span className="platform-map-node platform-map-allocation">
+                Allocation Intelligence
+              </span>
+              <span className="platform-map-node platform-map-research">Research</span>
+              <span className="platform-map-line platform-map-line-horizontal" aria-hidden="true" />
+              <span className="platform-map-line platform-map-line-vertical" aria-hidden="true" />
+            </div>
+          </div>
+          <div className="platform-surfaces" aria-label="Neptlium intelligence surfaces">
+            {[
+              [
+                'Overview',
+                'Capital operating view',
+                'Understand current capital context, attention areas, and connected intelligence across the environment.',
+                ['Context', 'Attention', 'State'],
+              ],
+              [
+                'Portfolio Intelligence',
+                'Understanding holdings and exposure',
+                'Understand positions, relationships, concentration, and strategic portfolio context.',
+                ['Holdings', 'Exposure', 'Relationships'],
+              ],
+              [
+                'Capital Account',
+                'Understanding capital availability and movement',
+                'Understand funding, availability, lifecycle states, and governed capital operations.',
+                ['Funding', 'Availability', 'Movement'],
+              ],
+              [
+                'Allocation Intelligence',
+                'Understanding policy and structure',
+                'Understand allocation frameworks, objectives, and relationships between strategy and capital.',
+                ['Policy', 'Structure', 'Alignment'],
+              ],
+              [
+                'Treasury',
+                'Understanding controlled movement and operational capability',
+                'Understand treasury relationships, destinations, controls, and operational readiness.',
+                ['Controls', 'Infrastructure', 'Governance'],
+              ],
+              [
+                'Research',
+                'Understanding evidence and implication',
+                'Connect questions, provenance, interpretation, and implications without presenting analysis as financial truth.',
+                ['Questions', 'Evidence', 'Implications'],
+              ],
+            ].map(([title, role, description, signals], index) => (
+              <article className="platform-surface-row" key={title as string}>
+                <span className="platform-surface-index">0{index + 1}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <strong>{role}</strong>
+                  <p>{description}</p>
+                </div>
+                <div className="platform-surface-signals">
+                  {(signals as string[]).map((signal) => (
+                    <span key={signal}>{signal}</span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+          <p className="platform-closing">
+            Every perspective remains connected to the capital context around it.
+          </p>
+        </div>
+      </section>
 
-    <section className="ecosystem-map" aria-labelledby="ecosystem-title"><div className="web-shell ecosystem-layout"><div className="ecosystem-copy"><Label>Research perspective</Label><h2 id="ecosystem-title">Capital<br />ecosystem</h2><p>A connected view of the companies, markets, technologies, and institutions shaping the future of capital.</p></div><div className="ecosystem-tree">{ecosystem.map(([title, description], index) => <details key={title} open={index === 0}><summary><span>{title}</span><ChevronDown aria-hidden="true" /></summary><p>{description}</p></details>)}</div></div></section>
+      <section className="ecosystem-map" aria-labelledby="ecosystem-title">
+        <div className="web-shell ecosystem-layout">
+          <div className="ecosystem-copy">
+            <Label>Research perspective</Label>
+            <h2 id="ecosystem-title">
+              Capital
+              <br />
+              ecosystem
+            </h2>
+            <p>
+              A connected view of the companies, markets, technologies, and institutions shaping the
+              future of capital.
+            </p>
+          </div>
+          <div className="ecosystem-tree">
+            {ecosystem.map(([title, description], index) => (
+              <details key={title} open={index === 0}>
+                <summary>
+                  <span>{title}</span>
+                  <ChevronDown aria-hidden="true" />
+                </summary>
+                <p>{description}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
 
-    <section className="institutional-intelligence" aria-labelledby="institutional-title"><div className="web-shell institutional-layout"><div><Label dark>Institutional intelligence</Label><h2 id="institutional-title">Built for institutional-scale intelligence.</h2></div><div className="principle-list">{principles.map(([title, description], index) => <div key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></div></section>
+      <section className="institutional-intelligence" aria-labelledby="institutional-title">
+        <div className="web-shell institutional-layout">
+          <div>
+            <Label dark>Institutional trust</Label>
+            <h2 id="institutional-title">Clarity before consequence.</h2>
+            <p className="trust-intro">
+              Trust is established through evidence, explicit state, controlled authority, and
+              verifiable outcomes.
+            </p>
+          </div>
+          <div className="principle-list">
+            {principles.map(([title, description], index) => (
+              <div key={title}>
+                <span>0{index + 1}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-    <section className="solutions-section" aria-labelledby="solutions-title"><div className="web-shell solutions-layout"><div><Label>Who uses Neptlium?</Label><h2 id="solutions-title">The operating layer<br />for modern capital.</h2></div><div className="audience-list">{audiences.map(([title, description], index) => <Link href="#intelligence" key={title}><span>0{index + 1}</span><div><h3>{title}</h3><p>{description}</p></div><ArrowRight aria-hidden="true" /></Link>)}</div></div></section>
+      <section className="solutions-section" aria-labelledby="solutions-title">
+        <div className="web-shell solutions-layout">
+          <div>
+            <Label>Who uses Neptlium?</Label>
+            <h2 id="solutions-title">
+              The operating layer
+              <br />
+              for modern capital.
+            </h2>
+          </div>
+          <div className="audience-list">
+            {audiences.map(([title, description], index) => (
+              <Link href="#intelligence" key={title}>
+                <span>0{index + 1}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </div>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
-    <section className="ai-section" aria-labelledby="ai-title"><div className="web-shell ai-layout"><div><Label>Capability layer</Label><h2 id="ai-title">Intelligence<br />that compounds.</h2><p>Neptlium interprets financial signals and creates clearer understanding from complex environments.</p></div><div className="ai-layers">{aiLayers.map(([title, description], index) => <div key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></div></section>
-  </div>;
+      <section className="ai-section" aria-labelledby="ai-title">
+        <div className="web-shell ai-layout">
+          <div>
+            <Label>Capability layer</Label>
+            <h2 id="ai-title">
+              Intelligence
+              <br />
+              that compounds.
+            </h2>
+            <p>
+              Neptlium interprets financial signals and creates clearer understanding from complex
+              environments.
+            </p>
+          </div>
+          <div className="ai-layers">
+            {aiLayers.map(([title, description], index) => (
+              <div key={title}>
+                <span>0{index + 1}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="final-authority" aria-labelledby="final-authority-title">
+        <div className="web-shell final-authority-inner">
+          <div>
+            <Label dark>Enter the environment</Label>
+            <h2 id="final-authority-title">
+              Understand capital before authorizing what comes next.
+            </h2>
+          </div>
+          <div>
+            <p>
+              Bring position, evidence, decisions, and operational boundaries into one disciplined
+              context.
+            </p>
+            <Link className="hero-text-cta" href={SITE.publicAccessUrl}>
+              {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useTransition, type ReactNode } from "react";
-import { Button } from "@neptlium/ui";
-import { X } from "lucide-react";
+import { useState, useTransition, type ReactNode } from 'react';
+import { Button } from '@neptlium/ui';
+import { X } from 'lucide-react';
 
 interface ConfirmDialogProps {
   readonly trigger: ReactNode;
@@ -20,15 +20,15 @@ export function ConfirmDialog({
   trigger,
   title,
   description,
-  confirmLabel = "Confirm",
+  confirmLabel = 'Confirm',
   destructive = false,
   onConfirm,
   reasonField = false,
-  reasonLabel = "Reason",
-  onReasonConfirm
+  reasonLabel = 'Reason',
+  onReasonConfirm,
 }: ConfirmDialogProps) {
   const [open, setOpen] = useState(false);
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -36,13 +36,13 @@ export function ConfirmDialog({
     setError(null);
     if (reasonField && onReasonConfirm) {
       if (!reason.trim()) {
-        setError("Please provide a reason.");
+        setError('Please provide a reason.');
         return;
       }
       startTransition(async () => {
         await onReasonConfirm(reason.trim());
         setOpen(false);
-        setReason("");
+        setReason('');
       });
     } else {
       startTransition(async () => {
@@ -60,11 +60,11 @@ export function ConfirmDialog({
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60"
             onClick={() => !isPending && setOpen(false)}
           />
           {/* Dialog */}
-          <div className="relative z-10 w-full max-w-[400px] rounded-xl border border-border-default bg-surface-overlay p-6 shadow-2xl">
+          <div className="relative z-10 w-full max-w-[400px] rounded-md border border-border-default bg-surface-floating p-6 shadow-[var(--shadow-elevation-3)]">
             <div className="flex items-start justify-between gap-4">
               <h2 className="text-[15px] font-semibold text-text-primary">{title}</h2>
               <button
@@ -104,7 +104,7 @@ export function ConfirmDialog({
                 Cancel
               </Button>
               <Button
-                variant={destructive ? "destructive" : "primary"}
+                variant={destructive ? 'destructive' : 'primary'}
                 size="sm"
                 onClick={handleConfirm}
                 loading={isPending}

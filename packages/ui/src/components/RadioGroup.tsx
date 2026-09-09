@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { type ComponentPropsWithoutRef, type ElementRef, type ReactNode, forwardRef } from "react";
-import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { cn } from "./utils/cn";
+import { type ComponentPropsWithoutRef, type ElementRef, type ReactNode, forwardRef } from 'react';
+import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
+import { cn } from './utils/cn';
 
 export const RadioGroup = forwardRef<
   ElementRef<typeof RadioGroupPrimitive.Root>,
   ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
 >(function RadioGroup({ className, ...props }, ref) {
-  return <RadioGroupPrimitive.Root ref={ref} className={cn("grid gap-3", className)} {...props} />;
+  return <RadioGroupPrimitive.Root ref={ref} className={cn('grid gap-3', className)} {...props} />;
 });
 
 export const RadioGroupItem = forwardRef<
@@ -19,12 +19,12 @@ export const RadioGroupItem = forwardRef<
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        "flex size-4 shrink-0 items-center justify-center rounded-full border border-border-default bg-surface-2 transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] data-[state=checked]:border-accent-primary",
-        className
+        'flex size-4 shrink-0 items-center justify-center rounded-full border border-border-default bg-surface-2 transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] data-[state=checked]:border-accent-emerald',
+        className,
       )}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator className="size-2 rounded-full bg-accent-primary" />
+      <RadioGroupPrimitive.Indicator className="size-2 rounded-full bg-accent-emerald" />
     </RadioGroupPrimitive.Item>
   );
 });
@@ -38,20 +38,27 @@ export interface OptionCardProps {
   readonly className?: string;
 }
 
-export function OptionCard({ value, label, description, selected, icon, className }: OptionCardProps) {
+export function OptionCard({
+  value,
+  label,
+  description,
+  selected,
+  icon,
+  className,
+}: OptionCardProps) {
   return (
     <RadioGroupPrimitive.Item
       value={value}
       className={cn(
-        "flex w-full items-start gap-3 rounded-md border border-[color:var(--color-border-whisper)] bg-surface-1 p-4 text-left transition-colors duration-150 ease-out hover:border-border-hover focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] data-[state=checked]:border-accent-primary data-[state=checked]:bg-accent-primary/6",
-        className
+        'flex w-full items-start gap-3 rounded-md border border-[color:var(--color-border-whisper)] bg-surface-1 p-4 text-left transition-colors duration-150 ease-out hover:border-border-hover focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] data-[state=checked]:border-accent-emerald data-[state=checked]:bg-accent-emerald/6',
+        className,
       )}
     >
       {icon && (
         <span
           className={cn(
-            "mt-0.5 shrink-0 text-text-muted transition-colors duration-150 ease-out",
-            selected && "text-accent-primary"
+            'mt-0.5 shrink-0 text-text-muted transition-colors duration-150 ease-out',
+            selected && 'text-accent-emerald',
           )}
           aria-hidden="true"
         >
