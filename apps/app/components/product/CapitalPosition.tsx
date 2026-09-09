@@ -15,7 +15,7 @@ type EmptyAction = {
 };
 
 const defaultEmptyAction: EmptyAction = {
-  href: '/dashboard/wallet',
+  href: '/dashboard/capital-account',
   label: 'View Capital Account',
   detail: 'Funding availability is shown only from the current governed capability state. Open the Capital Account to review what is available, disabled, or unsupported.',
 };

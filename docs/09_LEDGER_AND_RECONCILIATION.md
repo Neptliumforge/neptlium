@@ -20,7 +20,7 @@ The same migration defines `wallet_deposits` and `wallet_withdrawals` with expli
 - Wallet/provider mutations require idempotency keys at the API boundary.
 - `provider_webhook_events` deduplicates `(provider, provider_event_id)`, records a payload digest, safe headers, processing state, and timestamps.
 - A repeated event ID with a different digest is a replay/conflict, not a retry.
-- Alchemy and Coinbase webhook route groundwork exists but fails closed unless an injected verifier succeeds. Circle webhook verification is explicitly disabled.
+- Alchemy observations require verified webhook ingress. Circle webhook verification remains explicitly disabled until its reviewed contract is implemented. Stripe events are evidence only and never become capital state without attribution, ledger posting, and reconciliation.
 
 ### Reconciliation evidence
 

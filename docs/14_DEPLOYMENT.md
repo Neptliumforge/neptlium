@@ -55,7 +55,7 @@ API is server-only and owns durable data/provider configuration. Current source 
 - `API_AUTH_MODE=SUPABASE|DUAL|CLERK`, defaulting to `SUPABASE`;
 - durable Supabase URL, anon/publishable compatibility key, and service-role access;
 - Clerk verification and authorized-party configuration for `DUAL`/`CLERK` modes;
-- Circle, Alchemy, and Stripe Treasury configuration with explicit capability and execution gates;
+- Circle and Alchemy configuration with explicit capability and execution gates, plus Stripe webhook evidence configuration;
 - allowed-origin, logging, webhook-tolerance, and mainnet controls.
 
 `DUAL` or `CLERK` API mode must not be enabled against a production schema that lacks the provider-independent identity foundation and corresponding mappings.
@@ -80,7 +80,7 @@ Application deployment and migration application remain separate approvals.
 - Configuration presence does not prove capability.
 - Capability verification does not itself authorize live execution.
 - Live execution requires explicit reviewed enablement, compatible provider environment, authorization, durable state, posting/reconciliation design, and operational evidence.
-- Keep Stripe Treasury, Circle, and Alchemy execution/capability flags fail-closed until their respective production checks are complete.
+- Keep Circle and Alchemy execution/capability flags fail-closed until their production checks are complete. Stripe configuration must not expose a funding capability without an implemented and reviewed Payments/Onramp contract.
 - Preview/staging must not point at production financial execution by convenience.
 - Provider environment and database environment must agree; mixed testnet/production configurations fail closed.
 - Rotate and revoke credentials through provider/platform controls, not source edits.

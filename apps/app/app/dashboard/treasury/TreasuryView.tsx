@@ -58,8 +58,8 @@ export function TreasuryView({
         description="Monitor balances, deposit readiness, withdrawal destinations, and transfer status."
         action={(
           <div className="flex flex-wrap gap-2">
-            <Link href="/dashboard/wallet#withdraw" className="inline-flex min-h-11 items-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Prepare withdrawal</Link>
-            <Link href="/dashboard/wallet#destinations" className="inline-flex min-h-11 items-center rounded-md border border-border-default px-4 text-sm font-medium text-text-primary hover:bg-surface-2">Destinations</Link>
+            <Link href="/dashboard/capital-account#movement" className="inline-flex min-h-11 items-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Prepare movement</Link>
+            <Link href="/dashboard/capital-account#destinations" className="inline-flex min-h-11 items-center rounded-md border border-border-default px-4 text-sm font-medium text-text-primary hover:bg-surface-2">Destinations</Link>
           </div>
         )}
       />
@@ -86,7 +86,7 @@ export function TreasuryView({
           ) : balances.length === 0 ? (
             <div className="grid gap-5 py-6 sm:grid-cols-[1fr_auto] sm:items-center">
               <ProductStateMessage state="NO_POSITION" title="No capital positions yet" />
-              <Link href="/dashboard/wallet#deposit" className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Fund account</Link>
+              <Link href="/dashboard/capital-account#funding" className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent-primary px-4 text-sm font-medium text-white hover:bg-accent-primary-hover">Funding routes</Link>
             </div>
           ) : (
             <>
@@ -130,7 +130,7 @@ export function TreasuryView({
       <Section title="Transfers and destinations">
         <div className="grid gap-8 xl:grid-cols-2">
           <div>
-            <div className="mb-3 flex items-end justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Recent transfers</p><p className="mt-1 text-xs text-text-muted">Latest transfer status</p></div><Link href="/dashboard/wallet#activity" className="text-sm font-medium text-accent-primary">All activity</Link></div>
+            <div className="mb-3 flex items-end justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Recent transfers</p><p className="mt-1 text-xs text-text-muted">Latest transfer status</p></div><Link href="/dashboard/capital-account#capital-context" className="text-sm font-medium text-accent-primary">All activity</Link></div>
             <div className="border-y border-border-hairline">
               {transferError ? (
                 <ProductStateMessage state="ERROR" title="Transfer activity unavailable">We couldn't load transfer activity. Try again.</ProductStateMessage>
@@ -149,7 +149,7 @@ export function TreasuryView({
           </div>
 
           <div>
-            <div className="mb-3 flex items-end justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Destinations</p><p className="mt-1 text-xs text-text-muted">Saved withdrawal destinations</p></div><Link href="/dashboard/wallet#destinations" className="text-sm font-medium text-accent-primary">Manage</Link></div>
+            <div className="mb-3 flex items-end justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.08em] text-text-muted">Destinations</p><p className="mt-1 text-xs text-text-muted">Saved movement destinations</p></div><Link href="/dashboard/capital-account#destinations" className="text-sm font-medium text-accent-primary">Manage</Link></div>
             <div className="border-y border-border-hairline">
               {aliasError ? (
                 <ProductStateMessage state="ERROR" title="Destinations unavailable">We couldn't load your destinations. Try again.</ProductStateMessage>
@@ -184,7 +184,7 @@ export function TreasuryView({
             ['Reconciliation', 'Settlement and reconciliation remain distinct states.'],
           ].map(([title, detail]) => <div key={title} className="grid gap-1 py-4 sm:grid-cols-[12rem_1fr] sm:gap-6"><p className="text-sm font-medium text-text-primary">{title}</p><p className="text-sm leading-6 text-text-muted">{detail}</p></div>)}
         </div>
-        <Link href="/dashboard/wallet#withdraw" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent-primary">Prepare withdrawal <ArrowRight className="size-4" aria-hidden="true" /></Link>
+        <Link href="/dashboard/capital-account#movement" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent-primary">Prepare movement <ArrowRight className="size-4" aria-hidden="true" /></Link>
       </Section>
     </Stack>
   );

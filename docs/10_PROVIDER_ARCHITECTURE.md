@@ -36,15 +36,11 @@ Alchemy is observation-only groundwork:
 
 No current code proves a complete Alchemy custody, balance, transfer, or production webhook capability. Alchemy cannot authorize, execute, post ledger entries, or establish availability.
 
-### Coinbase legacy configuration
-
-Some configuration names and a generic webhook route remain from earlier groundwork. The health endpoint reports Coinbase as not configured, and there is no current Coinbase capital-provider adapter. Coinbase is not the architectural default.
-
 ## TARGET
 
-### Stripe Treasury funding — current gated code
+### Stripe payment funding — target
 
-A server-side Stripe Treasury adapter exists for gated USD ACH inbound-transfer submission. It requires complete configuration, verified Treasury eligibility, and explicit live execution enablement. Provider submission is evidence only; durable attribution, official webhook verification, settlement/failure/return handling, balanced ledger posting, and reconciliation remain separate requirements. Repository presence does not prove live eligibility or execution.
+Stripe Treasury is excluded. Current Stripe support verifies and persists webhook evidence only. A future funding flow must use an approved Stripe Payments or Onramp contract and preserve durable attribution, official webhook verification, failure/refund handling, balanced ledger posting, and reconciliation. Until then Stripe exposes no customer funding capability.
 
 ### Stripe Onramp
 

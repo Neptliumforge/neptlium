@@ -339,9 +339,9 @@ Circle data remains provider evidence until reconciled into Neptlium financial t
 
 Current implementation and environment determine whether any specific operation is actually available.
 
-### Stripe Treasury — CURRENT GATED CODE; Stripe Onramp — TARGET
+### Stripe — CURRENT EVIDENCE BOUNDARY; PAYMENTS/ONRAMP TARGET
 
-The repository contains a server-side Stripe Treasury adapter for eligibility- and execution-gated USD ACH inbound-transfer submission. Stripe Onramp remains target architecture.
+Stripe Treasury is not part of the architecture. The current server-side integration verifies and records Stripe webhook evidence. A customer payment or onramp flow may be added only through an approved Stripe Payments/Onramp contract; configuration alone exposes no funding capability.
 
 Potential responsibilities include:
 

@@ -3,7 +3,6 @@ import { ApiError } from './errors.js';
 import type { Config } from './config.js';
 import type { CapabilityState } from './funding-domain.js';
 import { publicFundingDefinitions } from './asset-registry.js';
-import { StripeTreasuryAdapter } from './stripe-treasury.js';
 import { verifyStripeWebhook } from './stripe-webhook.js';
 import { verifyAlchemyWebhook } from './alchemy-observation.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
@@ -72,39 +71,7 @@ function atomic(value: unknown, optional = false): string | undefined {
 }
 
 export function liveFundingCapabilities(config: Config): FinancialCapability[] {
-  const stripe = new StripeTreasuryAdapter({
-    secretKey: config.STRIPE_SECRET_KEY,
-    webhookSecret: config.STRIPE_WEBHOOK_SECRET,
-    financialAccountId: config.STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID,
-    environment: 'LIVE',
-    eligibilityVerified: config.STRIPE_TREASURY_ELIGIBILITY_VERIFIED,
-    liveExecutionEnabled: config.STRIPE_TREASURY_LIVE_EXECUTION_ENABLED,
-  }).capability();
-
   return publicFundingDefinitions().map((definition) => {
-    if (definition.capabilityCode === 'USD_ACH') {
-      // Product authority is always outside provider readiness. Provider
-      // eligibility can never expose customer funding while the Neptlium
-      // economic gate remains closed.
-      if (!config.ENABLE_FIAT_DEPOSITS) {
-        return {
-          code: definition.capabilityCode,
-          asset: definition.asset,
-          network: definition.network,
-          state: 'DISABLED' as const,
-          reason: 'fiat_deposits_gate_closed',
-        };
-      }
-
-      return {
-        code: definition.capabilityCode,
-        asset: definition.asset,
-        network: definition.network,
-        state: stripe.usdAch,
-        ...(stripe.reason ? { reason: stripe.reason } : {}),
-      };
-    }
-
     if (definition.capabilityCode === 'USDC_BASE') {
       if (!config.ENABLE_CRYPTO_DEPOSITS) {
         return {
@@ -298,13 +265,13 @@ export async function handleFinancialRoute(
     const code = String(context.body.capability ?? '');
     const selected = capability(code);
     enabled(selected);
-    const amountAtomic = atomic(context.body.amount_atomic, code !== 'USD_ACH');
+    const amountAtomic = atomic(context.body.amount_atomic, true);
     const key = idempotencyKey(context);
     const canonicalInput = { capability: code, asset: selected.asset, network: selected.network, amount_atomic: amountAtomic ?? null };
     const result = await deps.repository.createFundingIntent({
       ownerId,
       asset: selected.asset,
-      ...(selected.network !== 'ACH' ? { network: selected.network } : {}),
+      network: selected.network,
       rail: code,
       ...(amountAtomic ? { amountAtomic } : {}),
       environment: 'LIVE',
@@ -381,10 +348,7 @@ export async function handleFinancialRoute(
     // gates are still reported explicitly so the client never confuses
     // unavailable infrastructure with a deliberately closed capability.
     const capabilities = liveFundingCapabilities(deps.config).map((item) => {
-      const productGateOpen =
-        item.code === 'USD_ACH'
-          ? deps.config.ENABLE_FIAT_WITHDRAWALS
-          : deps.config.ENABLE_CRYPTO_WITHDRAWALS;
+      const productGateOpen = deps.config.ENABLE_CRYPTO_WITHDRAWALS;
 
       return {
         ...item,
@@ -392,9 +356,7 @@ export async function handleFinancialRoute(
         state: 'DISABLED' as const,
         reason: productGateOpen
           ? 'outbound_execution_not_activated'
-          : item.code === 'USD_ACH'
-            ? 'fiat_withdrawals_gate_closed'
-            : 'crypto_withdrawals_gate_closed',
+          : 'crypto_withdrawals_gate_closed',
       };
     });
 

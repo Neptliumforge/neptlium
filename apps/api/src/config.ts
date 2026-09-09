@@ -56,10 +56,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   if (!Number.isInteger(webhookToleranceSeconds) || webhookToleranceSeconds < 1 || webhookToleranceSeconds > 3600)
     throw new Error('Invalid API configuration: WEBHOOK_TOLERANCE_SECONDS');
 
-  const stripeTreasuryEligibilityVerified = env.STRIPE_TREASURY_ELIGIBILITY_VERIFIED === 'true';
-  const stripeTreasuryLiveExecutionEnabled = env.STRIPE_TREASURY_LIVE_EXECUTION_ENABLED === 'true';
-  if (stripeTreasuryLiveExecutionEnabled && !stripeTreasuryEligibilityVerified)
-    throw new Error('Stripe Treasury live execution requires verified Treasury eligibility');
   const circleLiveCapabilityVerified = env.CIRCLE_LIVE_CAPABILITY_VERIFIED === 'true';
   const circleLiveExecutionEnabled = env.CIRCLE_LIVE_EXECUTION_ENABLED === 'true';
   if (circleLiveCapabilityVerified && CIRCLE_ENVIRONMENT !== 'production')
@@ -74,17 +70,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   const walletProvisioningEnabled = env.ENABLE_WALLET_PROVISIONING === 'true';
   const cryptoDepositsEnabled = env.ENABLE_CRYPTO_DEPOSITS === 'true';
   const cryptoWithdrawalsEnabled = env.ENABLE_CRYPTO_WITHDRAWALS === 'true';
-  const fiatDepositsEnabled = env.ENABLE_FIAT_DEPOSITS === 'true';
-  const fiatWithdrawalsEnabled = env.ENABLE_FIAT_WITHDRAWALS === 'true';
-  const conversionsEnabled = env.ENABLE_CONVERSIONS === 'true';
 
   const anyEconomicCapabilityEnabled =
     walletProvisioningEnabled ||
     cryptoDepositsEnabled ||
-    cryptoWithdrawalsEnabled ||
-    fiatDepositsEnabled ||
-    fiatWithdrawalsEnabled ||
-    conversionsEnabled;
+    cryptoWithdrawalsEnabled;
 
   if (anyEconomicCapabilityEnabled && !mainnetPermitted)
     throw new Error('Production economic capabilities require ENABLE_MAINNET=true');
@@ -106,21 +96,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   )
     throw new Error('Crypto withdrawals require verified Circle execution and Alchemy production capability');
 
-  if (
-    (fiatDepositsEnabled || fiatWithdrawalsEnabled) &&
-    (!stripeTreasuryEligibilityVerified || !stripeTreasuryLiveExecutionEnabled)
-  )
-    throw new Error('Fiat movement requires verified Stripe Treasury execution');
-
-  if (
-    conversionsEnabled &&
-    (!circleLiveCapabilityVerified ||
-      !circleLiveExecutionEnabled ||
-      !stripeTreasuryEligibilityVerified ||
-      !stripeTreasuryLiveExecutionEnabled)
-  )
-    throw new Error('Conversions require verified Circle and Stripe production execution');
-
   return {
     NODE_ENV: environment as Environment,
     API_HOST: env.API_HOST ?? '0.0.0.0', API_PORT: port, API_LOG_LEVEL: env.API_LOG_LEVEL ?? 'info', API_BUILD_ID: env.API_BUILD_ID ?? 'local',
@@ -135,17 +110,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     CIRCLE_API_KEY: env.CIRCLE_API_KEY, CIRCLE_ENTITY_SECRET: env.CIRCLE_ENTITY_SECRET, CIRCLE_ENVIRONMENT,
     CIRCLE_WALLET_SET_ID: env.CIRCLE_WALLET_SET_ID,
     STRIPE_SECRET_KEY: env.STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET: env.STRIPE_WEBHOOK_SECRET,
-    STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID: env.STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID,
-    STRIPE_TREASURY_ELIGIBILITY_VERIFIED: stripeTreasuryEligibilityVerified,
-    STRIPE_TREASURY_LIVE_EXECUTION_ENABLED: stripeTreasuryLiveExecutionEnabled,
     CIRCLE_LIVE_CAPABILITY_VERIFIED: circleLiveCapabilityVerified,
     CIRCLE_LIVE_EXECUTION_ENABLED: circleLiveExecutionEnabled,
     ENABLE_WALLET_PROVISIONING: walletProvisioningEnabled,
     ENABLE_CRYPTO_DEPOSITS: cryptoDepositsEnabled,
     ENABLE_CRYPTO_WITHDRAWALS: cryptoWithdrawalsEnabled,
-    ENABLE_FIAT_DEPOSITS: fiatDepositsEnabled,
-    ENABLE_FIAT_WITHDRAWALS: fiatWithdrawalsEnabled,
-    ENABLE_CONVERSIONS: conversionsEnabled,
     WEBHOOK_TOLERANCE_SECONDS: webhookToleranceSeconds,
     allowedOrigins: (
       env.API_ALLOWED_ORIGINS ??
@@ -156,7 +125,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     databaseConfigured: Boolean(SUPABASE_URL && env.SUPABASE_ANON_KEY && env.SUPABASE_SERVICE_ROLE_KEY),
     alchemyConfigured: Boolean(env.ALCHEMY_API_KEY && ALCHEMY_RPC_URL && ALCHEMY_ENVIRONMENT),
     circleConfigured: Boolean(circleCredentialsPresent && CIRCLE_ENVIRONMENT),
-    stripeTreasuryConfigured: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET && env.STRIPE_TREASURY_FINANCIAL_ACCOUNT_ID),
+    stripeConfigured: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET),
   };
 }
 export type Config = ReturnType<typeof loadConfig>;

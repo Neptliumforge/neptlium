@@ -8,7 +8,6 @@ const config = loadConfig({ NODE_ENV: 'test' });
 const ownerA = '00000000-0000-4000-8000-000000000001';
 const ownerB = '00000000-0000-4000-8000-000000000002';
 const ownerId = async () => ownerA;
-const enabledUsd = () => ({ code: 'USD_ACH', asset: 'USD', network: 'ACH', state: 'ENABLED' });
 const enabledUsdc = () => ({ code: 'USDC_BASE', asset: 'USDC', network: 'BASE', state: 'ENABLED' });
 const context = (method, path, body, key = 'idem-key-0001', query = '') => ({
   method,
@@ -23,7 +22,7 @@ test('live capabilities fail closed by default and XRP is explicit but unavailab
   const repo = new MemoryFinancialRepository();
   const response = await handleFinancialRoute(context('GET', '/v1/funding/capabilities'), { config, repository: repo, ownerId });
   assert.equal(response.data.custody_model, 'OMNIBUS');
-  for (const code of ['USD_ACH', 'USDC_BASE', 'ETH_BASE', 'BTC_BITCOIN', 'XRP_XRPL']) {
+  for (const code of ['USDC_BASE', 'ETH_BASE', 'BTC_BITCOIN', 'XRP_XRPL']) {
     const capability = response.data.capabilities.find((item) => item.code === code);
     assert.ok(capability);
     assert.notEqual(capability.state, 'ENABLED');
@@ -32,15 +31,15 @@ test('live capabilities fail closed by default and XRP is explicit but unavailab
 
 test('duplicate funding request is idempotent and conflicting replay is rejected', async () => {
   const repo = new MemoryFinancialRepository();
-  const deps = { config, repository: repo, ownerId, capabilityResolver: enabledUsd };
-  const first = await handleFinancialRoute(context('POST', '/v1/funding/intents', { capability: 'USD_ACH', amount_atomic: '1000' }), deps);
-  const second = await handleFinancialRoute(context('POST', '/v1/funding/intents', { capability: 'USD_ACH', amount_atomic: '1000' }), deps);
+  const deps = { config, repository: repo, ownerId, capabilityResolver: enabledUsdc };
+  const first = await handleFinancialRoute(context('POST', '/v1/funding/intents', { capability: 'USDC_BASE', amount_atomic: '1000' }), deps);
+  const second = await handleFinancialRoute(context('POST', '/v1/funding/intents', { capability: 'USDC_BASE', amount_atomic: '1000' }), deps);
   assert.equal(first.status, 201);
   assert.equal(second.status, 200);
   assert.equal(first.data.id, second.data.id);
   assert.equal(second.data.replayed, true);
   await assert.rejects(
-    () => handleFinancialRoute(context('POST', '/v1/funding/intents', { capability: 'USD_ACH', amount_atomic: '2000' }), deps),
+    () => handleFinancialRoute(context('POST', '/v1/funding/intents', { capability: 'USDC_BASE', amount_atomic: '2000' }), deps),
     (error) => error.code === 'idempotency_conflict',
   );
 });
@@ -116,8 +115,8 @@ test('transfer creation is server-gated and cannot be enabled by request payload
   const repo = new MemoryFinancialRepository();
   await assert.rejects(
     () => handleFinancialRoute(
-      context('POST', '/v1/treasury/transfers', { capability: 'USD_ACH', alias_id: 'alias', amount_atomic: '100', outbound_execution_verified: true }),
-      { config, repository: repo, ownerId, capabilityResolver: enabledUsd },
+      context('POST', '/v1/treasury/transfers', { capability: 'USDC_BASE', alias_id: 'alias', amount_atomic: '100', outbound_execution_verified: true }),
+      { config, repository: repo, ownerId, capabilityResolver: enabledUsdc },
     ),
     (error) => error.code === 'live_execution_disabled',
   );
@@ -128,8 +127,8 @@ test('verified active alias is required before a transfer request can be persist
   const alias = await repo.createAlias({ ownerId: await ownerId(), alias: 'dest-one', destinationType: 'wallet', destinationReference: '0xabc123' });
   await assert.rejects(
     () => handleFinancialRoute(
-      context('POST', '/v1/treasury/transfers', { capability: 'USD_ACH', alias_id: alias.id, amount_atomic: '100' }),
-      { config, repository: repo, ownerId, capabilityResolver: enabledUsd, transferRequestEnabled: true },
+      context('POST', '/v1/treasury/transfers', { capability: 'USDC_BASE', alias_id: alias.id, amount_atomic: '100' }),
+      { config, repository: repo, ownerId, capabilityResolver: enabledUsdc, transferRequestEnabled: true },
     ),
     (error) => error.code === 'destination_not_verified',
   );
@@ -137,12 +136,12 @@ test('verified active alias is required before a transfer request can be persist
   stored.verificationState = 'verified';
   stored.activationState = 'active';
   const created = await handleFinancialRoute(
-    context('POST', '/v1/treasury/transfers', { capability: 'USD_ACH', alias_id: alias.id, amount_atomic: '100' }),
-    { config, repository: repo, ownerId, capabilityResolver: enabledUsd, transferRequestEnabled: true },
+    context('POST', '/v1/treasury/transfers', { capability: 'USDC_BASE', alias_id: alias.id, amount_atomic: '100' }),
+    { config, repository: repo, ownerId, capabilityResolver: enabledUsdc, transferRequestEnabled: true },
   );
   const replay = await handleFinancialRoute(
-    context('POST', '/v1/treasury/transfers', { capability: 'USD_ACH', alias_id: alias.id, amount_atomic: '100' }),
-    { config, repository: repo, ownerId, capabilityResolver: enabledUsd, transferRequestEnabled: true },
+    context('POST', '/v1/treasury/transfers', { capability: 'USDC_BASE', alias_id: alias.id, amount_atomic: '100' }),
+    { config, repository: repo, ownerId, capabilityResolver: enabledUsdc, transferRequestEnabled: true },
   );
   assert.equal(created.status, 202);
   assert.equal(replay.status, 200);

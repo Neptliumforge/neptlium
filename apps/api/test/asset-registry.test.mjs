@@ -10,7 +10,7 @@ test('governed asset registry supports at least ten asset-network definitions wi
   assert.ok(governedAssetRegistry.length >= 10);
   assert.deepEqual(
     publicFundingDefinitions().map((definition) => definition.capabilityCode).sort(),
-    ['BTC_BITCOIN', 'ETH_BASE', 'USD_ACH', 'USDC_BASE', 'XRP_XRPL'].sort(),
+    ['BTC_BITCOIN', 'ETH_BASE', 'USDC_BASE', 'XRP_XRPL'].sort(),
   );
   for (const definition of governedAssetRegistry.filter((item) => !item.publiclyAddressable)) {
     assert.equal(definition.productionEnabled, false);
@@ -36,6 +36,5 @@ test('registry models rail differences rather than assuming EVM addresses', () =
   assert.equal(byCode.ETH_BASE.addressFormat, 'EVM');
   assert.equal(byCode.USDC_BASE.assetClass, 'TOKEN');
   assert.equal(byCode.XRP_XRPL.depositMethod, 'ADDRESS_WITH_MEMO_TAG');
-  assert.equal(byCode.USD_ACH.addressFormat, 'BANK_PROVIDER_REFERENCE');
-  assert.equal(byCode.USD_ACH.depositMethod, 'BANK_REFERENCE');
+  assert.equal('USD_ACH' in byCode, false);
 });
