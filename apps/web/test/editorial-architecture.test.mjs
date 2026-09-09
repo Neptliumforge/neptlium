@@ -30,8 +30,10 @@ const footer = read('components/site-footer.tsx');
 
 test('institutional public architecture covers every canonical editorial surface', () => {
   for (const phrase of [
-    'Capital,',
-    'understood before',
+    'Capital operating infrastructure',
+    'Capital should remain',
+    'intelligible as it moves',
+    'Clarity before consequence',
     'Capital Account',
     'Treasury',
     'Allocation',
@@ -53,6 +55,7 @@ test('institutional public architecture covers every canonical editorial surface
 test('public copy avoids unsupported institutional proof and promotional shorthand', () => {
   assert.doesNotMatch(publicCopy, /\bAUM\b|assets under management|customer count|transaction volume|guaranteed return|SOC\s*2|ISO\s*27001|licensed custodian|regulated bank|regulated broker/i);
   assert.doesNotMatch(publicCopy, /revolutioni[sz]e|supercharge|all-in-one|next-generation|seamless experience|AI-powered/i);
+  assert.doesNotMatch(publicCopy, /\bPredict\b/i);
 });
 
 test('research and press remain truthful when verified material is unavailable', () => {
