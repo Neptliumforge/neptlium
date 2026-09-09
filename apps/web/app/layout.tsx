@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import '../../../packages/ui/src/styles/brand.css';
 import './neptlium-visual-direction.css';
 import './mobile-navigation-fix.css';
 import './landing-v3.css';
