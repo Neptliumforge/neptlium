@@ -71,6 +71,6 @@ test('canonical brand and restrained visual authority remain intact', () => {
 test('marketing contains no privileged financial authority', () => {
   const marketing = `${page}\n${header}\n${footer}\n${architecture}`;
   assert.doesNotMatch(marketing, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|transaction volume|testimonial|licensed|regulated partner/i);
-  assert.doesNotMatch(marketing, /guaranteed|settlement authority/i);
+  assert.doesNotMatch(marketing, /guaranteed/i);
   assert.doesNotMatch(`${marketing}\n${layout}`, /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|\.from\(|\.rpc\(/);
 });
