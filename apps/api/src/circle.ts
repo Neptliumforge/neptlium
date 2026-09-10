@@ -1,19 +1,41 @@
-import { createRequire } from 'node:module';
+import { createHash, createRequire } from 'node:crypto';
 import { ApiError } from './errors.js';
 import type { CapitalProvider, CapitalEnvironment, CapitalNetwork, ProviderBalance, ProviderTransaction, ProviderWalletLink } from './providers.js';
 
 type CircleWallet = { id?: string; walletSetId?: string; accountType?: string; blockchain?: string; address?: string; state?: string };
+type CircleTransaction = Record<string, unknown> & { id?: string; state?: string };
 type CircleClient = {
   createWallets(input: Record<string, unknown>): Promise<{ data?: { wallets?: CircleWallet[] } }>;
   getWallet(input: { id: string }): Promise<{ data?: { wallet?: CircleWallet } }>;
   getWalletTokenBalance(input: { id: string }): Promise<{ data?: { tokenBalances?: Array<{ token?: { symbol?: string; blockchain?: string }; amount?: string }> } }>;
-  listTransactions(input: Record<string, unknown>): Promise<{ data?: { transactions?: Array<Record<string, unknown>> } }>;
-  getTransaction(input: { id: string }): Promise<{ data?: { transaction?: Record<string, unknown> } }>;
+  listTransactions(input: Record<string, unknown>): Promise<{ data?: { transactions?: CircleTransaction[] } }>;
+  getTransaction(input: { id: string }): Promise<{ data?: { transaction?: CircleTransaction } }>;
+  createTransaction(input: Record<string, unknown>): Promise<{ data?: CircleTransaction }>;
 };
 type CircleFactory = (input: { apiKey: string; entitySecret: string }) => CircleClient;
 
 const blockchainFor = (environment: CapitalEnvironment): CapitalNetwork => environment === 'production' ? 'BASE' : 'BASE-SEPOLIA';
+const usdcTokenAddressFor = (environment: CapitalEnvironment) =>
+  environment === 'production'
+    ? '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+    : '0x036CbD53842c5426634e7929541eC2318f3dCF7e';
+
 function safeProviderFailure(): ApiError { return new ApiError(503, 'provider_unavailable', 'Capital provider is temporarily unavailable'); }
+function providerRejected(): ApiError { return new ApiError(502, 'provider_rejected', 'Capital provider rejected the transfer request'); }
+function deterministicUuid(value: string): string {
+  const bytes = createHash('sha256').update(value).digest();
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = bytes.toString('hex');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+}
+function atomicToDecimal(amountAtomic: string, decimals = 6): string {
+  if (!/^\d+$/.test(amountAtomic) || BigInt(amountAtomic) <= 0n) throw new ApiError(422, 'validation_failed', 'Transfer amount must be a positive atomic integer');
+  const scale = 10n ** BigInt(decimals);
+  const whole = BigInt(amountAtomic) / scale;
+  const fraction = (BigInt(amountAtomic) % scale).toString().padStart(decimals, '0').replace(/0+$/, '');
+  return fraction ? `${whole}.${fraction}` : whole.toString();
+}
 function walletLink(wallet: CircleWallet, environment: CapitalEnvironment): ProviderWalletLink {
   const blockchain = blockchainFor(environment);
   if (!wallet.id || !wallet.address || wallet.blockchain !== blockchain || wallet.accountType !== 'EOA') throw safeProviderFailure();
@@ -51,9 +73,30 @@ export class CircleCapitalProvider implements CapitalProvider {
       return usdc?.amount === undefined ? [] : [{ asset: 'USDC', network, available: usdc.amount, observedAt: new Date().toISOString(), synchronizationState: 'provider_observed' }];
     } catch { throw safeProviderFailure(); }
   }
-  async createTransfer(): Promise<ProviderTransaction> {
+  async createTransfer(input: { wallet: ProviderWalletLink; idempotencyKey: string; asset: 'USDC'; network: CapitalNetwork; amount: string; destination: string }): Promise<ProviderTransaction> {
     if (!this.liveExecutionEnabled) throw new ApiError(403, 'provider_execution_disabled', 'Circle transfer execution is disabled');
-    throw new ApiError(503, 'provider_execution_unimplemented', 'Circle transfer submission is not implemented in this runtime');
+    if (!this.supports(input.asset, input.network) || input.wallet.environment !== this.environment || input.wallet.status !== 'live')
+      throw new ApiError(409, 'provider_capability_unavailable', 'Circle does not support this transfer capability');
+    try {
+      const response = await this.client.createTransaction({
+        idempotencyKey: deterministicUuid(input.idempotencyKey),
+        walletId: input.wallet.providerWalletId,
+        blockchain: input.network,
+        tokenAddress: usdcTokenAddressFor(this.environment),
+        destinationAddress: input.destination,
+        amount: [atomicToDecimal(input.amount)],
+        fee: { type: 'level', config: { feeLevel: 'MEDIUM' } },
+        refId: input.idempotencyKey.slice(0, 64),
+      });
+      const transaction = response.data;
+      if (!transaction?.id || typeof transaction.state !== 'string') throw safeProviderFailure();
+      return normalizeTransaction(transaction);
+    } catch (error) {
+      if (error instanceof ApiError) throw error;
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status && status >= 400 && status < 500) throw providerRejected();
+      throw safeProviderFailure();
+    }
   }
   async getTransfer(providerReference: string) { try { return normalizeTransaction((await this.client.getTransaction({ id: providerReference })).data?.transaction); } catch { throw safeProviderFailure(); } }
   async listTransactions(providerWalletId: string) { try { return ((await this.client.listTransactions({ walletIds: [providerWalletId] })).data?.transactions ?? []).map(normalizeTransaction); } catch { throw safeProviderFailure(); } }
