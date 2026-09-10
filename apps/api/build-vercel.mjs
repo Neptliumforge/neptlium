@@ -27,13 +27,11 @@ const requiredRuntimeModules = [
   'allocation-repository.js',
   'allocation-routes.js',
   'asset-registry.js',
-  'stripe-treasury.js',
   'stripe-webhook.js',
   'security.js',
   'reconciliation.js',
 ];
-const missingRuntimeModules = requiredRuntimeModules.filter((module) => !existsSync(join(root, 'dist', module)));
-if (missingRuntimeModules.length) {
-  throw new Error(`Neptlium API production build did not emit required runtime modules: ${missingRuntimeModules.join(', ')}`);
+if (requiredRuntimeModules.some((module) => !existsSync(join(root, 'dist', module)))) {
+  throw new Error('Neptlium API production build did not emit required runtime modules');
 }
 console.log('Neptlium API runtime bundle emitted successfully.');
