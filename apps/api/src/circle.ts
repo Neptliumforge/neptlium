@@ -22,11 +22,11 @@ const usdcTokenAddressFor = (environment: CapitalEnvironment) =>
     : '0x036CbD53842c5426634e7929541eC2318f3dCF7e';
 
 function safeProviderFailure(): ApiError { return new ApiError(503, 'provider_unavailable', 'Capital provider is temporarily unavailable'); }
-function providerRejected(): ApiError { return new ApiError(502, 'provider_rejected', 'Capital provider rejected the transfer request'); }
+function providerRejected(): ApiError { return new ApiError(502, 'provider_submission_failed', 'Capital provider rejected the transfer request'); }
 function deterministicUuid(value: string): string {
   const bytes = createHash('sha256').update(value).digest();
-  bytes[6] = (bytes[6] & 0x0f) | 0x40;
-  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  bytes[6] = ((bytes[6] ?? 0) & 0x0f) | 0x40;
+  bytes[8] = ((bytes[8] ?? 0) & 0x3f) | 0x80;
   const hex = bytes.toString('hex');
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
 }
