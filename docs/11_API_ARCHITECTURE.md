@@ -24,7 +24,9 @@ Route presence does not prove production capability. Circle webhook verification
 
 ## Auth boundary
 
-Public health/status/version routes do not establish user authority. Account, Capital Account, and wallet routes require a Supabase bearer token. The API validates it server-side with Supabase Auth and uses the returned user ID for repository ownership. `apps/app` forwards the current access token only from its server-only API client.
+Public health/status/version routes do not establish user authority. Customer and operator surfaces are Clerk-first. `apps/api` accepts `SUPABASE`, `DUAL`, or `CLERK` authentication modes and resolves an authenticated provider subject to the stable Neptlium principal before authorization when provider-independent identity storage is configured.
+
+During the identity transition, existing-account linking may require both a valid legacy Supabase session and a valid Clerk session. That legacy path is temporary compatibility infrastructure, not the canonical business identity authority.
 
 Service-role credentials are confined to the API/dedicated server clients. A bearer token, UI role, or caller-supplied owner ID never bypasses resource ownership checks.
 
@@ -65,8 +67,8 @@ Memory job/rate-limit implementations are local/test only. Production requires d
 2. Implement official provider webhook verifiers and durable inbox/job processing.
 3. Connect ledger posting and reconciliation through reviewed transactions.
 4. Replace direct admin financial status updates with privileged API commands.
-5. Introduce provider-independent principal resolution before Clerk session cutover.
-6. Add distributed rate-limit storage and operational monitoring.
+5. Complete Clerk-first runtime certification while retaining the legacy Supabase identity path only where continuity requires it.
+6. Consider `CLERK`-only API mode only after the dual-session transition has been explicitly certified.
 
 ## TARGET domains
 

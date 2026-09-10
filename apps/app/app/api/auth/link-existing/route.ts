@@ -4,10 +4,20 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://ayrgojoiprxyijeshika.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-  'sb_publishable_Xpfhj_p7EUi65DC4MCRQWQ_MD96l3oX';
+function supabaseConfig() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
+  if (!url || !publishableKey) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(parsed.hostname))) {
+      return null;
+    }
+    return { url: parsed.origin, publishableKey };
+  } catch {
+    return null;
+  }
+}
 
 function apiOrigin() {
   const configured = process.env.NEPTLIUM_API_URL ?? 'https://api.neptlium.com';
@@ -28,6 +38,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'authentication_required' }, { status: 401 });
   }
 
+  const supabase = supabaseConfig();
+  if (!supabase) {
+    return NextResponse.json({ error: 'legacy_auth_unavailable' }, { status: 503 });
+  }
+
   const body = (await request.json().catch(() => null)) as
     | { email?: unknown; password?: unknown }
     | null;
@@ -39,11 +54,11 @@ export async function POST(request: Request) {
 
   let legacyResponse: Response;
   try {
-    legacyResponse = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    legacyResponse = await fetch(`${supabase.url}/auth/v1/token?grant_type=password`, {
       method: 'POST',
       cache: 'no-store',
       headers: {
-        apikey: SUPABASE_PUBLISHABLE_KEY,
+        apikey: supabase.publishableKey,
         'content-type': 'application/json',
       },
       body: JSON.stringify({ email, password }),
