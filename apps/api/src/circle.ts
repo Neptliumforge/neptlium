@@ -1,4 +1,5 @@
-import { createHash, createRequire } from 'node:crypto';
+import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
 import { ApiError } from './errors.js';
 import type { CapitalProvider, CapitalEnvironment, CapitalNetwork, ProviderBalance, ProviderTransaction, ProviderWalletLink } from './providers.js';
 
