@@ -27,8 +27,8 @@ const requiredRuntimeModules = [
   'allocation-repository.js',
   'allocation-routes.js',
   'asset-registry.js',
-  // Stripe remains evidence/webhook infrastructure; no treasury execution module exists.
   'stripe-webhook.js',
+  'stripe-serverless.js',
   'security.js',
   'reconciliation.js',
 ];
