@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Brand } from './brand';
-import chrome from './site-chrome.module.css';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 
 const legalLinks = [
@@ -21,22 +20,22 @@ const socialLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className={chrome.footer} aria-label="Neptlium footer">
-      <div className={chrome.footerShell}>
-        <div className={chrome.footerArchitecture}>
-          <div className={chrome.footerIdentity}>
+    <footer className="elite-footer" aria-label="Neptlium footer">
+      <div className="elite-footer-shell">
+        <div className="elite-footer-architecture">
+          <div className="elite-footer-identity">
             <Brand />
-            <p className={chrome.footerStatement}>
+            <p className="elite-footer-statement">
               A capital operating environment for understanding, coordinating and governing what you own.
             </p>
           </div>
 
           {NAVIGATION.map((section) => (
-            <section className={chrome.footerColumn} key={section.label}>
-              <Link className={chrome.footerColumnTitle} href={section.href}>
+            <section className="elite-footer-column" key={section.label}>
+              <Link className="elite-footer-title" href={section.href}>
                 {section.label}
               </Link>
-              <div className={chrome.footerLinks}>
+              <div className="elite-footer-links">
                 {section.links
                   .filter((link) => link.href !== section.href)
                   .map((link) => (
@@ -48,12 +47,12 @@ export function SiteFooter() {
             </section>
           ))}
 
-          <section className={chrome.footerColumn}>
-            <span className={chrome.footerColumnTitle}>Socials</span>
-            <div className={chrome.footerLinks}>
+          <section className="elite-footer-column">
+            <span className="elite-footer-title">Socials</span>
+            <div className="elite-footer-links">
               {socialLinks.map((social) => (
                 <a
-                  className={chrome.socialLink}
+                  className="elite-social-link"
                   href={social.href}
                   key={social.href}
                   target="_blank"
@@ -67,9 +66,9 @@ export function SiteFooter() {
           </section>
         </div>
 
-        <div className={chrome.footerBase}>
+        <div className="elite-footer-base">
           <span>© {new Date().getFullYear()} Neptlium</span>
-          <nav className={chrome.legal} aria-label="Legal">
+          <nav className="elite-footer-legal" aria-label="Legal">
             {legalLinks.map((link) => (
               <Link key={link.href} href={link.href}>
                 {link.label}
