@@ -40,6 +40,14 @@ test('production visual system remains consolidated without retired global overr
   ]) assert.doesNotMatch(layout, new RegExp(retired.replace('.', '\\.')));
 });
 
+test('premium routes own the product visual layout rules they render', () => {
+  for (const selector of ['product-frame', 'operating-proof-grid', 'capital-state-grid', 'operating-proof-activity', 'capital-system-visual']) {
+    assert.match(marketingCss, new RegExp(selector), `Expected premium marketing styles for ${selector}`);
+  }
+  assert.match(marketingCss, /\.scope :global\(\.mp-dark \.mp-sticky-copy>p\)\{color:rgb\(245 243 238 \/ 68%\)\}/);
+  assert.match(marketingCss, /--mp-link:#086c64/);
+});
+
 test('production shell preserves responsive, reduced-motion and mobile overlay hardening', () => {
   assert.match(`${visualCss}\n${marketingCss}`, /prefers-reduced-motion:\s*reduce|prefers-reduced-motion:reduce/);
   assert.match(mobileCss, /100dvh/);
@@ -49,6 +57,11 @@ test('production shell preserves responsive, reduced-motion and mobile overlay h
   assert.match(mobile, /event\.key === 'Escape'/);
   assert.match(mobile, /aria-modal="true"/);
   assert.match(header, /createPortal/);
+});
+
+test('homepage header keeps acquisition visually primary over return sign-in', () => {
+  assert.match(header, /<Link href=\{SITE\.signInUrl\}>Sign In<\/Link>/);
+  assert.match(header, /className="elite-header-entry command-primary-action" href=\{SITE\.signUpUrl\}>Get Started/);
 });
 
 test('production public shell remains free of fabricated financial authority', () => {
