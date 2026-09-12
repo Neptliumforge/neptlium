@@ -2,18 +2,18 @@ export const SITE = {
   name: 'Neptlium',
   url: 'https://neptlium.com',
   domain: 'neptlium.com',
-  positioning: 'The operating system for capital.',
+  positioning: 'Capital, made clearer.',
   description:
-    'Neptlium is a capital operating platform designed to connect portfolio context, treasury, allocation, capital movement, governance and intelligence in one coherent operating environment.',
+    'Neptlium is a modern capital platform for understanding portfolio context, funding, transactions, allocation, reporting and governed financial activity in one coherent environment.',
   supportEmail: 'support@neptlium.com',
   appOrigin: 'https://app.neptlium.com',
   accessUrl: 'https://app.neptlium.com/auth/sign-up',
   publicAccessUrl: 'https://app.neptlium.com/auth/sign-up',
   signInUrl: 'https://app.neptlium.com/auth/sign-in',
   signUpUrl: 'https://app.neptlium.com/auth/sign-up',
-  publicAccessLabel: 'Enter Neptlium',
+  publicAccessLabel: 'Get Started',
   exploreUrl: '/platform',
-  exploreLabel: 'Explore platform',
+  exploreLabel: 'Explore the Platform',
   copyright: '© 2026 Neptlium. All rights reserved.',
 } as const;
 
@@ -21,7 +21,9 @@ export const DISCLOSURES = {
   general:
     'Information presented by Neptlium is for informational purposes and does not constitute investment advice.',
   investment:
-    'Financial and digital-asset activity involves risk, including possible loss of principal. Availability and consequential activity depend on applicable providers, infrastructure, permissions and operating state.',
+    'Investing and digital-asset activity involve risk, including possible loss of principal. Product, funding and transaction availability depend on applicable account, provider, infrastructure, eligibility and operating state.',
   modeling:
     'Modeled, illustrative and proposed states are not executed outcomes. Modeling does not move capital.',
+  availability:
+    'Capabilities described on this website may depend on account eligibility, supported infrastructure and current product availability. A described workflow does not imply that every rail, asset or investment is available to every user.',
 } as const;
