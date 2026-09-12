@@ -1,0 +1,7 @@
+# Gate 03 retirement guard only, not a complete production configuration.
+# Keep process-deposit absent. Do not bulk deploy or push this as global config.
+project_id = "neptlium"
+
+[functions.process-deposit]
+verify_jwt = true
+entrypoint = "./functions/process-deposit/index.ts"
