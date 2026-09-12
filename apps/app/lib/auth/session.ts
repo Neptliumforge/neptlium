@@ -3,14 +3,25 @@ import { hasRole, type Role } from "@neptlium/lib/rbac";
 import { resolveRole } from "@/components/security/resolveRole";
 import { ApiClientError, getAccountContext } from "@/lib/api/client";
 
-export async function getCurrentUser() {
+export interface SessionUser {
+  readonly id: string;
+  readonly email: string | null;
+}
+
+export async function getCurrentUser(): Promise<SessionUser | null> {
   const session = await auth();
   if (!session.userId) return null;
-  const user = await currentUser();
-  return {
-    id: session.userId,
-    email: user?.primaryEmailAddress?.emailAddress ?? null,
-  };
+
+  let email: string | null = null;
+  try {
+    const user = await currentUser();
+    email = user?.primaryEmailAddress?.emailAddress ?? null;
+  } catch {
+    // The Clerk session remains authoritative even when profile hydration is
+    // temporarily unavailable. Do not convert that condition into a sign-out.
+  }
+
+  return { id: session.userId, email };
 }
 
 export interface SessionProfile {
@@ -28,8 +39,8 @@ export interface SessionProfile {
  * Account/profile business state is resolved through api.neptlium.com.
  * Clerk is the application session authority. Financial ownership resolves in apps/api.
  */
-export async function getCurrentProfile(): Promise<SessionProfile | null> {
-  const user = await getCurrentUser();
+export async function getCurrentProfile(existingUser?: SessionUser): Promise<SessionProfile | null> {
+  const user = existingUser ?? await getCurrentUser();
   if (!user) return null;
 
   try {

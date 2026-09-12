@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { hasRole, type Role } from "@neptlium/lib/rbac";
 import { resolveRole } from "@/components/security/resolveRole";
-import { getCurrentProfile, getCurrentUser } from "./session";
+import { getCurrentProfile, getCurrentUser, type SessionProfile, type SessionUser } from "./session";
 
-export async function requireUser() {
+export async function requireUser(): Promise<SessionUser> {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -13,20 +13,29 @@ export async function requireUser() {
   return user;
 }
 
+function fallbackProfile(user: SessionUser): SessionProfile {
+  return {
+    id: user.id,
+    email: user.email,
+    fullName: null,
+    displayName: null,
+    investorType: null,
+    organizationId: null,
+    complianceStatus: null,
+    provisionedAt: null,
+  };
+}
+
 /**
- * Gates access to the dashboard on account provisioning having completed.
- * A confirmed user with no provisioned_at yet is mid intake — send them back
- * to the onboarding wizard instead of an incomplete dashboard.
+ * Dashboard rendering must never treat an unavailable application profile as
+ * an authentication failure. Clerk owns the session boundary; account/profile
+ * state is optional presentation context and can recover independently.
  */
 export async function requireProvisionedUser() {
   const user = await requireUser();
-  const profile = await getCurrentProfile();
+  const profile = await getCurrentProfile(user).catch(() => null);
 
-  if (!profile?.provisionedAt) {
-    redirect("/onboarding");
-  }
-
-  return { user, profile };
+  return { user, profile: profile ?? fallbackProfile(user) };
 }
 
 export async function requireRole(minRole: Role) {

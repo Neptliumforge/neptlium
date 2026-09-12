@@ -17,7 +17,7 @@ export default async function RootPage() {
         <SignIn
           routing="hash"
           signUpUrl="/auth/sign-up"
-          fallbackRedirectUrl="/dashboard"
+          fallbackRedirectUrl="/auth/complete"
           appearance={{ elements: {
             rootBox: 'w-full',
             cardBox: 'w-full shadow-none',
