@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
+import { ArrowRight, ChevronDown, Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Brand } from './brand';
+import { MobileNavigation } from './mobile-navigation';
 import chrome from './site-chrome.module.css';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
@@ -129,11 +130,8 @@ export function SiteHeader() {
   const isHome = path === '/';
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileSection, setMobileSection] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
-  const close = useRef<HTMLButtonElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -144,118 +142,10 @@ export function SiteHeader() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    setMobileOpen(false);
-    setMobileSection(null);
-  }, [path]);
-
-  useEffect(() => {
-    if (!mobileOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    close.current?.focus();
-
-    const keys = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setMobileOpen(false);
-        return;
-      }
-      if (event.key !== 'Tab') return;
-
-      const nodes = panel.current?.querySelectorAll<HTMLElement>('a[href],button:not([disabled])');
-      if (!nodes?.length) return;
-
-      const first = nodes[0];
-      const last = nodes[nodes.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', keys);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', keys);
-      trigger.current?.focus();
-    };
-  }, [mobileOpen]);
+  useEffect(() => setMobileOpen(false), [path]);
 
   const mobileNavigation = mobileOpen ? (
-    <div className="mobile-command-wrap" role="dialog" aria-modal="true" aria-label="Navigation">
-      <div id="mobile-command-sheet" className="mobile-command-sheet" ref={panel}>
-        <div className="mobile-command-head">
-          <Brand tone="current" />
-          <button
-            ref={close}
-            type="button"
-            aria-label="Close navigation"
-            onClick={() => setMobileOpen(false)}
-          >
-            <X aria-hidden="true" />
-          </button>
-        </div>
-
-        <nav className="mobile-command-nav" aria-label="Mobile navigation">
-          {NAVIGATION.map((item) => {
-            const expandable = item.links.length > 1 || item.links[0]?.href !== item.href;
-            const expanded = mobileSection === item.label;
-            const controls = `mobile-${item.label.toLowerCase()}`;
-
-            return (
-              <section key={item.label} data-expanded={expanded ? 'true' : 'false'}>
-                <div className="mobile-domain-row">
-                  <Link href={item.href} aria-current={path === item.href ? 'page' : undefined}>
-                    {item.label}
-                  </Link>
-                  {expandable ? (
-                    <button
-                      type="button"
-                      aria-expanded={expanded}
-                      aria-controls={controls}
-                      aria-label={`${expanded ? 'Hide' : 'Show'} ${item.label} links`}
-                      onClick={() => setMobileSection(expanded ? null : item.label)}
-                    >
-                      <ChevronDown aria-hidden="true" />
-                    </button>
-                  ) : null}
-                </div>
-
-                {expandable ? (
-                  <div id={controls} hidden={!expanded} className="mobile-domain-children">
-                    {item.links
-                      .filter((link) => link.href !== item.href)
-                      .map((link) => (
-                        <Link
-                          href={link.href}
-                          key={link.href}
-                          aria-current={path === link.href ? 'page' : undefined}
-                        >
-                          <strong>{link.label}</strong>
-                          <small>{link.description}</small>
-                        </Link>
-                      ))}
-                  </div>
-                ) : null}
-              </section>
-            );
-          })}
-        </nav>
-
-        <div className="mobile-command-actions" aria-label="Primary actions">
-          <Link className="mobile-explore-action" href="/platform">
-            Explore platform
-          </Link>
-          <Link className={chrome.mobileEntryAction} href={SITE.publicAccessUrl}>
-            {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
-          </Link>
-        </div>
-      </div>
-    </div>
+    <MobileNavigation path={path} onClose={() => setMobileOpen(false)} triggerRef={trigger} />
   ) : null;
 
   return (
@@ -276,21 +166,26 @@ export function SiteHeader() {
 
           <div className="command-actions">
             <Link className={chrome.entryAction} href={SITE.publicAccessUrl}>
-              {SITE.publicAccessLabel} <ArrowRight aria-hidden="true" />
+              {SITE.publicAccessLabel}
             </Link>
           </div>
 
-          <button
-            ref={trigger}
-            className="command-mobile-trigger"
-            type="button"
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-command-sheet"
-            aria-label="Open navigation"
-            onClick={() => setMobileOpen(true)}
-          >
-            <Menu aria-hidden="true" />
-          </button>
+          <div className={chrome.mobileHeaderActions}>
+            <Link className={chrome.mobileHeaderEntry} href={SITE.publicAccessUrl}>
+              {SITE.publicAccessLabel}
+            </Link>
+            <button
+              ref={trigger}
+              className={chrome.mobileMenuTrigger}
+              type="button"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-command-sheet"
+              aria-label="Open navigation"
+              onClick={() => setMobileOpen(true)}
+            >
+              <Menu aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </header>
 
