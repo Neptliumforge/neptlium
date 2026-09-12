@@ -202,3 +202,30 @@ These source-contract failures follow independent main marketing/header changes,
 including the known aria-modal and body-scroll-lock header-only assertions.
 They are not retirement failures. CI publication/results are maintained in the
 new draft PR. Required retirement tests must pass before final completion.
+
+## Final publication and verdict
+
+[Draft PR #66](https://github.com/Neptliumforge/neptlium/pull/66) targets main
+and contains only the six Gate 03 files. Implementation/evidence commit:
+`ceb3d69643109b8d2060151833abc23fdc8926ed`. No earlier remediation branch
+commits are ahead of main. Working tree/stashes and PRs #62/#64/#65 were preserved.
+
+[Actions run 34706794500](https://github.com/Neptliumforge/neptlium/actions/runs/34706794500)
+passed retirement validation (7/7), UI/Web typecheck and lint. Web tests failed
+exactly the eleven independently reproduced main assertions (44/55); build was
+NOT RUN. It tested a merge with newer main
+`e36ab03f1663afafe5f7bea05d1749dd50c2b54f`. A fresh fetch and isolated worktree
+at that exact main SHA reproduced the identical eleven failures. Main's changes
+since the Gate 03 starting SHA affect only platform/products marketing pages;
+its full tracked caller scan remains empty. No Gate 03-specific CI defect was
+found. Documentation-only final-head check results are recorded in the PR.
+
+Gate 03 COMPLETE: the specific legacy command authority is absent/non-callable;
+its real behavior and dependencies were inspected; no irreplaceable legitimate
+caller was found; all five harmless negative requests returned NOT_FOUND; all
+fourteen table counts/fingerprints match; no alternate copy/delegate remains;
+the isolated guard/tests are published with passing retirement CI. The separate
+signed-event Stripe direct-credit path is explicitly Gate 04's responsibility
+and has not been changed, enabled, invoked or certified here. PR #66 stays draft
+and unmerged. No canonical-main integration or platform readiness is claimed.
+No Gate 04 implementation was started.
