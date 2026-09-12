@@ -65,9 +65,9 @@ export function SiteHeader() {
       <div className="nav-shell">
         <Brand tone={isHome ? 'teal' : 'current'} />
         <nav className="desktop-command-nav" aria-label="Primary navigation">{NAVIGATION.map((item) => <DesktopDisclosure item={item} path={path} key={item.label} />)}</nav>
-        <div className="command-actions marketing-account-actions">
+        <div className="command-actions">
           <Link className="elite-header-entry" href={SITE.signInUrl}>Sign In</Link>
-          <Link className="elite-header-primary" href={SITE.signUpUrl}>Get Started</Link>
+          <Link className="command-primary-action" href={SITE.signUpUrl}>Get Started</Link>
         </div>
         <div className="elite-header-actions">
           <Link className="elite-header-entry" href={SITE.signInUrl}>Sign In</Link>
