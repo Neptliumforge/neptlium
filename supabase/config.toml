@@ -1,0 +1,8 @@
+# Gate 01 only. Never use this minimal local configuration to push remote config.
+project_id = "neptlium"
+
+# Retired compatibility endpoint: keep gateway authentication enabled and deploy
+# only the tracked tombstone. Never deploy with --no-verify-jwt.
+[functions.process-withdraw]
+verify_jwt = true
+entrypoint = "./functions/process-withdraw/index.ts"
