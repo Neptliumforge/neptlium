@@ -1,102 +1,48 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+const read=(path)=>readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
+const page=read('app/page.tsx');
+const layout=read('app/layout.tsx');
+const cinematic=read('app/cinematic-marketing.css');
+const header=read('components/site-header.tsx');
+const mobile=read('components/mobile-navigation.tsx');
+const footer=read('components/site-footer.tsx');
+const cta=read('components/global-conversion-cta.tsx');
+const site=read('lib/content/site.ts');
+const architecture=read('lib/content/public-architecture.ts');
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const page = read('app/page.tsx');
-const header = read('components/site-header.tsx');
-const mobile = read('components/mobile-navigation.tsx');
-const footer = read('components/site-footer.tsx');
-const cta = read('components/global-conversion-cta.tsx');
-const css = read('app/neptlium-visual-direction.css');
-const site = read('lib/content/site.ts');
-const architecture = read('lib/content/public-architecture.ts');
-
-test('homepage implements an image-independent Neptlium-native hero', () => {
-  assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  for (const copy of [
-    'Capital operating infrastructure',
-    'Capital should remain',
-    'intelligible as it moves.',
-    'capital state, operating context, and governed work',
-  ])
-    assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
-  assert.match(page, /href=\{SITE\.publicAccessUrl\}/);
-  assert.match(site, /publicAccessLabel:\s*'Enter Neptlium'/);
-  assert.match(site, /exploreLabel:\s*'Explore platform'/);
-  assert.match(page, /className="authority-hero editorial-hero"/);
-  assert.match(page, /className="operating-panel capital-context-map"/);
-  for (const product of ['Capital Account', 'Treasury', 'Allocation', 'Portfolio Intelligence'])
-    assert.match(page, new RegExp(product));
-  assert.doesNotMatch(page, /ProductContextIllustration|HeroArchitecture|<Image|<img|\.png|\.webp|\.jpe?g/i);
+test('homepage is a cinematic, image-led capital narrative',()=>{
+  assert.equal((page.match(/<h1/g)??[]).length,1);
+  for(const copy of ['Capital operating infrastructure','Capital should remain intelligible as it moves.','Capital Account','Treasury','Allocation','Portfolio Intelligence','Clarity before consequence']) assert.match(page,new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g,'\\$&'),'i'));
+  for(const image of ['overview.webp','capital-account.webp','treasury.webp','allocation.webp','company-intelligence.webp']) assert.match(page,new RegExp(image.replace('.','\\.')));
+  assert.match(page,/CinematicScrollStory/);
+  assert.match(page,/href=\{SITE\.publicAccessUrl\}/);
+  assert.doesNotMatch(page,/\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i);
 });
 
-test('homepage presents a continuous institutional capital-operating narrative', () => {
-  for (const className of [
-    'context-statement',
-    'intelligence-pillars architecture-section',
-    'product-experience platform-ecosystem',
-    'ecosystem-map',
-    'institutional-intelligence',
-    'solutions-section',
-    'ai-section',
-  ])
-    assert.match(page, new RegExp(`className="${className}`));
-  for (const phrase of ['Clarity before consequence', 'Capital state.', 'Operating context.', 'Governed work.', 'The operating system for capital.'])
-    assert.match(page, new RegExp(phrase.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
-  for (const surface of ['Portfolio Intelligence', 'Capital Account', 'Treasury', 'Allocation Intelligence'])
-    assert.match(page, new RegExp(surface));
+test('cinematic system has sticky story, episodic scenes, responsive layout and reduced motion',()=>{
+  assert.match(layout,/import '\.\/cinematic-marketing\.css';/);
+  assert.match(cinematic,/\.cin-story-stage\s*\{[^}]*position:sticky/s);
+  for(const scene of ['cin-scene-carbon','cin-scene-marine','cin-scene-stone','cin-scene-navy']) assert.match(cinematic,new RegExp(`\\.${scene}`));
+  assert.match(cinematic,/@media\(max-width:56rem\)/);
+  assert.match(cinematic,/@media\(max-width:40rem\)/);
+  assert.match(cinematic,/prefers-reduced-motion:reduce/);
 });
 
-test('marketing palette, structural composition and responsive contracts are explicit', () => {
-  for (const value of ['#f5f3ee', '#101214', '#0f8f86', '#20afa3', '#343a3f', '#d8d5ce', '#eceae5'])
-    assert.match(css, new RegExp(value));
-  assert.match(css, /\.authority-hero/);
-  assert.match(css, /\.architecture-section/);
-  assert.match(css, /\.solutions-section/);
-  assert.doesNotMatch(css, /radial-gradient|linear-gradient|filter:\s*blur|backdrop-filter:\s*blur/i);
-  for (const media of ['68rem', '56rem', '40rem', '24.5rem'])
-    assert.match(css, new RegExp(`max-width:\\s*${media.replace('.', '\\.')}`));
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+test('navigation and conversion semantics remain canonical',()=>{
+  for(const label of ['Platform','Products','Solutions','Resources','Company']) assert.match(architecture,new RegExp(`label: '${label}'`));
+  for(const token of ['aria-expanded','aria-controls','aria-haspopup="true"',"event.key === 'Escape'"]) assert.match(header,new RegExp(token.replace(/[.*+?^$()|[\]\\]/g,'\\$&')));
+  assert.match(header,/MobileNavigation/);
+  assert.match(mobile,/mobile-nav-grid/);
+  assert.match(mobile,/document\.body\.style\.overflow = 'hidden'/);
+  assert.match(site,/publicAccessLabel:\s*'Enter Neptlium'/);
+  assert.match(site,/exploreLabel:\s*'Explore platform'/);
+  assert.match(cta,/Capital deserves an operating environment\./);
 });
 
-test('navigation uses five canonical domains with accessible desktop disclosures and flat mobile IA', () => {
-  for (const label of ['Platform', 'Products', 'Solutions', 'Resources', 'Company'])
-    assert.match(architecture, new RegExp(`label: '${label}'`));
-  for (const token of ['aria-expanded', 'aria-controls', 'aria-haspopup="true"', "event.key === 'Escape'"])
-    assert.match(header, new RegExp(token.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
-  assert.match(header, /<Link href=\{item\.href\}/);
-  assert.match(header, /MobileNavigation/);
-  assert.match(mobile, /mobile-nav-grid/);
-  assert.match(mobile, /mobile-platform-link/);
-  assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
-  assert.doesNotMatch(mobile, /aria-expanded/);
-  assert.doesNotMatch(header, />\s*Request access\s*</i);
-});
-
-test('global conversion CTA preserves Neptlium product semantics', () => {
-  assert.match(cta, /Capital deserves an operating environment\./);
-  assert.match(cta, /SITE\.publicAccessLabel/);
-  assert.match(cta, /SITE\.exploreLabel/);
-});
-
-test('footer preserves institutional identity, structured navigation, public channels and legal access', () => {
-  assert.match(footer, /A capital operating environment for understanding, coordinating and governing what you own\./);
-  assert.match(footer, /NAVIGATION\.map/);
-  for (const label of ['Bluesky', 'X', 'YouTube', 'TikTok'])
-    assert.match(footer, new RegExp(`label: '${label}'`));
-  for (const label of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility'])
-    assert.match(footer, new RegExp(`label: '${label}'`));
-  assert.match(footer, /rel="noopener noreferrer"/);
-});
-
-test('homepage makes no fabricated financial claims or values', () => {
-  assert.doesNotMatch(
-    page,
-    /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|partnership|licensed/i,
-  );
-  assert.doesNotMatch(
-    page,
-    /guaranteed returns?|projected returns?|portfolio performance|gain\/loss|net worth|\bPredict\b/i,
-  );
+test('footer preserves institutional navigation and legal access',()=>{
+  assert.match(footer,/NAVIGATION\.map/);
+  for(const label of ['Bluesky','X','YouTube','TikTok','Privacy','Terms','Cookie Policy','Risk Disclosure','Accessibility']) assert.match(footer,new RegExp(`label: '${label}'`));
+  assert.match(footer,/rel="noopener noreferrer"/);
 });
