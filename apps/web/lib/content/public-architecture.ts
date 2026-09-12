@@ -43,7 +43,7 @@ export const RESOURCES = [
 ] as const satisfies readonly NavigationLink[];
 
 export const COMPANY = [
-  { label: 'About', href: '/about', description: 'Why Neptlium exists and the operating principles behind the platform.' },
+  { label: 'Company', href: '/company', description: 'Neptlium’s mission, operating philosophy and long-term direction.' },
   { label: 'Contact', href: '/contact', description: 'Start a conversation with Neptlium.' },
 ] as const satisfies readonly NavigationLink[];
 
@@ -85,7 +85,7 @@ export const NAVIGATION = [
   },
   {
     label: 'Company',
-    href: '/about',
+    href: '/company',
     description: 'Neptlium’s purpose and institutional information.',
     links: COMPANY,
   },
@@ -95,7 +95,7 @@ export const INDEXABLE_ROUTES = [
   '/', '/platform', '/investments', '/insights',
   '/products', '/products/capital-account', '/products/treasury', '/products/allocation', '/products/portfolio-intelligence',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
-  '/company', '/about', '/learn', '/security', '/trust', '/contact', '/accessibility',
+  '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
 ] as const;
 
 export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
@@ -108,13 +108,15 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/products/treasury': 'canonical-indexable',
   '/products/allocation': 'canonical-indexable',
   '/products/portfolio-intelligence': 'canonical-indexable',
+  '/products/performance': 'public-supporting-noindex',
+  '/products/capital-universe': 'public-supporting-noindex',
   '/solutions': 'canonical-indexable',
   '/solutions/capital-visibility': 'canonical-indexable',
   '/solutions/treasury-coordination': 'canonical-indexable',
   '/solutions/allocation-workflows': 'canonical-indexable',
   '/solutions/governance-control': 'canonical-indexable',
   '/company': 'canonical-indexable',
-  '/about': 'canonical-indexable',
+  '/about': 'legacy-redirect',
   '/learn': 'canonical-indexable',
   '/security': 'canonical-indexable',
   '/trust': 'canonical-indexable',
