@@ -3,8 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 const read=(path)=>readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
 const page=read('app/page.tsx');
-const layout=read('app/layout.tsx');
-const cinematic=read('app/cinematic-marketing.css');
+const marketing=read('app/marketing-platform.module.css');
 const header=read('components/site-header.tsx');
 const mobile=read('components/mobile-navigation.tsx');
 const footer=read('components/site-footer.tsx');
@@ -12,37 +11,35 @@ const cta=read('components/global-conversion-cta.tsx');
 const site=read('lib/content/site.ts');
 const architecture=read('lib/content/public-architecture.ts');
 
-test('homepage is a cinematic, image-led capital narrative',()=>{
+test('homepage is an institutional investor narrative with truthful product visualizations',()=>{
   assert.equal((page.match(/<h1/g)??[]).length,1);
-  for(const copy of ['Capital operating infrastructure','Capital should remain intelligible as it moves.','Capital Account','Treasury','Allocation','Portfolio Intelligence','Clarity before consequence']) assert.match(page,new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g,'\\$&'),'i'));
-  for(const image of ['overview.webp','capital-account.webp','treasury.webp','allocation.webp','company-intelligence.webp']) assert.match(page,new RegExp(image.replace('.','\\.')));
-  assert.match(page,/CinematicScrollStory/);
-  assert.match(page,/href=\{SITE\.publicAccessUrl\}/);
+  for(const copy of ['Capital, made clearer.','Institutional trust','Investment experience','Portfolio intelligence','Funding infrastructure','Investor reporting']) assert.match(page,new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g,'\\$&'),'i'));
+  for(const visual of ['OperatingEnvironmentVisual','CapitalSystemVisual','PortfolioVisual','CapitalAccountVisual','SecurityFlowVisual']) assert.match(page,new RegExp(visual));
   assert.doesNotMatch(page,/\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i);
 });
 
-test('cinematic system has sticky story, episodic scenes, responsive layout and reduced motion',()=>{
-  assert.match(layout,/import '\.\/cinematic-marketing\.css';/);
-  assert.match(cinematic,/\.cin-story-stage\s*\{[^}]*position:sticky/s);
-  for(const scene of ['cin-scene-carbon','cin-scene-marine','cin-scene-stone','cin-scene-navy']) assert.match(cinematic,new RegExp(`\\.${scene}`));
-  assert.match(cinematic,/@media\(max-width:56rem\)/);
-  assert.match(cinematic,/@media\(max-width:40rem\)/);
-  assert.match(cinematic,/prefers-reduced-motion:reduce/);
+test('premium route styling is scoped, responsive and reduced-motion aware',()=>{
+  assert.match(page,/marketing-platform\.module\.css/);
+  for(const token of ['#f5f3ee','#101214','#0f8f86','#20afa3','#343a3f','#d8d5ce','#eceae5']) assert.match(marketing,new RegExp(token,'i'));
+  assert.match(marketing,/@media\(max-width:64rem\)/);
+  assert.match(marketing,/@media\(max-width:48rem\)/);
+  assert.match(marketing,/prefers-reduced-motion:reduce/);
+  assert.doesNotMatch(marketing,/backdrop-filter|filter:\s*blur|radial-gradient/i);
 });
 
-test('navigation and conversion semantics remain canonical',()=>{
-  for(const label of ['Platform','Products','Solutions','Resources','Company']) assert.match(architecture,new RegExp(`label: '${label}'`));
+test('navigation and conversion semantics match the investor architecture',()=>{
+  for(const label of ['Platform','Investments','Insights','Security','Company']) assert.match(architecture,new RegExp(`label: '${label}'`));
   for(const token of ['aria-expanded','aria-controls','aria-haspopup="true"',"event.key === 'Escape'"]) assert.match(header,new RegExp(token.replace(/[.*+?^$()|[\]\\]/g,'\\$&')));
   assert.match(header,/MobileNavigation/);
   assert.match(mobile,/mobile-nav-grid/);
   assert.match(mobile,/document\.body\.style\.overflow = 'hidden'/);
-  assert.match(site,/publicAccessLabel:\s*'Enter Neptlium'/);
-  assert.match(site,/exploreLabel:\s*'Explore platform'/);
-  assert.match(cta,/Capital deserves an operating environment\./);
+  assert.match(site,/publicAccessLabel:\s*'Get Started'/);
+  assert.match(site,/exploreLabel:\s*'Explore the Platform'/);
+  assert.match(cta,/Build a clearer view of your capital\./);
 });
 
-test('footer preserves institutional navigation and legal access',()=>{
-  assert.match(footer,/NAVIGATION\.map/);
-  for(const label of ['Bluesky','X','YouTube','TikTok','Privacy','Terms','Cookie Policy','Risk Disclosure','Accessibility']) assert.match(footer,new RegExp(`label: '${label}'`));
+test('footer preserves investor, account and legal access',()=>{
+  for(const label of ['Overview','Investments','Funding','Security','About','Insights','Contact','Sign In','Create Account']) assert.match(footer,new RegExp(label));
+  for(const label of ['Bluesky','X','YouTube','TikTok','Privacy','Terms','Cookie Policy','Risk Disclosure','Accessibility']) assert.match(footer,new RegExp(label));
   assert.match(footer,/rel="noopener noreferrer"/);
 });
