@@ -29,6 +29,7 @@ const requiredRuntimeModules = [
   'asset-registry.js',
   'stripe-webhook.js',
   'stripe-serverless.js',
+  'stripe-subscription.js',
   'security.js',
   'reconciliation.js',
 ];
