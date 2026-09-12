@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { assertProductionRuntimeConfig } from '@/lib/runtime-config';
 import "./global.css";
 import "./dashboard-v2.css";
+import "./investment-dashboard.css";
 
 assertProductionRuntimeConfig();
 
