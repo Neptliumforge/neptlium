@@ -1,6 +1,6 @@
 # Neptlium Public Marketing Audit — 2026-09-12
 
-**Scope:** `apps/web` and the public marketing architecture  
+**Scope:** `apps/web` and the public marketing architecture
 **Branch:** `web/premium-marketing-rebuild`
 
 ## Current implementation inspected
