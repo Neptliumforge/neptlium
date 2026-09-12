@@ -3,6 +3,7 @@ import './globals.css';
 import './neptlium-visual-direction.css';
 import './mobile-navigation-fix.css';
 import './landing-v3.css';
+import './elite-shell.css';
 import { SiteHeader } from '@/components/site-header';
 import { GlobalConversionCta } from '@/components/global-conversion-cta';
 import { SiteFooter } from '@/components/site-footer';
