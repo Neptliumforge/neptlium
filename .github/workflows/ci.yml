@@ -12,6 +12,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate-stripe-ingress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git diff --check "$(git merge-base HEAD origin/main)" HEAD
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @neptlium/api typecheck
+      - run: pnpm --filter @neptlium/api lint
+      - run: pnpm --filter @neptlium/api test
+      - run: pnpm --filter @neptlium/api vercel-build
+
   validate-web:
     runs-on: ubuntu-latest
     timeout-minutes: 20
