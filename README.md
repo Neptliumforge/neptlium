@@ -1,27 +1,109 @@
-# Neptlium
+# NEPTLIUM
 
-Production monorepo for the Neptlium Capital Operating Platform.
+NEPTLIUM is the capital operating platform monorepo for Web, App, Admin, API, shared packages, Supabase data-plane, provider integrations, ledger, and reconciliation.
 
-**Canonical repository:** `Neptliumforge/neptlium`
+> **Repository state: PRODUCTION REMEDIATION IN PROGRESS**
+>
+> The repository is not authorized to describe the financial platform as production-complete until every gate in `docs/15_PRODUCTION_READINESS_AUDIT.md` is completed with evidence. Source presence, green builds, deployed schema, configured providers, or UI availability do not by themselves prove safe financial execution.
 
-## Applications
+## Canonical surfaces
 
-| Workspace | Domain | Responsibility |
+| Workspace | Domain | Authority |
 | --- | --- | --- |
-| `apps/web` | `neptlium.com` | Public institutional marketing and information. Editorial/visual authority is independent from engineering build state; no privileged financial authority. |
-| `apps/app` | `app.neptlium.com` | Authenticated customer interaction surface. Browser/session checks are not canonical financial authority. |
-| `apps/admin` | `admin.neptlium.com` | Internal operational interface. Privileged financial operations must flow through `apps/api`. |
-| `apps/api` | `api.neptlium.com` | Privileged API, provider-isolation, ledger, authorization, and reconciliation boundary. |
+| `apps/web` | `neptlium.com` | Public information and product narrative only. |
+| `apps/app` | `app.neptlium.com` | Authenticated customer interaction. No financial authority in the browser. |
+| `apps/admin` | `admin.neptlium.com` | Governed operator interface. No direct financial-table mutation authority. |
+| `apps/api` | `api.neptlium.com` | Authentication, authorization, durable financial commands, provider isolation, ledger, settlement, and reconciliation. |
 
-Shared repository foundations live in `packages/`, `supabase/`, `docs/`, and `.github/`.
+## Current production truth
 
-## Public Web boundary
+The September 12, 2026 repository + live data-plane audit established the following execution state:
 
-`apps/web` is the institutional brand, category, editorial, SEO, and public information surface. It should express the Neptlium product model and worldview without narrating internal repository progress, build completion, migration state, provider configuration, environment readiness, feature flags, or release engineering status.
+- the production Supabase project is healthy and contains the newer governed financial schema;
+- canonical financial tables such as `funding_intents`, `transfer_executions`, `provider_references`, `settlement_evidence`, `ledger_journals`, `ledger_postings`, and reconciliation tables have not yet processed a production lifecycle;
+- legacy Supabase Edge Functions remain deployed, including a withdrawal path that can mark a withdrawal complete without executing an external payout;
+- the deployed Stripe webhook configuration and implementation do not yet represent the canonical provider-inbox/ledger path;
+- the deployed `crypto-webhook` is a placeholder and is not a production crypto settlement ingress;
+- Supabase-to-Clerk identity migration is incomplete;
+- the connected Vercel integration does not currently expose the Neptlium projects, so production Vercel environment variables have not yet been independently certified.
 
-Marketing may develop its own high-end visual and editorial language and does not need to mirror implementation chronology. That independence does not authorize false factual claims: customers, AUM, balances, performance, partnerships, licences, regulatory status, custody, provider relationships, live execution, settlement, and product availability require evidence before they are represented as facts.
+Accordingly, **real-money launch remains closed**.
 
-Public search authority belongs to `https://neptlium.com`. `https://www.neptlium.com` should converge on the canonical apex origin. App, Admin, API, auth, drafts, and operational surfaces should not compete as public search destinations.
+## Mandatory execution order
+
+No feature expansion takes precedence over this sequence:
+
+1. Disable `process-withdraw` in production.
+2. Disable the placeholder `crypto-webhook`.
+3. Retire or explicitly contain the legacy `process-deposit` path.
+4. Replace the legacy Stripe webhook path with verified ingress into `provider_webhook_inbox` and the canonical funding/ledger lifecycle.
+5. Remove remaining legacy money mutation paths from Supabase Edge Functions.
+6. Remove client-side authority to create or mutate financial transaction truth.
+7. Complete Circle outbound orchestration from approved transfer through durable provider-reference persistence and `submitted` transition.
+8. Wire Circle and Alchemy signed/authenticated webhook ingestion into `provider_webhook_inbox`.
+9. Execute and evidence one complete funding lifecycle in a production-equivalent environment.
+10. Execute and evidence one complete withdrawal lifecycle in a production-equivalent environment.
+11. Verify settlement evidence durability and transaction linkage.
+12. Verify every canonical journal is balanced and only-once.
+13. Verify reconciliation reaches a matched state with no unresolved discrepancy codes.
+14. Verify omnibus backing invariants.
+15. Finish the Supabase-to-Clerk identity cutover and close legacy authentication authority.
+16. Restore Vercel project visibility and audit production environment-variable presence, scope, and runtime wiring without exposing secret values.
+
+The authoritative gate definitions, required evidence, and completion rules are in [`docs/15_PRODUCTION_READINESS_AUDIT.md`](docs/15_PRODUCTION_READINESS_AUDIT.md).
+
+## Financial authority chain
+
+The target production chain is:
+
+```text
+Authenticated customer/admin command
+  -> Neptlium API authorization and policy
+  -> durable intent/execution record
+  -> ledger reservation where applicable
+  -> governed approval
+  -> provider submission
+  -> durable provider reference
+  -> signed/authenticated provider event
+  -> durable settlement evidence
+  -> canonical ledger posting
+  -> reconciliation
+  -> user-visible settled state
+```
+
+The following is not an acceptable financial authority chain:
+
+```text
+browser or legacy Edge Function
+  -> mutate transactions/portfolio totals
+  -> mark completed
+```
+
+## Non-negotiable truth rules
+
+- `CONFIGURED != LIVE`
+- `APPROVED != SUBMITTED`
+- `SUBMITTED != SETTLED`
+- `SETTLED != RECONCILED`
+- `PROVIDER OBSERVATION != CANONICAL LEDGER`
+- `UNKNOWN != ZERO`
+- `UI STATE != DOMAIN TRUTH`
+- no irreversible provider action may occur without a durable idempotent recovery path;
+- no financial completion may be reported without durable evidence and reconciliation.
+
+## Documentation mode
+
+All current documentation is intentionally written in **execution mode** until remediation completes. During this phase documents describe:
+
+- current verified state;
+- prohibited legacy authority;
+- target authority;
+- ordered execution gates;
+- evidence required to close each gate.
+
+After every gate in `docs/15_PRODUCTION_READINESS_AUDIT.md` is proven complete, README, `AGENTS.md`, and all current documentation must be rewritten again from execution-mode documentation into final production-operating documentation. Do not perform that final rewrite early.
+
+`docs/archive/**` remains historical and non-authoritative.
 
 ## Development
 
@@ -34,39 +116,12 @@ pnpm build
 pnpm format:check
 ```
 
-The repository declares `pnpm@11.9.0`. Workspace membership and pnpm-specific policy, including explicit dependency build authorization, are owned by `pnpm-workspace.yaml`. Project `.npmrc` is reserved for pnpm 11 registry/auth configuration and currently contains no credential or registry override.
+Passing repository checks does not close a production-remediation gate unless that gate explicitly requires and records those checks.
 
-Repository environment examples keep sensitive/provider values as empty placeholders and may include safe non-secret runtime defaults or public origins where the application contract requires them. Configuration presence does not prove that a deployment is configured, a provider capability is verified, or a financial rail is live.
+## Start here
 
-## Authority
-
-Read `AGENTS.md` before changing the repository. Nested `AGENTS.md` files specialize application-local work without overriding repository-wide financial, security, migration, or Git rules. For public Web work, `apps/web/AGENTS.md` is the implementation contract beneath root authority.
-
-Current numbered documentation authority:
-
-- `docs/00_PRODUCT_CONSTITUTION.md`
-- `docs/01_PLATFORM_ARCHITECTURE.md`
-- `docs/02_AUTHENTICATED_APPLICATION.md`
-- `docs/03_DESIGN_SYSTEM.md` — single unified design authority
-- `docs/04_IDENTITY_AND_ACCESS.md`
-- `docs/05_CAPITAL_ACCOUNT.md`
-- `docs/06_TREASURY.md`
-- `docs/07_ALLOCATION_ENGINE.md`
-- `docs/08_TRANSFER_ARCHITECTURE.md`
-- `docs/09_LEDGER_AND_RECONCILIATION.md`
-- `docs/10_PROVIDER_ARCHITECTURE.md`
-- `docs/11_API_ARCHITECTURE.md`
-- `docs/12_ADMIN_OPERATIONS.md`
-- `docs/13_SECURITY.md`
-- `docs/14_DEPLOYMENT.md`
-- `docs/15_PRODUCTION_READINESS_AUDIT.md` — point-in-time readiness record; read its audited SHA/date before relying on conclusions
-
-`docs/archive/` is historical and non-authoritative. Historical documents may explain lineage but never override current numbered authority, current implementation, tests, or `AGENTS.md`.
-
-## Financial correctness
-
-Provider observations are evidence, not canonical ledger truth. Unknown is not zero. Authorization, reservation, submission, settlement, posting, reconciliation, and availability remain distinct states inside operational/product systems.
-
-Those engineering/domain distinctions govern App/Admin/API correctness; ordinary Marketing copy should not expose implementation-state machinery merely because it exists internally.
-
-Never infer live provider capability, deployment state, migration application, or financial execution from source code or configuration presence alone.
+1. Read [`AGENTS.md`](AGENTS.md).
+2. Read [`docs/15_PRODUCTION_READINESS_AUDIT.md`](docs/15_PRODUCTION_READINESS_AUDIT.md).
+3. Read the domain document relevant to the execution being changed.
+4. Inspect current `main`, live environment evidence where authorized, and overlapping pull requests.
+5. Execute only the next open remediation gate unless the task explicitly addresses a prerequisite needed to close it.
