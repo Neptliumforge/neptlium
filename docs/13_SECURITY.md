@@ -2,77 +2,55 @@
 
 Security is a cross-application and financial-correctness boundary. This document describes repository controls, not a certification or guarantee.
 
-## CURRENT identity and authorization
+## Identity and session security
 
-- Supabase Auth is the current session provider for app and admin.
-- Server guards call `getUser()`; browser checks are never sufficient authorization.
-- Supabase RLS scopes user-readable resources with `auth.uid()` and denies direct access to private API/ledger/provider/operations tables.
-- Admin combines authenticated session, server-side role lookup, and role thresholds.
-- The API validates Supabase bearer tokens server-side before owner-scoped routes.
-- Ownership is derived from the verified user and revalidated in repositories/RPCs; callers cannot select an arbitrary owner.
+Clerk is the sole authentication, session, recovery, and MFA provider for customer and operator surfaces.
 
-The schema still has substantial `auth.users` coupling. Clerk is TARGET only; no Clerk security boundary exists yet.
+- `apps/app` and `apps/admin` use Clerk browser/server primitives.
+- `apps/api` verifies Clerk bearer tokens and resolves the verified `CLERK` subject to a stable Neptlium principal before authorization.
+- Supabase Auth tokens are not accepted by customer or admin API authentication.
+- Supabase `/auth/v1/*` endpoints are not part of Neptlium's runtime identity flow.
+- Historical legacy identity rows may remain as audit/migration evidence only.
 
-## Service-role boundary
+Authentication is not authorization. Every privileged action also requires Neptlium-owned role, policy, ownership, compliance, and state validation.
 
-`SUPABASE_SERVICE_ROLE_KEY` bypasses RLS and is therefore confined to server-only admin/API clients and narrow operations. It must never appear in `NEXT_PUBLIC_*`, browser bundles, client logs, provider metadata, or tracked files.
+## Persistence/service-role boundary
 
-Service-role possession is not permission to bypass Neptlium authorization. Code must validate actor, role, ownership, allowed transition, amount, policy, and idempotency before privileged writes.
+Supabase may remain a server-side persistence platform. `SUPABASE_SERVICE_ROLE_KEY` bypasses database row-level controls and is therefore confined to server-only API/repository infrastructure. It is never a customer credential, never an authentication token, and never exposed to browser bundles or logs.
 
-## Migration containment
+Service-role possession is not permission to bypass Neptlium authorization. Actor, role, ownership, amount, policy, allowed transition, idempotency, and audit checks remain mandatory.
 
-The production-security containment migration preserves and disables legacy functions that could simulate funding, withdrawal, balance crediting, provider events, or allocation execution. It revokes broad function/table privileges, hardens search paths, makes views security-invoker, and archives affected legacy state for reviewed rollback.
+## Existing-account identity cutover
 
-Applied migrations are append-only evidence. Never rewrite or delete them; corrective changes use new reviewed migrations. The rollback SQL under `docs/security` is an operational reference, not an instruction to execute without approval.
+The Clerk-only bootstrap may attach a Clerk subject to a preserved existing principal only from a server-verified Clerk primary email when the match is unique and there is no conflicting active Clerk mapping. Ambiguity fails closed. No legacy password is requested.
+
+Identity cutover must not modify canonical financial ownership, balances, ledger entries, provider evidence, settlement evidence, or audit attribution.
 
 ## Secrets and configuration
 
 - Commit examples with empty values only; real `.env*` files remain untracked.
-- Browser-safe values alone use `NEXT_PUBLIC_*`.
-- API keys, service-role keys, Circle entity secret, signing keys, and future Clerk/Stripe secrets are server-only.
-- Validate environment, origin, URL, and capability configuration at startup.
-- Never log authorization headers, cookies, tokens, secrets, private/recovery material, or raw sensitive payloads.
-- Remote environment changes require explicit instruction and review.
+- Clerk secret/JWT/webhook keys, database service-role values, provider keys, signing keys, and Stripe secrets are server-only.
+- Only genuinely browser-safe values use `NEXT_PUBLIC_*`.
+- Validate origin, URL, environment, and capability configuration at startup.
+- Never log authorization headers, cookies, tokens, secrets, private keys, recovery material, or raw sensitive payloads.
 
 ## Webhook security
 
-- Verify the exact raw body using the provider's reviewed official signature contract before parsing/processing.
-- Enforce size and timestamp/replay tolerance where the provider contract supports it.
-- Require stable provider event IDs and compare payload digests on duplicates.
+- Verify the exact raw body using the provider's official signature contract before processing.
+- Enforce replay/timestamp tolerance when supported.
+- Require stable provider event IDs and idempotent durable claims.
 - Persist a private inbox before asynchronous processing.
-- Store only safe headers and references; isolate raw sensitive payload access.
-- Process idempotently through durable jobs and record failures/dead letters.
-
-Alchemy ingress fails closed without official signature verification. Circle webhook ingestion is explicitly disabled until reviewed implementation exists. Stripe ingress requires its webhook secret. Test verifiers are not production verification.
+- Store only safe headers/references and isolate sensitive payload access.
 
 ## Financial-operation security
 
-- Validate ownership, supported capability, amount, destination/recipient, available canonical balance, restrictions, and policy server-side.
-- Separate proposer, approver, and executor duties; prohibit self-approval.
-- Reserve capital atomically before submission.
-- Use exact units, balanced append-only postings, idempotency, request correlation, and audit.
+- Validate ownership, supported capability, amount, destination, available canonical balance, restrictions, compliance and policy server-side.
+- Separate proposal, review, approval, execution, posting and reconciliation.
+- Reserve capital atomically when required before submission.
+- Use exact units, balanced append-only postings, idempotency, request correlation and audit.
 - Treat ambiguous provider results as pending/unknown until lookup and reconciliation.
-- Reconcile provider evidence to canonical state and restrict discrepancies when policy requires.
-- Correct posted history only with reversal/compensating entries.
+- User-submitted deposit hashes or receipts are evidence only and can never self-credit an account.
 
 ## Fail-closed behavior
 
-The API rejects production memory repositories and requires a distributed rate limiter. Missing auth configuration denies authentication; missing provider configuration returns unavailable; Circle mainnet is rejected; unsupported assets/networks are denied; absent webhook verification prevents ingestion; disabled execution stays disabled.
-
-Unavailable security dependencies must not degrade into anonymous access, simulated success, default approval, or fabricated financial state.
-
-## TARGET identity security
-
-Clerk is the target authentication/session/MFA provider. Migration requires provider-independent principals, subject mappings, preserved audit attribution, verified app/API/admin token handling, role/ownership separation, session revocation, recovery, MFA policy, and controlled overlap with Supabase Auth.
-
-No Clerk SDK, middleware, database migration, or environment configuration exists in the audited baseline.
-
-## Security review minimum
-
-- Threat model trust boundaries and abuse cases.
-- Verify RLS and service-role call paths.
-- Test cross-owner and role escalation denial.
-- Test replay, duplicate, timeout, retry, and race behavior.
-- Test ledger balance, append-only, reservation, and reversal invariants.
-- Verify logs and responses contain no secrets or sensitive provider payloads.
-- Review provider contracts and operational recovery before enabling capability.
+Missing Clerk verification, identity mapping, database storage, provider configuration, capability eligibility, webhook verification, authorization, or reconciliation evidence must not degrade into anonymous access, simulated success, default approval, or fabricated financial state.

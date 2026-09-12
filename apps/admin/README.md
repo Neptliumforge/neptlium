@@ -2,15 +2,17 @@
 
 Role-gated internal operations console for `admin.neptlium.com`.
 
-## CURRENT
+## Authentication and authorization
 
-Supabase Auth, server guards, service-role data access, and role thresholds protect screens for users, allocations, deposits, withdrawals, transactions, security, and capabilities. Some actions update legacy workflow status directly.
+Clerk is the sole operator authentication, session, recovery, and MFA authority. Admin server code obtains the current Clerk session and sends its bearer token to `api.neptlium.com`.
 
-Database status changes do not prove provider execution, balanced ledger posting, settlement, or reconciliation. These controls remain operational metadata until migrated to governed API commands.
+The API resolves the Clerk subject to a stable Neptlium principal and then applies Neptlium-owned role, organization, policy, ownership, and operation-specific authorization. A Clerk session alone never authorizes an administrative or financial action.
+
+Supabase is not an operator authentication provider. Where Supabase is used by the API, it is server-side persistence infrastructure only and service-role credentials never reach the browser.
 
 ## Environment
 
-See `.env.example`. Supabase URL/publishable key and site URL are browser-safe. `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never reach client components, logs, or tracked files.
+See `.env.example`. The Admin application requires Clerk configuration plus `NEPTLIUM_API_URL` and `NEXT_PUBLIC_SITE_URL`. Provider and database service credentials remain server-side in the API boundary.
 
 ## Commands
 
@@ -21,6 +23,4 @@ pnpm --filter @neptlium/admin lint
 pnpm --filter @neptlium/admin build
 ```
 
-Clerk is TARGET identity architecture only; no Clerk implementation exists.
-
-Architecture: [`docs/12_ADMIN_OPERATIONS.md`](../../docs/12_ADMIN_OPERATIONS.md).
+Architecture: [`docs/12_ADMIN_OPERATIONS.md`](../../docs/12_ADMIN_OPERATIONS.md) and [`docs/04_IDENTITY_AND_ACCESS.md`](../../docs/04_IDENTITY_AND_ACCESS.md).

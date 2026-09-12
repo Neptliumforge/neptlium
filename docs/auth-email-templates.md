@@ -1,53 +1,41 @@
-# Neptlium Auth Email Templates
+# Neptlium Authentication Emails
 
-Neptlium authentication emails use a restrained transactional design system.
+Clerk is Neptlium's sole authentication, session, recovery, and MFA provider. Authentication email behavior and template activation are configured through Clerk, not Supabase Auth.
 
-## Brand rules
+## Design rules
 
-- Outer background: `#F7F8FA`
-- Content background: `#FFFFFF`
-- Primary text: `#111827`
-- Secondary text: `#667085`
-- Tertiary text: `#98A2B3`
-- Divider: `#EAECF0`
-- Primary CTA: `#0B8CFF`
-- CTA text: white
-- Maximum content width: `560px`
-- Button radius: `8px`
-- Logo display size: `48x48`
-- System font stack only
-- Table-based layout
-- Inline CSS
-- No JavaScript
-- No external stylesheets
-- No newsletter or promotional styling
+Authentication emails should be restrained, transactional, and unmistakably Neptlium:
 
-## Logo
+- white or very light neutral content surface;
+- Neptlium green `#0F8F86` as the primary action/brand accent;
+- dark neutral body copy;
+- system-safe typography;
+- concise subject lines and one primary action;
+- no newsletter, promotional, investment-performance, or product-sales content;
+- no sensitive session/token values rendered visibly in body copy;
+- accessible contrast, clear expiry/recovery language, and plain-text fallback.
 
-Public email logo URL:
+## Clerk-managed flows
 
-`https://neptlium.com/neptlium-email-logo.png`
+Depending on enabled Clerk configuration, transactional identity emails may include:
 
-The asset should be a white-background email-safe adaptation of the canonical Neptlium mark, while preserving the canonical blue/cyan geometry.
+- email verification;
+- sign-in verification/code or link;
+- password recovery/reset when password authentication is enabled;
+- email-address change verification;
+- account invitations where configured;
+- security notifications and recovery messaging supported by the active Clerk setup.
 
-## Supabase variables
+Prepared copy does not prove that a flow is enabled. Production activation, delivery domain, sender identity, redirect destinations, expiry, rate limits, and available factors must be verified in the active Clerk configuration.
 
-Actionable templates use:
+## Brand identity
 
-`{{ .ConfirmationURL }}`
+Use the canonical Neptlium mark with green geometry. Email assets should be hosted on a trusted Neptlium origin and use a format suitable for transactional email clients.
 
-Do not replace this with OTP token variables unless the authentication architecture intentionally changes.
+## Security guidance
 
-## Prepared templates
-
-- Confirm signup
-- Reset password
-- Change email
-- Invite user
-- Magic link
-- Password changed
-- Email changed
-
-Prepared templates are not proof that the corresponding production flow is enabled.
-
-Production activation must be reviewed separately in Supabase Auth configuration.
+- Never request a user's password, recovery code, MFA secret, or session token by email reply.
+- Authentication links/codes must be generated and validated by Clerk.
+- Redirect destinations must be approved Neptlium origins.
+- Do not create custom email-token verification logic in `apps/app`, `apps/admin`, or Supabase.
+- Security-sensitive identity changes should use Clerk's supported verification/step-up mechanisms.

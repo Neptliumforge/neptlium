@@ -1,6 +1,6 @@
 export type Environment = 'development' | 'test' | 'preview' | 'production';
 export type ProviderRuntimeEnvironment = 'testnet' | 'production';
-export type ApiAuthMode = 'SUPABASE' | 'DUAL' | 'CLERK';
+export type ApiAuthMode = 'CLERK';
 
 function providerEnvironment(value: string | undefined, name: string): ProviderRuntimeEnvironment | undefined {
   if (!value) return undefined;
@@ -25,9 +25,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
 
   const circleCredentialsPresent = Boolean(env.CIRCLE_API_KEY || env.CIRCLE_ENTITY_SECRET);
   if (circleCredentialsPresent && (!env.CIRCLE_API_KEY || !env.CIRCLE_ENTITY_SECRET || !CIRCLE_ENVIRONMENT))
-    throw new Error(
-      'Circle requires both credentials (CIRCLE_API_KEY and CIRCLE_ENTITY_SECRET) plus CIRCLE_ENVIRONMENT',
-    );
+    throw new Error('Circle requires both credentials (CIRCLE_API_KEY and CIRCLE_ENTITY_SECRET) plus CIRCLE_ENVIRONMENT');
   if (env.CIRCLE_WALLET_SET_ID && !circleCredentialsPresent)
     throw new Error('Circle wallet set configuration requires Circle credentials');
 
@@ -38,12 +36,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     return value;
   };
   const SUPABASE_URL = validUrl(env.SUPABASE_URL, 'SUPABASE_URL');
-  const AUTH_MODE = (env.API_AUTH_MODE ?? 'SUPABASE').toUpperCase() as ApiAuthMode;
-  if (!['SUPABASE', 'DUAL', 'CLERK'].includes(AUTH_MODE))
-    throw new Error('Invalid API configuration: API_AUTH_MODE');
+  const AUTH_MODE: ApiAuthMode = 'CLERK';
   const clerkAuthorizedParties = (env.CLERK_AUTHORIZED_PARTIES ?? '').split(',').map((value) => value.trim()).filter(Boolean);
-  if (AUTH_MODE !== 'SUPABASE' && (!env.CLERK_SECRET_KEY || clerkAuthorizedParties.length === 0))
-    throw new Error('Clerk API authentication requires CLERK_SECRET_KEY and CLERK_AUTHORIZED_PARTIES');
   const ALCHEMY_RPC_URL = validUrl(env.ALCHEMY_RPC_URL, 'ALCHEMY_RPC_URL');
   if ((env.ALCHEMY_API_KEY || ALCHEMY_RPC_URL) && (!env.ALCHEMY_API_KEY || !ALCHEMY_RPC_URL || !ALCHEMY_ENVIRONMENT))
     throw new Error('Alchemy requires ALCHEMY_API_KEY, ALCHEMY_RPC_URL, and ALCHEMY_ENVIRONMENT');
@@ -70,30 +64,15 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
   const walletProvisioningEnabled = env.ENABLE_WALLET_PROVISIONING === 'true';
   const cryptoDepositsEnabled = env.ENABLE_CRYPTO_DEPOSITS === 'true';
   const cryptoWithdrawalsEnabled = env.ENABLE_CRYPTO_WITHDRAWALS === 'true';
-
-  const anyEconomicCapabilityEnabled =
-    walletProvisioningEnabled ||
-    cryptoDepositsEnabled ||
-    cryptoWithdrawalsEnabled;
+  const anyEconomicCapabilityEnabled = walletProvisioningEnabled || cryptoDepositsEnabled || cryptoWithdrawalsEnabled;
 
   if (anyEconomicCapabilityEnabled && !mainnetPermitted)
     throw new Error('Production economic capabilities require ENABLE_MAINNET=true');
-
   if (walletProvisioningEnabled && (!circleLiveCapabilityVerified || !circleLiveExecutionEnabled))
     throw new Error('Wallet provisioning requires verified Circle production execution');
-
-  if (
-    cryptoDepositsEnabled &&
-    (!circleLiveCapabilityVerified || !alchemyProductionCapabilityVerified)
-  )
+  if (cryptoDepositsEnabled && (!circleLiveCapabilityVerified || !alchemyProductionCapabilityVerified))
     throw new Error('Crypto deposits require verified Circle and Alchemy production capabilities');
-
-  if (
-    cryptoWithdrawalsEnabled &&
-    (!circleLiveCapabilityVerified ||
-      !circleLiveExecutionEnabled ||
-      !alchemyProductionCapabilityVerified)
-  )
+  if (cryptoWithdrawalsEnabled && (!circleLiveCapabilityVerified || !circleLiveExecutionEnabled || !alchemyProductionCapabilityVerified))
     throw new Error('Crypto withdrawals require verified Circle execution and Alchemy production capability');
 
   return {
@@ -122,7 +101,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
         ? 'https://app.neptlium.com,https://admin.neptlium.com'
         : 'http://localhost:3000,http://localhost:3002')
     ).split(',').map((v) => v.trim()).filter(Boolean),
-    databaseConfigured: Boolean(SUPABASE_URL && env.SUPABASE_ANON_KEY && env.SUPABASE_SERVICE_ROLE_KEY),
+    databaseConfigured: Boolean(SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
+    clerkConfigured: Boolean(env.CLERK_SECRET_KEY && clerkAuthorizedParties.length > 0),
     alchemyConfigured: Boolean(env.ALCHEMY_API_KEY && ALCHEMY_RPC_URL && ALCHEMY_ENVIRONMENT),
     circleConfigured: Boolean(circleCredentialsPresent && CIRCLE_ENVIRONMENT),
     stripeConfigured: Boolean(env.STRIPE_WEBHOOK_SECRET),

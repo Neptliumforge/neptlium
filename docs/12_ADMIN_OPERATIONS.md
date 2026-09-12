@@ -1,73 +1,70 @@
 # Admin Operations
 
-`apps/admin` is the internal operational console at `admin.neptlium.com`. It is not customer navigation and it is not itself a financial execution engine.
+`apps/admin` is Neptlium's internal operational and control environment at `admin.neptlium.com`. It is not customer navigation and it is not itself a financial execution engine.
 
-## CURRENT
+## Access
 
-Access uses Supabase Auth plus server-side role lookup through the service-role client. Routes require `admin` or higher; selected operations can require `super_admin`. RLS and server authorization remain mandatory.
+Clerk is the sole operator authentication, session, recovery, and MFA authority. Admin server code sends the current Clerk bearer token to `api.neptlium.com`; the API resolves the Clerk subject to a stable Neptlium principal and applies Neptlium-owned role and policy authorization.
 
-Current screens include:
+A Clerk session alone does not grant admin or financial authority. Routes and commands require the appropriate Neptlium role, ownership/policy state, compliance state, and operation-specific authorization.
+
+Supabase is not an operator authentication provider. Where used by the API, it is server-side persistence infrastructure only.
+
+## Operational surfaces
+
+Current and target admin surfaces include:
 
 - operational overview;
-- users and user detail;
-- withdrawals;
-- allocations;
+- users/principals and user detail;
+- organizations and roles;
 - deposits;
-- transactions;
-- login history and trusted devices;
-- capability inventory.
+- withdrawals;
+- treasury/transfers;
+- allocations;
+- transactions/activity;
+- security events;
+- capability inventory;
+- reconciliation and provider evidence.
 
-Current actions include role updates, account compliance suspension/reactivation, allocation status updates, deposit status completion, and withdrawal approve/reject status updates.
+## Financial truth boundary
 
-## Critical current limitation
+**A database or UI status change does not prove financial execution.**
 
-**Database status changes do not prove financial execution.**
+Approval, submission, provider observation, settlement and reconciliation are distinct. Admin controls must not label an operation as financially complete without the required durable evidence.
 
-Several current server actions directly update legacy tables—for example, marking a wallet transaction `completed` or an allocation request `executed`. Those labels do not prove a provider instruction occurred, a balanced ledger entry posted, a reservation was consumed, settlement completed, or reconciliation matched.
+## Governed control model
 
-Until migrated, these controls are administrative workflow metadata only. They must not be described to operators or customers as custody, transfer, settlement, allocation execution, or canonical balance authority.
-
-## TARGET operational-control model
-
-Admin becomes a governed client of privileged API commands and read models:
+Admin should become a client of privileged API commands and canonical read models for:
 
 - principal, organization, role, entitlement, and compliance investigation;
 - deposit/withdrawal/transfer/allocation review queues;
 - policy evaluation and approval evidence;
-- reservation and execution-intent inspection;
+- reservations and execution-intent inspection;
 - provider health and observation timelines;
-- reconciliation runs, exceptions, acknowledgment, and resolution;
-- ledger entry/posting inspection without mutation;
+- reconciliation runs, exceptions and resolutions;
+- ledger/posting inspection without destructive mutation;
 - webhook/job/dead-letter operations;
-- security events, session response, and access review;
-- capability/configuration status without secret disclosure.
+- security events and access review;
+- capability/configuration state without secret disclosure.
 
 ## Control requirements
 
-- Separate request, approval, execution, and reconciliation permissions.
-- Prohibit self-approval and enforce distinct approvers where policy requires.
-- Bind every decision to the immutable intent/proposal and policy version reviewed.
-- Require explicit reason/evidence for rejection, suspension, override, or exception resolution.
-- Use step-up authentication for high-risk actions when implemented.
-- Apply idempotency and optimistic/transition checks to every command.
-- Record actor, role, request ID, before/after lifecycle state, timestamp, and safe metadata.
-- Display provider-observed, canonical, pending, reserved, restricted, failed, and unknown distinctly.
-- Do not expose service-role keys, provider credentials, raw secrets, or unnecessary personal data.
-
-## TRANSITION
-
-1. Inventory and label direct database mutations as metadata-only.
-2. Introduce API commands for reviewed lifecycle transitions.
-3. Require durable reservation, provider/ledger evidence, and reconciliation before financial completion states.
-4. Convert admin pages to read canonical projections and exception queues.
-5. Add dual control, step-up authentication, and append-only decisions.
-6. Remove legacy direct-write paths only after equivalent controlled workflows are proven.
+- Separate request, approval, execution and reconciliation permissions.
+- Prevent self-approval where policy requires dual control.
+- Bind decisions to immutable intent/proposal and policy versions.
+- Require reason/evidence for rejection, suspension, override or exception resolution.
+- Apply step-up authentication for high-risk actions when implemented.
+- Apply idempotency and transition checks to every command.
+- Record actor, role, request ID, before/after state, timestamp and safe metadata.
+- Display provider-observed, canonical, pending, reserved, restricted, failed and unknown distinctly.
+- Never expose service-role keys, provider credentials, Clerk secrets/tokens or unnecessary personal data.
 
 ## Operator truth rules
 
 - `approved` means authorization requirements passed, not execution.
 - `submitted` means an idempotent instruction was accepted, not settlement.
-- `settled` requires canonical ledger and reconciliation criteria.
-- `resolved` requires preserved evidence and actor attribution, not deletion of an exception.
-- `configured` does not necessarily mean healthy or eligible.
-- Unknown or unavailable state stays unknown or unavailable.
+- `observed` means provider/chain evidence exists, not canonical availability.
+- `settled` requires the system's settlement criteria.
+- `reconciled` requires matching governed evidence and canonical state.
+- `configured` does not necessarily mean healthy, eligible or enabled.
+- Unknown or unavailable state remains unknown or unavailable.

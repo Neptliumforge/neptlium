@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import type { Config } from './config.js';
 import { ApiError } from './errors.js';
+import { createPrincipalAuthenticator } from './authentication.js';
+import { SupabaseIdentityPrincipalResolver } from './identity-principal.js';
 import {
   DisabledAdminRepository,
   SupabaseAdminRepository,
@@ -29,16 +31,14 @@ export interface AdminHttpResponse {
 const repositories = new WeakMap<Config, AdminRepository>();
 const rateLimiters = new WeakMap<Config, RateLimiter>();
 const treasuryRepositories = new WeakMap<Config, TreasuryDestinationRepository>();
+const identityResolvers = new WeakMap<Config, SupabaseIdentityPrincipalResolver>();
 
 function treasuryRepositoryFor(config: Config): TreasuryDestinationRepository {
   const existing = treasuryRepositories.get(config);
   if (existing) return existing;
   const repository =
     config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
-      ? new SupabaseTreasuryDestinationRepository(
-          config.SUPABASE_URL,
-          config.SUPABASE_SERVICE_ROLE_KEY,
-        )
+      ? new SupabaseTreasuryDestinationRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
       : new DisabledTreasuryDestinationRepository();
   treasuryRepositories.set(config, repository);
   return repository;
@@ -70,20 +70,19 @@ function rateLimiterFor(config: Config): RateLimiter {
   return limiter;
 }
 
+function identityResolverFor(config: Config): SupabaseIdentityPrincipalResolver {
+  const existing = identityResolvers.get(config);
+  if (existing) return existing;
+  if (!config.SUPABASE_URL || !config.SUPABASE_SERVICE_ROLE_KEY)
+    throw new ApiError(503, 'identity_storage_unavailable', 'Identity mapping is unavailable');
+  const resolver = new SupabaseIdentityPrincipalResolver(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY);
+  identityResolvers.set(config, resolver);
+  return resolver;
+}
+
 async function authenticate(config: Config, token: string): Promise<{ id: string } | null> {
-  if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) return null;
-  let response: Response;
-  try {
-    response = await fetch(`${config.SUPABASE_URL}/auth/v1/user`, {
-      headers: { authorization: `Bearer ${token}`, apikey: config.SUPABASE_ANON_KEY },
-      signal: AbortSignal.timeout(5_000),
-    });
-  } catch {
-    throw new ApiError(503, 'authentication_unavailable', 'Authentication service is unavailable');
-  }
-  if (!response.ok) return null;
-  const user = (await response.json()) as { id?: string };
-  return user.id ? { id: user.id } : null;
+  const principal = await createPrincipalAuthenticator(config, identityResolverFor(config))(token);
+  return principal ? { id: principal.id } : null;
 }
 
 export async function executeAdminHttp(
@@ -97,13 +96,10 @@ export async function executeAdminHttp(
   },
 ): Promise<AdminHttpResponse> {
   const target = new URL(input.url, 'http://localhost');
-  const headers = Object.fromEntries(
-    Object.entries(input.headers).map(([key, value]) => [key.toLowerCase(), value]),
-  );
-  const requestId =
-    headers['x-request-id'] && /^[A-Za-z0-9._:-]{1,128}$/.test(headers['x-request-id'])
-      ? headers['x-request-id']
-      : randomUUID();
+  const headers = Object.fromEntries(Object.entries(input.headers).map(([key, value]) => [key.toLowerCase(), value]));
+  const requestId = headers['x-request-id'] && /^[A-Za-z0-9._:-]{1,128}$/.test(headers['x-request-id'])
+    ? headers['x-request-id']
+    : randomUUID();
   const responseHeaders = {
     'content-type': 'application/json; charset=utf-8',
     'x-content-type-options': 'nosniff',
@@ -116,8 +112,7 @@ export async function executeAdminHttp(
   };
 
   try {
-    if (!target.pathname.startsWith('/v1/admin'))
-      throw new ApiError(404, 'not_found', 'Route not found');
+    if (!target.pathname.startsWith('/v1/admin')) throw new ApiError(404, 'not_found', 'Route not found');
     if (headers.origin && !config.allowedOrigins.includes(headers.origin))
       throw new ApiError(403, 'forbidden', 'Origin is not allowed');
     if (input.method.toUpperCase() === 'OPTIONS')
@@ -132,34 +127,23 @@ export async function executeAdminHttp(
       };
     const authorization = headers.authorization;
     if (!authorization?.startsWith('Bearer '))
-      throw new ApiError(401, 'authentication_required', 'A valid bearer token is required');
+      throw new ApiError(401, 'authentication_required', 'A valid Clerk bearer token is required');
     await (injected?.rateLimiter ?? rateLimiterFor(config)).consume(
       `${input.clientAddress}:admin:${input.method.toUpperCase() === 'GET' ? 'read' : 'write'}`,
       input.method.toUpperCase() === 'GET' ? 120 : 30,
       60_000,
     );
-    const principal = await (
-      injected?.authenticate ?? ((token: string) => authenticate(config, token))
-    )(authorization.slice(7));
-    if (!principal)
-      throw new ApiError(401, 'authentication_required', 'A valid bearer token is required');
+    const principal = await (injected?.authenticate ?? ((token: string) => authenticate(config, token)))(authorization.slice(7));
+    if (!principal) throw new ApiError(401, 'authentication_required', 'A valid Clerk bearer token is required');
 
     let body: unknown;
-    try {
-      body = input.payload ? JSON.parse(input.payload) : undefined;
-    } catch {
-      throw new ApiError(422, 'validation_failed', 'Malformed JSON');
-    }
+    try { body = input.payload ? JSON.parse(input.payload) : undefined; }
+    catch { throw new ApiError(422, 'validation_failed', 'Malformed JSON'); }
 
     const result = await handleAdminRoute(
       {
-        method: input.method.toUpperCase(),
-        path: target.pathname,
-        query: target.searchParams,
-        headers,
-        body,
-        requestId,
-        clientAddress: input.clientAddress,
+        method: input.method.toUpperCase(), path: target.pathname, query: target.searchParams,
+        headers, body, requestId, clientAddress: input.clientAddress,
       },
       {
         repository: injected?.repository ?? repositoryFor(config),
@@ -169,25 +153,14 @@ export async function executeAdminHttp(
         environment: config.NODE_ENV === 'production' ? 'LIVE' : 'TEST',
       },
     );
-    return {
-      statusCode: result.status ?? 200,
-      headers: responseHeaders,
-      body: JSON.stringify(result.data),
-    };
+    return { statusCode: result.status ?? 200, headers: responseHeaders, body: JSON.stringify(result.data) };
   } catch (error) {
-    const safe =
-      error instanceof ApiError
-        ? error
-        : new ApiError(500, 'internal_error', 'An unexpected error occurred');
+    const safe = error instanceof ApiError ? error : new ApiError(500, 'internal_error', 'An unexpected error occurred');
     return {
       statusCode: safe.status,
       headers: responseHeaders,
       body: JSON.stringify({
-        error: {
-          code: safe.code,
-          message: safe.message,
-          ...(safe.details === undefined ? {} : { details: safe.details }),
-        },
+        error: { code: safe.code, message: safe.message, ...(safe.details === undefined ? {} : { details: safe.details }) },
         request_id: requestId,
       }),
     };

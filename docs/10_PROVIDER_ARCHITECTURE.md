@@ -1,77 +1,62 @@
 # Provider Architecture
 
-Providers are replaceable capability adapters. Neptlium owns principal identity, policy, intents, canonical ledger, reservations, lifecycle, audit, and reconciliation.
+Providers are replaceable infrastructure/capability adapters. Neptlium owns stable principal identity, authorization, policy, intents, canonical ledger, reservations, lifecycle, audit, and reconciliation.
 
-## CURRENT
+## Clerk — identity provider
 
-### Circle
+Clerk is the sole runtime authentication, browser-session, recovery, and MFA provider for customer and operator surfaces.
 
-Circle Developer-Controlled Wallets is the capital-provider adapter in `apps/api/src/circle.ts`.
+`apps/app` and `apps/admin` use Clerk primitives. `apps/api` verifies Clerk bearer tokens and resolves the verified `CLERK` subject to a stable Neptlium principal before authorization.
 
-- Environment model: configured testnet (`BASE-SEPOLIA`) or production (`BASE`). Production configuration also requires `ENABLE_MAINNET=true`.
-- Implemented adapter capability: existing EOA wallet lookup, existing address retrieval, USDC balance observation, and transaction observation.
-- Disabled/unimplemented capability: automatic wallet provisioning is disabled; transfer submission remains unimplemented even when its live execution flag is enabled.
-- Webhooks: `/v1/webhooks/circle` fails closed because official-contract signature verification has not been implemented.
-- Provider balances are returned as `provider_observed`, not canonical.
+No Supabase Auth, dual-session, or legacy password-link runtime authentication path is supported.
 
-Circle credentials and entity secret are server-only. Private keys/recovery material are never stored in the provider-link table.
+## Supabase — persistence provider
 
-### Supabase
+Supabase is server-side data infrastructure where configured: PostgreSQL persistence, migrations, repositories, RPCs, constraints/RLS, rate limiting, provider inboxes, audit, identity mapping storage, financial state, and reconciliation.
 
-Supabase is the current data platform: Postgres schema/migrations, RLS, Auth compatibility during identity transition, server/browser clients, and service-role access at narrow privileged boundaries.
+Supabase service-role access is infrastructure authority only. It is not a customer/operator authentication mechanism. Historical Supabase Auth rows and old migration references may remain as inert migration/audit evidence.
 
-Supabase Auth remains present as transition infrastructure so existing users can prove legacy ownership during Clerk migration. It is not the permanent business identity authority.
+## Circle
 
-### Clerk
+Circle Developer-Controlled Wallets is a capital-provider adapter in the API architecture.
 
-Clerk is the CURRENT browser authentication/session/MFA authority for customer and operator surfaces. `apps/app` and `apps/admin` use Clerk primitives, while `apps/api` supports `SUPABASE`, `DUAL`, and `CLERK` verification modes and resolves authenticated provider subjects to stable Neptlium principals.
+Implemented source may include wallet/address lookup and provider observations. Configuration or source support does not establish customer-facing production eligibility. Provider balance/transaction observations are evidence and remain non-canonical until governed posting/reconciliation.
 
-The production identity transition remains additive: legacy Supabase Auth records and mappings are retained only where required for continuity, and no second Neptlium principal may be created merely because a user changes authentication provider.
+Circle credentials and entity secrets are server-only.
 
-### Alchemy
+## Alchemy
 
-Alchemy is observation-only groundwork:
+Alchemy is observation/RPC infrastructure where configured. It may normalize chain observations into settlement evidence, but it cannot authorize capital movement, create canonical availability, or replace ledger/reconciliation authority.
 
-- testnet/production API and Base RPC configuration validation;
-- a production-capability verification flag that does not authorize execution;
-- normalization of chain observations into non-canonical settlement evidence;
-- a generic `/v1/webhooks/alchemy` ingestion boundary that fails closed without verification.
+Production use requires explicit verified capability and secure webhook/observation contracts.
 
-No current code proves a complete Alchemy custody, balance, transfer, or production webhook capability. Alchemy cannot authorize, execute, post ledger entries, or establish availability.
+## Stripe
 
-### Stripe
+Current Stripe source supports governed subscription-billing webhook ingress. It does **not** establish live customer capital funding.
 
-Stripe support is evidence-only in the current architecture. Stripe Treasury is excluded. Current Stripe support does not grant customer funding or treasury execution capability. A future funding flow requires an approved Payments or Onramp contract plus durable attribution, official webhook verification, failure/refund handling, balanced ledger posting, and reconciliation.
+Target USD deposit funding may use Stripe only after a separately reviewed Payments/funding contract is implemented and certified, including customer eligibility, payment creation, signed webhook ingestion, failure/refund handling, ledger posting and reconciliation.
 
-### Coinbase
+## Crypto deposit providers and networks
 
-Coinbase is not part of the active provider architecture. Historical Coinbase references may remain only in archive/history or tests that explicitly assert its absence from runtime/provider composition. Do not reintroduce Coinbase without a separately approved architecture change.
+The target deposit catalog includes USDT/TRC-20, USDC/Base, BTC/Bitcoin, ETH/Ethereum, LTC/Litecoin and SOL/Solana. That catalog is not itself a provider-capability claim.
 
-## TARGET
-
-### Future funding rails
-
-Future provider capabilities may be added only through reviewed provider adapters that preserve Neptlium authorization, idempotency, settlement evidence, canonical posting, and reconciliation. Provider credentials or SDK availability alone never establish a live capability.
-
-### Future equities provider
-
-An equities provider may supply brokerage/custody, market data, order, execution, and position evidence only after technical, legal, and operational review. No provider or capability is selected or implemented by this document.
+Each asset/network pair requires a reviewed address provider, chain observer, webhook/polling strategy, confirmation policy, compliance handling and reconciliation adapter. The API capability registry decides what is exposed to each customer.
 
 ## Adapter rules
 
 Every provider adapter must:
 
-- expose Neptlium domain types, not leak SDK responses into apps;
-- advertise capability by asset, network/rail, environment, and operation;
+- expose Neptlium domain types rather than leak SDK responses into product pages;
+- advertise capability by asset, network/rail, environment and operation;
 - validate configuration and fail closed;
-- support provider idempotency where offered and Neptlium idempotency always;
-- verify webhooks against the reviewed official contract before ingestion;
-- preserve safe provider references and observation timestamps;
-- distinguish submission, provider observation, reconciliation, and canonical settlement;
-- normalize errors without leaking secrets or provider internals;
+- preserve Neptlium idempotency and provider idempotency where available;
+- verify official webhook/signature contracts before accepting evidence;
+- preserve safe provider references and timestamps;
+- distinguish submission, observation, settlement and canonical reconciliation;
+- normalize errors without leaking secrets;
 - support controlled lookup after ambiguous timeouts;
-- never silently enable mainnet, execution, or unsupported assets.
+- never silently enable mainnet, execution or unsupported assets.
 
-## Provider selection
+## Selection rule
 
-Selection is capability- and policy-driven, not hard-coded into product pages. A provider can be configured yet degraded, restricted, or ineligible for a given principal, jurisdiction, asset, amount, or operation. Multiple providers must not cause duplicate canonical state.
+Provider selection is capability- and policy-driven, never hard-coded as financial truth in the UI. A configured provider can still be unavailable, degraded, restricted or ineligible for a specific principal, jurisdiction, asset, amount or operation.

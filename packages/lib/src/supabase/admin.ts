@@ -1,17 +1,17 @@
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * Server-only Supabase client authenticated with the service role key.
- * Bypasses Row Level Security — never import this from client components
- * or any module reachable from the browser bundle.
+ * Server-only database administration client.
+ * Supabase is used here strictly as persistence infrastructure; Clerk owns
+ * customer/operator authentication and sessions.
  */
 export function createSupabaseAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceRoleKey) {
     throw new Error(
-      "createSupabaseAdminClient requires NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY"
+      "createSupabaseAdminClient requires SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY"
     );
   }
 

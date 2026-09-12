@@ -1,5 +1,7 @@
 import { ApiError } from './errors.js';
 
+// SUPABASE_AUTH remains a historical storage value so old mapping rows can be
+// inspected safely. Runtime authentication accepts CLERK only.
 export type IdentityProvider = 'SUPABASE_AUTH' | 'CLERK';
 export type IdentityPrincipalStatus = 'ACTIVE' | 'SUSPENDED' | 'RETIRED';
 export type IdentityProviderSubjectStatus = 'ACTIVE' | 'REVOKED';
@@ -20,14 +22,10 @@ export interface ResolvedIdentityPrincipal {
 }
 
 export interface IdentityPrincipalResolver {
-  resolveActivePrincipal(
-    provider: IdentityProvider,
-    providerSubject: string,
-  ): Promise<ResolvedIdentityPrincipal | null>;
+  resolveActivePrincipal(provider: IdentityProvider, providerSubject: string): Promise<ResolvedIdentityPrincipal | null>;
 }
 
 type Fetch = typeof fetch;
-
 type ProviderSubjectRow = {
   principal_id: string;
   provider: IdentityProvider;
@@ -35,7 +33,6 @@ type ProviderSubjectRow = {
   status: IdentityProviderSubjectStatus;
   linked_at: string;
 };
-
 type PrincipalRow = {
   id: string;
   status: IdentityPrincipalStatus;
@@ -44,8 +41,9 @@ type PrincipalRow = {
   retired_at: string | null;
 };
 
-const supportedProviders = new Set<IdentityProvider>(['SUPABASE_AUTH', 'CLERK']);
+const supportedRuntimeProviders = new Set<IdentityProvider>(['CLERK']);
 
+/** Supabase here is persistence transport only; it is not an authentication provider. */
 export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResolver {
   constructor(
     private readonly url: string,
@@ -53,7 +51,7 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
     private readonly request: Fetch = fetch,
   ) {
     if (!url || !serviceRoleKey)
-      throw new Error('Identity principal resolution requires Supabase server credentials');
+      throw new Error('Identity principal resolution requires durable database credentials');
   }
 
   private headers(): HeadersInit {
@@ -70,25 +68,14 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
       signal: AbortSignal.timeout(8_000),
     });
     if (!response.ok)
-      throw new ApiError(
-        503,
-        'identity_storage_unavailable',
-        'Identity principal storage is unavailable',
-      );
+      throw new ApiError(503, 'identity_storage_unavailable', 'Identity principal storage is unavailable');
     return (await response.json()) as T[];
   }
 
-  async resolveActivePrincipal(
-    provider: IdentityProvider,
-    providerSubject: string,
-  ): Promise<ResolvedIdentityPrincipal | null> {
-    if (!supportedProviders.has(provider))
-      throw new ApiError(400, 'invalid_identity_provider', 'Identity provider is unsupported');
-    if (
-      !providerSubject ||
-      providerSubject !== providerSubject.trim() ||
-      providerSubject.length > 255
-    )
+  async resolveActivePrincipal(provider: IdentityProvider, providerSubject: string): Promise<ResolvedIdentityPrincipal | null> {
+    if (!supportedRuntimeProviders.has(provider))
+      throw new ApiError(400, 'invalid_identity_provider', 'Only Clerk identities are accepted at runtime');
+    if (!providerSubject || providerSubject !== providerSubject.trim() || providerSubject.length > 255)
       throw new ApiError(400, 'invalid_identity_subject', 'Identity subject is invalid');
 
     const subjects = await this.rows<ProviderSubjectRow>(
@@ -129,109 +116,49 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
   }
 }
 
+/** Database command repository. The legacy dual-session linking command is retired. */
 export class SupabaseIdentityCommandRepository {
   constructor(
     private readonly url: string,
-    private readonly anonKey: string,
+    _legacyAnonKey: string,
     private readonly serviceRoleKey: string,
     private readonly request: Fetch = fetch,
   ) {}
 
-  private async rpc(
-    name: string,
-    body: Record<string, unknown>,
-    bearerToken: string,
-    apiKey: string,
-  ): Promise<Record<string, unknown>> {
+  private async rpc(name: string, body: Record<string, unknown>): Promise<Record<string, unknown>> {
     const response = await this.request(`${this.url}/rest/v1/rpc/${name}`, {
       method: 'POST',
       headers: {
-        authorization: `Bearer ${bearerToken}`,
-        apikey: apiKey,
+        authorization: `Bearer ${this.serviceRoleKey}`,
+        apikey: this.serviceRoleKey,
         'content-type': 'application/json',
       },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(8_000),
     });
     if (!response.ok)
-      throw new ApiError(409, 'identity_link_unavailable', 'Identity linking is unavailable');
+      throw new ApiError(409, 'identity_command_unavailable', 'Identity command is unavailable');
     return (await response.json()) as Record<string, unknown>;
   }
 
-  private async verifiedSupabaseSubject(accessToken: string): Promise<string> {
-    let response: Response;
-    try {
-      response = await this.request(`${this.url}/auth/v1/user`, {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-          apikey: this.anonKey,
-        },
-        signal: AbortSignal.timeout(5_000),
-      });
-    } catch {
-      throw new ApiError(503, 'authentication_unavailable', 'Authentication service is unavailable');
-    }
-    if (!response.ok)
-      throw new ApiError(401, 'authentication_required', 'The legacy session is invalid');
-    const user = (await response.json()) as { id?: string };
-    if (!user.id)
-      throw new ApiError(401, 'authentication_required', 'The legacy session is invalid');
-    return user.id;
+  async linkClerkSubject(_input: Record<string, unknown>) {
+    throw new ApiError(410, 'legacy_auth_retired', 'Legacy authentication linking has been retired. Sign in with Clerk.');
   }
 
-  async linkClerkSubject(input: {
-    supabaseAccessToken: string;
-    clerkSubject: string;
-    idempotencyKey: string;
-    requestId: string;
-  }) {
-    const supabaseSubject = await this.verifiedSupabaseSubject(input.supabaseAccessToken);
-    return this.rpc(
-      'link_clerk_identity_subject_service',
-      {
-        p_supabase_subject: supabaseSubject,
-        p_clerk_subject: input.clerkSubject,
-        p_idempotency_key: input.idempotencyKey,
-        p_request_id: input.requestId,
-      },
-      this.serviceRoleKey,
-      this.serviceRoleKey,
-    );
+  bootstrapClerkPrincipal(input: { clerkSubject: string; verifiedEmail: string; requestId: string }) {
+    return this.rpc('bootstrap_clerk_identity_principal', {
+      p_clerk_subject: input.clerkSubject,
+      p_verified_email: input.verifiedEmail,
+      p_request_id: input.requestId,
+    });
   }
 
-  bootstrapClerkPrincipal(input: {
-    clerkSubject: string;
-    verifiedEmail: string;
-    requestId: string;
-  }) {
-    return this.rpc(
-      'bootstrap_clerk_identity_principal',
-      {
-        p_clerk_subject: input.clerkSubject,
-        p_verified_email: input.verifiedEmail,
-        p_request_id: input.requestId,
-      },
-      this.serviceRoleKey,
-      this.serviceRoleKey,
-    );
-  }
-
-  syncClerkLifecycle(input: {
-    clerkSubject: string;
-    eventId: string;
-    eventType: string;
-    eventDigest: string;
-  }) {
-    return this.rpc(
-      'sync_clerk_identity_lifecycle',
-      {
-        p_clerk_subject: input.clerkSubject,
-        p_event_id: input.eventId,
-        p_event_type: input.eventType,
-        p_event_digest: input.eventDigest,
-      },
-      this.serviceRoleKey,
-      this.serviceRoleKey,
-    );
+  syncClerkLifecycle(input: { clerkSubject: string; eventId: string; eventType: string; eventDigest: string }) {
+    return this.rpc('sync_clerk_identity_lifecycle', {
+      p_clerk_subject: input.clerkSubject,
+      p_event_id: input.eventId,
+      p_event_type: input.eventType,
+      p_event_digest: input.eventDigest,
+    });
   }
 }
