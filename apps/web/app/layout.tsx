@@ -7,6 +7,7 @@ import './elite-shell.css';
 import './cinematic-marketing.css';
 import './homepage-refinement.css';
 import './homepage-balance.css';
+import './architecture-rebuild.css';
 import { SiteHeader } from '@/components/site-header';
 import { GlobalConversionCta } from '@/components/global-conversion-cta';
 import { SiteFooter } from '@/components/site-footer';

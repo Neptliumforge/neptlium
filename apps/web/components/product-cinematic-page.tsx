@@ -3,7 +3,6 @@ import { ArrowRight } from 'lucide-react';
 import { SITE } from '@/lib/content/site';
 
 export type ProductCinematicProps = {
-  index: string;
   eyebrow: string;
   title: string;
   lead: string;
@@ -20,44 +19,44 @@ export type ProductCinematicProps = {
 export function ProductCinematicPage(props: ProductCinematicProps) {
   return (
     <div className={`cin-product-page cin-tone-${props.tone}`}>
-      <section className="cin-product-hero">
-        <div className="cin-product-hero-copy">
-          <p className="cin-kicker">{props.index} · {props.eyebrow}</p>
+      <section className="product-cinema-hero">
+        <div className="product-cinema-copy">
+          <p className="product-name">{props.eyebrow}</p>
           <h1>{props.title}</h1>
-          <p className="cin-product-lead">{props.lead}</p>
-          <Link className="cin-pill cin-pill-light" href={SITE.publicAccessUrl}>
-            {SITE.publicAccessLabel}<ArrowRight aria-hidden="true" />
-          </Link>
+          <p>{props.lead}</p>
+          <Link className="cin-pill cin-pill-light" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel}<ArrowRight aria-hidden="true" /></Link>
         </div>
-        <figure className="cin-product-object">
+        <div className="product-cinema-object" aria-label={props.imageAlt}>
           <img src={props.image} alt={props.imageAlt} />
-          <figcaption>Illustrative product interface concept. Values shown are fictional examples.</figcaption>
-        </figure>
+        </div>
       </section>
 
-      <section className="cin-product-thesis">
-        <p className="cin-kicker">Operating responsibility</p>
+      <section className="product-cinema-thesis">
         <h2>{props.thesis}</h2>
       </section>
 
-      <section className="cin-product-chapters">
-        {props.chapters.map((chapter, index) => (
+      <section className="product-cinema-chapters">
+        {props.chapters.map((chapter) => (
           <article key={chapter.title}>
-            <span>{String(index + 1).padStart(2, '0')}</span>
             <h3>{chapter.title}</h3>
             <p>{chapter.body}</p>
           </article>
         ))}
       </section>
 
-      <section className="cin-product-lifecycle" aria-label={`${props.eyebrow} operating lifecycle`}>
-        <p className="cin-kicker">Clarity before consequence</p>
-        <div>{props.lifecycle.map((item, index) => <span key={item}>{item}{index < props.lifecycle.length - 1 ? <i>→</i> : null}</span>)}</div>
+      <section className="product-cinema-lifecycle" aria-label={`${props.eyebrow} lifecycle`}>
+        <div className="lifecycle-track">
+          {props.lifecycle.map((item, index) => <span key={item}>{item}{index < props.lifecycle.length - 1 ? <i>→</i> : null}</span>)}
+        </div>
+        <p>State changes are shown as state changes. Financial consequence remains explicit.</p>
       </section>
 
-      <section className="cin-product-close">
+      <section className="product-cinema-close">
         <h2>{props.closing}</h2>
-        {props.next ? <Link href={props.next.href}>Continue to {props.next.label}<ArrowRight aria-hidden="true" /></Link> : null}
+        <div>
+          <Link className="cin-pill cin-pill-dark" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel}<ArrowRight aria-hidden="true" /></Link>
+          {props.next ? <Link className="quiet-next" href={props.next.href}>Next: {props.next.label}<ArrowRight aria-hidden="true" /></Link> : null}
+        </div>
       </section>
     </div>
   );

@@ -6,57 +6,84 @@ const stages = [
   {
     label: 'Capital state',
     title: 'Know what exists.',
-    body: 'Accounts, positions, liquidity and movement remain visible as evidence-backed state—not just numbers detached from their source.',
+    body: 'Accounts, positions, liquidity and movement become one evidence-backed view of the capital you actually have.',
+    chips: ['Accounts', 'Positions', 'Liquidity', 'Movement'],
   },
   {
     label: 'Operating context',
-    title: 'Know what it means.',
-    body: 'Intent, constraints, timing, counterparties and exposure give financial state the context required for institutional understanding.',
+    title: 'Understand what it means.',
+    body: 'Intent, constraints, exposure, timing and counterparties stay attached to financial state so the number never loses its meaning.',
+    chips: ['Intent', 'Constraints', 'Exposure', 'Timing'],
   },
   {
     label: 'Governed work',
     title: 'Know what may happen next.',
-    body: 'Review, authority and evidence stay explicit so proposed work does not become consequential simply because it moved through software.',
+    body: 'Review, authority and evidence remain explicit so analysis can become action only when the operating state supports it.',
+    chips: ['Review', 'Authority', 'Evidence', 'Consequence'],
   },
 ] as const;
 
 export function CinematicScrollStory() {
-  const [active, setActive] = useState(0);
-  const refs = useRef<(HTMLElement | null)[]>([]);
+  const root = useRef<HTMLElement | null>(null);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        setActive(Number((visible.target as HTMLElement).dataset.stage ?? 0));
-      },
-      { rootMargin: '-34% 0px -34% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
-    );
-    refs.current.forEach((node) => node && observer.observe(node));
-    return () => observer.disconnect();
+    let frame = 0;
+    const update = () => {
+      const node = root.current;
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      const travel = Math.max(1, rect.height - window.innerHeight);
+      const next = Math.min(1, Math.max(0, -rect.top / travel));
+      setProgress(next);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
+  const active = progress < .34 ? 0 : progress < .68 ? 1 : 2;
+  const rotation = -18 + progress * 36;
+  const scale = .9 + progress * .13;
+
   return (
-    <section className="cin-story" aria-labelledby="operating-story-title">
-      <div className="cin-story-stage" data-stage={active}>
-        <div className="cin-story-visual" aria-hidden="true">
-          <img src="/marketing/overview.webp" alt="" />
-          <span className="cin-story-plane cin-story-plane-one" />
-          <span className="cin-story-plane cin-story-plane-two" />
-          <span className="cin-story-plane cin-story-plane-three" />
+    <section className="story-engine" ref={root} aria-labelledby="story-engine-title">
+      <div className="story-engine-sticky">
+        <div className="story-engine-copy">
+          <p className="story-engine-overline">One environment. Distinct states of meaning.</p>
+          <h2 id="story-engine-title">{stages[active].title}</h2>
+          <p className="story-engine-body">{stages[active].body}</p>
+          <div className="story-engine-dots" aria-label="Operating model progress">
+            {stages.map((stage, index) => <button key={stage.label} type="button" data-active={active === index} aria-label={stage.label} />)}
+          </div>
+        </div>
+        <div className="story-engine-stage" aria-hidden="true">
+          <div className="capital-object" style={{ transform: `perspective(1400px) rotateY(${rotation}deg) rotateX(${4 - progress * 8}deg) scale(${scale})` }}>
+            <img src="/marketing/overview.webp" alt="" />
+            <div className="capital-object-face capital-object-front">
+              <span>{stages[active].label}</span>
+              <strong>{active === 0 ? 'Observed state' : active === 1 ? 'Operating context' : 'Governed work'}</strong>
+            </div>
+            <div className="capital-object-grid">
+              {stages[active].chips.map((chip) => <i key={chip}>{chip}</i>)}
+            </div>
+            <span className="capital-object-plane plane-a" />
+            <span className="capital-object-plane plane-b" />
+            <span className="capital-object-plane plane-c" />
+          </div>
         </div>
       </div>
-      <div className="cin-story-copy">
-        <header className="cin-story-intro"><h2 id="operating-story-title">One environment. Distinct states of meaning.</h2></header>
-        {stages.map((stage, index) => (
-          <article className="cin-story-step" data-stage={index} ref={(node) => { refs.current[index] = node; }} key={stage.label}>
-            <p className="cin-stage-label">{stage.label}</p>
-            <h3>{stage.title}</h3>
-            <p>{stage.body}</p>
-          </article>
-        ))}
-        <div className="cin-story-resolution"><span>Capital state</span><i>→</i><span>Context</span><i>→</i><span>Governance</span><i>→</i><span>Consequence</span></div>
+      <div className="story-engine-steps" aria-hidden="true">
+        {stages.map((stage) => <div key={stage.label} />)}
       </div>
     </section>
   );
