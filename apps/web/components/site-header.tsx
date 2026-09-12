@@ -13,7 +13,7 @@ import { SITE } from '@/lib/content/site';
 type NavSection = (typeof NAVIGATION)[number];
 
 function pathBelongsTo(path: string, item: NavSection) {
-  return path === item.href || path.startsWith(`${item.href}/`);
+  return path === item.href || item.links.some((link) => path === link.href || path.startsWith(`${link.href}/`));
 }
 
 function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
@@ -41,8 +41,7 @@ function DesktopDisclosure({ item, path }: { item: NavSection; path: string }) {
       <button ref={trigger} type="button" aria-expanded={open} aria-controls={id} aria-haspopup="true" aria-label={`Show ${item.label} navigation`} onClick={() => setOpen((value) => !value)} onKeyDown={(event) => { if (event.key !== 'ArrowDown') return; event.preventDefault(); setOpen(true); requestAnimationFrame(() => root.current?.querySelector<HTMLAnchorElement>('.concise-menu a')?.focus()); }}><ChevronDown aria-hidden="true" /></button>
     </div>
     <div className="capital-command-menu concise-menu" id={id} data-open={open} aria-hidden={!open} inert={!open ? true : undefined}>
-      <Link className="menu-domain-overview" href={item.href}><span><strong>{item.label}</strong><small>{item.description}</small></span><ArrowRight aria-hidden="true" /></Link>
-      {item.links.filter((link) => link.href !== item.href).map((link) => <Link href={link.href} key={link.href} aria-current={path === link.href ? 'page' : undefined}><span><strong>{link.label}</strong><small>{link.description}</small></span><ArrowRight aria-hidden="true" /></Link>)}
+      {item.links.map((link) => <Link href={link.href} key={link.href} aria-current={path === link.href ? 'page' : undefined}><span><strong>{link.label}</strong><small>{link.description}</small></span><ArrowRight aria-hidden="true" /></Link>)}
     </div>
   </div>;
 }
@@ -66,9 +65,12 @@ export function SiteHeader() {
       <div className="nav-shell">
         <Brand tone={isHome ? 'teal' : 'current'} />
         <nav className="desktop-command-nav" aria-label="Primary navigation">{NAVIGATION.map((item) => <DesktopDisclosure item={item} path={path} key={item.label} />)}</nav>
-        <div className="command-actions"><Link className="elite-header-entry" href={SITE.signUpUrl}>Sign up</Link></div>
+        <div className="command-actions marketing-account-actions">
+          <Link className="elite-header-entry" href={SITE.signInUrl}>Sign In</Link>
+          <Link className="elite-header-primary" href={SITE.signUpUrl}>Get Started</Link>
+        </div>
         <div className="elite-header-actions">
-          <Link className="elite-header-entry" href={SITE.signUpUrl}>Sign up</Link>
+          <Link className="elite-header-entry" href={SITE.signInUrl}>Sign In</Link>
           <button ref={trigger} className="elite-menu-trigger" type="button" aria-expanded={mobileOpen} aria-controls="mobile-command-sheet" aria-label="Open navigation" onClick={() => setMobileOpen(true)}><Menu aria-hidden="true" /></button>
         </div>
       </div>
