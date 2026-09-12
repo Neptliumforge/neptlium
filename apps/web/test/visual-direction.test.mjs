@@ -5,7 +5,9 @@ import test from 'node:test';
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const page = read('app/page.tsx');
 const header = read('components/site-header.tsx');
+const mobile = read('components/mobile-navigation.tsx');
 const footer = read('components/site-footer.tsx');
+const cta = read('components/global-conversion-cta.tsx');
 const css = read('app/neptlium-visual-direction.css');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
@@ -58,26 +60,29 @@ test('marketing palette, structural composition and responsive contracts are exp
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
 
-test('navigation uses five canonical domains with direct destinations plus accessible disclosures', () => {
+test('navigation uses five canonical domains with accessible desktop disclosures and flat mobile IA', () => {
   for (const label of ['Platform', 'Products', 'Solutions', 'Resources', 'Company'])
     assert.match(architecture, new RegExp(`label: '${label}'`));
-  for (const token of [
-    'aria-expanded',
-    'aria-controls',
-    'aria-haspopup="true"',
-    'aria-modal="true"',
-    "event.key === 'Escape'",
-    "document.body.style.overflow = 'hidden'",
-    'trigger.current?.focus()',
-  ])
+  for (const token of ['aria-expanded', 'aria-controls', 'aria-haspopup="true"', "event.key === 'Escape'"])
     assert.match(header, new RegExp(token.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
   assert.match(header, /<Link href=\{item\.href\}/);
-  assert.match(header, /mobile-domain-row/);
+  assert.match(header, /MobileNavigation/);
+  assert.match(mobile, /mobile-nav-grid/);
+  assert.match(mobile, /mobile-platform-link/);
+  assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
+  assert.doesNotMatch(mobile, /aria-expanded/);
   assert.doesNotMatch(header, />\s*Request access\s*</i);
 });
 
-test('footer preserves institutional identity, public channels and legal access', () => {
+test('global conversion CTA preserves Neptlium product semantics', () => {
+  assert.match(cta, /Capital deserves an operating environment\./);
+  assert.match(cta, /SITE\.publicAccessLabel/);
+  assert.match(cta, /SITE\.exploreLabel/);
+});
+
+test('footer preserves institutional identity, structured navigation, public channels and legal access', () => {
   assert.match(footer, /A capital operating environment for understanding, coordinating and governing what you own\./);
+  assert.match(footer, /NAVIGATION\.map/);
   for (const label of ['Bluesky', 'X', 'YouTube', 'TikTok'])
     assert.match(footer, new RegExp(`label: '${label}'`));
   for (const label of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility'])
