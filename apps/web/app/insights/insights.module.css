@@ -1,0 +1,7 @@
+.mark{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid rgb(245 243 238 / 18%);border-left:1px solid rgb(245 243 238 / 18%)}
+.mark span{min-height:8rem;display:flex;align-items:flex-end;padding:1rem;border-right:1px solid rgb(245 243 238 / 18%);border-bottom:1px solid rgb(245 243 238 / 18%);color:#f5f3ee;font-size:.86rem;font-weight:620}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #d8d5ce;border-left:1px solid #d8d5ce}
+.grid article{min-height:12rem;padding:1.25rem;border-right:1px solid #d8d5ce;border-bottom:1px solid #d8d5ce}
+.grid h3{margin:0 0 2.5rem;font-size:1rem}
+.grid p{margin:0;color:#343a3f;font-size:.82rem;line-height:1.62}
+@media(max-width:48rem){.grid{grid-template-columns:1fr}.mark{grid-template-columns:1fr}}
