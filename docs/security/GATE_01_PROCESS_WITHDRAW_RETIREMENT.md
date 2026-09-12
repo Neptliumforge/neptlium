@@ -206,6 +206,57 @@ and does not assert a canonical-main merge or platform readiness.
 - NOT RUN — native Deno execution of the tombstone; no production deployment of
   that handler was needed because supported removal was used.
 
+## Gate 01 repository CI diagnosis — 2026-09-12
+
+CURRENT — [Actions run 34703740772](https://github.com/Neptliumforge/neptlium/actions/runs/34703740772)
+for PR head `cc2908c46c16bac14fbc5ff3a6e82f478a6770b1` checked out synthetic
+merge `5ef3d730e2ff284d9b8fbe69f6a7e91f6d330a86`, combining that head with
+main `db0345153d0e0a03b77d31dd47b37fa47a4fb5ad`. The retirement job passed
+all seven tests. The unchanged web job passed UI/Web typechecks and lint, then
+failed `pnpm --filter @neptlium/web test` (56 passed, two failed):
+
+| Failing test                                                                                                       | Exact assertion failure                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `marketing-shell.test.mjs:47`, “navigation remains five canonical accessible domains”                              | Line 51 searches only `site-header.tsx` for `/aria-modal="true"/`, which is absent there.                          |
+| `production-hardening.test.ts:38`, “production shell preserves responsive, reduced-motion and safe-area hardening” | Line 43 searches only `site-header.tsx` for `/document\.body\.style\.overflow = 'hidden'/`, which is absent there. |
+
+Main's independent header refactor (`509ff182507f4cec7a1fc3db523d2eb62fcd843c`)
+removed the inline mobile implementation. Both behaviors are present in
+`apps/web/components/mobile-navigation.tsx`: scroll lock at line 31 and modal
+semantics at line 67. The failing assertions still read only the header source.
+This diagnosis concerns source-contract tests; it does not assert browser
+accessibility verification.
+
+Comparison was executed in an isolated detached worktree at the freshly fetched
+main SHA above, without changing the Gate branch or using any user stash:
+
+- PASS — `pnpm --filter @neptlium/web test` on the Gate branch at `cc2908c`:
+  57 passed, zero failed.
+- FAIL — the same command on current main at `db034515`: 56 passed, the same
+  two assertions failed with `ERR_ASSERTION` and exit status 1.
+- PASS — `node --test supabase/test/process-withdraw-retirement.test.mjs`:
+  seven passed; `node --test supabase/test/*.test.mjs`: 16 passed.
+- PASS — `git diff --exit-code origin/main 5ef3d730e2ff284d9b8fbe69f6a7e91f6d330a86 -- apps/web packages/ui pnpm-lock.yaml package.json pnpm-workspace.yaml`:
+  no differences; Actions tested exactly the current main Web/UI inputs.
+- PASS — PR scope inspection: only the six Gate 01 files are changed. The CI
+  change adds an independent retirement job; `validate-web` is unchanged.
+  The other five files are retirement documentation, Supabase configuration,
+  the tombstone, and its dependency-free tests. None supplies header code or
+  changes web tests, dependencies, scripts, or configuration.
+- NOT RUN — web build in that Actions run: the preceding web tests failed.
+
+The overall Actions failure is conclusively an unrelated failure on current
+main, exposed by the PR's synthetic merge with the newer main web tree. It is
+not caused by Gate 01 or Circle ancestry contamination. No web code or test was
+changed, skipped, weakened, or deleted. The unrelated main test correction is
+outside Gate 01. Production verification remains as recorded above; no new
+production mutation or invocation was performed during this CI investigation.
+
+Gate 01 meets completion condition B: the remaining overall CI failure is proven
+unrelated to Gate 01 and reproducible on current main, while retirement-specific
+validation passes. PR #64 remains draft and unmerged by explicit instruction;
+this verdict does not claim canonical-main integration or platform readiness.
+
 ## Gate 01 production verdict
 
 Production retirement and verification are COMPLETE. The old function is absent,
