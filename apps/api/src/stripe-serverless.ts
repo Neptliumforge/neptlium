@@ -73,11 +73,13 @@ export async function executeStripeWebhook(
         'Durable webhook storage is not configured',
       );
 
+    const now = dependencies.now?.() ?? new Date();
     const verified = verifyStripeWebhook({
       rawBody: request.rawBody,
       signatureHeader: request.headers['stripe-signature'],
       endpointSecret: config.STRIPE_WEBHOOK_SECRET,
       toleranceSeconds: config.WEBHOOK_TOLERANCE_SECONDS,
+      nowSeconds: Math.floor(now.getTime() / 1000),
     });
 
     const operations = new SupabaseFinancialOperations(
@@ -86,7 +88,6 @@ export async function executeStripeWebhook(
       dependencies.fetch,
     );
     const digestHex = createHash('sha256').update(request.rawBody).digest('hex');
-    const now = dependencies.now?.() ?? new Date();
 
     const insertion = await operations.recordWebhook({
       provider: 'stripe',
