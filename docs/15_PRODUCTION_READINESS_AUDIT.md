@@ -1,70 +1,390 @@
-# Production Readiness Audit
+# NEPTLIUM Production Remediation Execution Ledger
 
-**Status:** POINT-IN-TIME / NON-EVERGREEN RUNTIME EVIDENCE  
-**Audit record reviewed:** 2026-08-17  
-**Repository baseline audited:** `e2876d437e24e17dc735656ba920e175cc7c057a`  
-**Remediation tree containing the locally closed blockers:** `e0ed09d2164592e91a5ebe02ff7331f7775af45e`  
-**Current hygiene baseline at review:** `fd497c80080c73fa53a89da344d82ba7676e8b84`  
-**Scope:** repository-verifiable API source, artifact, authority, provider-gating, and readiness evidence from the baseline audit plus the identified remediation tree  
-**Live deployment/provider/database state:** **UNVERIFIED**  
-**Real-money execution:** no live-readiness claim is made by this document
+**Status:** ACTIVE  
+**Mode:** PRODUCTION REMEDIATION  
+**Audited repository baseline:** `b0c87d5445ffb80ac0fbeff58fa8ee15e0164134`  
+**Live data-plane audit date:** 2026-09-12  
+**Real-money release status:** CLOSED
 
-This document preserves a production-readiness audit as point-in-time evidence. It is not evergreen architecture and must not be used to infer current deployment SHA, applied migrations, provider eligibility, live balances, customers, production capability, or financial execution. Reverify current source and authorized runtime evidence before acting on any conclusion below.
+This document is the canonical execution ledger for bringing NEPTLIUM from deployed-but-not-proven financial architecture to a production-ready platform. It overrides optimistic or stale readiness language elsewhere while any gate below remains open.
 
-The audit began from repository baseline `e2876d437e24e17dc735656ba920e175cc7c057a`. The source remediations described as locally closed below were introduced in its child remediation commit `e0ed09d2164592e91a5ebe02ff7331f7775af45e`; they must not be attributed to the baseline SHA alone. Unless a finding explicitly says otherwise, implementation findings below refer to that remediation tree.
+## Completion standard
 
-## Readiness invariants
+A gate may be marked `COMPLETE` only when implementation, deployment/configuration, runtime exercise, durable evidence, and required validation are all proven. Code presence, green CI, a merged PR, a healthy deployment, or a database migration by itself is insufficient.
 
-- Provider configuration, observation, approval, submission, settlement, posting, and reconciliation are distinct states.
-- Mainnet configuration does not authorize execution.
-- A route, adapter, credential, migration, or provider response does not prove live capability.
-- Posted financial history remains append-only and is corrected only by reversal or compensation.
+Allowed states:
 
-## Point-in-time remediation findings
+- `OPEN`
+- `IN PROGRESS`
+- `BLOCKED`
+- `COMPLETE`
 
-At remediation tree `e0ed09d2164592e91a5ebe02ff7331f7775af45e`, repository evidence recorded the following:
+Every completed gate must record evidence sufficient for an independent reviewer to verify what changed and what was exercised without exposing secrets.
 
-- The Circle adapter received configured environment, wallet-set reference, and live-execution gates; automatic wallet provisioning stayed disabled and transfer submission remained unimplemented.
-- Production rate limiting rejected `MemoryRateLimiter` and source composed a Supabase-backed distributed limiter. The remediation introduced a forward migration required before deployment; whether that migration is currently applied is **UNVERIFIED** here.
-- The serverless administrative routing/CORS path had regression coverage for authenticated routing and configured origins.
-- `build-vercel.mjs` asserted required runtime artifacts; artifact generation did not constitute deployment.
-- `apps/admin` used Supabase for authentication/session while privileged reads/writes used the API boundary.
-- Legacy deposit, withdrawal, and allocation administrative paths were recorded as fail-closed rather than proof of provider execution.
+## Production findings that define this plan
 
-These are historical repository findings for the identified remediation tree, not claims about current production runtime.
+The live production audit established:
 
-## Point-in-time funding, withdrawal, and allocation findings
+- Supabase production is healthy in `us-east-2` on Postgres 17.6.
+- The newer canonical financial schema is deployed.
+- Canonical tables including `funding_intents`, `transfer_executions`, `provider_references`, `settlement_evidence`, `ledger_journals`, `ledger_postings`, `reconciliation_runs`, `reconciliation_items`, `deposit_routes`, `capital_reservations`, and `treasury_destinations` contained zero lifecycle rows at audit time.
+- Legacy `process-withdraw` remained active and could mark a withdrawal completed after subtracting `portfolios.total_value` without executing an external payout.
+- Legacy `stripe-webhook` remained active, directly mutated `transactions`/`portfolios`, and was deployed with JWT verification enabled despite being intended for Stripe-originated requests.
+- `crypto-webhook` remained active as placeholder sample code.
+- `process-deposit` remained active as a legacy direct mutation path.
+- Newer server-only financial tables were generally default-deny to `anon`/`authenticated`, which is the correct direction and must be preserved.
+- Seven authenticated-executable treasury/identity `SECURITY DEFINER` RPCs exist; inspected treasury commands verify the authenticated Clerk principal and `super_admin` role, but the externally callable privileged RPC surface should still be minimized.
+- Supabase Auth remained active for 16 legacy users while only 5 active Clerk subject mappings existed at audit time.
+- Supabase security advisor reported leaked-password protection disabled, 45 unindexed foreign keys, 56 RLS InitPlan warnings, and duplicate permissive-policy residue.
+- The connected Vercel integration exposed the `Neptliumforge` team but no projects, preventing independent certification of production environment-variable metadata.
 
-The remediation source recorded owner-authenticated funding/capital-account routes, durable/idempotent funding intent creation, ledger-derived canonical balances, and explicit posting/reconciliation gates before availability. Unsupported rails were expected to remain unavailable.
+## Gate 01 — Disable legacy production withdrawal authority
 
-The transfer lifecycle was recorded as `REQUESTED → AUTHORIZED → RESERVED → SUBMITTED → SETTLED → RECONCILED`, with terminal failure/reversal/cancellation paths. Provider execution remained closed in the reviewed source.
+**State:** OPEN
 
-Allocation supported observed evidence, modeling, and governed authorization. Authorization did not itself call providers, reserve capital, mutate the ledger, or prove execution.
+Required outcome:
 
-Current runtime truth for these capabilities must be reverified from current source plus authorized deployment/provider/database evidence.
+- `process-withdraw` is no longer a production-callable money-movement authority.
+- No route, UI, Edge Function, or compatibility layer can mark a withdrawal completed by only mutating `transactions` or `portfolios.total_value`.
+- Any remaining compatibility endpoint fails closed or delegates to the canonical governed API path.
 
-## Point-in-time provider conclusion
+Required evidence:
 
-At the remediation tree, Circle had observation capability with provisioning/transfer execution inert and Alchemy was observation-only. Later architecture cleanup removed the unused Stripe Treasury and legacy Coinbase runtime surfaces; Stripe remains evidence-only until a reviewed Payments/Onramp contract exists. No first live rail was established by that audit/remediation pass.
+- production function/configuration state showing the legacy function disabled/removed or made non-authoritative;
+- repository search proving no active client path depends on it;
+- negative runtime test demonstrating it cannot complete a withdrawal;
+- no unintended customer-impact regression in read-only surfaces.
 
-**Current provider eligibility, configuration, approval, and availability are UNVERIFIED by this document.** Source support and credential presence are not live capability evidence.
+## Gate 02 — Disable placeholder crypto webhook
 
-## External/operational evidence required for a current readiness claim
+**State:** OPEN
 
-A new readiness decision must independently establish, without exposing secrets:
+Required outcome:
 
-1. the exact candidate/deployed SHA and required CI results;
-2. authorized migration application state;
-3. deployment environment configuration state;
-4. authenticated administrative authority behavior;
-5. provider eligibility and capability for each proposed rail;
-6. webhook authenticity and durable event handling;
-7. canonical ledger treatment and reconciliation behavior;
-8. failure, return, reversal, and withdrawal controls;
-9. explicit execution authorization where real-money execution is proposed.
+- the deployed placeholder `crypto-webhook` is disabled/removed or replaced by the governed provider-ingress implementation;
+- no placeholder/sample handler is addressable as a production financial webhook.
 
-Until those are reverified, runtime conclusions remain **UNVERIFIED / POINT-IN-TIME**.
+Required evidence:
 
-## Audit conclusion
+- deployment/function state;
+- runtime negative test for old placeholder behavior;
+- repository/deployment mapping for the replacement ingress if already available.
 
-This record is useful as historical readiness evidence for baseline `e2876d437e24e17dc735656ba920e175cc7c057a` together with remediation tree `e0ed09d2164592e91a5ebe02ff7331f7775af45e`. It does not declare current production readiness, current migration state, provider approval, or real-money capability. Current readiness requires a new evidence-based audit of the exact candidate and authorized runtime state.
+## Gate 03 — Retire or contain legacy deposit path
+
+**State:** OPEN
+
+Required outcome:
+
+- `process-deposit` no longer directly establishes canonical financial truth through `transactions` and `portfolios.total_value`;
+- if temporarily retained, it is explicitly non-authoritative and cannot bypass `funding_intents`, settlement evidence, ledger posting, and reconciliation.
+
+Required evidence:
+
+- call-site inventory;
+- deployment state;
+- negative bypass test;
+- documented migration/removal decision.
+
+## Gate 04 — Replace legacy Stripe webhook architecture
+
+**State:** OPEN
+
+Required outcome:
+
+- Stripe webhook ingress uses the provider's official signature verification contract;
+- external webhook delivery is not blocked by inappropriate Supabase user-JWT enforcement;
+- accepted events are persisted idempotently in `provider_webhook_inbox` before financial processing;
+- Stripe event processing cannot directly create canonical balance truth by mutating legacy portfolio totals;
+- successful financial events progress through funding intent, settlement evidence, ledger, and reconciliation.
+
+Required evidence:
+
+- signature-verification tests;
+- duplicate/replay tests;
+- raw event/inbox persistence proof;
+- invalid-signature rejection;
+- successful canonical lifecycle linkage;
+- production-equivalent webhook delivery exercise.
+
+## Gate 05 — Remove remaining legacy money mutation paths
+
+**State:** OPEN
+
+Required outcome:
+
+- no production Edge Function or browser/client code can independently move financial state by writing legacy balance/transaction tables;
+- old paths are removed, disabled, or converted to non-authoritative evidence/read adapters.
+
+Required evidence:
+
+- repository inventory of all money-related Edge Functions and direct Supabase mutations;
+- production function inventory;
+- negative tests for retired paths.
+
+## Gate 06 — Remove client-side transaction authority
+
+**State:** OPEN
+
+Required outcome:
+
+- clients cannot insert or mutate canonical financial transaction truth directly;
+- legacy `transactions` client INSERT/UPDATE authority is removed or rendered non-authoritative;
+- all financial commands require API-side authentication, ownership, policy, idempotency, audit, and durable state.
+
+Required evidence:
+
+- RLS/grant diff;
+- authenticated-client negative tests;
+- API-path positive tests;
+- confirmation that App/Admin do not use direct financial-table mutation.
+
+## Gate 07 — Complete Circle outbound orchestration
+
+**State:** OPEN
+
+Related work: PR #62 and any successor implementation.
+
+Required outcome:
+
+```text
+approved transfer
+  -> deterministic/idempotent Circle submission
+  -> durable provider reference
+  -> submitted transition
+```
+
+The crash window between provider acceptance and local provider-reference persistence must be recoverable without duplicate money movement.
+
+Required evidence:
+
+- provider submission tests;
+- exact atomic amount conversion tests;
+- deterministic idempotency proof;
+- provider-reference uniqueness/persistence proof;
+- retry/recovery test around provider-accepted/local-persist-failed boundary;
+- production-equivalent sandbox execution.
+
+## Gate 08 — Wire Circle and Alchemy webhook ingestion
+
+**State:** OPEN
+
+Required outcome:
+
+```text
+provider callback
+  -> signature/authentication verification
+  -> provider_webhook_inbox
+  -> dedupe/replay protection
+  -> idempotent processing
+  -> provider reference / settlement evidence linkage
+  -> lifecycle transition
+```
+
+Required evidence:
+
+- official provider verification implementation;
+- invalid-signature rejection;
+- duplicate delivery test;
+- replay/timestamp handling where applicable;
+- dead-letter/retry behavior;
+- successful event-to-transaction linkage.
+
+## Gate 09 — Prove complete funding lifecycle
+
+**State:** OPEN
+
+Required outcome:
+
+```text
+funding intent
+  -> route/provider submission or observation
+  -> provider confirmation
+  -> settlement evidence
+  -> pending ledger posting
+  -> reconciliation
+  -> available capital
+```
+
+Required evidence:
+
+- durable identifiers for intent, route/reference, provider event, evidence, journal, and reconciliation item;
+- exact amount/asset/network match;
+- duplicate-event safety;
+- only-once ledger credit;
+- final available state only after matched reconciliation.
+
+## Gate 10 — Prove complete withdrawal lifecycle
+
+**State:** OPEN
+
+Required outcome:
+
+```text
+withdrawal request
+  -> validation/policy
+  -> transfer execution
+  -> capital reservation
+  -> approval
+  -> Circle submission
+  -> provider reference
+  -> submitted
+  -> settlement evidence
+  -> canonical settlement journal
+  -> reconciliation
+```
+
+Required evidence:
+
+- separation-of-duties approval proof;
+- reservation proof;
+- provider submission/reference proof;
+- settlement evidence;
+- journal posting;
+- matched reconciliation;
+- failure/cancel/retry behavior.
+
+## Gate 11 — Verify settlement evidence authority
+
+**State:** OPEN
+
+Required outcome:
+
+- every settled canonical funding/transfer state is backed by durable provider settlement evidence;
+- evidence matches provider, environment, asset, network, amount, and transaction identity;
+- evidence cannot be reused across unrelated financial operations.
+
+Required evidence:
+
+- constraint/application tests;
+- negative mismatched-evidence tests;
+- successful linkage from provider event to canonical transaction.
+
+## Gate 12 — Verify canonical journal invariants
+
+**State:** OPEN
+
+Required outcome:
+
+- every canonical journal balances per asset;
+- every posting references the correct owner/treasury account, asset, and network;
+- no duplicate journal is possible for a single canonical source operation;
+- corrections use reversals/compensating entries rather than destructive history edits.
+
+Required evidence:
+
+- invariant test suite;
+- database queries showing zero unbalanced journals;
+- idempotency/uniqueness proof;
+- reversal test.
+
+## Gate 13 — Verify reconciliation
+
+**State:** OPEN
+
+Required outcome:
+
+- reconciliation compares Neptlium canonical state against provider/treasury evidence;
+- matched items have no unresolved discrepancy codes;
+- stale submitted/pending transactions surface as explicit discrepancies;
+- retries and manual review are operationally possible.
+
+Required evidence:
+
+- reconciliation run and item records;
+- zero unexplained mismatch for the controlled lifecycle cases;
+- explicit tests for discrepancy classification and retry/manual review.
+
+## Gate 14 — Verify omnibus backing
+
+**State:** OPEN
+
+Required outcome:
+
+For each supported asset/network:
+
+- customer settled claims do not exceed reconciled treasury assets;
+- customer pending claims do not exceed provider-confirmed pending treasury assets;
+- backing assertions are executed after relevant funding/withdrawal state transitions.
+
+Required evidence:
+
+- backing snapshot before/after controlled flows;
+- assertion-pass evidence;
+- deliberate negative test proving under-backing is rejected/detected.
+
+## Gate 15 — Finish Supabase-to-Clerk identity cutover
+
+**State:** OPEN
+
+Required outcome:
+
+- Clerk is the certified browser/session authentication authority for App/Admin;
+- every retained production principal has an intentional mapping/state;
+- legacy Supabase Auth dependency is removed from ordinary product access;
+- migration/recovery paths are complete;
+- role/compliance authorization continues to come from canonical server-side state;
+- legacy Supabase sessions cannot access retired financial paths.
+
+Required evidence:
+
+- principal/subject reconciliation report;
+- existing-user migration tests;
+- new-user bootstrap tests;
+- account-recovery/MFA/operator tests as applicable;
+- lifecycle webhook tests;
+- proof of legacy-auth containment/retirement.
+
+## Gate 16 — Restore Vercel visibility and audit production environment
+
+**State:** BLOCKED
+
+Current blocker: connected Vercel integration returns no Neptlium projects despite exposing the `Neptliumforge` team.
+
+Required outcome:
+
+- production Web/App/Admin/API projects are visible to the authorized audit path;
+- required environment-variable names exist in the correct projects and targets;
+- secret values are never exposed in documentation or audit output;
+- runtime wiring confirms the deployed services can use the intended Supabase, Clerk, Circle, Stripe/Alchemy, KMS/signing, and webhook configuration as applicable;
+- stale/duplicate public keys and unused variables are identified and retired safely;
+- domains and production deployment mappings are verified.
+
+Required evidence:
+
+- project inventory;
+- environment-variable metadata inventory by project/environment;
+- domain/deployment mapping;
+- runtime health/functional checks;
+- rotation/cleanup list where applicable.
+
+## Additional hardening before unrestricted scale
+
+These do not replace gates 01-16 but must be scheduled before material production scale:
+
+- enable leaked-password protection while Supabase Auth remains in use;
+- reduce externally callable privileged `SECURITY DEFINER` RPC surface;
+- fix high-value unindexed foreign keys;
+- optimize RLS policies using init-plan-safe patterns;
+- remove duplicate permissive policies and migration residue;
+- retire unused Supabase publishable/legacy anon keys once consumers are identified;
+- expand mandatory CI to App, Admin, API, financial integration, RLS/security, provider contract, webhook replay/idempotency, ledger invariant, and customer/admin E2E coverage;
+- establish alerting for stale submissions, webhook failures/silence, reconciliation mismatches, ledger errors, KMS/provider failures, and DB/runtime errors;
+- test backup/restore and rollback procedures.
+
+## Release gate
+
+NEPTLIUM may be rewritten/documented as production-complete only after:
+
+- gates 01-16 are `COMPLETE`;
+- no launch-scope legacy money path remains authoritative;
+- controlled funding and withdrawal lifecycles both reconcile successfully;
+- canonical ledger and omnibus backing invariants pass;
+- identity cutover is certified;
+- production environment configuration is independently audited;
+- final CI/E2E/security checks pass;
+- a controlled real-funds canary is explicitly authorized and reconciles successfully if real-money launch is in scope.
+
+## Final documentation rewrite
+
+When the release gate closes, perform a second full rewrite of README, `AGENTS.md`, and all current docs. That rewrite must describe the final deployed system, not this remediation plan. Until then, this execution ledger remains the authoritative statement of production readiness.

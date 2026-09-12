@@ -1,62 +1,52 @@
-# Capital Account
+# NEPTLIUM Capital Account — Remediation Mode
 
-The Capital Account is the customer-facing boundary for funding, balances, withdrawals, transfers, and activity. It is not a provider wallet UI and it does not infer canonical money from provider responses.
+## Authority
 
-## CURRENT
+The Capital Account is canonical only when balances and availability derive from durable funding state, settlement evidence, ledger postings, and reconciliation. Legacy `portfolios.total_value`, legacy transaction rows, or provider observations are not sufficient authority.
 
-The repository contains two generations of groundwork:
+## Canonical funding lifecycle
 
-- Legacy `wallets`, `wallet_transactions`, `custody_addresses`, withdrawal-address, allocation-request, provider-event, and transfer-alias schema remains in migration history and application services.
-- The API foundation adds private `wallet_accounts`, `wallet_addresses`, `wallet_deposits`, `wallet_withdrawals`, immutable ledger primitives, idempotency records, audit events, webhook inbox records, and reconciliation records.
-- Production containment disables legacy funding and execution functions that could imply unsupported financial movement. Their history remains preserved.
+```text
+funding intent
+  -> provider route/submission or on-chain observation
+  -> authenticated provider event
+  -> provider confirmation
+  -> durable settlement evidence
+  -> pending ledger posting
+  -> reconciliation
+  -> available capital
+```
 
-`apps/app` has Capital Account/wallet views for deposit address, balance, withdrawal, and transaction activity. Several flows intentionally render unavailable or pending states rather than inventing data.
+Availability must never precede reconciliation.
 
-### Circle foundation
+## Current production state
 
-Circle Developer-Controlled Wallets contains provider-neutral code for existing-wallet/address/balance/transaction observation for USDC on configured Base Sepolia or Base environments. The runtime composes the adapter with its explicit environment and live-execution gates; automatic wallet provisioning is disabled and transfer submission remains unimplemented.
+At the 2026-09-12 audit, the canonical funding tables had not processed a production lifecycle. Legacy deposit/Stripe paths remained deployed and could mutate legacy transaction/portfolio data directly. Therefore funding is not production-certified.
 
-- An authenticated owner can idempotently provision/link a Circle EOA through `/v1/capital-account/provider-wallet` when reviewed server credentials and a wallet-set reference are configured.
-- The API can return the linked deposit address and provider-observed USDC balance.
-- Provider transfer creation is explicitly disabled.
-- Circle webhook verification is not implemented; no Circle webhook route may be represented as live.
-- Provider wallet links store safe references and reconciliation state, never API keys, entity secrets, private keys, or recovery material.
+## Required remediation
 
-### Balance authority
+Capital Account readiness depends on gates 03, 04, 05, 06, 08, 09, 11, 12, 13, and 14 in `docs/15_PRODUCTION_READINESS_AUDIT.md`.
 
-`provider_observed` balance is evidence captured from Circle at an observation time. It is not the canonical spendable balance. Canonical balance must be derived from balanced, posted Neptlium ledger entries after reconciliation and reservation policy. UI and API responses must label unavailable, provider-observed, pending, and canonical states honestly.
+The implementation must prove:
 
-## TRANSITION
+- deterministic deposit attribution;
+- provider event authentication and dedupe;
+- exact asset/network/atomic amount matching;
+- durable settlement evidence;
+- only-once ledger credit;
+- matched reconciliation before availability;
+- omnibus backing after state transitions;
+- explicit handling for duplicate events, delayed events, unsupported assets, wrong routes, and provider failure.
 
-- Route existing user-facing wallet screens through the versioned Capital Account API instead of direct or simulated writes.
-- Complete durable repository operations for deposits, withdrawals, transactions, webhook inbox processing, and idempotency before enabling them in production.
-- Reconcile Circle observations to canonical ledger entries and surface discrepancies without silently correcting history.
-- Preserve current wallet/account identifiers while converging on `wallet_accounts` as the canonical account boundary.
-- Replace legacy containment stubs only with reviewed, atomic, idempotent workflows.
+## Legacy prohibition
 
-## TARGET information architecture
+Do not extend or rely on:
 
-Capital Account has five primary views:
+- `process-deposit` direct transaction/portfolio mutation;
+- Stripe webhook direct balance mutation;
+- UI-computed balances;
+- missing-data-as-zero behavior.
 
-1. **Overview** — canonical available balance, reserved/pending amounts, account status, and last reconciliation state.
-2. **Deposit** — eligible funding methods, verified destination/instructions, expected lifecycle, and credited activity.
-3. **Withdraw** — destination, validation, policy, authorization, reservation, provider status, and settlement lifecycle.
-4. **Transfer** — verified Neptlium-recipient resolution and internal/provider execution status.
-5. **Activity** — immutable customer-readable history spanning deposits, withdrawals, transfers, reservations, reversals, and reconciliation state.
+## Final rewrite
 
-### TARGET funding providers
-
-Stripe fiat funding and Stripe Onramp are targets only. Neither is installed, configured, or live.
-
-- Stripe fiat funding will require a reviewed payment-intent/funding model, verified webhooks, idempotent crediting, settlement/reversal handling, and ledger reconciliation.
-- Stripe Onramp will be a provider-assisted acquisition path whose provider outcome remains evidence until reconciled.
-- Provider-specific terminology must stay behind Neptlium domain models.
-
-## Financial invariants
-
-- No displayed balance may be fabricated or silently substituted from provider data.
-- A deposit becomes canonical only through verified evidence, idempotent processing, balanced posting, and required confirmation/settlement rules.
-- A withdrawal cannot spend reserved, pending, restricted, or unavailable capital.
-- Every mutation has an idempotency key, actor, request ID, lifecycle state, and audit trail.
-- Failures produce explicit failed/reversed states or compensating entries; posted history is never edited into agreement.
-- Financial execution remains disabled wherever durable ownership, policy, ledger, provider verification, and reconciliation are incomplete.
+After the controlled funding lifecycle reconciles successfully and all production gates close, rewrite this document with the final supported rails, provider contracts, balance model, and operational limits.

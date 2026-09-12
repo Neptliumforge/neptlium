@@ -1,22 +1,64 @@
 # @neptlium/api
 
-Node.js/TypeScript API for `api.neptlium.com`. Versioned routes live under `/v1`; the API is an existing trust boundary, not a planned application.
+Privileged Node.js/TypeScript API for `api.neptlium.com`.
 
-## CURRENT
+> **Production remediation mode:** The API is the canonical execution boundary, but the platform is not production-complete until the gates in `../../docs/15_PRODUCTION_READINESS_AUDIT.md` are closed with runtime evidence.
 
-- Health, status, version, account provisioning/onboarding, Capital Account, wallet, and provider-webhook routes.
-- Supabase bearer-token validation and owner-scoped repository boundary.
-- Supabase durable adapter for readiness, account RPCs, Circle wallet linkage, and audit writes.
-- Circle Developer-Controlled Wallets code for existing-wallet/address/balance/transaction observation on configured Base Sepolia or Base environments, with explicit runtime environment and live-execution gates.
-- Ledger, idempotency, webhook inbox, treasury policy, reconciliation, worker, observability, and rate-limit contracts.
+## Current authority
 
-Production rejects memory persistence and process-local rate limiting. Standalone and serverless runtimes use the service-role-only Supabase distributed limiter RPC. Durable deposit, withdrawal, transaction, and webhook operations remain unsupported and fail closed. Circle transfer execution and Circle webhook verification are disabled. Alchemy observations and Stripe payment evidence require verified webhook ingress.
+`apps/api` owns authenticated financial commands, provider isolation, durable state transitions, ledger interaction, reconciliation, rate limiting, and audit boundaries.
 
-Stripe Treasury is not part of the runtime architecture. Stripe payment/onramp capability is not implemented; configured Stripe webhooks record evidence only. Clerk is not implemented.
+Current source includes substantial governed financial infrastructure, including funding/transfer lifecycle contracts, provider webhook inbox control-plane, ledger/reconciliation functions, Clerk/Supabase identity transition support, and Circle provider code. However, legacy Supabase Edge Functions can still bypass this authority in production and the canonical financial lifecycle has not yet been exercised end-to-end.
+
+## Immediate execution requirements
+
+The API remediation sequence is:
+
+1. become the only financial mutation authority after legacy Edge Functions are disabled/retired;
+2. remove any client-side transaction truth creation path;
+3. complete Circle approved-transfer -> provider submission -> durable provider reference -> submitted orchestration;
+4. authenticate and persist Circle/Alchemy/Stripe provider events through `provider_webhook_inbox`;
+5. produce durable settlement evidence;
+6. post only-once balanced canonical journals;
+7. reconcile provider/treasury evidence against customer liabilities;
+8. prove complete funding and withdrawal lifecycles;
+9. support the final Clerk identity cutover;
+10. pass production environment-variable/runtime certification.
+
+## Required financial rules
+
+- persist intent/execution state before irreversible provider effects where the provider contract permits;
+- use deterministic idempotency for provider submission;
+- never equate provider acceptance with settlement;
+- never equate settlement with reconciliation;
+- treat unknown provider outcome as unknown/recoverable;
+- never use process memory as production financial authority;
+- fail closed when auth, policy, provider capability, durability, evidence, or reconciliation prerequisites are unavailable.
+
+## Provider ingress
+
+The canonical inbound pattern is:
+
+```text
+provider request
+  -> official signature/authentication verification
+  -> provider_webhook_inbox persistence
+  -> dedupe/replay protection
+  -> idempotent processing
+  -> provider-reference/settlement-evidence linkage
+  -> lifecycle transition
+  -> ledger/reconciliation
+```
+
+Legacy direct Stripe/crypto/deposit mutation behavior must not remain authoritative.
+
+## Identity
+
+Clerk is implemented in current source and is the target browser/session authority. Production remains transitional until the Supabase-to-Clerk cutover gate is complete. API authorization must resolve external identity to canonical Neptlium principals and server-side roles/compliance state.
 
 ## Environment
 
-Copy `.env.example` to an untracked local file. Supabase service-role values, Circle credentials/entity secret, and webhook/provider secrets are server-only. Production provider configuration requires `ENABLE_MAINNET=true`; configuration is not execution authorization.
+All provider/service credentials are server-only. Production environment verification must confirm variable presence, environment/project scope, and successful runtime use without exposing values.
 
 ## Commands
 
@@ -26,11 +68,5 @@ pnpm --filter @neptlium/api test
 pnpm --filter @neptlium/api build
 ```
 
-## Truth boundary
-
-- Provider responses are observed evidence until ledger posting and reconciliation.
-- Route or schema presence does not prove production capability.
-- Mutations require authentication, ownership, idempotency, policy, audit, and durable atomic persistence.
-- Webhooks fail closed without official-contract verification.
-
-Architecture: [`docs/11_API_ARCHITECTURE.md`](../../docs/11_API_ARCHITECTURE.md).
+Architecture: [`docs/11_API_ARCHITECTURE.md`](../../docs/11_API_ARCHITECTURE.md)  
+Execution ledger: [`docs/15_PRODUCTION_READINESS_AUDIT.md`](../../docs/15_PRODUCTION_READINESS_AUDIT.md)

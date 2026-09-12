@@ -1,90 +1,64 @@
-# Identity and Access
+# NEPTLIUM Identity and Access — Remediation Mode
 
-Status labels in this document are normative: **CURRENT SOURCE** describes verified repository behavior, **CURRENT PRODUCTION SCHEMA** describes audited database state, **CURRENT PRODUCTION RUNTIME** describes deployed runtime state, **TRANSITION** describes migration constraints and partially implemented architecture, and **TARGET** describes the intended end state that must not be reported as live until production verification succeeds.
+## Current production state
 
-## CURRENT SOURCE
+NEPTLIUM is in an identity transition. Clerk is the target browser/session authority for App/Admin, while canonical Neptlium principal UUIDs remain the ownership identity inside the platform. Supabase Auth is not yet fully retired.
 
-Neptlium source is Clerk-first at the customer and operator surfaces.
+At the 2026-09-12 audit:
 
-- `apps/app` and `apps/admin` source use Clerk browser authentication/session primitives and require `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` plus `CLERK_SECRET_KEY` at runtime.
-- `apps/api` supports `API_AUTH_MODE=SUPABASE|DUAL|CLERK` and resolves authenticated provider subjects to stable Neptlium principals before authorization when provider-independent identity storage is configured.
-- `apps/app` routes product/business state through `apps/api`; its only direct Supabase request is the temporary legacy-session proof used during existing-account identity linking.
-- Existing-account linking requires both a valid legacy Supabase session and a valid Clerk session. `apps/api` verifies both before invoking a service-only link command.
-- Clerk bootstrap distinguishes `created`, `existing`, and `link_required`; an existing verified email does not create a second principal.
+- 16 Supabase Auth users existed;
+- 16 active `SUPABASE_AUTH` subject mappings existed;
+- 5 active Clerk subject mappings existed;
+- one super-admin role existed.
 
-Tokens must not be logged, stored in application tables, exposed to browser bundles, or treated as authorization without server validation.
+Therefore production must not be documented as Clerk-only yet.
 
-## CURRENT PRODUCTION SCHEMA
+## Canonical identity model
 
-The provider-independent identity foundation and Clerk application identity cutover are applied to the production Supabase database.
+```text
+external identity provider subject
+  -> identity_provider_subjects
+  -> identity_principal UUID
+  -> profile / ownership / roles / compliance / audit
+```
 
-Verified invariants:
+External provider identifiers are authentication evidence. The stable Neptlium principal UUID is the canonical internal identity used by financial ownership and audit records.
 
-- The 16 existing profile UUIDs are preserved as 16 active `identity_principals`.
-- All 16 existing Supabase Auth subjects remain mapped to those same principals as transition evidence.
-- Public financial/domain ownership and actor foreign keys no longer reference `auth.users`; they reference `identity_principals` without changing stored UUID values or delete behavior.
-- Existing verified profile emails without a Clerk mapping return `link_required`; bootstrap does not create a duplicate principal.
-- Clerk mappings are created only by authenticated link/bootstrap operations; no mapping was manufactured by the schema migration itself.
-- Supabase Auth records remain present so existing users can prove legacy ownership during the transition. Their presence does not make `auth.users` the canonical business identity authority.
+## Authorization rules
 
-The provider-independent model separates:
+- browser authentication does not grant financial authority;
+- role and compliance decisions come from canonical server-side state;
+- user-editable JWT metadata must never grant privileged access;
+- Admin financial commands require server-side role checks and separation of duties;
+- suspended/revoked principals must fail closed;
+- API issuer/audience/JWKS/expiry/subject validation must be explicit and tested.
 
-- **Neptlium principal:** stable internal UUID used by ownership, policy, audit, and ledger attribution.
-- **Identity mapping:** `(provider, provider_subject) -> principal_id`, with uniqueness, status, timestamps, and migration provenance.
-- **Authentication session:** provider-issued proof validated at the application/API boundary.
-- **Authorization:** Neptlium-owned roles, organization membership, entitlements, compliance state, policy, and resource ownership.
+## Clerk cutover execution
 
-## CURRENT PRODUCTION RUNTIME
+Gate 15 in `docs/15_PRODUCTION_READINESS_AUDIT.md` remains open until:
 
-Production runtime is not yet certified merely because the schema is ready.
+1. every retained production principal has an intentional identity mapping/status;
+2. existing-user dual-session linking is proven;
+3. new-user bootstrap is proven;
+4. Clerk lifecycle webhook behavior is proven;
+5. recovery/MFA/operator access is exercised as applicable;
+6. legacy Supabase Auth is removed from ordinary product access;
+7. retired Supabase sessions cannot invoke legacy financial paths;
+8. App/Admin/API documentation and runtime configuration agree.
 
-- App and Admin require valid Clerk publishable/secret runtime configuration.
-- API requires durable Supabase server credentials, Clerk verification configuration, authorized-party configuration, and a deliberate compatible `API_AUTH_MODE`.
-- Runtime probes currently fail closed where these credentials are absent. A build that succeeds without runtime credentials is not production authentication certification.
+## Supabase Auth containment
 
-`API_AUTH_MODE=DUAL` is the next transition runtime after those credentials are installed. `CLERK`-only mode is not authorized by schema presence alone.
+While Supabase Auth remains live:
 
-## TRANSITION
+- enable appropriate password protections;
+- keep legacy sessions away from canonical financial mutation authority;
+- do not add new product features that depend on Supabase Auth;
+- treat legacy identity paths as migration-only.
 
-Identity migration remains additive, auditable, and separate from financial-state migration.
+## Privileged RPCs
 
-The completed schema sequence is:
+Authenticated-executable `SECURITY DEFINER` functions must validate the real authenticated principal internally and should be minimized. Privileged financial commands should converge on Admin/App -> API -> service-side database execution.
 
-1. Establish provider-independent principals while preserving every existing profile UUID.
-2. Backfill `(SUPABASE_AUTH, subject) -> principal_id` mappings and append-only identity evidence.
-3. Add controlled Clerk subject linking.
-4. Add service-only dual-session linking so `apps/api` can validate both provider sessions before binding identities.
-5. Re-parent reviewed public ownership/actor foreign keys from `auth.users` to `identity_principals` without changing UUID values.
-6. Add Clerk bootstrap and onboarding authority against stable principals.
-7. Guard bootstrap so an existing verified email returns `link_required` instead of creating a duplicate principal.
+## Final rewrite
 
-The remaining runtime sequence is:
-
-1. Install App/Admin Clerk runtime credentials and API durable Supabase/Clerk credentials through the secret store.
-2. Enable API `DUAL` mode.
-3. Certify an existing user: Clerk login -> `link_required` -> legacy proof -> same principal -> dashboard.
-4. Certify a new user: Clerk signup -> one new principal -> onboarding -> dashboard.
-5. Verify roles, ownership, treasury authorization, audit attribution, recovery, MFA, webhook lifecycle, error handling, and incident procedures.
-6. Observe existing-user migration and maintain the legacy Supabase identity path while it is still required for continuity.
-7. Consider `CLERK`-only mode only after the transition has been explicitly certified.
-
-No destructive rewrite of applied migrations is allowed. Identity transition must not alter balances, ledger entries, provider evidence, settlement evidence, reconciliation history, or customer ownership.
-
-## TARGET
-
-Clerk is the browser authentication, session, and MFA authority for customer and operator surfaces.
-
-Supabase remains the production data platform and persistence authority; it does not remain the canonical business identity authority.
-
-Clerk authenticates; it does not become the canonical financial owner, role database, compliance system, or ledger authority. MFA assurance and session metadata may inform authorization policy but never replace resource-level checks.
-
-## Invariants
-
-- Authentication provider observation is not Neptlium authorization.
-- Email, wallet address, and provider subject are identifiers, not the canonical principal.
-- Email equality may trigger `link_required`, but never authorizes the identity link by itself.
-- Every privileged action requires server-side role, policy, and ownership validation.
-- Service-role credentials remain server-only and narrowly scoped.
-- Session failure, mapping ambiguity, missing identity storage, or provider outage fails closed for privileged operations.
-- Identity migration must not alter balances, ledger entries, provider evidence, settlement evidence, reconciliation history, or canonical owner UUIDs.
-- `SUPABASE`, `DUAL`, and `CLERK` runtime modes are deployment states, not interchangeable labels; each requires compatible schema and environment configuration.
+After Gate 15 and the overall release gate are complete, rewrite this document with the final Clerk-only authentication contract, final recovery model, final operator authorization model, and the retired Supabase Auth history.

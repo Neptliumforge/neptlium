@@ -1,78 +1,60 @@
-# Security
+# NEPTLIUM Security — Remediation Mode
 
-Security is a cross-application and financial-correctness boundary. This document describes repository controls, not a certification or guarantee.
+## Current security posture
 
-## CURRENT identity and authorization
+The production audit confirmed useful fail-closed foundations but also identified live attack/correctness surfaces that must be closed before real-money launch.
 
-- Supabase Auth is the current session provider for app and admin.
-- Server guards call `getUser()`; browser checks are never sufficient authorization.
-- Supabase RLS scopes user-readable resources with `auth.uid()` and denies direct access to private API/ledger/provider/operations tables.
-- Admin combines authenticated session, server-side role lookup, and role thresholds.
-- The API validates Supabase bearer tokens server-side before owner-scoped routes.
-- Ownership is derived from the verified user and revalidated in repositories/RPCs; callers cannot select an arbitrary owner.
+## Immediate security priorities
 
-The schema still has substantial `auth.users` coupling. Clerk is TARGET only; no Clerk security boundary exists yet.
+1. Remove production authority from legacy money-mutating Edge Functions.
+2. Remove client-side authority to create/mutate financial transaction truth.
+3. Preserve default-deny access to canonical financial tables.
+4. Minimize authenticated-callable `SECURITY DEFINER` RPC surface.
+5. Complete Clerk identity cutover and contain legacy Supabase sessions.
+6. Verify official provider webhook authentication and replay protection.
+7. Audit production environment-variable presence/scope without exposing values.
 
-## Service-role boundary
+## Supabase production findings
 
-`SUPABASE_SERVICE_ROLE_KEY` bypasses RLS and is therefore confined to server-only admin/API clients and narrow operations. It must never appear in `NEXT_PUBLIC_*`, browser bundles, client logs, provider metadata, or tracked files.
+At the 2026-09-12 audit:
 
-Service-role possession is not permission to bypass Neptlium authorization. Code must validate actor, role, ownership, allowed transition, amount, policy, and idempotency before privileged writes.
+- many newer canonical financial tables had RLS enabled, no browser policies, and no `anon`/`authenticated` privileges; preserve this server-only/default-deny posture;
+- seven treasury/identity `SECURITY DEFINER` functions were authenticated-callable; inspected treasury functions matched the authenticated Clerk principal to the requested actor and required `super_admin`, but the callable surface should still be reduced;
+- leaked-password protection was disabled while Supabase Auth remained active;
+- RLS performance/migration residue existed, including InitPlan warnings and duplicate permissive policies;
+- multiple active Supabase publishable/legacy anon keys existed and should be rationalized after consumer inventory.
 
-## Migration containment
+## Secret rules
 
-The production-security containment migration preserves and disables legacy functions that could simulate funding, withdrawal, balance crediting, provider events, or allocation execution. It revokes broad function/table privileges, hardens search paths, makes views security-invoker, and archives affected legacy state for reviewed rollback.
+Never expose:
 
-Applied migrations are append-only evidence. Never rewrite or delete them; corrective changes use new reviewed migrations. The rollback SQL under `docs/security` is an operational reference, not an instruction to execute without approval.
+- Supabase service-role/secret keys;
+- provider API secrets;
+- Circle entity secrets/signing material;
+- Stripe webhook/secret keys;
+- Clerk privileged secrets;
+- private keys, KMS material, recovery data, cookies, bearer tokens, or sensitive provider payloads.
 
-## Secrets and configuration
-
-- Commit examples with empty values only; real `.env*` files remain untracked.
-- Browser-safe values alone use `NEXT_PUBLIC_*`.
-- API keys, service-role keys, Circle entity secret, signing keys, and future Clerk/Stripe secrets are server-only.
-- Validate environment, origin, URL, and capability configuration at startup.
-- Never log authorization headers, cookies, tokens, secrets, private/recovery material, or raw sensitive payloads.
-- Remote environment changes require explicit instruction and review.
+A secret audit records only presence, target environment, project/function scope, rotation status, and successful runtime use.
 
 ## Webhook security
 
-- Verify the exact raw body using the provider's reviewed official signature contract before parsing/processing.
-- Enforce size and timestamp/replay tolerance where the provider contract supports it.
-- Require stable provider event IDs and compare payload digests on duplicates.
-- Persist a private inbox before asynchronous processing.
-- Store only safe headers and references; isolate raw sensitive payload access.
-- Process idempotently through durable jobs and record failures/dead letters.
+Provider ingress must:
 
-Alchemy ingress fails closed without official signature verification. Circle webhook ingestion is explicitly disabled until reviewed implementation exists. Stripe ingress requires its webhook secret. Test verifiers are not production verification.
+- use official signature/authentication verification;
+- reject invalid/missing signatures;
+- validate timestamp/replay requirements where the provider contract supports them;
+- persist event identity before processing;
+- enforce uniqueness/deduplication;
+- be safe under repeated delivery;
+- preserve raw evidence appropriately without leaking secrets or sensitive payloads to logs.
 
-## Financial-operation security
+## Identity security
 
-- Validate ownership, supported capability, amount, destination/recipient, available canonical balance, restrictions, and policy server-side.
-- Separate proposer, approver, and executor duties; prohibit self-approval.
-- Reserve capital atomically before submission.
-- Use exact units, balanced append-only postings, idempotency, request correlation, and audit.
-- Treat ambiguous provider results as pending/unknown until lookup and reconciliation.
-- Reconcile provider evidence to canonical state and restrict discrepancies when policy requires.
-- Correct posted history only with reversal/compensating entries.
+Clerk authentication must resolve to stable Neptlium principals. Authorization must use canonical server-side roles/compliance state. User-editable metadata must not grant privileges.
 
-## Fail-closed behavior
+Until Supabase Auth is retired, legacy sessions must be prevented from reaching legacy financial mutation paths.
 
-The API rejects production memory repositories and requires a distributed rate limiter. Missing auth configuration denies authentication; missing provider configuration returns unavailable; Circle mainnet is rejected; unsupported assets/networks are denied; absent webhook verification prevents ingestion; disabled execution stays disabled.
+## Release rule
 
-Unavailable security dependencies must not degrade into anonymous access, simulated success, default approval, or fabricated financial state.
-
-## TARGET identity security
-
-Clerk is the target authentication/session/MFA provider. Migration requires provider-independent principals, subject mappings, preserved audit attribution, verified app/API/admin token handling, role/ownership separation, session revocation, recovery, MFA policy, and controlled overlap with Supabase Auth.
-
-No Clerk SDK, middleware, database migration, or environment configuration exists in the audited baseline.
-
-## Security review minimum
-
-- Threat model trust boundaries and abuse cases.
-- Verify RLS and service-role call paths.
-- Test cross-owner and role escalation denial.
-- Test replay, duplicate, timeout, retry, and race behavior.
-- Test ledger balance, append-only, reservation, and reversal invariants.
-- Verify logs and responses contain no secrets or sensitive provider payloads.
-- Review provider contracts and operational recovery before enabling capability.
+Security sign-off is impossible while gates 01-16 in `docs/15_PRODUCTION_READINESS_AUDIT.md` remain open. After those gates close, run a fresh production security audit and rewrite this document with final controls, threat model, incident procedures, and secret-rotation policy.
