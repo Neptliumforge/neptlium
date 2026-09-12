@@ -4,6 +4,7 @@ import './neptlium-visual-direction.css';
 import './mobile-navigation-fix.css';
 import './landing-v3.css';
 import { SiteHeader } from '@/components/site-header';
+import { GlobalConversionCta } from '@/components/global-conversion-cta';
 import { SiteFooter } from '@/components/site-footer';
 import { SkipLink } from '@/components/skip-link';
 import { SITE } from '@/lib/content/site';
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SkipLink />
         <SiteHeader />
         <main id="main-content">{children}</main>
+        <GlobalConversionCta />
         <SiteFooter />
       </body>
     </html>
