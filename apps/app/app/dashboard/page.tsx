@@ -1,211 +1,80 @@
+import type { CSSProperties } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CircleCheck, Clock3 } from 'lucide-react';
 import { requireProvisionedUser } from '@/lib/auth';
-import { getOverviewState, type ResourceState } from '@/lib/api/client';
-import {
-  getCanonicalBalances,
-  getFundingActivity,
-  getFundingCapabilities,
-  getTransferActivity,
-  getTransferCapabilities,
-  type FundingActivity,
-  type TransferActivity,
-} from '@/lib/api/financial';
-import { ProductStateBadge, ProductStateMessage, type ProductStateName } from '@/components/product/ProductState';
-import { WorkspaceHeader } from '@/components/product/WorkspaceHeader';
 
-type GovernedState = {
-  readonly label: string;
-  readonly detail: string;
-  readonly state: ProductStateName;
-};
+const portfolio = [
+  ['Public markets','36%',36],
+  ['Private companies','28%',28],
+  ['Cash & liquidity','18%',18],
+  ['Real assets','12%',12],
+  ['Other','6%',6],
+] as const;
 
-type CapitalContext = {
-  readonly id: string;
-  readonly title: string;
-  readonly detail: string;
-  readonly createdAt: string;
-};
-
-function resourceState(resource: ResourceState | undefined, unavailable: boolean): GovernedState {
-  if (unavailable || !resource) {
-    return { label: 'Not loaded', detail: 'The Neptlium API did not return this state.', state: 'ERROR' };
-  }
-  if (resource.state === 'VALUE') {
-    return { label: 'Observed', detail: 'Current governed information is available.', state: 'AVAILABLE' };
-  }
-  if (resource.state === 'EMPTY') {
-    return { label: 'Not observed', detail: 'No governed information is currently recorded.', state: 'NO_POSITION' };
-  }
-  if (resource.state === 'PENDING') {
-    return { label: 'Pending', detail: resource.reason, state: 'PENDING' };
-  }
-  if (resource.state === 'NOT_CONFIGURED') {
-    return { label: 'Not configured', detail: resource.reason, state: 'NOT_CONFIGURED' };
-  }
-  return { label: 'Unavailable', detail: resource.reason, state: 'UNAVAILABLE' };
-}
-function allocationState(resource: ResourceState | undefined, unavailable: boolean): GovernedState {
-  const current = resourceState(resource, unavailable);
-  if (current.label === 'Observed') {
-    return { ...current, label: 'Configured', detail: 'A governed allocation structure is recorded.' };
-  }
-  if (current.label === 'Not observed') {
-    return { ...current, label: 'Not configured', detail: 'No governed allocation structure is recorded.', state: 'NOT_CONFIGURED' };
-  }
-  return current;
-}
-
-function capitalContext(
-  funding: readonly FundingActivity[],
-  transfers: readonly TransferActivity[],
-): readonly CapitalContext[] {
-  return [
-    ...funding.map((item) => ({
-      id: `funding:${item.id}`,
-      title: 'Funding instruction recorded',
-      detail: `${item.asset} · ${item.network ?? item.rail} · ${item.state.replaceAll('_', ' ').toLowerCase()}`,
-      createdAt: item.created_at,
-    })),
-    ...transfers.map((item) => ({
-      id: `treasury:${item.id}`,
-      title: 'Treasury instruction recorded',
-      detail: `${item.asset} · ${item.network ?? item.rail} · ${item.state.replaceAll('_', ' ').toLowerCase()}`,
-      createdAt: item.created_at,
-    })),
-  ].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).slice(0, 4);
-}
+const activity = [
+  ['Portfolio','Company position updated','12:41'],
+  ['Treasury','Movement reviewed','10:18'],
+  ['Capital Account','Funding observed','09:52'],
+] as const;
 
 export default async function DashboardPage() {
-  await requireProvisionedUser();
-
-  const [overviewResult, balancesResult, fundingCapabilitiesResult, transferCapabilitiesResult, fundingResult, transferResult] = await Promise.allSettled([
-    getOverviewState(),
-    getCanonicalBalances(),
-    getFundingCapabilities(),
-    getTransferCapabilities(),
-    getFundingActivity(),
-    getTransferActivity(),
-  ]);
-
-  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
-  const balances = balancesResult.status === 'fulfilled' ? balancesResult.value.balances : [];
-  const fundingCapabilities = fundingCapabilitiesResult.status === 'fulfilled' ? fundingCapabilitiesResult.value.capabilities : [];
-  const transferCapabilities = transferCapabilitiesResult.status === 'fulfilled' ? transferCapabilitiesResult.value.capabilities : [];
-  const funding = fundingResult.status === 'fulfilled' ? fundingResult.value.data : [];
-  const transfers = transferResult.status === 'fulfilled' ? transferResult.value.data : [];
-  const pendingApprovals = transfers.filter((item) => item.state === 'PENDING_APPROVAL');
-
-  const attention = [
-    ...(overviewResult.status === 'rejected' ? [{ title: 'Operating context was not loaded', detail: 'The Neptlium API did not return current portfolio and allocation state.', href: '/dashboard', label: 'Review Overview' }] : []),
-    ...(balancesResult.status === 'rejected' ? [{ title: 'Capital Account state was not loaded', detail: 'The Neptlium API did not return canonical liquidity information.', href: '/dashboard/capital-account', label: 'Open Capital Account' }] : []),
-    ...(fundingCapabilitiesResult.status === 'rejected' || transferCapabilitiesResult.status === 'rejected' ? [{ title: 'Capability state was not loaded', detail: 'The Neptlium API did not return current funding or movement capability.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
-    ...(pendingApprovals.length > 0 ? [{ title: `${pendingApprovals.length} item${pendingApprovals.length === 1 ? '' : 's'} require review`, detail: 'Treasury instructions are awaiting authorization.', href: '/dashboard/treasury', label: 'Open Treasury' }] : []),
-  ];
-
-  const hasPendingLiquidity = [...funding, ...transfers].some((item) => !['AVAILABLE', 'RECONCILED', 'SETTLED', 'FAILED', 'RETURNED', 'REVERSED', 'CANCELLED', 'CANCELED'].includes(item.state));
-  const liquidity: GovernedState = balancesResult.status === 'rejected'
-    ? { label: 'Not loaded', detail: 'The Neptlium API did not return canonical liquidity state.', state: 'ERROR' }
-    : hasPendingLiquidity
-      ? { label: 'Pending', detail: 'A governed capital instruction has not reached a settled state.', state: 'PENDING' }
-      : balances.length > 0
-        ? { label: 'Available', detail: 'Canonical liquidity positions are recorded by asset.', state: 'AVAILABLE' }
-        : { label: 'No position', detail: 'The canonical ledger returned no liquidity position.', state: 'NO_POSITION' };
-
-  const treasury: GovernedState = transferCapabilitiesResult.status === 'rejected'
-    ? { label: 'Not loaded', detail: 'The Neptlium API did not return movement capability.', state: 'ERROR' }
-    : pendingApprovals.length > 0
-      ? { label: 'Review required', detail: 'A governed treasury instruction awaits authorization.', state: 'REQUIRES_APPROVAL' }
-      : transferCapabilities.some((item) => item.state === 'ENABLED')
-        ? { label: 'Available', detail: 'At least one governed movement capability is enabled.', state: 'AVAILABLE' }
-        : { label: 'Not configured', detail: 'No governed movement capability is currently enabled.', state: 'NOT_CONFIGURED' };
-
-  const capitalStates = [
-    { name: 'Portfolio', ...resourceState(overview?.portfolio, overviewResult.status === 'rejected') },
-    { name: 'Liquidity', ...liquidity },
-    { name: 'Allocation', ...allocationState(overview?.allocation, overviewResult.status === 'rejected') },
-    { name: 'Treasury', ...treasury },
-  ] as const;
-
-  const workspaces = [
-    { title: 'Portfolio Intelligence', description: 'Understand positions and exposure.', href: '/dashboard/portfolio', context: capitalStates[0].label },
-    { title: 'Capital Account', description: 'Understand funding, availability, and movement capability.', href: '/dashboard/capital-account', context: fundingCapabilitiesResult.status === 'rejected' ? 'Not loaded' : fundingCapabilities.some((item) => item.state === 'ENABLED') ? 'Capability available' : 'Not configured' },
-    { title: 'Allocation', description: 'Understand policy and structure.', href: '/dashboard/allocations', context: capitalStates[2].label },
-    { title: 'Treasury', description: 'Understand movement capability and controls.', href: '/dashboard/treasury', context: capitalStates[3].label },
-  ] as const;
-
-  const recentContext = capitalContext(funding, transfers);
-  const contextUnavailable = fundingResult.status === 'rejected' && transferResult.status === 'rejected';
+  const { profile } = await requireProvisionedUser();
+  const firstName = (profile.fullName ?? profile.displayName ?? 'there').split(' ')[0];
 
   return (
-    <div className="space-y-10 lg:space-y-12">
-      <WorkspaceHeader
-        eyebrow="Overview"
-        title="Capital Operating Environment"
-        description="Understand current capital state, changes, and attention areas."
-      />
-
-      <section aria-labelledby="attention-title">
-        <div className="mb-4">
-          <p className="neptlium-meta">Attention state</p>
-          <h2 id="attention-title" className="mt-2 text-text-primary">
-            {attention.length === 0 ? 'No items require your attention.' : `${attention.length} item${attention.length === 1 ? '' : 's'} require review.`}
-          </h2>
+    <div className="app-overview">
+      <section className="overview-intro">
+        <div>
+          <p className="overview-kicker">Capital environment</p>
+          <h1>Good morning, {firstName}.</h1>
+          <p>Here’s the current view of your capital environment.</p>
         </div>
-        <div className="border-y border-border-hairline">
-          {attention.length === 0 ? (
-            <div className="flex items-center justify-between gap-6 py-5">
-              <p className="max-w-2xl text-sm leading-6 text-text-muted">There are no governed approvals, API errors, or backend review states requiring attention.</p>
-              <ProductStateBadge state="READY">Clear</ProductStateBadge>
-            </div>
-          ) : attention.map((item) => (
-            <Link key={item.title} href={item.href} className="group grid gap-3 border-b border-border-hairline py-4.5 last:border-0 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-8">
-              <div><p className="text-sm font-medium text-text-primary">{item.title}</p><p className="mt-1 max-w-2xl text-sm text-text-muted">{item.detail}</p></div>
-              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-text-secondary group-hover:text-text-primary">{item.label}<ArrowRight className="size-4" aria-hidden="true" /></span>
-            </Link>
+        <span className="preview-state">Preview interface · not live financial data</span>
+      </section>
+
+      <section className="capital-hero" aria-labelledby="capital-summary-title">
+        <div className="capital-hero-main">
+          <p id="capital-summary-title">Total capital</p>
+          <strong>—</strong>
+          <span>Connect capital sources to populate this view.</span>
+        </div>
+        <div className="capital-metrics">
+          {[['Available liquidity','—'],['Committed','—'],['Modeled','—']].map(([label,value]) => (
+            <div key={label}><span>{label}</span><strong>{value}</strong></div>
           ))}
         </div>
       </section>
 
-      <section aria-labelledby="capital-state-title">
-        <div className="mb-4"><p className="neptlium-meta">Governed state</p><h2 id="capital-state-title" className="mt-2 text-text-primary">Capital state</h2></div>
-        <div className="grid border-y border-border-hairline sm:grid-cols-2 lg:grid-cols-4">
-          {capitalStates.map((item) => (
-            <div key={item.name} className="border-b border-border-hairline py-5 sm:px-5 sm:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:first:pl-0 lg:last:border-r-0 lg:last:pr-0">
-              <p className="text-sm font-medium text-text-primary">{item.name}</p>
-              <div className="mt-3"><ProductStateBadge state={item.state}>{item.label}</ProductStateBadge></div>
-              <p className="mt-3 text-xs leading-5 text-text-muted">{item.detail}</p>
-            </div>
-          ))}
-        </div>
+      <section className="overview-grid">
+        <article className="overview-panel portfolio-panel">
+          <div className="panel-heading"><div><span>Portfolio</span><h2>Composition</h2></div><Link href="/dashboard/portfolio">View portfolio <ArrowRight size={15} /></Link></div>
+          <div className="portfolio-bars">
+            {portfolio.map(([label,value,width]) => <div className="portfolio-row" key={label}><div><span>{label}</span><b>{value}</b></div><i style={{'--bar': `${width}%`} as CSSProperties} /></div>)}
+          </div>
+          <p className="panel-note">Illustrative composition for interface architecture only.</p>
+        </article>
+
+        <article className="overview-panel liquidity-panel">
+          <div className="panel-heading"><div><span>Treasury</span><h2>Liquidity</h2></div><Link href="/dashboard/treasury">Open treasury <ArrowRight size={15} /></Link></div>
+          <div className="liquidity-curve" aria-hidden="true"><span/><span/><span/><i/></div>
+          <div className="liquidity-stats"><div><span>Available</span><strong>—</strong></div><div><span>Reserved</span><strong>—</strong></div><div><span>30-day needs</span><strong>—</strong></div></div>
+        </article>
       </section>
 
-      <section aria-labelledby="workspaces-title">
-        <div className="mb-4"><p className="neptlium-meta">Navigate</p><h2 id="workspaces-title" className="mt-2 text-text-primary">Operating workspaces</h2></div>
-        <nav aria-label="Operating workspaces" className="grid border-t border-border-hairline md:grid-cols-2">
-          {workspaces.map((workspace) => (
-            <Link key={workspace.href} href={workspace.href} className="group flex min-h-32 items-start justify-between gap-6 border-b border-border-hairline py-5 md:odd:border-r md:odd:pr-6 md:even:pl-6">
-              <div><p className="text-sm font-medium text-text-primary">{workspace.title}</p><p className="mt-2 text-sm leading-6 text-text-muted">{workspace.description}</p><p className="mt-3 text-xs text-text-secondary">Current context · {workspace.context}</p></div>
-              <ArrowRight className="mt-0.5 size-4 shrink-0 text-text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-text-primary" aria-hidden="true" />
-            </Link>
-          ))}
-        </nav>
-      </section>
+      <section className="overview-grid lower-grid">
+        <article className="overview-panel attention-panel">
+          <div className="panel-heading"><div><span>Attention</span><h2>Needs attention</h2></div></div>
+          <div className="attention-clear"><CircleCheck size={22}/><div><strong>You’re up to date.</strong><p>No capital work currently needs your attention.</p></div></div>
+          <Link className="text-action" href="/dashboard/allocations">Review allocation workspace <ArrowRight size={15}/></Link>
+        </article>
 
-      <section aria-labelledby="recent-context-title">
-        <div className="mb-4"><p className="neptlium-meta">Recent</p><h2 id="recent-context-title" className="mt-2 text-text-primary">Capital context</h2></div>
-        <div className="border-y border-border-hairline">
-          {contextUnavailable ? (
-            <ProductStateMessage state="ERROR" title="Capital context was not loaded">The Neptlium API did not return recent governed context. No activity or value is inferred.</ProductStateMessage>
-          ) : recentContext.length === 0 ? (
-            <ProductStateMessage state="NO_ACTIVITY" title="No recent capital context">No governed funding or treasury instructions are currently recorded.</ProductStateMessage>
-          ) : recentContext.map((item) => (
-            <div key={item.id} className="grid gap-2 border-b border-border-hairline py-4 last:border-0 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-8">
-              <div><p className="text-sm font-medium text-text-primary">{item.title}</p><p className="mt-1 text-xs text-text-muted">{item.detail}</p></div>
-              <time dateTime={item.createdAt} className="text-xs text-text-muted">{new Date(item.createdAt).toLocaleString()}</time>
-            </div>
-          ))}
-        </div>
+        <article className="overview-panel activity-panel">
+          <div className="panel-heading"><div><span>Recent</span><h2>Activity</h2></div><Link href="/dashboard/transactions">View all <ArrowRight size={15}/></Link></div>
+          <div className="activity-list">
+            {activity.map(([area,event,time]) => <div className="activity-row" key={event}><div><span>{area}</span><strong>{event}</strong></div><time><Clock3 size={13}/>{time}</time></div>)}
+          </div>
+          <p className="panel-note">Example activity is shown to establish the production layout.</p>
+        </article>
       </section>
     </div>
   );

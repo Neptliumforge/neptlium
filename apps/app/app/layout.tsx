@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from '@clerk/nextjs';
 import { assertProductionRuntimeConfig } from '@/lib/runtime-config';
 import "./global.css";
+import "./dashboard-v2.css";
 
 assertProductionRuntimeConfig();
 
@@ -15,8 +16,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: "light dark",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+    { media: "(prefers-color-scheme: light)", color: "#F7F8F6" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0E0D" },
   ],
 };
 
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: { readonly children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeBoot }} /></head>
       <body className="antialiased">
-        <ClerkProvider signInUrl="/auth/sign-in" signUpUrl="/auth/sign-up">
+        <ClerkProvider signInUrl="/" signUpUrl="/auth/sign-up">
           {children}
         </ClerkProvider>
       </body>
