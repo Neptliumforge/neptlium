@@ -1,53 +1,46 @@
-# Neptlium Auth Email Templates
+# NEPTLIUM Authentication Email Templates — Remediation Mode
 
-Neptlium authentication emails use a restrained transactional design system.
+## Identity transition status
+
+Clerk is the target browser/session authentication authority, but Supabase Auth still exists for legacy production identities. This document therefore describes transitional email behavior only; prepared Supabase templates do not imply that Supabase Auth remains the long-term product identity system.
 
 ## Brand rules
 
-- Outer background: `#F7F8FA`
-- Content background: `#FFFFFF`
-- Primary text: `#111827`
-- Secondary text: `#667085`
-- Tertiary text: `#98A2B3`
-- Divider: `#EAECF0`
-- Primary CTA: `#0B8CFF`
-- CTA text: white
-- Maximum content width: `560px`
-- Button radius: `8px`
-- Logo display size: `48x48`
-- System font stack only
-- Table-based layout
-- Inline CSS
-- No JavaScript
-- No external stylesheets
-- No newsletter or promotional styling
+Authentication emails remain restrained transactional messages:
 
-## Logo
+- outer background `#F7F8FA`;
+- content background `#FFFFFF`;
+- primary text `#111827`;
+- secondary text `#667085`;
+- tertiary text `#98A2B3`;
+- divider `#EAECF0`;
+- primary CTA `#0B8CFF` with white text;
+- maximum content width `560px`;
+- button radius `8px`;
+- logo display size `48x48`;
+- system font stack;
+- table-based layout and inline CSS;
+- no JavaScript, external stylesheets, newsletter, or promotional styling.
 
-Public email logo URL:
+Public email logo asset: `https://neptlium.com/neptlium-email-logo.png`.
 
-`https://neptlium.com/neptlium-email-logo.png`
+## Supabase legacy templates
 
-The asset should be a white-background email-safe adaptation of the canonical Neptlium mark, while preserving the canonical blue/cyan geometry.
+Where Supabase Auth remains intentionally enabled during migration, actionable templates use the provider-supported confirmation URL contract. Do not introduce custom token handling merely to preserve a legacy flow.
 
-## Supabase variables
+Legacy Supabase templates may include signup confirmation, password reset, email change, invite, magic link, password-changed, and email-changed messages. Their existence is configuration/documentation only and does not prove production activation.
 
-Actionable templates use:
+## Clerk target state
 
-`{{ .ConfirmationURL }}`
+New authentication/recovery email behavior should follow the final Clerk configuration and verified account-recovery design. Do not add new dependence on Supabase email flows while the identity cutover gate is active.
 
-Do not replace this with OTP token variables unless the authentication architecture intentionally changes.
+## Security rules
 
-## Prepared templates
+- never include secrets, internal IDs, privileged tokens, provider credentials, or financial data in email templates;
+- links must originate from the configured identity provider and approved product domain;
+- account recovery must fail closed when identity continuity is ambiguous;
+- operator/admin recovery requires the final privileged-access policy, not a generic customer template.
 
-- Confirm signup
-- Reset password
-- Change email
-- Invite user
-- Magic link
-- Password changed
-- Email changed
+## Completion condition
 
-Prepared templates are not proof that the corresponding production flow is enabled.
-
-Production activation must be reviewed separately in Supabase Auth configuration.
+After Gate 15 in `docs/15_PRODUCTION_READINESS_AUDIT.md` is complete, rewrite this document again to remove retired Supabase Auth email guidance and document the final Clerk production templates/recovery contract.
