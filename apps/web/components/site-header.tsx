@@ -7,7 +7,6 @@ import { createPortal } from 'react-dom';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Brand } from './brand';
 import { MobileNavigation } from './mobile-navigation';
-import chrome from './site-chrome.module.css';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 
@@ -165,18 +164,18 @@ export function SiteHeader() {
           </nav>
 
           <div className="command-actions">
-            <Link className={chrome.entryAction} href={SITE.publicAccessUrl}>
+            <Link className="elite-header-entry" href={SITE.publicAccessUrl}>
               {SITE.publicAccessLabel}
             </Link>
           </div>
 
-          <div className={chrome.mobileHeaderActions}>
-            <Link className={chrome.mobileHeaderEntry} href={SITE.publicAccessUrl}>
+          <div className="elite-header-actions">
+            <Link className="elite-header-entry" href={SITE.publicAccessUrl}>
               {SITE.publicAccessLabel}
             </Link>
             <button
               ref={trigger}
-              className={chrome.mobileMenuTrigger}
+              className="elite-menu-trigger"
               type="button"
               aria-expanded={mobileOpen}
               aria-controls="mobile-command-sheet"
