@@ -7,8 +7,9 @@ import {
   PortfolioVisual,
   SecurityFlowVisual,
 } from '@/components/product-visuals';
-import { DISCLOSURES, SITE } from '@/lib/content/site';
+import { DISCLOSURES } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
+import styles from './marketing-platform.module.css';
 
 export const metadata = createPageMetadata({
   title: 'Capital, made clearer',
@@ -35,7 +36,7 @@ const journey = [
 
 export default function HomePage() {
   return (
-    <div className="mp-home">
+    <div className={`${styles.scope} mp-home`}>
       <section className="mp-hero" aria-labelledby="home-title">
         <div className="mp-shell mp-hero-grid">
           <div className="mp-hero-copy">
