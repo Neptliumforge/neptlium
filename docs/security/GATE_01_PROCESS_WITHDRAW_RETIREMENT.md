@@ -61,7 +61,8 @@ independently inspected that deployment or its version/source.
   inspected environment. Inspected local env files contain Vercel OIDC tokens
   only; values were not printed or used.
 - `.mcp.json` configures Supabase, but `codex mcp list` reports no configured
-  servers. Codex requires its TOML MCP configuration; a command-line override
+  servers. [Official Codex MCP documentation](https://developers.openai.com/codex/mcp)
+  specifies TOML configuration; a command-line override
   recognizes the project-scoped server without changing global configuration.
 - OAuth login with that override reported success, but an independent Codex
   app-server MCP connection returned `authenticationRequired` and zero tools.
@@ -104,11 +105,16 @@ production. No authenticated invocation occurred in this execution.
 
 ## Repository publication and remaining integration
 
-Original Gate 01 commits are preserved in the backup branch. The corrected branch is based on the requested canonical-main commit and contains
-only the six Gate 01 files. Its original ancestry was already published, so the
-GitHub branch is to be recreated without force-pushing, after verifying its old
-SHA and absence of an existing Gate 01 PR. A focused draft PR is the publication
-target. Do not merge until production verification passes. PR #62 remains untouched.
+Original Gate 01 commits are preserved in the backup branch. The corrected
+implementation commit is `2f7cd105486edfd0fecff6200e77b0834fa439a0`.
+The remote execution branch was deleted and recreated without force-pushing,
+after confirming its previous SHA and absence of an existing Gate 01 PR.
+
+Draft [PR #64](https://github.com/Neptliumforge/neptlium/pull/64) targets main.
+GitHub's PR file and commit lists were inspected: exactly six Gate 01 files,
+with no Circle source, tests, or Execution 2 commits. The requested baseline
+remains the merge base. Do not merge until production verification passes.
+PR #62 remains untouched.
 
 - PASS — targeted Prettier checks and staged whitespace checks.
 - PASS — handoff link exists and all five table evidence entries are present.
