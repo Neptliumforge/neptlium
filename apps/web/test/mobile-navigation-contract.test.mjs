@@ -32,3 +32,10 @@ test('mobile menu exposes canonical investor navigation and separate account act
   assert.match(mobile, /Socials/);
   assert.doesNotMatch(mobile, /aria-expanded/);
 });
+
+test('mobile navigation preserves visible acquisition and 44px top-level targets', () => {
+  assert.match(css, /\.mobile-command-sheet \.mobile-section-label\s*\{[^}]*min-height: 2\.75rem !important;/s);
+  assert.match(css, /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*min-height: 3\.5rem !important;/s);
+  assert.match(css, /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*background: #0a746c !important;/s);
+  assert.match(css, /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*color: #fff !important;/s);
+});
