@@ -7,7 +7,7 @@ const highPriorityRoutes = new Set([
   '/investments',
   '/insights',
   '/security',
-  '/about',
+  '/company',
 ]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
