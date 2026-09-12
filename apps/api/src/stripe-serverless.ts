@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { createHash } from 'node:crypto';
 import { loadConfig, type Config } from './config.js';
 import { ApiError } from './errors.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
@@ -54,7 +55,9 @@ export async function executeStripeWebhook(
   } = {},
 ): Promise<StripeIngressResponse> {
   if (request.method.toUpperCase() !== 'POST')
-    return json(405, { error: { code: 'method_not_allowed', message: 'POST required' } });
+    return json(405, {
+      error: { code: 'method_not_allowed', message: 'POST required' },
+    });
 
   if (request.rawBody.length > 1_048_576)
     return json(413, {
@@ -82,8 +85,7 @@ export async function executeStripeWebhook(
       config.SUPABASE_SERVICE_ROLE_KEY,
       dependencies.fetch,
     );
-    const payloadDigest = await crypto.subtle.digest('SHA-256', request.rawBody);
-    const digestHex = Buffer.from(payloadDigest).toString('hex');
+    const digestHex = createHash('sha256').update(request.rawBody).digest('hex');
     const now = dependencies.now?.() ?? new Date();
 
     const insertion = await operations.recordWebhook({
@@ -152,7 +154,9 @@ export async function executeStripeWebhook(
       error instanceof ApiError
         ? error
         : new ApiError(500, 'internal_error', 'An unexpected error occurred');
-    return json(safe.status, { error: { code: safe.code, message: safe.message } });
+    return json(safe.status, {
+      error: { code: safe.code, message: safe.message },
+    });
   }
 }
 
