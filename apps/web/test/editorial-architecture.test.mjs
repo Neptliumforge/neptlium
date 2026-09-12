@@ -6,15 +6,14 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const routes = [
   'app/page.tsx',
   'app/platform/page.tsx',
+  'app/investments/page.tsx',
+  'app/insights/page.tsx',
   'app/products/page.tsx',
   'app/products/capital-account/page.tsx',
   'app/products/treasury/page.tsx',
   'app/products/allocation/page.tsx',
   'app/products/portfolio-intelligence/page.tsx',
-  'app/products/performance/page.tsx',
-  'app/products/capital-universe/page.tsx',
   'app/solutions/page.tsx',
-  'app/resources/page.tsx',
   'app/learn/page.tsx',
   'app/research/page.tsx',
   'app/security/page.tsx',
@@ -28,12 +27,11 @@ const publicCopy = routes.map(read).join('\n');
 const architecture = read('lib/content/public-architecture.ts');
 const footer = read('components/site-footer.tsx');
 
-test('institutional public architecture covers every canonical editorial surface', () => {
+test('institutional public architecture covers the investor and capital product surfaces', () => {
   for (const phrase of [
-    'Capital operating infrastructure',
-    'Capital should remain',
-    'intelligible as it moves',
-    'Clarity before consequence',
+    'Capital, made clearer',
+    'Investments',
+    'Insights',
     'Capital Account',
     'Treasury',
     'Allocation',
@@ -66,9 +64,9 @@ test('research and press remain truthful when verified material is unavailable',
   assert.doesNotMatch(`${research}\n${press}`, /award-winning|featured in|as seen in|client story|case study/i);
 });
 
-test('primary discovery remains contracted while institutional footer remains complete', () => {
+test('secondary product discovery remains contracted while footer remains complete', () => {
   assert.match(architecture, /PRIMARY_PRODUCTS = PRODUCTS\.slice\(0, 4\)/);
   assert.match(architecture, /PRIMARY_COMPANY = COMPANY\.slice\(0, 2\)/);
-  assert.doesNotMatch(architecture, /label: 'Press'[\s\S]*PRIMARY_COMPANY = COMPANY\.slice\(0, 3\)/);
+  for (const topLevel of ['Platform','Investments','Insights','Security','Company']) assert.match(architecture, new RegExp(`label: '${topLevel}'`));
   for (const legal of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility']) assert.match(footer, new RegExp(legal));
 });
