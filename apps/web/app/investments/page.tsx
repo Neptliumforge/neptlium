@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
-import styles from '../marketing-platform.module.css';
+import marketing from '../marketing-platform.module.css';
+import investmentStyles from './investments.module.css';
 
 export const metadata = createPageMetadata({
   title: 'Investments',
@@ -22,7 +23,7 @@ const framework = [
 ] as const;
 
 export default function InvestmentsPage() {
-  return <div className={`${styles.scope} mp-home`}>
+  return <div className={`${marketing.scope} mp-home`}>
     <section className="mp-hero">
       <div className="mp-shell mp-hero-grid">
         <div className="mp-hero-copy">
@@ -35,7 +36,7 @@ export default function InvestmentsPage() {
           </div>
         </div>
         <div className="mp-hero-product">
-          <div className="investment-memo-visual" aria-label="Investment review framework">
+          <div className={investmentStyles.memo} aria-label="Investment review framework">
             <div><span>Investment objective</span><strong>Understand the purpose before the projection.</strong></div>
             <div><span>Underlying exposure</span><strong>Know what ultimately drives the investment.</strong></div>
             <div><span>Risk & liquidity</span><strong>Understand downside, duration and access to capital.</strong></div>
