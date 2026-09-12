@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, X } from 'lucide-react';
-import { RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { Brand } from './brand';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
