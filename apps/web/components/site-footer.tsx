@@ -47,26 +47,28 @@ const socialLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="elite-footer marketing-footer" aria-label="Neptlium footer">
+    <footer className="elite-footer" aria-label="Neptlium footer">
       <div className="elite-footer-shell">
-        <div className="marketing-footer-top">
+        <div className="elite-footer-architecture">
           <div className="elite-footer-identity">
             <Brand tone="teal" />
             <p className="elite-footer-statement">Capital, made clearer.</p>
-            <p className="marketing-footer-description">A modern capital platform for portfolio visibility, funding, reporting and governed financial activity.</p>
+            <p className="elite-footer-statement">A modern capital platform for portfolio visibility, funding, reporting and governed financial activity.</p>
           </div>
-          <div className="marketing-footer-columns">
-            {columns.map((column) => <section className="elite-footer-column" key={column.label}>
-              <span className="elite-footer-title">{column.label}</span>
-              <div className="elite-footer-links">{column.links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</div>
-            </section>)}
-            <section className="elite-footer-column">
-              <span className="elite-footer-title">Social</span>
-              <div className="elite-footer-links">{socialLinks.map((social) => <a className="elite-social-link" href={social.href} key={social.href} target="_blank" rel="noopener noreferrer">{social.label}<ArrowUpRight aria-hidden="true" /></a>)}</div>
-            </section>
-          </div>
+
+          {columns.map((column) => <section className="elite-footer-column" key={column.label}>
+            <span className="elite-footer-title">{column.label}</span>
+            <div className="elite-footer-links">{column.links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</div>
+          </section>)}
+
+          <section className="elite-footer-column">
+            <span className="elite-footer-title">Social</span>
+            <div className="elite-footer-links">{socialLinks.map((social) => <a className="elite-social-link" href={social.href} key={social.href} target="_blank" rel="noopener noreferrer">{social.label}<ArrowUpRight aria-hidden="true" /></a>)}</div>
+          </section>
         </div>
-        <div className="marketing-footer-disclosure">Information on this website is for informational purposes and does not constitute investment advice. Investing and digital-asset activity involve risk, including possible loss of principal.</div>
+
+        <p className="elite-footer-statement">Information on this website is for informational purposes and does not constitute investment advice. Investing and digital-asset activity involve risk, including possible loss of principal.</p>
+
         <div className="elite-footer-base">
           <span>© {new Date().getFullYear()} Neptlium</span>
           <nav className="elite-footer-legal" aria-label="Legal">{legalLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</nav>
