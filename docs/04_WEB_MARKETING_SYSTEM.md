@@ -1,189 +1,269 @@
 # Neptlium Web Marketing System
 
-**Status:** Authoritative for `apps/web`
-**Scope:** Public information architecture, content roles, navigation, conversion, SEO, responsive behavior, and visual direction
+**Status:** Authoritative for `apps/web`  
+**Scope:** Positioning, public information architecture, investor acquisition, product storytelling, investment presentation, trust, SEO, responsive behavior, and visual direction  
 **Category:** Capital Operating Platform
 
-This document refines `docs/03_DESIGN_SYSTEM.md` for the public Web. Repository implementation and tests must converge on this architecture rather than preserve superseded route organization.
+## 1. Public objective
 
-## 1. Public-Web objective
+`apps/web` is the public expression of the same Neptlium system used by authenticated investors. It must explain the platform clearly, build institutional trust, support investor acquisition, and preserve financial truth.
 
-`apps/web` explains Neptlium as one capital operating environment for understanding, organizing, governing, and operating capital.
+Within seconds the site should answer:
 
-The site is not a feature directory, engineering-status surface, authenticated dashboard, or collection of disconnected landing pages. It should progressively establish what Neptlium is, why it exists, how the system works, what products form it, what operating problems it addresses, how intelligence/security/trust fit, and where the visitor should go next.
+- What is Neptlium?
+- Who is it for?
+- What does the platform enable?
+- Why should an investor trust it?
+- How does the investor journey work?
+- What is the next appropriate action?
 
-## 2. Canonical top-level architecture
+The site is not an engineering-status surface, speculative marketplace, fake dashboard, crypto landing page, or generic SaaS feature directory.
 
-The five public domains are exactly:
+## 2. Positioning
 
-1. **Platform** — how Neptlium works as one system.
-2. **Products** — the components that form the system.
-3. **Solutions** — the operating problems the system is designed to address.
-4. **Resources** — product understanding, security, trust, and substantive research when available.
-5. **Company** — the organization and principles behind Neptlium.
+Canonical positioning:
 
-Each domain has a real hub destination: `/platform`, `/products`, `/solutions`, `/resources`, `/company`.
+> **Capital, made clearer.**
 
-A top-level label must not exist only as a dropdown trigger.
+Supporting description:
 
-## 3. Platform
+> Neptlium is a modern capital platform for portfolio visibility, capital management, funding workflows, reporting, and governed financial activity.
 
-Platform answers **“What is Neptlium as a whole?”**
+The tone is confident, clear, measured, precise, intelligent, professional, and calm.
 
-It explains the unified capital operating environment, system model, visibility, organization, product relationships, intelligence, governance, operating lifecycle, and architectural principles. Platform must not become a duplicate Products directory.
+## 3. Canonical top-level architecture
 
-## 4. Products
+The five top-level public domains are:
 
-Products answers **“What does Neptlium provide?”**
+1. **Platform** — `/platform`
+2. **Investments** — `/investments`
+3. **Insights** — `/insights`
+4. **Security** — `/security`
+5. **Company** — `/about`
 
-Canonical product family and URLs:
+Products and Solutions remain second-level platform architecture and are reachable through Platform and contextual links.
+
+Canonical product family:
 
 - Capital Account — `/products/capital-account`
 - Treasury — `/products/treasury`
 - Allocation — `/products/allocation`
 - Portfolio Intelligence — `/products/portfolio-intelligence`
-- Performance — `/products/performance`
-- Capital Universe — `/products/capital-universe`
 
-The product model may explain strategic relationships and intended product semantics without implying unsupported production capability. Performance never manufactures returns. Capital Universe never turns strategic architecture into an asset/network/custody/execution-availability claim.
+Current solution family:
 
-Superseded root product URLs permanently converge to the nested canonical family.
+- Capital visibility — `/solutions/capital-visibility`
+- Treasury coordination — `/solutions/treasury-coordination`
+- Allocation workflows — `/solutions/allocation-workflows`
+- Governance and control — `/solutions/governance-control`
 
-## 5. Solutions
+Route policy, sitemap authority, navigation, redirects, and metadata must remain synchronized through `apps/web/lib/content/public-architecture.ts` and `next.config.mjs`.
 
-Solutions answers **“What operating problem does Neptlium help me reason about?”**
+## 4. Homepage role
 
-Current need-based taxonomy is Capital visibility, Treasury coordination, Allocation workflows, and Governance and control. Do not invent customer/persona segmentation without evidence.
+The homepage is a deliberate institutional narrative, not the entire website.
 
-Solutions connects problems to relevant products and resources without simply renaming product features.
+Canonical sequence:
 
-## 6. Resources
+1. Hero — what Neptlium is and why it matters.
+2. Institutional trust — concrete product behavior and control principles.
+3. Platform overview — connected capital responsibilities.
+4. Investment experience — objective, structure, risk, liquidity, documentation, eligibility.
+5. Portfolio intelligence — visibility without fabricated state.
+6. Funding infrastructure — digital asset funding and truthful USD availability communication.
+7. Investment solutions — disciplined opportunity framework.
+8. Security and financial integrity.
+9. How Neptlium works — account access through reporting.
+10. Investor reporting and documentation.
+11. Insights and education.
+12. Focused final conversion.
 
-Resources separates different kinds of authority:
+The hero primary exploration action is **Explore the Platform**. Secondary exploration is **View Investment Solutions**. Header conversion exposes **Sign In** and **Get Started**.
 
-- **Learn** — concepts, terminology, workflows, and product understanding.
-- **Security** — public security/control architecture principles.
-- **Trust** — product truth, uncertainty, privacy boundaries, risk communication, and control boundaries.
-- **Research** — substantive, dated original analysis only when it genuinely exists.
+Public product demonstrations may use real structural empty/unavailable states. They must never fabricate balances, performance, allocations, returns, holdings, transactions, or investor activity.
 
-Research remains a truthful non-indexable publication surface until real publications are available. Never invent articles, findings, reports, certifications, or dates to make the library look mature.
+## 5. Platform
 
-## 7. Company
+`/platform` answers: **What does Neptlium enable as one connected system?**
 
-Company is the institutional hub.
+It should explain portfolio visibility, capital management, funding, transactions, documents, reporting, investor communications, security, and account controls in language understandable to a serious investor.
 
-- `/company` explains the organization and operating principles.
-- `/about` goes deeper into the Neptlium product/company thesis.
-- `/contact` provides direct contact.
-- `/press` provides verified company/media information and remains noindex until a substantive publication surface exists.
+It should preserve Neptlium's core distinctions between observed, modeled, authorized, submitted, settled, and reconciled states without turning the page into engineering documentation.
 
-Do not fabricate employees, locations, investors, funding, customers, awards, partnerships, press coverage, licenses, or regulatory status.
+## 6. Investments
 
-## 8. Supporting, legal, and system routes
+`/investments` is the public investment-discipline surface.
 
-Public supporting/noindex surfaces include Pricing/Access, Research, Press, Privacy, Terms, Cookie Policy, and Risk Disclosure unless later evidence justifies a different search role.
+Every public opportunity, when one is genuinely available, should support:
 
-Authentication and system routes remain outside marketing search authority. Generated metadata/assets remain infrastructure surfaces rather than navigation destinations.
+- overview;
+- investment objective;
+- strategy;
+- structure;
+- underlying exposure;
+- target duration;
+- liquidity;
+- fees;
+- material risks;
+- documentation;
+- updates;
+- eligibility/suitability;
+- authenticated account action.
 
-Route classification is centralized in `apps/web/lib/content/public-architecture.ts` and must agree with sitemap, redirects, navigation, tests, and page metadata.
+Historical, target, projected, forecast, scenario, and illustrative information must remain explicitly distinguishable.
 
-## 9. Homepage role
+If no verified live opportunity exists, Neptlium does not manufacture a marketplace, return percentage, offering count, minimum investment, or availability claim. The page may explain the framework without pretending products are open for investment.
 
-The homepage establishes Neptlium and routes visitors into the wider architecture. It is not the entire website.
+## 7. Funding communication
 
-The canonical proposition is deliberately category-defining and minimal:
+Marketing must reflect actual funding architecture.
 
-> **The operating system for capital.**
->
-> See, coordinate and govern capital across treasury, allocation and portfolio context.
+### Digital asset funding
 
-The headline should work the way the strongest infrastructure brands do: one clear category statement, followed by one short explanatory sentence. Do not stack slogans, decorate the proposition with unnecessary microcopy, or force line breaks for spectacle.
+Public copy may explain that supported routes are capability-controlled, account-specific, and governed through funding intents. It must not claim a specific asset/network rail is live merely because it exists in target architecture or source code.
 
-The homepage moves through proposition → operating model → products → solution relevance → intelligence/governance/trust → company rationale → next action.
+### USD funding
 
-It remains image-independent: brand authority comes from typography, space, system relationships, product concepts, information, and controlled motion rather than decorative hero art.
+USD funding must not be represented as live until a production funding rail has been implemented and verified with customer attribution, validated amount/currency handling, provider evidence, failure/refund behavior, ledger posting, settlement, reconciliation, and auditability.
 
-## 10. CTA system
+Configured is not live. A payment-provider integration for another purpose does not establish investment-account funding capability.
 
-Primary global action: **Enter Neptlium** → authenticated application sign-in.
+## 8. Insights
 
-Broad exploration action: **Explore platform** → `/platform`.
+`/insights` is a premium editorial publication hub.
 
-Contextual pages may use more precise next actions such as Explore products, Explore Security, or About Neptlium. Contact is a Company destination, not the default product-entry CTA.
+Content categories may include Markets, Investing, Portfolio Strategy, Digital Assets, Platform, and Investor Education.
 
-## 11. Navigation
+Financial content distinguishes fact, data, model output, scenario, estimate, interpretation, methodology, and opinion. Research remains restrained until substantive original dated publications exist; no fake articles, findings, authors, dates, or report inventory may be created for appearance.
 
-Desktop navigation exposes exactly Platform, Products, Solutions, Resources, Company.
+Learn remains an education surface. Research may remain noindex until it has independent publication value.
 
-Each top-level domain has a direct hub link. Disclosures expose concise hierarchy and must not become mini landing pages or command palettes.
+## 9. Security and trust
 
-Required behavior includes keyboard operation, ArrowDown entry where implemented, Escape close, outside/focus close, visible focus, `aria-expanded`, `aria-controls`, and `aria-haspopup` where applicable.
+`/security` explains investor-understandable controls around:
 
-Mobile navigation is designed independently as a top-origin full-height structure with direct hub links plus expandable child navigation, 44px+ touch targets, body-scroll lock, focus containment/restoration, Escape close, and route-close behavior.
+- account authentication;
+- session/access boundaries;
+- authorization;
+- server-side financial operations;
+- data and infrastructure boundaries;
+- transaction controls;
+- financial record integrity;
+- monitoring/auditability;
+- reconciliation;
+- incident-aware operating principles.
 
-## 12. Footer
+`/trust` explains evidence, uncertainty, authority, risk communication, and the distinction between visible state and financial truth.
 
-Footer hierarchy mirrors Platform, Products, Solutions, Resources, Company, and Legal.
+Do not claim certifications, insurance, penetration-test outcomes, licensing, regulatory approval, or security guarantees without verified current evidence.
 
-Do not retain dead destinations for symmetry. Do not add unverified social links. GitHub may be exposed as the verified repository destination.
+## 10. Company
 
-## 13. Voice and content
+Company content focuses on mission, operating philosophy, technology, investor experience, capital discipline, and long-term vision.
 
-Copy is clear, calm, specific, economical, confident, institutional, and human.
+Do not invent headquarters, offices, employees, founders, investors, funding history, partnerships, press coverage, licenses, or registrations.
 
-Prefer mechanisms and relationships over slogans. Avoid startup hype, category essays, repeated internal architecture jargon, and unsupported outcome language.
+## 11. Conversion system
 
-Every section must answer a question. Remove sections that exist only to create visual length.
+Global authenticated actions:
 
-Marketing remains independent from repository progress, App/Admin/API completion, migrations, provider configuration, deployment health, feature flags, and release-readiness chronology.
+- **Get Started** → `https://app.neptlium.com/auth/sign-up`
+- **Sign In** → `https://app.neptlium.com/auth/sign-in`
 
-## 14. Visual system
+Homepage exploration:
 
-Canonical public identity: Warm Ivory, Carbon/near-black, Mineral Teal as a precision signal, editorial serif where useful, precise sans-serif interface typography, medium-scale hierarchy, purposeful negative space, thin structural rules, restrained geometry, and minimal elevation.
+- **Explore the Platform** → `/platform`
+- **View Investment Solutions** → `/investments`
 
-Do not use neon crypto visuals, generic gradients, glassmorphism, floating card stacks, fake dashboards, decorative coins, stock photography, random 3D forms, blur-heavy atmosphere, or card grids as the default solution to every section.
+Contextual pages should expose one dominant next step. Contact is available where a direct conversation is more appropriate than account creation.
 
-Product explanation should use Neptlium-native operating representations and neutral states without fabricated balances, returns, transactions, AUM, customers, asset availability, providers, or execution readiness.
+Avoid repetitive CTA stacks and fake urgency.
 
-## 15. Responsive system
+## 12. Trust and disclosure system
 
-Design intentionally for large desktop, laptop, tablet, mobile, and small mobile. Validate approximately 1440, 1280, 1024, 768, 430, 390, 360, and surrounding transitions.
+Trust should be demonstrated through product behavior: authenticated access, explicit transaction states, auditability, reporting, clear risk presentation, documented investment structure, governed funding, and visible support paths.
 
-Mobile is not collapsed desktop. Reassess heading wrapping, navigation, section rhythm, structural rules, product representations, CTA sizing, footer layout, legal readability, and touch targets at each range.
+Reusable disclosures support:
 
-## 16. Accessibility
+- general informational/investment-advice boundary;
+- investment and principal-loss risk;
+- digital-asset risk;
+- modeled/illustrative/projection labeling;
+- liquidity and fees where applicable;
+- eligibility/product-availability boundaries.
 
-WCAG 2.2 AA is the minimum target. Preserve landmarks, one appropriate H1 per page, coherent heading hierarchy, skip navigation, keyboard operation, focus visibility, disclosure semantics, contrast, descriptive links, touch targets, form labels, and reduced motion.
+Critical risk information must remain readable and cannot be hidden in inaccessible footnotes.
 
-Important meaning must never depend on color or motion alone.
+## 13. Visual system
 
-## 17. SEO and indexing
+Canonical identity remains Warm Ivory `#F5F3EE`, Carbon `#101214`, Mineral Teal `#0F8F86`, Interaction Teal `#20AFA3`, Graphite `#343A3F`, Stone `#D8D5CE`, and Soft Mist `#ECEAE5`.
 
-Only pages with independent public search value belong in the sitemap.
+Public Web is more editorial and cinematic than the authenticated application while remaining recognizably Neptlium.
 
-Canonical product URLs are the nested `/products/*` family. Legacy root product URLs must not compete with them and permanently redirect in one hop.
+Use medium-scale editorial typography, generous whitespace, refined grids, structural rules, product compositions, precise numerical typography where real data exists, and restrained motion.
 
-Every canonical page requires purpose-specific metadata and canonical URL. Supporting noindex pages stay out of sitemap authority. Do not fabricate `lastModified` timestamps from build/request time.
+Avoid casino/crypto aesthetics, giant decorative gradients, glassmorphism, neon, generic stock finance imagery, fake luxury, fabricated trading interfaces, token imagery, and card grids as the default information structure.
 
-`robots.txt`, sitemap, route policy, redirects, metadata, navigation, and internal links must describe the same architecture.
+Teal is a precision signal, not background paint.
 
-## 18. Engineering ownership
+## 14. Product visualization
 
-Prefer server components, semantic HTML, CSS, and small targeted client boundaries. Do not add hydration or large dependencies for decorative effects.
+Prefer purposeful Neptlium-native product compositions over generic browser mockups.
 
-The canonical current Web visual authority is `apps/web/app/neptlium-visual-direction.css`. Reconstructed global surfaces must be consolidated there rather than creating another `v2`, `final`, or override stylesheet.
+Useful visual responsibilities include:
 
-Historical route-specific CSS may remain only where current untouched routes still depend on it. When a reconstructed surface is fully owned by the canonical layer, remove superseded overlapping imports/files after proving they are no longer required.
+- portfolio state;
+- capital/funding state;
+- allocation lifecycle;
+- investment review structure;
+- reporting/documents;
+- security/control boundaries.
 
-## 19. Truthfulness
+A public visual may deliberately show `Unavailable`, `No activity yet`, or other truthful neutral states. It must not manufacture financial values to appear populated.
 
-Never invent or imply customer assets, returns, AUM, live transactions, live providers, custody availability, execution availability, certification, regulatory approval, partnerships, customer logos, pricing, or asset support without verified authority.
+## 15. Navigation and footer
 
-Marketing can explain product concepts and intended operating relationships without publishing internal engineering readiness.
+Desktop navigation exposes exactly Platform, Investments, Insights, Security, Company. Every top-level item is a real destination; disclosures supplement rather than replace links.
+
+Mobile navigation is independently designed with direct destinations, large touch targets, focus containment/restoration, Escape close, body-scroll lock, and route-close behavior.
+
+Footer presents real destinations only and includes Platform, Company, Account, Social, Legal, plus concise investor-risk/informational disclosure.
+
+## 16. Responsive, motion, accessibility
+
+WCAG 2.2 AA is the minimum target.
+
+Preserve landmarks, semantic headings, one H1, skip navigation, keyboard support, visible focus, descriptive links, accessible controls, sufficient contrast, 44px+ touch targets, reduced-motion support, and meaningful non-color state cues.
+
+Mobile is a genuine financial/investor composition rather than stacked desktop. Validate representative widths around `320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440, 1600+`.
+
+Motion may reinforce hierarchy, continuity, platform relationships, or progress through explanatory content. It must not imply financial execution, settlement, performance, or success.
+
+## 17. Performance
+
+Favor server components, semantic HTML, CSS, optimized images, minimal hydration, route-level code splitting, stable layout, and small targeted client boundaries.
+
+Do not add large animation/chart dependencies for decorative effects. Product sophistication must not materially damage interaction latency or initial load.
+
+## 18. SEO and discoverability
+
+Every major indexable page requires deliberate metadata, canonical URL, Open Graph, Twitter card, semantic H1/heading hierarchy, descriptive internal links, and appropriate search intent.
+
+Sitemap, robots, route policy, redirects, metadata, navigation, and internal links must describe the same architecture.
+
+Research and other thin/speculative pages remain noindex until they have independent public value. Do not fabricate `lastModified` timestamps.
+
+## 19. CSS architecture
+
+`apps/web/app/neptlium-visual-direction.css` remains the global visual authority.
+
+New reconstructed route families may use scoped CSS modules where that prevents another global override layer and makes ownership explicit. Do not add another globally imported `v2`, `final`, or override stylesheet.
+
+Historical global CSS layers should be removed incrementally only after proving current pages no longer depend on them.
 
 ## 20. Validation
 
-At minimum:
+Required validation when tooling is available:
 
 ```sh
 git diff --check origin/main...HEAD
@@ -195,8 +275,6 @@ pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-On Termux/Android, use `pnpm --filter @neptlium/web exec next build --webpack`.
+Also validate browser rendering, keyboard navigation, focus behavior, route/link integrity, responsive widths, reduced motion, console errors, metadata/canonical behavior, favicon/social assets, and internal 404s when browser tooling is available.
 
-Also validate the actual build route inventory, redirects/indexing policy, static links, keyboard navigation, representative responsive widths, and rendered pages when browser tooling is available.
-
-Report every check as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Never infer browser/visual certification from compilation alone.
+Validation is reported only as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Source inspection is not equivalent to a build, browser, accessibility, performance, or production pass.
