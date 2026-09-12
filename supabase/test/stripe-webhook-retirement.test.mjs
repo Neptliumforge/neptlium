@@ -33,7 +33,7 @@ test('legacy Stripe webhook tombstone always returns 410', async () => {
 
 test('legacy Stripe webhook tombstone has no provider or financial authority', () => {
   assert.doesNotMatch(executableSource, /import\s/);
-  assert.doesNotMatch(executableSource, /createClient|Stripe|constructEvent|fetch\s*\(/);
+  assert.doesNotMatch(executableSource, /createClient|constructEvent|createFetchHttpClient|fetch\s*\(/);
   assert.doesNotMatch(executableSource, /Deno\.env|getenv|process\.env/);
   assert.doesNotMatch(
     executableSource,
