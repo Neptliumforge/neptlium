@@ -4,25 +4,30 @@ import test from 'node:test';
 
 const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const page = read('app/page.tsx');
-const css = read('app/neptlium-visual-direction.css');
+const visualCss = read('app/neptlium-visual-direction.css');
+const marketingCss = read('app/marketing-platform.module.css');
+const mobileCss = read('app/mobile-navigation-fix.css');
 const layout = read('app/layout.tsx');
 const header = read('components/site-header.tsx');
+const mobile = read('components/mobile-navigation.tsx');
 const footer = read('components/site-footer.tsx');
-const shell = `${page}\n${css}\n${layout}\n${header}\n${footer}`;
-const contentShell = `${page}\n${layout}\n${header}\n${footer}`;
+const shell = `${page}\n${visualCss}\n${marketingCss}\n${mobileCss}\n${layout}\n${header}\n${mobile}\n${footer}`;
+const contentShell = `${page}\n${layout}\n${header}\n${mobile}\n${footer}`;
 
-test('production public Web keeps a single institutional hero and operating architecture', () => {
-  assert.match(page, /Capital should remain<br \/>intelligible as it moves\./);
-  assert.match(page, /Capital state\.<br \/>Operating context\.<br \/>Governed work\./);
+test('production public Web keeps a single institutional investor hero and truthful product architecture', () => {
+  assert.match(page, /Capital, made clearer\./);
+  assert.match(page, /Institutional trust/);
+  assert.match(page, /Funding infrastructure/);
+  assert.match(page, /Investor reporting/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /className="operating-panel capital-context-map"/);
-  assert.match(page, /aria-label="Capital state and evidence connect through operating context to governed work and consequence"/);
-  assert.match(page, /Clarity before consequence/);
-  assert.doesNotMatch(page, /authority-wave-field|<Image|<img|\.png|\.webp/i);
+  assert.match(page, /OperatingEnvironmentVisual/);
+  assert.match(page, /SecurityFlowVisual/);
+  assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|fake balance|projected return/i);
 });
 
-test('production visual system is consolidated without retired override layers', () => {
+test('production visual system remains consolidated without retired global override layers', () => {
   assert.match(layout, /neptlium-visual-direction\.css/);
+  assert.match(page, /marketing-platform\.module\.css/);
   assert.doesNotMatch(layout, /production-hardening\.css/);
   for (const retired of [
     'marketing-shell.css',
@@ -35,14 +40,15 @@ test('production visual system is consolidated without retired override layers',
   ]) assert.doesNotMatch(layout, new RegExp(retired.replace('.', '\\.')));
 });
 
-test('production shell preserves responsive, reduced-motion and safe-area hardening', () => {
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.match(css, /100dvh/);
-  assert.match(css, /safe-area-inset/);
-  assert.match(css, /overflow-x:\s*clip/);
-  assert.match(header, /document\.body\.style\.overflow = 'hidden'/);
-  assert.match(header, /event\.key === 'Escape'/);
-  assert.match(header, /aria-modal="true"/);
+test('production shell preserves responsive, reduced-motion and mobile overlay hardening', () => {
+  assert.match(`${visualCss}\n${marketingCss}`, /prefers-reduced-motion:\s*reduce|prefers-reduced-motion:reduce/);
+  assert.match(mobileCss, /100dvh/);
+  assert.match(`${visualCss}\n${mobileCss}`, /safe-area-inset/);
+  assert.match(visualCss, /overflow-x:\s*clip/);
+  assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
+  assert.match(mobile, /event\.key === 'Escape'/);
+  assert.match(mobile, /aria-modal="true"/);
+  assert.match(header, /createPortal/);
 });
 
 test('production public shell remains free of fabricated financial authority', () => {
