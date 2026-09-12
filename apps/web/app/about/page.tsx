@@ -1,13 +1,5 @@
-import Link from 'next/link';
-import { PageHeader } from '@/components/page-header';
-import { Section } from '@/components/section';
-import { createPageMetadata } from '@/lib/seo';
+import { redirect } from 'next/navigation';
 
-export const metadata=createPageMetadata({title:'About Neptlium — The Capital Operating Thesis',description:'Neptlium takes a system-level approach to fragmented capital operations, connecting portfolio context, treasury, allocation, movement and governance without collapsing their authority boundaries.',path:'/about'});
-const values=[
- ['Context before consequence','Capital decisions are easier to reason about when portfolio state, liquidity, movement history, constraints and intent remain connected before work becomes consequential.'],
- ['Governance as architecture','Review, identity and authorization are not administrative decoration. They are part of the system that determines what a financial state means and what may happen next.'],
- ['Evidence before certainty','Provider-reported, internally canonical, modeled and unknown information should remain distinguishable. A coherent view should not manufacture authority by flattening provenance.'],
- ['Systems over isolated workflows','Treasury, allocation, portfolio intelligence and capital movement affect one another. Neptlium approaches them as related responsibilities inside one operating context.'],
-] as const;
-export default function AboutPage(){return <><PageHeader eyebrow="About Neptlium" title="Capital operations need a coherent system of context and authority." intro="Neptlium is building a capital operating platform for the space between understanding where capital stands and governing what happens next. The thesis is simple: capital should remain intelligible as it moves." crumbs={[{label:'Home',href:'/'},{label:'About'}]}/><Section tone="surface"><div className="route-split"><div><h2>Fragmentation changes the quality of financial decisions.</h2><p>Portfolio views can describe positions without liquidity context. Treasury systems can describe cash without allocation intent. Movement workflows can record activity without the portfolio state that motivated it. Approval processes can establish authority without preserving the evidence reviewed.</p><p>Neptlium is designed to reduce those discontinuities. The objective is not to erase product boundaries, but to keep the relevant state connected across them.</p></div><div className="route-rows compact">{values.map(([title,body])=><article key={title}><h2>{title}</h2><p>{body}</p></article>)}</div></div></Section><Section><div className="route-split"><div><h2>A system-level approach requires disciplined limits.</h2></div><div><p>Neptlium does not treat visibility as custody, modeling as execution, review as authorization or authorization as settlement. Where consequential capabilities depend on external providers, permissions or infrastructure, those dependencies remain part of the operating truth.</p><p>The company’s public language follows the same principle: no invented metrics, institutional credentials, integrations, regulatory status or financial authority.</p></div></div><div className="route-action"><Link className="button" href="/company">Read our principles</Link><Link href="/contact">Contact Neptlium</Link></div></Section></>}
+export default function AboutPage() {
+  redirect('/company');
+}
