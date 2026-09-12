@@ -1,7 +1,7 @@
 # Neptlium Web Marketing System
 
-**Status:** Authoritative for `apps/web`  
-**Scope:** Positioning, public information architecture, investor acquisition, product storytelling, investment presentation, trust, SEO, responsive behavior, and visual direction  
+**Status:** Authoritative for `apps/web`
+**Scope:** Positioning, public information architecture, investor acquisition, product storytelling, investment presentation, trust, SEO, responsive behavior, and visual direction
 **Category:** Capital Operating Platform
 
 ## 1. Public objective
