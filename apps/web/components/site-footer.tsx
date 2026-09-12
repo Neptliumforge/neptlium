@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Brand } from './brand';
 import chrome from './site-chrome.module.css';
+import { NAVIGATION } from '@/lib/content/public-architecture';
 
 const legalLinks = [
   { label: 'Privacy', href: '/privacy' },
@@ -12,9 +13,9 @@ const legalLinks = [
 ] as const;
 
 const socialLinks = [
-  { label: 'Bluesky', href: 'https://bsky.app/profile/neptlium.bsky.social' },
   { label: 'X', href: 'https://x.com/Neptlium' },
   { label: 'YouTube', href: 'https://youtube.com/@neptlium?si=fJ7q0r18UCoxjJth' },
+  { label: 'Bluesky', href: 'https://bsky.app/profile/neptlium.bsky.social' },
   { label: 'TikTok', href: 'https://www.tiktok.com/@neptlium?_r=1&_t=ZS-98quVuRhCNt' },
 ] as const;
 
@@ -22,7 +23,7 @@ export function SiteFooter() {
   return (
     <footer className={chrome.footer} aria-label="Neptlium footer">
       <div className={chrome.footerShell}>
-        <div className={chrome.footerSignature}>
+        <div className={chrome.footerArchitecture}>
           <div className={chrome.footerIdentity}>
             <Brand />
             <p className={chrome.footerStatement}>
@@ -30,20 +31,40 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <nav className={chrome.socials} aria-label="Neptlium social channels">
-            {socialLinks.map((social) => (
-              <a
-                className={chrome.socialLink}
-                href={social.href}
-                key={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {social.label}
-                <ArrowUpRight aria-hidden="true" />
-              </a>
-            ))}
-          </nav>
+          {NAVIGATION.map((section) => (
+            <section className={chrome.footerColumn} key={section.label}>
+              <Link className={chrome.footerColumnTitle} href={section.href}>
+                {section.label}
+              </Link>
+              <div className={chrome.footerLinks}>
+                {section.links
+                  .filter((link) => link.href !== section.href)
+                  .map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      {link.label}
+                    </Link>
+                  ))}
+              </div>
+            </section>
+          ))}
+
+          <section className={chrome.footerColumn}>
+            <span className={chrome.footerColumnTitle}>Socials</span>
+            <div className={chrome.footerLinks}>
+              {socialLinks.map((social) => (
+                <a
+                  className={chrome.socialLink}
+                  href={social.href}
+                  key={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {social.label}
+                  <ArrowUpRight aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          </section>
         </div>
 
         <div className={chrome.footerBase}>
