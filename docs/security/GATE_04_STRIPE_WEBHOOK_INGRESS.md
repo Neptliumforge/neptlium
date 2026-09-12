@@ -85,6 +85,10 @@ Store the generated endpoint signing secret directly in the production `STRIPE_W
 
 A real Stripe-signed test event is required before Gate 04 can be declared fully activated. Test delivery must prove one durable inbox event, idempotent retry behavior, no legacy transaction/portfolio mutation, and no capital availability change.
 
-## Current deployment limitation
+## Deployment evidence and remaining boundary
 
-The repository documents `apps/api` as the Vercel service behind `api.neptlium.com`, but the connected Vercel project listing currently returns no projects for the Neptliumforge team. Production deployment must not be claimed until a concrete API deployment/project can be identified and verified. The legacy production Stripe Edge Function remains unchanged while this deployment prerequisite is unresolved.
+Vercel Git integration identified the API project as `neptlium-api`, project ID `prj_LNme3ui2AFDMf7wLdqVf9TDSJmbZ`, under the Neptliumforge team. Gate 04 API code commit `647495ecf4abb5e585f70faa7cedbe3adca726b4` produced a successful Vercel preview deployment; GitHub recorded `Vercel – neptlium-api` as `Deployment has completed` for deployment `ufLK3eceRwftkBniTRpgz9hfKELx`. The branch preview hostname is `neptlium-api-git-remediation-gate-04-strip-ff45c1-neptliumforge.vercel.app`.
+
+This proves the Gate 04 API bundle can deploy in the real Vercel project, but it is **not** a production promotion. The draft PR remains unmerged, and no tool available in this execution provides a scoped branch-to-production promotion action. Therefore `https://api.neptlium.com/v1/webhooks/stripe` has not yet been certified as running Gate 04 code.
+
+The legacy production Supabase `stripe-webhook` version 21 remains active and unchanged until the replacement is promoted and the canonical production URL is proven fail-closed. Stripe Dashboard registration/repointing must not occur before that production promotion. No Stripe signing secret was requested or exposed during this execution.
