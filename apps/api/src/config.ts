@@ -125,7 +125,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     databaseConfigured: Boolean(SUPABASE_URL && env.SUPABASE_ANON_KEY && env.SUPABASE_SERVICE_ROLE_KEY),
     alchemyConfigured: Boolean(env.ALCHEMY_API_KEY && ALCHEMY_RPC_URL && ALCHEMY_ENVIRONMENT),
     circleConfigured: Boolean(circleCredentialsPresent && CIRCLE_ENVIRONMENT),
-    stripeConfigured: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET),
+    stripeConfigured: Boolean(env.STRIPE_WEBHOOK_SECRET),
   };
 }
 export type Config = ReturnType<typeof loadConfig>;
