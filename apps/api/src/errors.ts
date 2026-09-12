@@ -49,6 +49,8 @@ export type ErrorCode =
   | 'identity_mapping_ambiguous'
   | 'identity_link_unavailable'
   | 'identity_bootstrap_unavailable'
+  | 'identity_command_unavailable'
+  | 'legacy_auth_retired'
   | 'invalid_identity_provider'
   | 'invalid_identity_subject'
   | 'allocation_storage_unavailable'
