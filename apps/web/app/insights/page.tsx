@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
-import styles from '../marketing-platform.module.css';
+import marketing from '../marketing-platform.module.css';
+import insightStyles from './insights.module.css';
 
 export const metadata = createPageMetadata({
   title: 'Insights',
@@ -19,7 +20,7 @@ const categories = [
 ] as const;
 
 export default function InsightsPage() {
-  return <div className={`${styles.scope} mp-home`}>
+  return <div className={`${marketing.scope} mp-home`}>
     <section className="mp-hero insights-hero">
       <div className="mp-shell mp-hero-grid">
         <div className="mp-hero-copy">
@@ -31,7 +32,7 @@ export default function InsightsPage() {
             <Link className="mp-button mp-button-secondary" href="/research">View Research</Link>
           </div>
         </div>
-        <div className="insights-editorial-mark" aria-hidden="true"><span>Signal</span><span>Context</span><span>Evidence</span><span>Interpretation</span></div>
+        <div className={insightStyles.mark} aria-hidden="true"><span>Signal</span><span>Context</span><span>Evidence</span><span>Interpretation</span></div>
       </div>
     </section>
 
@@ -42,7 +43,7 @@ export default function InsightsPage() {
           <h2>Financial content should make uncertainty easier to understand.</h2>
           <p>Fact, data, model output, scenario, estimate, interpretation and opinion should remain visibly distinct. Neptlium will not invent articles, findings, reports or publication dates to make the library appear more mature than it is.</p>
         </div>
-        <div className="insights-category-grid">
+        <div className={insightStyles.grid}>
           {categories.map(([title, body]) => <article key={title}><h3>{title}</h3><p>{body}</p></article>)}
         </div>
       </div>
