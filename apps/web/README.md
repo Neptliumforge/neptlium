@@ -1,60 +1,73 @@
 # @neptlium/web
 
-Public product and company website for `neptlium.com`.
+Public institutional marketing and information website for `neptlium.com`.
 
-`apps/web` establishes Neptlium's public category, narrative, product meaning, editorial authority, discoverability, and path into the operating application. It owns no authenticated customer session, privileged financial operation, or canonical financial state.
+`apps/web` establishes Neptlium's public category, investor narrative, product meaning, editorial authority, discoverability, trust architecture, and path into the authenticated operating application. It owns no authenticated customer session, privileged financial operation, investment execution authority, or canonical financial state.
 
 ## Public architecture
 
 The canonical top-level domains are:
 
 - Platform → `/platform`
+- Investments → `/investments`
+- Insights → `/insights`
+- Security → `/security`
+- Company → `/about`
+
+Products and Solutions remain important second-level platform architecture:
+
 - Products → `/products`
 - Solutions → `/solutions`
-- Resources → `/resources`
-- Company → `/company`
-
-Canonical product family:
-
 - Capital Account → `/products/capital-account`
 - Treasury → `/products/treasury`
 - Allocation → `/products/allocation`
 - Portfolio Intelligence → `/products/portfolio-intelligence`
-- Performance → `/products/performance`
-- Capital Universe → `/products/capital-universe`
-
-Superseded root product URLs permanently redirect to the nested canonical family.
 
 Route taxonomy, navigation data, sitemap authority, and route classification live in `lib/content/public-architecture.ts`.
 
-## Public direction
+## Positioning and conversion
 
-Neptlium Web is a medium-scale, conversational, product-led institutional experience.
+Canonical positioning:
 
-Canonical global entry action:
+> **Capital, made clearer.**
 
-- `Enter Neptlium` → authenticated application sign-in
+The public site explains Neptlium as a modern capital platform for portfolio visibility, capital management, funding workflows, reporting, and governed financial activity.
 
-Broad exploration:
+Primary acquisition action:
 
-- `Explore platform` → `/platform`
+- `Get Started` → authenticated application account creation
 
-The public surface explains Neptlium as a connected capital operating environment without narrating repository progress, provider setup, migrations, environment readiness, or deployment state.
+Authenticated return action:
 
-Marketing may communicate the intended product model and customer value strongly, but it must not fabricate customers, balances, AUM, performance, execution, settlement, custody, provider relationships, licences, regulatory status, or live capability.
+- `Sign In` → authenticated application sign-in
+
+Primary homepage exploration:
+
+- `Explore the Platform` → `/platform`
+- `View Investment Solutions` → `/investments`
+
+Marketing may communicate the product model and investor value strongly, but it must not fabricate customers, balances, AUM, performance, returns, transaction history, investment opportunities, execution, settlement, custody, provider relationships, licences, regulatory status, or live capability.
+
+## Investment and funding truth
+
+Public investment content is organized around objective, strategy, structure, underlying exposure, risk, duration, liquidity, fees, documentation, eligibility, and investor suitability. Historical, target, projected, and illustrative information must remain distinguishable whenever those categories appear.
+
+Funding communication must match actual capability. Digital-asset funding may be described as capability-controlled and account-specific. USD funding must not be represented as live until a supported production funding rail is implemented and verified.
 
 ## Visual system
 
-Current Web authority:
+Neptlium Web is more editorial and cinematic than the authenticated product while remaining visibly related to it.
+
+Current visual direction:
 
 - Warm Ivory / Carbon / Mineral Teal
-- medium typography rather than oversized poster scale
-- typography, structure, product relationships, and information rather than decorative hero artwork
-- concise conversational copy
-- direct top-level hub links with compact desktop disclosures
-- independently designed accessible mobile navigation
-- restrained product-system representations rather than fake dashboards
-- `app/neptlium-visual-direction.css` as the canonical reconstructed-surface style authority
+- medium-scale editorial typography
+- strong information hierarchy and deliberate negative space
+- restrained product visualizations based on real product architecture
+- no fabricated balances, charts, returns, holdings, or transaction screenshots
+- accessible desktop disclosures and independently designed mobile navigation
+- restrained motion with reduced-motion support
+- route-scoped composition modules for newly rebuilt marketing surfaces, while `app/neptlium-visual-direction.css` remains the global visual authority
 
 See [`docs/04_WEB_MARKETING_SYSTEM.md`](../../docs/04_WEB_MARKETING_SYSTEM.md).
 
@@ -72,7 +85,7 @@ pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-On Termux/Android, use:
+On Termux/Android:
 
 ```sh
 pnpm --filter @neptlium/web exec next build --webpack
