@@ -7,9 +7,15 @@
       "src": "api/index.js",
       "use": "@vercel/node",
       "config": { "includeFiles": ["dist/**"] }
+    },
+    {
+      "src": "api/stripe-webhook.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["dist/**"] }
     }
   ],
   "routes": [
+    { "src": "/v1/webhooks/stripe", "dest": "/api/stripe-webhook.js" },
     { "src": "/(.*)", "dest": "/api/index.js" }
   ]
 }
