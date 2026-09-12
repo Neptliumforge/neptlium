@@ -72,6 +72,8 @@ export type ErrorCode =
   | 'settlement_evidence_unavailable'
   | 'deposit_attribution_unavailable'
   | 'reconciliation_unavailable'
+  | 'stripe_subscription_persistence_failed'
+  | 'stripe_subscription_unmatched'
   | 'alias_conflict'
   | 'destination_not_verified'
   | 'invalid_treasury_destination_address'
