@@ -1,96 +1,61 @@
-# API Architecture
+# NEPTLIUM API Architecture — Remediation Mode
 
-`apps/api` is the existing privileged backend boundary for `api.neptlium.com`. It is not future-only.
+## API authority
 
-## CURRENT runtime and routes
+`apps/api` is the privileged execution boundary. App/Admin may request actions; the API determines whether they are authenticated, authorized, policy-compliant, durable, idempotent, auditable, and safe to execute.
 
-The dependency-light Node.js/TypeScript service supports:
+## Required production responsibilities
 
-- `GET /health`, `GET /v1/health`
-- `GET /v1/status`, `GET /v1/version`
-- `POST /v1/account/provision`, `POST /v1/account/onboarding`
-- `POST /v1/wallet/deposit-addresses` — retained only to return `410 route_replaced`
-- `POST /v1/capital-account/provider-wallet`
-- `GET /v1/capital-account/deposit-address`
-- `GET /v1/capital-account/balances`
-- `GET /v1/wallet/deposits`
-- `POST /v1/wallet/withdrawals`
-- `GET /v1/wallet/withdrawals/:withdrawal_id`
-- `POST /v1/wallet/withdrawals/:withdrawal_id/cancel`
-- `GET /v1/wallet/transactions`
-- `POST /v1/webhooks/alchemy`, `/v1/webhooks/circle`, `/v1/webhooks/stripe`
+The API must own or coordinate:
 
-Route presence does not prove production capability. Circle webhook verification is disabled. Alchemy and Stripe ingestion require official verification. Several legacy wallet routes reach unsupported durable repository methods in production and therefore fail closed.
+- Clerk/session verification and principal resolution;
+- role/compliance/ownership authorization;
+- durable command creation;
+- idempotency and request identity;
+- capital reservation and approval enforcement;
+- provider submission and durable provider-reference persistence;
+- provider webhook ingestion/processing;
+- settlement evidence;
+- canonical ledger posting;
+- reconciliation;
+- explicit error/failure/retry states;
+- observability and audit events.
 
-## Auth boundary
+## Current remediation boundary
 
-Public health/status/version routes do not establish user authority. Customer and operator surfaces are Clerk-first. `apps/api` accepts `SUPABASE`, `DUAL`, or `CLERK` authentication modes and resolves an authenticated provider subject to the stable Neptlium principal before authorization when provider-independent identity storage is configured.
+The API already contains substantial contracts and newer financial-domain logic, but production readiness remains open because legacy Edge Functions can still bypass it and the canonical financial lifecycle has not yet been exercised end-to-end.
 
-During the identity transition, existing-account linking may require both a valid legacy Supabase session and a valid Clerk session. That legacy path is temporary compatibility infrastructure, not the canonical business identity authority.
+## Prohibited architecture
 
-Service-role credentials are confined to the API/dedicated server clients. A bearer token, UI role, or caller-supplied owner ID never bypasses resource ownership checks.
+Do not allow:
 
-## Repository architecture
+- browser -> Supabase financial-table writes;
+- Admin -> direct privileged workflow mutation when an API command should exist;
+- Edge Function -> `transactions`/`portfolios` mutation as canonical money movement;
+- provider response -> immediate settled/available user state;
+- in-memory/process-local state as production financial authority.
 
-`ApiRepository` defines readiness, account provisioning/onboarding, wallet/withdrawal/deposit/transaction, provider-wallet, idempotency/audit, and webhook persistence boundaries.
+## Error semantics
 
-- `MemoryRepository` is local/test only and cannot be injected in production.
-- `SupabaseRepository` currently implements readiness, provider-wallet lookup/linkage, account provisioning/onboarding RPCs, and audit insertion.
-- Durable withdrawal create/read/cancel, deposit listing, transaction listing, and webhook recording are explicitly unsupported in that adapter.
-- Production startup requires an injected durable repository and rejects memory persistence.
+Financial endpoints must fail closed when authentication, ownership, provider capability, durable persistence, policy, evidence, or reconciliation prerequisites are missing.
 
-Those unsupported operations must be implemented as atomic database transactions consistent with the migrations before the corresponding routes can be enabled.
+Unknown provider outcome must be represented as unknown/recoverable—not converted into success or safe retry without idempotency evidence.
 
-## Circle adapter
+## Validation
 
-The provider-neutral `CapitalProvider` is designed to select Circle for complete testnet or production configuration. The adapter implements existing-wallet/address/balance/transaction observation for USDC on Base Sepolia or Base. Automatic provisioning is disabled and transfer submission is unimplemented. The runtime composition passes the environment, wallet-set reference, and live-execution gate explicitly; build and provider tests lock the contract. Responses expose Neptlium domain models and provider-observed state, not raw SDK objects or canonical balances.
+API remediation requires mandatory tests for:
 
-## Webhooks
+- auth/authorization;
+- idempotency/replay;
+- provider contracts;
+- webhook verification/deduplication;
+- ledger invariants;
+- reconciliation;
+- failure/retry/crash windows;
+- customer/admin E2E paths.
 
-The generic boundary enforces raw-body size limits, provider-specific verification, a provider event ID, payload digest, replay conflict detection, deduplicated inbox persistence, safe logging, and request correlation. The included timestamped HMAC verifier is test/local only. Production verification must implement each provider's reviewed official contract.
+The authoritative order is in `docs/15_PRODUCTION_READINESS_AUDIT.md`.
 
-Circle currently returns a disabled error before ingestion. Credentials or a configured route do not substitute for signature verification.
+## Final rewrite
 
-## Operations groundwork
-
-- `treasury.ts` evaluates withdrawal policy, allowlists, approval thresholds, and self-approval prohibition.
-- `reconciliation.ts` compares provider/internal records and classifies mismatches.
-- `workers.ts` defines leased, retryable, dead-letter jobs for webhook processing, reconciliation, and ledger settlement.
-- `observability.ts` emits safe structured request/operation signals.
-- Migration tables support durable jobs, treasury policy, approvals, reconciliation resolution, audit, and idempotency.
-
-Memory job/rate-limit implementations are local/test only. Production requires durable jobs and a **distributed rate limiter** shared across instances. `buildApp` rejects `MemoryRateLimiter` in production. Standalone and serverless production composition uses `SupabaseRateLimiter`, backed by the service-role-only atomic `consume_api_rate_limit` RPC. The forward migration must be applied before deploying this runtime; storage failure fails closed.
-
-## TRANSITION
-
-1. Complete atomic Supabase repository operations and readiness checks.
-2. Implement official provider webhook verifiers and durable inbox/job processing.
-3. Connect ledger posting and reconciliation through reviewed transactions.
-4. Replace direct admin financial status updates with privileged API commands.
-5. Complete Clerk-first runtime certification while retaining the legacy Supabase identity path only where continuity requires it.
-6. Consider `CLERK`-only API mode only after the dual-session transition has been explicitly certified.
-
-## TARGET domains
-
-### Allocation API
-
-Mandates, policies, targets, observations, scenarios, proposals, reviews, approvals, reservations, execution intents, lifecycle, decision ledger, and reconciliation projections.
-
-### Transfer API
-
-Alias resolution, safe recipient verification, intent creation, validation, authorization, reservation, internal posting, provider execution, lifecycle, activity, and reconciliation.
-
-### Treasury API
-
-Read-only canonical liquidity projections, reserve requirement/coverage, restrictions, commitments, freshness, policy state, and exceptions. Treasury does not execute transfers.
-
-### Stripe APIs
-
-Stripe Treasury is excluded. The current Stripe route verifies and persists provider evidence; Stripe payment/onramp funding is not implemented. Provider evidence does not establish availability without attribution, ledger posting, failure/refund handling, and reconciliation.
-
-## API invariants
-
-- Mutation commands are authenticated, authorized, owner-validated, idempotent, rate-limited, audited, and fail closed.
-- Ambiguous provider timeouts are looked up/reconciled before retry.
-- No route reports canonical settlement from a provider response alone.
-- Secrets and raw sensitive provider payloads never appear in client responses or logs.
+After all remediation gates close, rewrite this document with the final route catalog, authentication mode, provider orchestration, worker model, deployment/runtime contract, and operational SLOs.
