@@ -12,7 +12,19 @@ Node.js/TypeScript API for `api.neptlium.com`. Versioned routes live under `/v1`
 
 Production rejects memory persistence and process-local rate limiting. Standalone and serverless runtimes use the service-role-only Supabase distributed limiter RPC. Durable deposit, withdrawal, transaction, and webhook operations remain unsupported and fail closed. Circle transfer execution and Circle webhook verification are disabled. Alchemy observations and Stripe payment evidence require verified webhook ingress.
 
-Stripe Treasury is not part of the runtime architecture. Stripe payment/onramp capability is not implemented; configured Stripe webhooks record evidence only. Clerk is not implemented.
+Stripe Treasury is not part of the runtime architecture. Stripe payment/onramp capital funding is not implemented. The governed Stripe webhook preserves only non-capital subscription billing state after signature verification, durable inbox persistence, and an idempotent claim. No Stripe event in Gate 04 can credit capital, create settlement evidence, post ledger entries, reconcile funds, or mutate legacy portfolio balances. Clerk is not implemented.
+
+### Stripe webhook ingress
+
+`POST /v1/webhooks/stripe` is a dedicated raw-body serverless boundary. It verifies `Stripe-Signature` with the server-only `STRIPE_WEBHOOK_SECRET` before JSON parsing, stores the verified event in `provider_webhook_inbox`, claims the event through the existing leased control plane, and only then applies an allowed `subscriptions` table transition.
+
+Minimum subscribed events after production deployment:
+
+- `checkout.session.completed` — subscription mode only; activates the matching Pro/Elite subscription. Payment mode is explicitly ignored as `stripe_capital_funding_not_enabled`.
+- `invoice.paid` — renews the matching Stripe customer subscription.
+- `customer.subscription.updated` — synchronizes supported subscription statuses; cancellation downgrades to free. Unknown Stripe statuses are recorded and ignored rather than coerced to active.
+
+The intended production endpoint is `https://api.neptlium.com/v1/webhooks/stripe`. Do not register or repoint the Stripe Dashboard destination until the Gate 04 branch is promoted to production and this URL is verified fail-closed. Never place the endpoint `whsec_...` secret in source, logs, issues, PRs, or chat.
 
 ## Environment
 
