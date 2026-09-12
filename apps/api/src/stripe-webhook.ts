@@ -140,6 +140,8 @@ export function stripeIngressDisposition(event: VerifiedStripeEvent): StripeIngr
       return { action: 'ignored', reason: 'unsupported_subscription_state' };
     }
     const meta = metadata(object);
+    const userId = text(meta?.user_id);
+    const plan = paidPlan(meta?.plan);
     return {
       action: 'subscription_update',
       reason: 'supported_subscription_event',
@@ -147,8 +149,8 @@ export function stripeIngressDisposition(event: VerifiedStripeEvent): StripeIngr
         kind: 'sync_subscription',
         customerId: requireField(idFromExpandable(object?.customer), 'customer'),
         subscriptionId: requireField(text(object?.id), 'subscription id'),
-        userId: text(meta?.user_id),
-        plan: paidPlan(meta?.plan),
+        ...(userId ? { userId } : {}),
+        ...(plan ? { plan } : {}),
         status,
       },
     };
