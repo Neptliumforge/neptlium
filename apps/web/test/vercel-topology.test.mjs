@@ -5,17 +5,20 @@ import test from 'node:test';
 const read = (relative) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 
 const projects = [
-  ['web', '@neptlium/web', read('../vercel.json')],
-  ['app', '@neptlium/app', read('../../app/vercel.json')],
-  ['admin', '@neptlium/admin', read('../../admin/vercel.json')],
-  ['api', '@neptlium/api', read('../../api/vercel.json')],
+  ['web', read('../vercel.json')],
+  ['app', read('../../app/vercel.json')],
+  ['admin', read('../../admin/vercel.json')],
+  ['api', read('../../api/vercel.json')],
 ];
 
-test('each Vercel project only builds when its monorepo package is affected', () => {
-  for (const [name, packageName, source] of projects) {
-    assert.match(source, /VERCEL_GIT_PREVIOUS_SHA/, `${name} must anchor affected detection to the previous deployment SHA`);
-    assert.match(source, /turbo query affected/, `${name} must use Turborepo affected detection`);
-    assert.match(source, new RegExp(`--packages ${packageName.replace('/', '\\/')} --exit-code`), `${name} must scope builds to ${packageName}`);
+test('each Vercel project uses path-aware ignored-build detection', () => {
+  for (const [name, source] of projects) {
+    const config = JSON.parse(source);
+    assert.equal(typeof config.ignoreCommand, 'string', `${name} must define an ignored-build command`);
+    assert.match(config.ignoreCommand, /git diff --quiet HEAD\^ HEAD -- \./, `${name} must anchor detection to the project directory`);
+    assert.match(config.ignoreCommand, /\.\.\/\.\.\/package\.json/, `${name} must include root dependency metadata`);
+    assert.match(config.ignoreCommand, /\.\.\/\.\.\/pnpm-lock\.yaml/, `${name} must include the workspace lockfile`);
+    assert.match(config.ignoreCommand, /\.\.\/\.\.\/turbo\.json/, `${name} must include root build configuration`);
   }
 });
 
@@ -25,10 +28,13 @@ test('application production API boundary remains explicit', () => {
   assert.match(env, /NEXT_PUBLIC_SITE_URL=https:\/\/app\.neptlium\.com/);
 });
 
-test('API deployment keeps one catch-all server authority', () => {
+test('API deployment keeps explicit application and Stripe webhook serverless authorities', () => {
   const api = JSON.parse(read('../../api/vercel.json'));
   assert.equal(api.framework, null);
-  assert.equal(api.builds?.length, 1);
-  assert.equal(api.builds?.[0]?.src, 'api/index.js');
-  assert.deepEqual(api.routes, [{ src: '/(.*)', dest: '/api/index.js' }]);
+  assert.equal(api.builds?.length, 2);
+  assert.deepEqual(api.builds.map((entry) => entry.src), ['api/index.js', 'api/stripe-webhook.js']);
+  assert.deepEqual(api.routes, [
+    { src: '/v1/webhooks/stripe', dest: '/api/stripe-webhook.js' },
+    { src: '/(.*)', dest: '/api/index.js' },
+  ]);
 });
