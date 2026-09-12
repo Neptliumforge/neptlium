@@ -1,73 +1,55 @@
-# Admin Operations
+# NEPTLIUM Admin Operations — Remediation Mode
 
-`apps/admin` is the internal operational console at `admin.neptlium.com`. It is not customer navigation and it is not itself a financial execution engine.
+## Admin role
 
-## CURRENT
+`apps/admin` is the operator interface for visibility, investigation, approvals, exception handling, and auditability. It is not a direct financial database console.
 
-Access uses Supabase Auth plus server-side role lookup through the service-role client. Routes require `admin` or higher; selected operations can require `super_admin`. RLS and server authorization remain mandatory.
+## Current transition
 
-Current screens include:
+Admin contains legacy direct Supabase workflow mutation paths protected by a fail-closed feature guard. Those paths must be fully migrated to governed API commands or removed before production completion.
 
-- operational overview;
-- users and user detail;
-- withdrawals;
-- allocations;
-- deposits;
-- transactions;
-- login history and trusted devices;
-- capability inventory.
+## Target command path
 
-Current actions include role updates, account compliance suspension/reactivation, allocation status updates, deposit status completion, and withdrawal approve/reject status updates.
+```text
+Admin operator
+  -> Clerk-authenticated Admin session
+  -> Neptlium API
+  -> principal/role/compliance checks
+  -> step-up/reason capture where required
+  -> durable governed command
+  -> provider/ledger/reconciliation lifecycle
+  -> immutable audit event
+```
 
-## Critical current limitation
+## Required operator visibility
 
-**Database status changes do not prove financial execution.**
+Admin should expose enough evidence to investigate financial state without inventing certainty:
 
-Several current server actions directly update legacy tables—for example, marking a wallet transaction `completed` or an allocation request `executed`. Those labels do not prove a provider instruction occurred, a balanced ledger entry posted, a reservation was consumed, settlement completed, or reconciliation matched.
+- canonical transaction/execution ID;
+- owner/principal;
+- current lifecycle state;
+- reservation/approval evidence;
+- provider and provider reference;
+- webhook/provider-event state;
+- settlement evidence;
+- ledger journal IDs;
+- reconciliation run/item and discrepancy codes;
+- request/idempotency identifiers;
+- audit actor and reason.
 
-Until migrated, these controls are administrative workflow metadata only. They must not be described to operators or customers as custody, transfer, settlement, allocation execution, or canonical balance authority.
+## Privileged-action rules
 
-## TARGET operational-control model
+- browser UI controls are not authorization;
+- super-admin or other privileged role must be validated server-side;
+- transfer owner must not self-approve where separation of duties applies;
+- direct status editing must never substitute for provider execution or settlement;
+- replay/idempotency must be enforced for repeated operator actions;
+- failed/unknown provider states require explicit recovery workflows rather than manual success marking.
 
-Admin becomes a governed client of privileged API commands and read models:
+## Remediation dependencies
 
-- principal, organization, role, entitlement, and compliance investigation;
-- deposit/withdrawal/transfer/allocation review queues;
-- policy evaluation and approval evidence;
-- reservation and execution-intent inspection;
-- provider health and observation timelines;
-- reconciliation runs, exceptions, acknowledgment, and resolution;
-- ledger entry/posting inspection without mutation;
-- webhook/job/dead-letter operations;
-- security events, session response, and access review;
-- capability/configuration status without secret disclosure.
+Admin production readiness depends on gates 05-16, especially removal of direct-write authority, canonical reconciliation visibility, identity cutover, and production environment certification.
 
-## Control requirements
+## Final rewrite
 
-- Separate request, approval, execution, and reconciliation permissions.
-- Prohibit self-approval and enforce distinct approvers where policy requires.
-- Bind every decision to the immutable intent/proposal and policy version reviewed.
-- Require explicit reason/evidence for rejection, suspension, override, or exception resolution.
-- Use step-up authentication for high-risk actions when implemented.
-- Apply idempotency and optimistic/transition checks to every command.
-- Record actor, role, request ID, before/after lifecycle state, timestamp, and safe metadata.
-- Display provider-observed, canonical, pending, reserved, restricted, failed, and unknown distinctly.
-- Do not expose service-role keys, provider credentials, raw secrets, or unnecessary personal data.
-
-## TRANSITION
-
-1. Inventory and label direct database mutations as metadata-only.
-2. Introduce API commands for reviewed lifecycle transitions.
-3. Require durable reservation, provider/ledger evidence, and reconciliation before financial completion states.
-4. Convert admin pages to read canonical projections and exception queues.
-5. Add dual control, step-up authentication, and append-only decisions.
-6. Remove legacy direct-write paths only after equivalent controlled workflows are proven.
-
-## Operator truth rules
-
-- `approved` means authorization requirements passed, not execution.
-- `submitted` means an idempotent instruction was accepted, not settlement.
-- `settled` requires canonical ledger and reconciliation criteria.
-- `resolved` requires preserved evidence and actor attribution, not deletion of an exception.
-- `configured` does not necessarily mean healthy or eligible.
-- Unknown or unavailable state stays unknown or unavailable.
+After remediation closes, rewrite this document with the final role matrix, approval procedures, exception workflows, reconciliation operations, incident runbooks, and audit retention requirements.
