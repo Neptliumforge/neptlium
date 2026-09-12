@@ -1,0 +1,8 @@
+# Gate 02 retirement guard only; this is not a complete production configuration.
+# Keep crypto-webhook absent from production. Never bulk deploy legacy functions
+# or push this minimal configuration as global project configuration.
+project_id = "neptlium"
+
+[functions.crypto-webhook]
+verify_jwt = true
+entrypoint = "./functions/crypto-webhook/index.ts"
