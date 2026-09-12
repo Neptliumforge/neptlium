@@ -21,13 +21,20 @@ export default function HomePage() {
   return (
     <div className="cin-home refined-home">
       <section className="cin-hero refined-hero" aria-labelledby="cin-hero-title">
-        <div className="refined-hero-ambient" aria-hidden="true" />
+        <div className="refined-hero-ambient" aria-hidden="true">
+          <i className="hero-architecture-ring" />
+          <i className="hero-architecture-light" />
+          <i className="hero-horizon" />
+          <i className="hero-waterline" />
+        </div>
         <div className="cin-hero-copy refined-hero-copy">
+          <p className="hero-kicker">Capital operating infrastructure</p>
           <h1 id="cin-hero-title" className="balanced-hero-title">
-            <span>Capital should remain</span>
-            <span>intelligible as it moves.</span>
+            <span>Capital should</span>
+            <span>remain intelligible</span>
+            <span>as it moves.</span>
           </h1>
-          <p className="balanced-hero-subhead">Neptlium connects capital state, operating context and governed work—keeping evidence, intent and authority distinct before consequence.</p>
+          <p className="balanced-hero-subhead">Neptlium connects capital state, operating context and governed work so evidence, intent, authority, and consequence remain distinct.</p>
           <div className="cin-actions refined-hero-actions balanced-hero-actions">
             <Link className="cin-pill cin-pill-light" href={SITE.publicAccessUrl}>{SITE.publicAccessLabel}<ArrowRight aria-hidden="true" /></Link>
             <Link className="refined-operating-link" href="#operating-story">See the operating model</Link>
