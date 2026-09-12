@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { loadConfig, type Config } from './config.js';
 import { ApiError } from './errors.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
+import { StripeSubscriptionRepository } from './stripe-subscription.js';
 import {
   stripeIngressDisposition,
   verifyStripeWebhook,
@@ -87,6 +88,11 @@ export async function executeStripeWebhook(
       config.SUPABASE_SERVICE_ROLE_KEY,
       dependencies.fetch,
     );
+    const subscriptions = new StripeSubscriptionRepository(
+      config.SUPABASE_URL,
+      config.SUPABASE_SERVICE_ROLE_KEY,
+      dependencies.fetch,
+    );
     const digestHex = createHash('sha256').update(request.rawBody).digest('hex');
 
     const insertion = await operations.recordWebhook({
@@ -126,11 +132,13 @@ export async function executeStripeWebhook(
     try {
       disposition = stripeIngressDisposition(verified);
 
-      // Gate 04 is deliberately evidence-only. Stripe capital funding is not an
-      // approved live capability, so no event from this boundary may create
-      // settlement evidence, post ledger entries, mutate legacy balances, or
-      // make customer funds available. Future funding processing must be added
-      // only with a separately reviewed payment/funding contract.
+      // Subscription billing is deliberately distinct from capital authority.
+      // Only a verified, durably recorded, successfully claimed event may update
+      // the non-financial subscriptions table. Stripe capital funding remains
+      // disabled: this boundary cannot create settlement evidence, post ledger
+      // entries, mutate legacy balances, or make customer capital available.
+      if (disposition.action === 'subscription_update')
+        await subscriptions.apply(disposition.command);
 
       await operations.completeWebhook('stripe', verified.environment, verified.id);
     } catch (error) {
