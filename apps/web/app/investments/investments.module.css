@@ -1,0 +1,4 @@
+.memo{display:grid;border-top:1px solid rgb(245 243 238 / 18%);border-left:1px solid rgb(245 243 238 / 18%)}
+.memo>div{display:grid;gap:.65rem;min-height:8rem;padding:1.2rem;border-right:1px solid rgb(245 243 238 / 18%);border-bottom:1px solid rgb(245 243 238 / 18%)}
+.memo span{color:#20afa3;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.memo strong{max-width:24rem;align-self:end;color:#f5f3ee;font-size:1rem;font-weight:560;line-height:1.45}
