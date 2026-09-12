@@ -19,6 +19,8 @@ export const PRODUCTS = [
   { label: 'Portfolio Intelligence', href: '/products/portfolio-intelligence', description: 'Understand ownership, exposure, concentration and relationships across the portfolio.' },
 ] as const satisfies readonly NavigationLink[];
 
+export const PRIMARY_PRODUCTS = PRODUCTS.slice(0, 4);
+
 export const SOLUTIONS = [
   { label: 'Capital visibility', href: '/solutions/capital-visibility', description: 'See the capital picture across accounts, companies, positions and liquidity.' },
   { label: 'Treasury coordination', href: '/solutions/treasury-coordination', description: 'Keep liquidity and funding requirements visible before they become urgent.' },
@@ -32,10 +34,20 @@ export const INSIGHTS = [
   { label: 'Research', href: '/research', description: 'Substantive Neptlium research when original publications are available.' },
 ] as const satisfies readonly NavigationLink[];
 
+// Retained for the legacy /resources page while that route permanently converges to /insights.
+export const RESOURCES = [
+  INSIGHTS[1],
+  INSIGHTS[2],
+  { label: 'Security', href: '/security', description: 'How Neptlium approaches system, identity and operational security.' },
+  { label: 'Trust', href: '/trust', description: 'How Neptlium represents evidence, uncertainty, authority and consequence.' },
+] as const satisfies readonly NavigationLink[];
+
 export const COMPANY = [
   { label: 'About', href: '/about', description: 'Why Neptlium exists and the operating principles behind the platform.' },
   { label: 'Contact', href: '/contact', description: 'Start a conversation with Neptlium.' },
 ] as const satisfies readonly NavigationLink[];
+
+export const PRIMARY_COMPANY = COMPANY.slice(0, 2);
 
 export const NAVIGATION = [
   {
