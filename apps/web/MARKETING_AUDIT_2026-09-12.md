@@ -22,9 +22,9 @@ The Web application already contains strong production foundations:
 
 ## Production inspection status
 
-Repository and deployment-state inspection was possible. Direct browser/render inspection of `https://neptlium.com` was **BLOCKED** in the current tool environment: external DNS access was unavailable from the execution container, Web search did not return the domain, Vercel deployment listing returned a permission error, and deployment lookup by status identifier did not resolve.
+Repository and deployment-state inspection was possible. Direct browser/render inspection of `https://neptlium.com` remains **BLOCKED** in the current tool environment. The available connectors can inspect source, CI, status checks and deployment state, but they do not provide an interactive rendered browser at controlled desktop/tablet/mobile viewports.
 
-No browser, responsive-render, Lighthouse, Core Web Vitals, or visual-regression result is therefore claimed by this audit.
+No browser, Lighthouse, Core Web Vitals, or visual-regression result is therefore claimed by this audit.
 
 ## Problems found
 
@@ -54,7 +54,7 @@ The repository contains both cinematic imagery and truthful structured product v
 
 ### CSS ownership
 
-The root layout currently imports multiple historical global CSS layers. They continue to support existing routes, so deleting them during the first investor-marketing pass would be unnecessarily destructive. Newly reconstructed routes therefore use scoped CSS modules while the global layers are audited incrementally.
+The root layout currently imports multiple historical global CSS layers. They continue to support existing routes, so deleting them during this investor-marketing pass would be unnecessarily destructive. Newly reconstructed routes use scoped CSS modules while the global layers are audited incrementally.
 
 ## Architecture established in this pass
 
@@ -66,7 +66,7 @@ Top-level public navigation:
 4. Security
 5. Company
 
-Products and Solutions remain part of the platform architecture and retain their canonical routes.
+Products and Solutions remain second-level platform architecture.
 
 Conversion architecture:
 
@@ -78,6 +78,8 @@ Conversion architecture:
 Canonical public positioning:
 
 > **Capital, made clearer.**
+
+`/company` is now the canonical Company destination. Legacy `/about` converges to `/company` rather than maintaining two competing company narratives.
 
 ## Homepage architecture
 
@@ -114,11 +116,132 @@ Marketing must preserve these distinctions:
 
 USD funding is not marketed as a live public capability in this pass.
 
+## Product route decision matrix
+
+| Route | Decision | Reason |
+| --- | --- | --- |
+| `/products` | KEEP | Secondary product-discovery surface; not a competing top-level navigation domain. |
+| `/products/capital-account` | KEEP | Distinct account, funding, liquidity and capital-movement responsibility. |
+| `/products/treasury` | KEEP | Distinct liquidity/readiness and obligation-context responsibility. |
+| `/products/allocation` | KEEP | Distinct modeled-intent, review and authorization responsibility. |
+| `/products/portfolio-intelligence` | KEEP | Distinct ownership, exposure, concentration and portfolio-context responsibility. |
+| `/products/performance` | KEEP / SUPPORTING NOINDEX | Useful methodology and provenance explanation, but not a primary acquisition/search surface until supported performance data exists. |
+| `/products/capital-universe` | KEEP / SUPPORTING NOINDEX | Useful capital-classification context, but deliberately not an asset catalogue or availability claim. |
+
+No retained Product route claims custody, execution, guaranteed outcome or unsupported asset availability.
+
+## Solution route decision matrix
+
+| Route | Decision | Reason |
+| --- | --- | --- |
+| `/solutions` | KEEP | Problem-led overview that explains why the product surfaces are connected. |
+| `/solutions/capital-visibility` | KEEP | Cross-product problem spanning Capital Account and Portfolio Intelligence. |
+| `/solutions/treasury-coordination` | KEEP | Problem-led operational framing distinct from the Treasury product description; remains deliberately concise. |
+| `/solutions/allocation-workflows` | KEEP | Decision-process framing distinct from the Allocation product surface. |
+| `/solutions/governance-control` | KEEP | Cross-cutting authority/evidence problem spanning Security, Trust and consequential workflows. |
+
+These routes stay second-level. They are not promoted into primary navigation and should be consolidated later if they cease to provide distinct search intent or investor comprehension.
+
+## Canonical vocabulary
+
+Marketing copy uses these terms consistently:
+
+- **Platform** — the connected Neptlium operating environment.
+- **Capital** — financial state and context represented by supported evidence; not a synonym for custody.
+- **Portfolio** — positions, ownership and portfolio context represented by available evidence.
+- **Funding** — account-specific instructions and lifecycle state through supported capabilities.
+- **Transaction** — an explicit lifecycle that can include intent, submission, provider evidence, settlement and reconciliation.
+- **Investment** — an opportunity or framework described through objective, structure, exposure, risk, liquidity, fees, documentation and suitability.
+- **Reporting** — statements, records, documents and portfolio/account context associated with financial activity.
+- **Digital asset funding** — capability-controlled funding routes exposed only where supported for the authenticated account.
+- **USD funding** — not represented as a live public capability in this release.
+- **Availability** — determined by current supported account/product/infrastructure capability, not roadmap intent.
+- **Settlement** — a lifecycle state that remains distinct from reconciliation.
+- **Liquidity** — access/timing context; never a guarantee of immediate withdrawal or execution.
+
+## Claim integrity classification
+
+### VERIFIED
+
+Supported by current repository architecture and public product contracts:
+
+- authenticated account access exists as a distinct identity boundary;
+- consequential financial authority is server-side rather than created by browser presentation alone;
+- modeled, provider-reported, canonical and reconciled state are treated as distinct concepts;
+- product visuals can render controlled/unavailable state without fake money values;
+- account creation and sign-in have real authenticated destinations;
+- portfolio, capital-account, treasury, allocation, reporting and security are established product responsibilities in the current architecture.
+
+### QUALIFIED
+
+True only under stated conditions and therefore explicitly qualified in copy:
+
+- funding is available only through account-specific supported capabilities;
+- digital-asset routes depend on supported account/infrastructure capability;
+- investment availability depends on verified opportunity, documentation, eligibility and operating support;
+- liquidity and transaction states depend on evidence and lifecycle state;
+- operational/replay/data controls are described only where implemented, not as universal certification claims.
+
+### ROADMAP / DEFERRED
+
+Not marketed as live:
+
+- USD capital funding;
+- unverified future payment rails;
+- new digital-asset networks or assets not exposed by current capability;
+- live public investment marketplace content where no verified offering source exists;
+- dynamic research/article inventory where substantive editorial content does not yet exist.
+
+### UNSUPPORTED / REMOVED FROM MARKETING AUTHORITY
+
+The public site must not claim:
+
+- guaranteed returns, yield or earnings;
+- fabricated performance;
+- AUM, customer counts or transaction volume without verified evidence;
+- regulatory registration, licensing, insurance, certifications or partnerships without documented support;
+- immediate/infallible settlement;
+- custody, brokerage or investment-management authority not actually provided;
+- fake testimonials, press or institutional backing.
+
+## Funding accuracy
+
+Digital-asset funding language is capability-controlled: the public site describes the operating responsibility without asserting that every asset, network or customer can fund through it.
+
+USD funding remains explicitly non-live in the public marketing narrative. Stripe or other provider infrastructure elsewhere in the repository is not treated as proof that customer capital funding is publicly executable.
+
+## Investment accuracy
+
+`/investments` leads with objective, strategy, structure, risk, liquidity, fees, documentation and suitability. It explicitly requires target, projected, illustrative and historical information to remain distinguishable whenever those categories are used. No current public opportunity, projected return or customer performance is fabricated.
+
+## Insights maturity
+
+`/insights` is a truthful editorial hub with categories for Markets, Investing, Portfolio Strategy, Digital Assets, Platform and Investor Education. It does not invent articles, authors, dates or research findings. `/research` remains supporting/noindex until substantive original publications exist, and legacy `/resources` converges to `/insights`.
+
+## Security completion
+
+`/security` now explains:
+
+- authenticated account access;
+- authorization boundaries;
+- financial authority outside browser-side presentation;
+- transaction lifecycle integrity;
+- provider evidence and reconciliation boundaries;
+- infrastructure and fail-closed behavior;
+- operational review principles;
+- sensible investor account-security responsibilities.
+
+The page deliberately avoids undocumented certification, insurance, regulatory, cryptographic or “perfect security” claims.
+
+## Company completion
+
+`/company` now provides one institutional narrative around mission, operating philosophy, platform philosophy, technology/financial integrity and long-term direction. It does not invent founding history, headquarters, offices, employee count, investors, funding rounds, regulatory status, AUM, awards or press recognition.
+
 ## SEO and route policy
 
-`/investments` and `/insights` are now canonical indexable public routes. `/resources` is classified as a legacy route and permanently converges to `/insights`. Research remains a supporting noindex surface until substantive original publications justify independent search authority.
+`/investments`, `/insights`, `/security`, and `/company` are canonical indexable public routes. `/about` and `/resources` are legacy convergence routes. Performance and Capital Universe are supporting/noindex product routes. Research remains supporting/noindex until substantive original publications justify independent search authority.
 
-Metadata, sitemap priority, navigation, footer, and route policy are being converged around the new architecture.
+Metadata, sitemap, navigation, footer and route policy converge around the new architecture.
 
 ## Visual direction
 
@@ -134,7 +257,7 @@ The rebuilt surfaces use:
 
 Typography remains editorial but controlled. Teal is used as a precision signal. Layouts prioritize hierarchy, whitespace, structural rules, and purposeful product compositions over gradients, glassmorphism, generic mockups, or decorative finance imagery.
 
-## First-pass implementation status
+## Implementation status
 
 Completed in this branch:
 
@@ -145,22 +268,27 @@ Completed in this branch:
 - global conversion CTA;
 - homepage reconstruction;
 - Platform page reconstruction;
-- new Investments page;
-- new Insights page;
+- Investments page;
+- Insights page;
+- Security page completion;
+- Company page completion and `/about` consolidation;
+- product and solution route decision audit;
+- vocabulary and claim-integrity audit;
 - route-scoped premium marketing styles;
-- sitemap updates;
+- sitemap and route-policy updates;
 - `/resources` redirect;
 - marketing documentation and source-contract test updates.
 
-## Remaining production work
+## Remaining production verification
 
-The next passes should:
+Before production merge:
 
-- validate and refine the rebuilt pages in an actual browser across mobile/tablet/desktop widths;
-- rebuild Security and About/Company surfaces into the same investor-facing visual rhythm where needed;
-- audit individual product and solution pages for old architecture language and visual duplication;
-- build the future dynamic `/insights/[slug]` content model only when substantive content exists;
-- introduce investment-detail routes only when a verified opportunity source exists;
-- consolidate historical CSS layers once route ownership is proven;
-- verify performance, accessibility, SEO rendering, route redirects, social metadata, and production links;
-- maintain marketing/product parity as the authenticated dashboard and deposit architecture mature.
+- CI must remain green on the final head;
+- Vercel Web preview must be READY on the final head;
+- real browser verification must cover desktop, laptop, tablet, mobile and narrow-mobile widths;
+- practical keyboard/focus/contrast/accessibility behavior must be checked in the rendered preview;
+- production-like performance/Lighthouse checks must be run against the preview;
+- final route/redirect/canonical behavior must be smoke-tested in a real browser;
+- final diff must be reviewed for unrelated changes, debug output, fake data and abandoned code.
+
+Because the current execution environment does not expose a real interactive browser, browser-dependent release gates remain explicit blockers rather than being inferred from source tests.
