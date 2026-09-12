@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "[ -z \"$VERCEL_GIT_PREVIOUS_SHA\" ] && exit 1; git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" \"${VERCEL_GIT_COMMIT_SHA:-HEAD}\" -- . ../../packages/ui ../../packages/types ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../turbo.json",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ../../packages/ui ../../packages/types ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../turbo.json",
   "buildCommand": "pnpm --filter @neptlium/web build"
 }
