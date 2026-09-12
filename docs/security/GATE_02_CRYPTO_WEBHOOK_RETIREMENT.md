@@ -202,11 +202,44 @@ deployment, was used. Node VM tests execute the actual dependency-free source.
 CI publication/results are recorded in the draft PR; unrelated web failures do
 not establish a retirement defect.
 
+## Publication and CI evidence
+
+[Draft PR #65](https://github.com/Neptliumforge/neptlium/pull/65) targets main and
+contains exactly the six Gate 02 files. Implementation/evidence commit:
+`bd6c1a8e300d210258f58c56df806f3a65faafe3`.
+
+[Actions run 34706033557](https://github.com/Neptliumforge/neptlium/actions/runs/34706033557)
+checked out the merge of this commit with main `db034515`. Retirement validation
+passed all seven tests; UI/Web typechecks and lint passed. The web suite failed
+exactly the same two assertions recorded above (56/58); build was NOT RUN.
+This is an independently reproduced current-main issue, not a Gate 02 failure.
+Subsequent documentation-only publication/check results are recorded in the PR.
+
+After-retirement deployed source hashes (identical to before):
+
+| Function                  | SHA-256 of joined source files                                     |
+| ------------------------- | ------------------------------------------------------------------ |
+| `allocate-portfolio`      | `16b472cc2d3d58a2bfa764bafd49e1a960f753fc7bd6109f299bb2eefff78faf` |
+| `calculate-risk-score`    | `9394ac54484e4b35083e4ec76e02f5e6a8a4dfe0252ff3513fd1a137f6455574` |
+| `calculate-yield`         | `5bf9c1a046e419fac718ba9dc914872ab0767defedb9f67d4c82a529eb413b92` |
+| `create-checkout-session` | `d3c52a9ca35dce6b3a63b24860ef425231e541528897f9ae16127e570ce56edd` |
+| `market-signal-engine`    | `2199959fe452c09ee838ca742c77980088a3359e305c8c4268bff65fdb614fd7` |
+| `noop-check`              | `ef12a5921dcf723fc17cc9987046fc54590e6325810657eb8d7ae1cf74a3ca28` |
+| `process-deposit`         | `bf71a4fc417015983f5ad84bbf32ef3ef6d9a44ddc28e6ebb437b0d30b0947d1` |
+| `stripe-webhook`          | `a0454d0adec82bd81e08e0c7965ff0709fd233ad51253b9ca51e2f60b2e238d5` |
+| `whale-signal-engine`     | `e18854655235131487eeb774ae67b84384556e6293258e40ba916bdb6b1f068b` |
+
 ## Gate 02 verdict
 
-COMPLETE once the isolated branch is published in its own draft PR and retirement
-CI is verified: production source was a placeholder, no legitimate caller or
-alternate deployed copy was found, only the target slug was removed, all five
-negative requests were NOT_FOUND, all twelve table fingerprints match, and the
-anti-resurrection guard/tests are prepared. This does not claim canonical-main
-integration, provider readiness or any later gate. The draft must not be merged.
+COMPLETE — production source was inspected and confirmed as a placeholder; no
+legitimate caller/delegate was identified; the exact target was removed through
+supported authenticated tooling; inventory confirms absence; all five safe
+negative requests returned NOT_FOUND; all twelve counts/fingerprints match;
+all nine remaining deployed sources are unchanged and contain no equivalent
+placeholder/delegate; the anti-resurrection guard and tests are published in an
+isolated draft PR; retirement CI passes. The unrelated main Web failures remain
+visible and were neither hidden nor weakened.
+
+PR #65 remains draft and unmerged as instructed. User stashes and PRs #62/#64
+were preserved. This verdict does not claim canonical-main integration, provider
+readiness or any later gate. No Gate 03 work was performed.
