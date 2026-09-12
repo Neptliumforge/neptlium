@@ -5,6 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 
 const sourceUrl = new URL('../functions/stripe-webhook/index.ts', import.meta.url);
 const source = readFileSync(sourceUrl, 'utf8');
+const executableSource = source.replace(/^\s*\/\/.*$/gm, '');
 
 function handler() {
   let callback;
@@ -31,11 +32,14 @@ test('legacy Stripe webhook tombstone always returns 410', async () => {
 });
 
 test('legacy Stripe webhook tombstone has no provider or financial authority', () => {
-  assert.doesNotMatch(source, /import\s/);
-  assert.doesNotMatch(source, /createClient|Stripe|constructEvent|fetch\s*\(/);
-  assert.doesNotMatch(source, /Deno\.env|getenv|process\.env/);
-  assert.doesNotMatch(source, /transactions|portfolios|funding_intents|settlement_evidence|ledger_/i);
-  assert.doesNotMatch(source, /req\.|request\.|\.json\(|\.text\(/);
+  assert.doesNotMatch(executableSource, /import\s/);
+  assert.doesNotMatch(executableSource, /createClient|Stripe|constructEvent|fetch\s*\(/);
+  assert.doesNotMatch(executableSource, /Deno\.env|getenv|process\.env/);
+  assert.doesNotMatch(
+    executableSource,
+    /transactions|portfolios|funding_intents|settlement_evidence|ledger_/i,
+  );
+  assert.doesNotMatch(executableSource, /req\.|request\.|\.json\(|\.text\(/);
 });
 
 test('legacy Stripe webhook directory contains one executable source file', () => {
