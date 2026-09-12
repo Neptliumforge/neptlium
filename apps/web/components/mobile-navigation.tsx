@@ -50,7 +50,7 @@ export function MobileNavigation({ path, onClose, triggerRef }: { path: string; 
           <Link className="mobile-section-label" href={section.href} aria-current={path === section.href ? 'page' : undefined}><span>{section.label}</span><ArrowRight aria-hidden="true" /></Link>
           {section.links.length > 1 ? <div className="mobile-section-links">{section.links.filter((link) => link.href !== section.href).map((link) => <Link href={link.href} key={link.href} aria-current={path === link.href ? 'page' : undefined}>{link.label}</Link>)}</div> : null}
         </section>)}</div>
-        <Link className="mobile-marketing-primary" href={SITE.signUpUrl}>Get Started <ArrowRight aria-hidden="true" /></Link>
+        <Link className="mobile-enter-action" href={SITE.signUpUrl}>Get Started <ArrowRight aria-hidden="true" /></Link>
         <section className="mobile-social-block" aria-label="Social channels"><span>Socials</span><div>{socialLinks.map((social) => <a href={social.href} key={social.href} target="_blank" rel="noopener noreferrer">{social.label}<ArrowUpRight aria-hidden="true" /></a>)}</div></section>
       </nav>
     </div>
