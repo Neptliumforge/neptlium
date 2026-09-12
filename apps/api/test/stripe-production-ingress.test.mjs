@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHmac } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { loadConfig } from '../dist/config.js';
 import { executeStripeWebhook } from '../dist/stripe-serverless.js';
@@ -35,7 +35,7 @@ function config(secret = endpointSecret) {
     NODE_ENV: 'test',
     SUPABASE_URL: 'https://example.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-test-only',
-    STRIPE_WEBHOOK_SECRET: secret,
+    ...(secret ? { STRIPE_WEBHOOK_SECRET: secret } : {}),
     WEBHOOK_TOLERANCE_SECONDS: '300',
   });
 }
@@ -123,7 +123,7 @@ test('missing webhook secret fails closed', async () => {
   const body = raw();
   const response = await executeStripeWebhook(
     { method: 'POST', headers: { 'stripe-signature': signature(body) }, rawBody: body },
-    { config: config(undefined), fetch: async () => { throw new Error('storage must not be called'); }, now: () => now },
+    { config: config(''), fetch: async () => { throw new Error('storage must not be called'); }, now: () => now },
   );
   assert.equal(response.statusCode, 503);
   assert.equal(JSON.parse(response.body).error.code, 'provider_not_configured');
@@ -133,18 +133,15 @@ test('same durable event retry is acknowledged without a second domain effect', 
   const calls = [];
   const body = raw();
   let requestCount = 0;
-  const storage = async (url, init = {}) => {
+  const storage = async (url) => {
     requestCount += 1;
     calls.push(String(url));
     if (requestCount === 1) return new Response('', { status: 409 });
     if (String(url).includes('select=payload_digest')) {
-      const digest = createHmac('sha256', '').digest('hex');
-      void digest;
-      const { createHash } = await import('node:crypto');
-      return new Response(JSON.stringify([{ payload_digest: createHash('sha256').update(body).digest('hex') }]), {
-        status: 200,
-        headers: { 'content-type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify([{ payload_digest: createHash('sha256').update(body).digest('hex') }]),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      );
     }
     if (String(url).endsWith('/rpc/claim_provider_webhook'))
       return new Response(JSON.stringify({ processing_state: 'processed' }), {
