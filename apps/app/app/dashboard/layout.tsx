@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { AppShell, MobileNavigation, Sidebar } from '@neptlium/ui';
+import { AppShell, Sidebar } from '@neptlium/ui';
 import {
   dashboardMobilePrimaryNavItems,
-  dashboardMobileSecondaryNavItems,
   dashboardNavItems,
   dashboardSecondaryNavItems,
 } from '@/components/navigation/dashboardNav';
+import { ProductMobileNavigation } from '@/components/navigation/ProductMobileNavigation';
 import { ProfileMenu } from '@/components/navigation/ProfileMenu';
 import { WorkspaceTitle } from '@/components/navigation/WorkspaceTitle';
 import { ProductBootstrapProvider } from '@/components/product/ProductBootstrapProvider';
@@ -21,7 +21,6 @@ export default async function DashboardLayout({ children }: { readonly children:
   const navItems = filterNavByRole(dashboardNavItems, role);
   const secondaryItems = filterNavByRole(dashboardSecondaryNavItems, role);
   const mobilePrimaryItems = filterNavByRole(dashboardMobilePrimaryNavItems, role);
-  const mobileSecondaryItems = filterNavByRole(dashboardMobileSecondaryNavItems, role);
   const displayName = profile.fullName ?? profile.displayName ?? profile.email ?? user.email ?? 'Account';
   const profileMenu = <ProfileMenu name={displayName} email={profile.email ?? user.email ?? ''} verified={profile.complianceStatus === 'active'} />;
   const bootstrap = await getAuthenticatedProductBootstrap({
@@ -42,7 +41,7 @@ export default async function DashboardLayout({ children }: { readonly children:
       sidebarFooter={<Sidebar items={secondaryItems} />}
       header={<WorkspaceTitle />}
       utility={profileMenu}
-      mobileNav={<MobileNavigation primaryItems={mobilePrimaryItems} secondaryItems={mobileSecondaryItems} profile={profileMenu} />}
+      mobileNav={<ProductMobileNavigation items={mobilePrimaryItems} profile={profileMenu} />}
     >
       <div id="app-workspace" tabIndex={-1}>{children}</div>
     </AppShell>
