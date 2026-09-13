@@ -1,0 +1,82 @@
+name: One-time Supabase Auth Cutover Patch
+
+on:
+  push:
+    branches:
+      - product/authenticated-operating-environment
+    paths:
+      - .github/workflows/auth-migration-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: product/authenticated-operating-environment
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Remove retired identity-provider routes from API
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('apps/api/src/app.ts')
+          text = path.read_text()
+
+          text = text.replace(
+              "import { createPrincipalAuthenticator } from './authentication.js';\n"
+              "import { verifyClerkIdentity, verifyClerkSubject, type VerifiedClerkIdentity } from './authentication.js';\n"
+              "import {\n"
+              "  SupabaseIdentityCommandRepository,\n"
+              "  SupabaseIdentityPrincipalResolver,\n"
+              "} from './identity-principal.js';\n"
+              "import { verifyWebhook as verifyClerkWebhook } from '@clerk/backend/webhooks';\n"
+              "import type { WebhookEvent as ClerkWebhookEvent } from '@clerk/backend';\n",
+              "import { createPrincipalAuthenticator } from './authentication.js';\n"
+              "import { SupabaseIdentityPrincipalResolver } from './identity-principal.js';\n",
+          )
+
+          text = re.sub(
+              r"  identityCommands\?: Pick<\n.*?  verifyClerkIdentity\?: \(token: string, config: Config\) => Promise<VerifiedClerkIdentity \| null>;\n",
+              "",
+              text,
+              flags=re.S,
+          )
+
+          text = re.sub(
+              r"  const identityCommands =\n.*?  const authenticate =",
+              "  const authenticate =",
+              text,
+              flags=re.S,
+          )
+
+          text = re.sub(
+              r"\n    if \(method === 'POST' && path === '/v1/auth/link-clerk'\) \{.*?\n    const financialResult =",
+              "\n    const financialResult =",
+              text,
+              flags=re.S,
+          )
+
+          forbidden = ['@clerk', 'Clerk', 'clerk']
+          if any(value in text for value in forbidden):
+              raise SystemExit('apps/api/src/app.ts still contains retired provider references')
+          path.write_text(text)
+          PY
+      - name: Regenerate lockfile
+        run: pnpm install --lockfile-only --ignore-scripts
+      - name: Commit generated cutover
+        run: |
+          git config user.name "neptlium-release-bot"
+          git config user.email "release-bot@users.noreply.github.com"
+          git add apps/api/src/app.ts pnpm-lock.yaml
+          git commit -m "refactor(auth): retire legacy API identity routes"
+          git push origin HEAD:product/authenticated-operating-environment
