@@ -11,23 +11,22 @@ The browser is an interaction and projection surface. It is never an independent
 
 ## Identity boundary
 
-Clerk is the sole customer authentication, browser-session, recovery, and MFA authority.
+Supabase Auth is the sole active customer authentication and browser-session authority.
 
-- Root/auth surfaces use Clerk components.
-- Clerk middleware protects authenticated routes.
-- Server components and actions use Clerk server session APIs.
-- The API client sends the current Clerk bearer token to `api.neptlium.com`.
-- No Supabase Auth client, cookie refresh, password endpoint, legacy session proof, or paired-session identity bridge is part of the application.
+- Root/auth surfaces use Neptlium-owned Supabase Auth forms and session helpers.
+- Session refresh protects authenticated routes.
+- Server components and actions use Supabase server-session APIs.
+- The API client sends the current Supabase access token to `api.neptlium.com`.
+- Service-role credentials never enter the browser.
+- No retired-provider session bridge is part of the active application.
 
-First authenticated completion calls the Clerk-backed API bootstrap. Existing principal continuity is resolved from server-verified Clerk identity and the forward Clerk-only identity migration; new users continue to onboarding.
+First authenticated entry resolves the verified Supabase Auth subject to the stable Neptlium principal. Existing principal continuity is preserved by forward migration; new users continue through governed provisioning/onboarding.
 
 ## API and authorization boundary
 
 `apps/api` owns privileged financial authority: token verification, principal resolution, ownership, roles, idempotency, provider isolation, canonical ledger operations, policy, audit, and reconciliation.
 
-Clerk authenticates. It does not become the canonical financial owner, role database, compliance authority, or ledger authority. Those remain Neptlium domain concerns attached to the stable principal.
-
-Supabase may remain behind the API as server-side persistence infrastructure only. It is not a customer authentication authority.
+Supabase Auth authenticates. It does not become the canonical financial owner, role database, compliance authority, or ledger authority. Those remain Neptlium domain concerns attached to the stable principal.
 
 ## Product-state contract
 
@@ -45,7 +44,7 @@ If evidence is unavailable, the UI renders a truthful unavailable/unknown state 
 
 ## Authenticated product system
 
-The authenticated product is deliberately dark and restrained: near-black canvas, low-contrast carbon surfaces, hairline structure, high-contrast typography, tabular financial numerals, and Neptlium Mineral Teal as a limited action/authority accent. It does not use decorative financial curves, neon crypto styling, pervasive glass, or marketing-scale typography.
+The authenticated product is deliberately restrained and information-first. Product UI does not use decorative financial curves, neon crypto styling, or marketing-scale typography to imply financial truth.
 
 The dashboard layout owns one shared authenticated bootstrap projection. Overview, Capital, Treasury, Portfolio, Allocation, Activity, Documents, Notifications, and Settings consume that shared snapshot so navigation is immediate and one unavailable projection does not blank unrelated account state. The snapshot refreshes in the background while the customer remains active.
 
@@ -104,7 +103,7 @@ Represents authenticated investment entities and customer exposure only when aut
 
 ### Records and Settings
 
-Activity, Documents, Notifications, and Settings preserve API authority while sharing the authenticated bootstrap. Mutation actions such as downloads, notification acknowledgement, and authentication controls retain their existing governed server/action boundaries.
+Activity, Documents, Notifications, and Settings preserve API authority while sharing the authenticated bootstrap. Mutation actions such as downloads, notification acknowledgement, and authentication controls retain their governed server/action boundaries.
 
 ## Deposit architecture
 
