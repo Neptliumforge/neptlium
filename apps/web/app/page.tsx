@@ -99,7 +99,7 @@ export default function HomePage() {
       </div>
     </section>
 
-    <section className={`${styles.crossroads} ${styles.ivory}`} data-npt-surface="ivory" aria-labelledby="crossroads-title">
+    <section className={`${styles.crossroads} ${styles.light}`} data-npt-surface="white" aria-labelledby="crossroads-title">
       <div className={`${styles.shell} ${styles.crossroadsIntro}`}><h2 id="crossroads-title" className={styles.sectionTitle}>Built for the way capital actually lives.</h2></div>
       <div className={styles.paths}>
         <Link className={`${styles.path} ${styles.pathPersonal}`} href="/personal">
