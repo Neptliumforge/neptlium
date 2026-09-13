@@ -55,6 +55,8 @@ test.describe("Neptlium premium marketing release", () => {
     await expect(dialog.getByRole("link", { name: "Sign in", exact: true })).toHaveAttribute("href", signInUrl);
     await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
     await expectNoHorizontalOverflow(page);
+    const menuShot = await page.screenshot({ fullPage: true });
+    await testInfo.attach("mobile-navigation", { body: menuShot, contentType: "image/png" });
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();
@@ -76,6 +78,21 @@ test.describe("Neptlium premium marketing release", () => {
     const finalConversion = page.locator("section[aria-labelledby='global-conversion-title']");
     await expect(finalConversion.getByRole("link", { name: /Open account/i })).toHaveAttribute("href", signUpUrl);
     await expect(finalConversion.getByRole("link", { name: "Explore the platform", exact: true })).toHaveAttribute("href", "/platform");
+  });
+
+  test("homepage visual evidence is captured at the release viewport", async ({ page }, testInfo) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    await expectNoHorizontalOverflow(page);
+    const screenshot = await page.screenshot({ fullPage: true, animations: "disabled" });
+    await testInfo.attach(`homepage-${testInfo.project.name}`, { body: screenshot, contentType: "image/png" });
+  });
+
+  test("reduced-motion rendering remains functional", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/", { waitUntil: "networkidle" });
+    expect(await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expectNoHorizontalOverflow(page);
   });
 
   test("/about redirects to /company", async ({ page }) => { const response = await page.goto("/about", { waitUntil: "networkidle" }); expect(response).not.toBeNull(); expect(response!.status()).toBeLessThan(400); await expect(page).toHaveURL(/\/company\/?$/); });
