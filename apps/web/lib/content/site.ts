@@ -17,6 +17,8 @@ export const SITE = {
   statusUrl: 'https://status.neptlium.com',
   signInUrl: 'https://app.neptlium.com/auth/sign-in',
   signUpUrl: 'https://app.neptlium.com/auth/sign-up',
+  accessUrl: 'https://app.neptlium.com/auth/sign-up',
+  publicAccessUrl: 'https://app.neptlium.com/auth/sign-up',
   businessAccessUrl: '/contact',
   publicAccessLabel: 'Get started',
   exploreUrl: '/platform',
