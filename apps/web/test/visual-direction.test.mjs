@@ -14,7 +14,7 @@ const architecture=read('lib/content/public-architecture.ts');
 
 test('homepage is product-first, black-first and financially truthful',()=>{
   assert.equal((page.match(/<h1/g)??[]).length,1);
-  for(const copy of ['Capital, intelligently managed.','Know where your capital stands.','Move capital with clarity.','See the whole portfolio. Not fragments.','Decisions before execution. Evidence after it.','Financial state should be explainable.']) assert.match(page,new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g,'\\$&'),'i'));
+  for(const copy of ['Capital, intelligently managed.','Know where your capital stands.','Move capital with clarity.','See the whole portfolio. Not fragments.','Decisions before execution. Evidence after it.','Financial state should be explainable.']) assert.ok(page.includes(copy),`missing homepage copy: ${copy}`);
   for(const visual of ['HeroCapitalVisual','SystemRevealVisual','CapitalStateVisual','TreasuryFlowVisual','PortfolioIntelligenceVisual','AllocationLifecycleVisual','GovernanceVisual','ActivityDocumentsVisual']) assert.match(page,new RegExp(visual));
   assert.doesNotMatch(page,/\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i);
 });
