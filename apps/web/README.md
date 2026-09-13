@@ -1,98 +1,62 @@
 # @neptlium/web
 
-Public institutional marketing and information website for `neptlium.com`.
+Public marketing and information website for `neptlium.com`.
 
-`apps/web` establishes Neptlium's public category, investor narrative, product meaning, editorial authority, discoverability, trust architecture, and path into the authenticated operating application. It owns no authenticated customer session, privileged financial operation, investment execution authority, or canonical financial state.
+`apps/web` represents one Neptlium company with two product journeys: **Personal / Neptlium Capital** and **Business / VaultRail**. It owns public positioning, product storytelling, editorial authority, SEO, trust architecture and acquisition. It owns no authenticated customer session, privileged financial operation, canonical financial state, custody, execution or settlement authority.
 
-## Public architecture
+## Marketing authority
 
-The canonical top-level domains are:
+The authoritative marketing specification is [`docs/marketing-design-system.md`](../../docs/marketing-design-system.md). It supersedes prior PR #68 and Personal-first Stage 01 marketing assumptions.
 
+Canonical top-level navigation:
+
+- Personal → `/personal`
+- Business → `/business`
 - Platform → `/platform`
-- Investments → `/investments`
 - Insights → `/insights`
 - Security → `/security`
-- Company → `/about`
+- Company → `/company`
 
-Products and Solutions remain important second-level platform architecture:
+Canonical product-story routes include `/investments`, `/capital`, `/portfolio`, `/allocation` and `/treasury`.
 
-- Products → `/products`
-- Solutions → `/solutions`
-- Capital Account → `/products/capital-account`
-- Treasury → `/products/treasury`
-- Allocation → `/products/allocation`
-- Portfolio Intelligence → `/products/portfolio-intelligence`
+## Product destinations
 
-Route taxonomy, navigation data, sitemap authority, and route classification live in `lib/content/public-architecture.ts`.
+- Personal / Neptlium Capital → `https://app.neptlium.com`
+- Business / VaultRail → `https://vault.neptlium.com`
+- Payments → `https://pay.neptlium.com`
+- API → `https://api.neptlium.com`
+- Docs → `https://docs.neptlium.com`
+- Admin → `https://admin.neptlium.com`
+- Status → `https://status.neptlium.com`
 
-## Positioning and conversion
+Do not send business users through the investor login. Do not represent VaultRail as the entire Neptlium company.
 
-Canonical positioning:
+## Financial truth
 
-> **Capital, made clearer.**
+Marketing must not fabricate customers, balances, AUM, returns, performance, transaction history, payment history, opportunity inventory, execution, settlement, custody, provider relationships, licences, regulatory status or partnerships.
 
-The public site explains Neptlium as a modern capital platform for portfolio visibility, capital management, funding workflows, reporting, and governed financial activity.
-
-Primary acquisition action:
-
-- `Get Started` → authenticated application account creation
-
-Authenticated return action:
-
-- `Sign In` → authenticated application sign-in
-
-Primary homepage exploration:
-
-- `Explore the Platform` → `/platform`
-- `View Investment Solutions` → `/investments`
-
-Marketing may communicate the product model and investor value strongly, but it must not fabricate customers, balances, AUM, performance, returns, transaction history, investment opportunities, execution, settlement, custody, provider relationships, licences, regulatory status, or live capability.
-
-## Investment and funding truth
-
-Public investment content is organized around objective, strategy, structure, underlying exposure, risk, duration, liquidity, fees, documentation, eligibility, and investor suitability. Historical, target, projected, and illustrative information must remain distinguishable whenever those categories appear.
-
-Funding communication must match actual capability. Digital-asset funding may be described as capability-controlled and account-specific. USD funding must not be represented as live until a supported production funding rail is implemented and verified.
+`UNKNOWN != ZERO`. Configured is not live. Provider evidence is not canonical state. Modeled is not executed. Submitted is not settled. Settled is not reconciled.
 
 ## Visual system
 
-Neptlium Web is more editorial and cinematic than the authenticated product while remaining visibly related to it.
+Marketing is black-first, cinematic, product-first, editorial and financially credible. Personal and Business share one design system. Current implementation authority:
 
-Current visual direction:
+- `app/marketing-system.css`
+- `app/unified-shell.css`
+- `app/unified-marketing.module.css`
+- `components/unified-product-visuals.tsx`
+- `components/site-header.tsx`
+- `components/mobile-navigation.tsx`
+- `components/site-footer.tsx`
+- `components/global-conversion-cta.tsx`
 
-- Warm Ivory / Carbon / Mineral Teal
-- medium-scale editorial typography
-- strong information hierarchy and deliberate negative space
-- restrained product visualizations based on real product architecture
-- no fabricated balances, charts, returns, holdings, or transaction screenshots
-- accessible desktop disclosures and independently designed mobile navigation
-- restrained motion with reduced-motion support
-- route-scoped composition modules for newly rebuilt marketing surfaces, while `app/neptlium-visual-direction.css` remains the global visual authority
-
-See [`docs/04_WEB_MARKETING_SYSTEM.md`](../../docs/04_WEB_MARKETING_SYSTEM.md).
-
-## Environment
-
-No environment variable is required for ordinary public rendering. Browser-safe values must use `NEXT_PUBLIC_*`; privileged credentials never belong in this app.
-
-## Commands
+## Validation
 
 ```sh
-pnpm --filter @neptlium/web dev
 pnpm --filter @neptlium/web typecheck
 pnpm --filter @neptlium/web lint
 pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-On Termux/Android:
-
-```sh
-pnpm --filter @neptlium/web exec next build --webpack
-```
-
-Architecture: [`docs/00_PRODUCT_CONSTITUTION.md`](../../docs/00_PRODUCT_CONSTITUTION.md)
-
-Design: [`docs/03_DESIGN_SYSTEM.md`](../../docs/03_DESIGN_SYSTEM.md)
-
-Web system: [`docs/04_WEB_MARKETING_SYSTEM.md`](../../docs/04_WEB_MARKETING_SYSTEM.md)
+Use GitHub-hosted Ubuntu for Playwright. Validate at 1440, 1280, 768, 390 and 360 CSS pixels.

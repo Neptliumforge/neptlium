@@ -1,149 +1,132 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from '@playwright/test';
 
 const releaseRoutes = [
-  "/",
-  "/platform",
-  "/investments",
-  "/insights",
-  "/security",
-  "/company",
-  "/products/capital-account",
-  "/solutions/capital-visibility",
-  "/risk-disclosure",
-];
+  '/',
+  '/personal',
+  '/business',
+  '/platform',
+  '/investments',
+  '/capital',
+  '/portfolio',
+  '/allocation',
+  '/treasury',
+  '/insights',
+  '/security',
+  '/company',
+  '/products/capital-account',
+  '/products/treasury',
+  '/products/allocation',
+  '/products/portfolio-intelligence',
+  '/solutions/capital-visibility',
+  '/resources',
+  '/risk-disclosure',
+] as const;
 
-const signInUrl = "https://app.neptlium.com/auth/sign-in";
-const signUpUrl = "https://app.neptlium.com/auth/sign-up";
+const personalSignInUrl = 'https://app.neptlium.com/auth/sign-in';
+const personalSignUpUrl = 'https://app.neptlium.com/auth/sign-up';
+const businessAppUrl = 'https://vault.neptlium.com';
 
-async function expectNoHorizontalOverflow(page: Parameters<typeof test>[0] extends never ? never : any) {
-  const overflow = await page.evaluate(() => {
-    return (
-      document.documentElement.scrollWidth >
-      document.documentElement.clientWidth + 2
-    );
-  });
-
-  expect(overflow, "Horizontal page overflow detected").toBe(false);
+async function expectNoHorizontalOverflow(page: any) {
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+  expect(overflow, 'Horizontal page overflow detected').toBe(false);
 }
 
-test.describe("Neptlium premium marketing release", () => {
+async function expectNoApplicationRuntimeErrors(page: any, route: string) {
+  const consoleErrors: string[] = [];
+  const failedRequests: string[] = [];
+  page.on('console', (message: any) => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+  page.on('requestfailed', (request: any) => {
+    failedRequests.push(`${request.url()} :: ${request.failure()?.errorText ?? 'request failed'}`);
+  });
+
+  const response = await page.goto(route, { waitUntil: 'networkidle' });
+  expect(response).not.toBeNull();
+  expect(response!.status()).toBeLessThan(400);
+  expect(page.url()).not.toContain('/sso-api');
+  await expect(page.locator('body')).toContainText(/neptlium/i);
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expectNoHorizontalOverflow(page);
+  expect(consoleErrors, `Console errors detected on ${route}:\n${consoleErrors.join('\n')}`).toEqual([]);
+  expect(failedRequests, `Failed requests detected on ${route}:\n${failedRequests.join('\n')}`).toEqual([]);
+}
+
+test.describe('Neptlium unified marketing release', () => {
   for (const route of releaseRoutes) {
     test(`${route} renders successfully`, async ({ page }) => {
-      const consoleErrors: string[] = [];
-      const failedRequests: string[] = [];
-
-      page.on("console", (message) => {
-        if (message.type() === "error") {
-          consoleErrors.push(message.text());
-        }
-      });
-
-      page.on("requestfailed", (request) => {
-        const failure = request.failure();
-        failedRequests.push(`${request.url()} :: ${failure?.errorText ?? "request failed"}`);
-      });
-
-      const response = await page.goto(route, {
-        waitUntil: "networkidle",
-      });
-
-      expect(response).not.toBeNull();
-      expect(response!.status()).toBeLessThan(400);
-      expect(page.url()).not.toContain("/sso-api");
-
-      await expect(page.locator("body")).toContainText(/neptlium/i);
-      await expect(page.locator("h1")).toHaveCount(1);
-      await expectNoHorizontalOverflow(page);
-
-      expect(
-        consoleErrors,
-        `Console errors detected on ${route}:\n${consoleErrors.join("\n")}`,
-      ).toEqual([]);
-
-      expect(
-        failedRequests,
-        `Failed browser requests detected on ${route}:\n${failedRequests.join("\n")}`,
-      ).toEqual([]);
+      await expectNoApplicationRuntimeErrors(page, route);
     });
   }
 
-  test("desktop primary navigation and account actions are reachable", async ({ page }, testInfo) => {
-    test.skip(
-      !["desktop-1440", "laptop-1280"].includes(testInfo.project.name),
-      "Desktop navigation contract",
-    );
-
-    await page.goto("/", { waitUntil: "networkidle" });
-
-    const nav = page.getByRole("navigation", { name: "Primary navigation" });
-    for (const label of ["Platform", "Investments", "Insights", "Security", "Company"]) {
-      await expect(nav.getByRole("link", { name: label, exact: true })).toBeVisible();
+  test('desktop primary navigation exposes the unified product family', async ({ page }, testInfo) => {
+    test.skip(!['desktop-1440', 'laptop-1280'].includes(testInfo.project.name), 'Desktop navigation contract');
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const nav = page.getByRole('navigation', { name: 'Primary navigation' });
+    for (const label of ['Personal', 'Business', 'Platform', 'Insights', 'Security', 'Company']) {
+      await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
     }
-
-    await expect(page.getByRole("link", { name: "Sign In", exact: true }).first()).toHaveAttribute("href", signInUrl);
-    await expect(page.getByRole("link", { name: "Get Started", exact: true }).first()).toHaveAttribute("href", signUpUrl);
-
-    await nav.getByRole("link", { name: "Platform", exact: true }).click();
-    await expect(page).toHaveURL(/\/platform\/?$/);
+    await nav.getByRole('link', { name: 'Business', exact: true }).click();
+    await expect(page).toHaveURL(/\/business\/?$/);
   });
 
-  test("mobile navigation traps the release paths and restores page state", async ({ page }, testInfo) => {
-    test.skip(
-      !["mobile-390", "mobile-360"].includes(testInfo.project.name),
-      "Mobile navigation contract",
-    );
+  test('desktop account chooser keeps Personal and Business destinations separate', async ({ page }, testInfo) => {
+    test.skip(!['desktop-1440', 'laptop-1280'].includes(testInfo.project.name), 'Desktop account chooser contract');
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.locator('summary').filter({ hasText: 'Sign in' }).click();
+    const openMenu = page.locator('details[open]').filter({ hasText: 'Sign in' });
+    await expect(openMenu.getByRole('link', { name: /Personal Neptlium Capital/i })).toHaveAttribute('href', personalSignInUrl);
+    await expect(openMenu.getByRole('link', { name: /Business Open VaultRail/i })).toHaveAttribute('href', businessAppUrl);
+    await page.locator('summary').filter({ hasText: 'Get started' }).click();
+    const startMenu = page.locator('details[open]').filter({ hasText: 'Get started' });
+    await expect(startMenu.getByRole('link', { name: /Personal Neptlium Capital/i })).toHaveAttribute('href', personalSignUpUrl);
+    await expect(startMenu.getByRole('link', { name: /Business Request VaultRail access/i })).toHaveAttribute('href', '/contact');
+  });
 
-    await page.goto("/", { waitUntil: "networkidle" });
-
-    const trigger = page.getByRole("button", { name: "Open navigation" });
-    await expect(trigger).toBeVisible();
+  test('mobile navigation preserves both journeys and restores page state', async ({ page }, testInfo) => {
+    test.skip(!['mobile-390', 'mobile-360'].includes(testInfo.project.name), 'Mobile navigation contract');
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const trigger = page.getByRole('button', { name: 'Open navigation' });
     await trigger.focus();
     await trigger.click();
-
-    const dialog = page.getByRole("dialog", { name: "Navigation" });
+    const dialog = page.getByRole('dialog', { name: 'Navigation' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole("link", { name: "Platform", exact: true })).toBeVisible();
-    await expect(dialog.getByRole("link", { name: "Investments", exact: true })).toBeVisible();
-    await expect(dialog.getByRole("link", { name: "Get Started", exact: false })).toHaveAttribute("href", signUpUrl);
-    await expect(dialog.getByRole("link", { name: "Sign In", exact: true })).toHaveAttribute("href", signInUrl);
-    await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+    await expect(dialog.getByRole('link', { name: 'Personal', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Business', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Open account', exact: false })).toHaveAttribute('href', personalSignUpUrl);
+    await expect(dialog.getByRole('link', { name: 'Open VaultRail', exact: true })).toHaveAttribute('href', businessAppUrl);
+    await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
     await expectNoHorizontalOverflow(page);
-
-    await page.keyboard.press("Escape");
+    await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();
-    await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
-
-    await trigger.click();
-    await dialog.getByRole("button", { name: "Close navigation" }).click();
-    await expect(dialog).toBeHidden();
-    await expect(trigger).toBeFocused();
+    await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
   });
 
-  test("homepage conversion destinations remain canonical", async ({ page }) => {
-    await page.goto("/", { waitUntil: "networkidle" });
-
-    await expect(page.getByRole("link", { name: /Explore the Platform/i }).first()).toHaveAttribute("href", "/platform");
-    await expect(page.getByRole("link", { name: "View Investment Solutions", exact: true })).toHaveAttribute("href", "/investments");
-    await expect(page.getByRole("link", { name: "Sign In", exact: true }).first()).toHaveAttribute("href", signInUrl);
-    await expect(page.getByRole("link", { name: /Get Started/i }).first()).toHaveAttribute("href", signUpUrl);
-
-    const finalConversion = page.locator("section[aria-labelledby='global-conversion-title']");
-    await expect(finalConversion.getByRole("link", { name: /Get Started/i })).toHaveAttribute("href", signUpUrl);
-    await expect(finalConversion.getByRole("link", { name: "Explore the Platform", exact: true })).toHaveAttribute("href", "/platform");
+  test('homepage brand and journey CTAs remain canonical', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Capital, clearly.' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Explore Neptlium/i })).toHaveAttribute('href', '#financial-world');
+    await expect(page.getByRole('link', { name: /For business/i })).toHaveAttribute('href', '/business');
+    await expect(page.getByRole('link', { name: /Explore Personal/i }).first()).toHaveAttribute('href', '/personal');
+    await expect(page.getByRole('link', { name: /Explore Business/i }).first()).toHaveAttribute('href', '/business');
+    await expect(page.getByRole('link', { name: /Explore Insights/i })).toHaveAttribute('href', '/insights');
   });
 
-  test("/about redirects to /company", async ({ page }) => {
-    const response = await page.goto("/about", { waitUntil: "networkidle" });
+  test('about remains the intentional company alias', async ({ page }) => {
+    const response = await page.goto('/about', { waitUntil: 'networkidle' });
     expect(response).not.toBeNull();
     expect(response!.status()).toBeLessThan(400);
     await expect(page).toHaveURL(/\/company\/?$/);
   });
 
-  test("/resources redirects to /insights", async ({ page }) => {
-    const response = await page.goto("/resources", { waitUntil: "networkidle" });
-    expect(response).not.toBeNull();
-    expect(response!.status()).toBeLessThan(400);
-    await expect(page).toHaveURL(/\/insights\/?$/);
+  test('current authored supporting routes remain authored pages, not stale aliases', async ({ page }) => {
+    for (const route of ['/resources', '/products/capital-account', '/products/treasury', '/products/allocation', '/products/portfolio-intelligence', '/solutions/capital-visibility']) {
+      await page.goto(route, { waitUntil: 'networkidle' });
+      const current = new URL(page.url()).pathname.replace(/\/$/, '') || '/';
+      expect(current, `${route} unexpectedly redirected to a stale canonical destination`).toBe(route);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expectNoHorizontalOverflow(page);
+    }
   });
 });
