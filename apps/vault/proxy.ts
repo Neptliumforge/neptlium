@@ -1,10 +1,33 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse, type NextRequest } from 'next/server';
+import { refreshSupabaseSession } from '@neptlium/lib/supabase/proxy';
 
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
+function withRefreshedCookies(target: NextResponse, refreshed: NextResponse) {
+  for (const cookie of refreshed.cookies.getAll()) target.cookies.set(cookie);
+  return target;
+}
 
-export default clerkMiddleware(async (auth, request) => {
-  if (isProtectedRoute(request)) await auth.protect();
-});
+export default async function proxy(request: NextRequest) {
+  const { response, user } = await refreshSupabaseSession(request);
+  const { pathname, search } = request.nextUrl;
+  const protectedRoute = pathname === '/dashboard' || pathname.startsWith('/dashboard/');
+
+  if (!user && protectedRoute) {
+    const signIn = request.nextUrl.clone();
+    signIn.pathname = '/auth/sign-in';
+    signIn.search = '';
+    signIn.searchParams.set('next', `${pathname}${search}`);
+    return withRefreshedCookies(NextResponse.redirect(signIn), response);
+  }
+
+  if (user && (pathname === '/' || pathname === '/auth/sign-in')) {
+    const dashboard = request.nextUrl.clone();
+    dashboard.pathname = '/dashboard';
+    dashboard.search = '';
+    return withRefreshedCookies(NextResponse.redirect(dashboard), response);
+  }
+
+  return response;
+}
 
 export const config = {
   matcher: [
