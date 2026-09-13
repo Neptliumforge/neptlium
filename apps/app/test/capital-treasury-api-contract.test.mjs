@@ -35,13 +35,18 @@ test('Capital Account server actions consume financial-domain commands rather th
   assert.doesNotMatch(actions, /circle|alchemy|stripe|supabase/i);
 });
 
-test('Treasury distinguishes execution closed from capability retrieval failure', () => {
-  const page = read('app/dashboard/treasury/page.tsx');
-  const view = read('app/dashboard/treasury/TreasuryView.tsx');
+test('Treasury distinguishes authoritative empty capability state from retrieval failure', () => {
+  const bootstrap = read('lib/product/bootstrap.ts');
+  const experience = read('components/product/OperatingExperience.tsx');
 
-  assert.match(page, /transferCapabilityError=\{transferCapabilities\.status === 'rejected'\}/);
-  assert.match(view, /readonly transferCapabilityError: boolean/);
-  assert.match(view, /transferCapabilityError \? 'Not loaded'/);
+  assert.match(bootstrap, /funding_capability_unavailable/);
+  assert.match(bootstrap, /transfer_capability_unavailable/);
+  assert.match(experience, /snapshot\.fundingCapabilities\.state !== 'READY'/);
+  assert.match(experience, /Funding capability unavailable/);
+  assert.match(experience, /snapshot\.transferCapabilities\.state !== 'READY'/);
+  assert.match(experience, /Transfer capability unavailable/);
+  assert.match(experience, /authoritative capability response contains no funding routes/i);
+  assert.doesNotMatch(experience, /fundingCapabilities\.state !== 'READY' \? \[\]/);
 });
 
 test('withdrawal submission remains inert until governed reservation authority exists', () => {
