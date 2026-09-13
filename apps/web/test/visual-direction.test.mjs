@@ -11,6 +11,7 @@ const insights = read('app/insights/page.tsx');
 const security = read('app/security/page.tsx');
 const company = read('app/company/page.tsx');
 const system = read('app/unified-marketing.module.css');
+const productVisuals = read('app/elite-product-visuals.css');
 const surfaces = read('app/marketing-surfaces.css');
 const shell = read('app/unified-shell.css');
 const calibration = read('app/elite-route-calibration.css');
@@ -25,24 +26,15 @@ const surfacesFor = (source) => [...source.matchAll(/data-npt-surface="([^"]+)"/
 
 test('homepage establishes one company with two product journeys', () => {
   assert.equal((home.match(/<h1/g) ?? []).length, 1);
-  for (const copy of ['One system for modern capital', 'Explore Personal', 'Explore Business', 'One financial system underneath', 'Built for investors', 'Built for teams responsible for real money']) {
-    assert.match(home, new RegExp(copy, 'i'));
-  }
+  for (const copy of ['One system for modern capital', 'Explore Personal', 'Explore Business', 'One financial system underneath', 'Built for investors', 'Built for teams responsible for real money']) assert.match(home, new RegExp(copy, 'i'));
   assert.doesNotMatch(home, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i);
 });
 
 test('authoritative semantic surfaces exist and major routes do not collapse into one canvas', () => {
-  for (const surface of ['carbon', 'white', 'ivory', 'cloud', 'mineral', 'mineral-light']) {
-    assert.match(surfaces, new RegExp(`data-npt-surface=['"]${surface}['"]`, 'i'));
-  }
-
+  for (const surface of ['carbon', 'white', 'ivory', 'cloud', 'mineral', 'mineral-light']) assert.match(surfaces, new RegExp(`data-npt-surface=['"]${surface}['"]`, 'i'));
   const homeSurfaces = surfacesFor(home);
-  assert.ok(homeSurfaces.includes('carbon'));
-  assert.ok(homeSurfaces.includes('white'));
-  assert.ok(homeSurfaces.includes('cloud'));
-  assert.ok(homeSurfaces.includes('mineral'));
+  for (const expected of ['carbon', 'white', 'cloud', 'mineral']) assert.ok(homeSurfaces.includes(expected));
   assert.ok(new Set(homeSurfaces).size >= 4, 'homepage must remain a true multi-surface composition');
-
   for (const [name, source, required] of [
     ['personal', personal, ['ivory', 'white', 'cloud', 'mineral', 'carbon']],
     ['business', business, ['mineral', 'white', 'carbon', 'cloud', 'mineral-light']],
@@ -103,7 +95,10 @@ test('shared elite layout is responsive, reduced-motion aware, and product visua
   assert.match(system, /@media\s*\(max-width:\s*1100px\)/);
   assert.match(system, /@media\s*\(max-width:\s*760px\)/);
   assert.match(system, /@media\s*\(max-width:\s*390px\)/);
-  assert.match(system, /:global\(\.uv-frame\)/);
+  assert.match(layout, /elite-product-visuals\.css/);
+  assert.match(productVisuals, /\.uv-frame/);
+  assert.match(productVisuals, /\.uv-core/);
+  assert.match(productVisuals, /@media\(max-width:760px\)/);
   assert.match(read('app/marketing-system.css'), /prefers-reduced-motion:reduce/);
   assert.match(calibration, /prefers-reduced-motion:\s*reduce/);
   assert.match(shell, /account-menu-panel/);
