@@ -8,6 +8,7 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 const ordinaryCustomerSurfaces = [
   'app/(auth)/components/AuthShell.tsx',
+  'app/(auth)/components/SupabaseAuthForm.tsx',
   'app/auth/sign-in/page.tsx',
   'app/auth/sign-up/page.tsx',
   'app/onboarding/OnboardingWizard.tsx',
@@ -36,12 +37,14 @@ const forbiddenOrdinaryCopy = [
 
 test('sign up is personal-first and carries the canonical Neptlium identity', () => {
   const signUp = read('app/auth/sign-up/page.tsx');
+  const authForm = read('app/(auth)/components/SupabaseAuthForm.tsx');
   const authShell = read('app/(auth)/components/AuthShell.tsx');
-  assert.match(signUp, /Create your Neptlium account/);
-  assert.match(signUp, /Organization details are not required to get started/);
-  assert.match(signUp, /fallbackRedirectUrl="\/auth\/complete"/);
-  assert.doesNotMatch(signUp, /organization name|company website|company role|upload.*logo/i);
-  assert.doesNotMatch(signUp, /capital operating environment|Create access/);
+
+  assert.match(signUp, /<SupabaseAuthForm mode="sign-up"/);
+  assert.match(authForm, /Create your Neptlium account with email and password/);
+  assert.match(authForm, /supabase\.auth\.signUp/);
+  assert.doesNotMatch(signUp + authForm, /organization name|company website|company role|upload.*logo/i);
+  assert.doesNotMatch(signUp + authForm, /capital operating environment|Create access/);
   assert.match(authShell, /tone="teal"/);
   assert.doesNotMatch(authShell, /Operating environment|Secure operating access|governed environment/);
 });
