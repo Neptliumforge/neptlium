@@ -6,7 +6,7 @@ export default async function PublicPaymentIntent({ params }: { readonly params:
     <div className="pay-brand">NEPTLIUM</div>
     <p className="pay-kicker">Secure payment</p>
     <h1 className="pay-title">Payment intent</h1>
-    <p className="pay-copy">This public surface presents only server-authoritative payment intent state. A public token identifies the presentation context; it does not itself authorize settlement or mark an invoice paid.</p>
+    <p className="pay-copy">This public surface presents only server-authoritative payment intent state. A public token identifies the presentation context; it does not itself authorize settlement or change receipt state.</p>
     <div className="pay-grid">
       <div className="pay-field"><span>Invoice</span><strong>—</strong></div>
       <div className="pay-field"><span>Amount due</span><strong>—</strong></div>
