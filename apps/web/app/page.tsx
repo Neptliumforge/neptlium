@@ -1,220 +1,166 @@
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, FileText, LockKeyhole, RefreshCcw, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import {
-  CapitalAccountVisual,
-  CapitalSystemVisual,
-  OperatingEnvironmentVisual,
-  PortfolioVisual,
-  SecurityFlowVisual,
-} from '@/components/product-visuals';
-import { DISCLOSURES } from '@/lib/content/site';
+  ActivityDocumentsVisual,
+  AllocationLifecycleVisual,
+  CapitalStateVisual,
+  GovernanceVisual,
+  HeroCapitalVisual,
+  PortfolioIntelligenceVisual,
+  SystemRevealVisual,
+  TreasuryFlowVisual,
+} from '@/components/homepage-product-visuals';
+import { DISCLOSURES, SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
-import styles from './marketing-platform.module.css';
+import styles from './homepage-stage01.module.css';
 
 export const metadata = createPageMetadata({
-  title: 'Capital, made clearer',
-  description: 'Neptlium is a modern capital platform for portfolio visibility, funding, reporting and governed financial activity.',
+  title: 'Capital, intelligently managed',
+  description: 'Neptlium brings capital, treasury, investments, portfolio intelligence and allocation into one governed financial environment.',
   path: '/',
 });
 
-const trustPoints = [
-  ['Authenticated account access', 'Customer access begins with verified identity and authenticated sessions.'],
-  ['Governed transaction workflows', 'Financial actions preserve explicit lifecycle states instead of treating a click as settlement.'],
-  ['Financial record integrity', 'Provider evidence, canonical state and reconciliation remain distinct responsibilities.'],
-  ['Investor reporting', 'Activity, documents and account context are designed to remain inspectable over time.'],
+const investmentCapabilities = [
+  ['Public markets', 'Informational', 'Market context and investment presentation without implying live brokerage execution.'],
+  ['Digital assets', 'Limited', 'Availability depends on supported account, provider, network and operating state.'],
+  ['Private opportunities', 'Informational', 'Opportunity presentation is used only when verified offering documentation exists.'],
+  ['Cash & treasury', 'Developing', 'Treasury concepts remain distinct from unsupported public USD funding claims.'],
 ] as const;
 
-const journey = [
-  ['Create your account', 'Open the authenticated Neptlium environment.'],
-  ['Complete required verification', 'Account access and product availability can depend on identity, eligibility and operating requirements.'],
-  ['Fund your account', 'Use only funding routes made available to your account.'],
-  ['Review available opportunities', 'Evaluate objective, structure, risk, liquidity and supporting documentation where opportunities are offered.'],
-  ['Allocate capital', 'Use supported workflows without collapsing a model or approval into execution.'],
-  ['Monitor your portfolio', 'Follow capital state, portfolio context and account activity from one environment.'],
-  ['Access records and reports', 'Keep transaction history, documents and reporting close to the capital they describe.'],
+const insightTopics = [
+  ['Market intelligence', 'Understand market context without turning commentary into a promise.'],
+  ['Portfolio perspectives', 'Explore frameworks for ownership, exposure and concentration.'],
+  ['Capital management', 'Think more clearly about liquidity, allocation and financial state.'],
+  ['Digital assets', 'Separate infrastructure reality from market narrative.'],
 ] as const;
 
 export default function HomePage() {
   return (
-    <div className={`${styles.scope} mp-home`}>
-      <section className="mp-hero" aria-labelledby="home-title">
-        <div className="mp-shell mp-hero-grid">
-          <div className="mp-hero-copy">
-            <p className="mp-kicker">Modern capital infrastructure</p>
-            <h1 id="home-title">Capital, made clearer.</h1>
-            <p className="mp-hero-lead">Neptlium brings portfolio visibility, capital management, funding workflows, reporting and governed financial activity into one coherent environment.</p>
-            <div className="mp-actions">
-              <Link className="mp-button mp-button-primary" href="/platform">Explore the Platform <ArrowRight aria-hidden="true" /></Link>
-              <Link className="mp-button mp-button-secondary" href="/investments">View Investment Solutions</Link>
+    <div className={styles.page}>
+      <section className={styles.hero} aria-labelledby="home-title">
+        <div className={`${styles.shell} ${styles.heroGrid}`}>
+          <div>
+            <p className={styles.eyebrow}>Neptlium capital platform</p>
+            <h1 id="home-title">Capital, intelligently managed.</h1>
+            <p className={styles.heroLead}>Neptlium brings capital, treasury, investments, portfolio intelligence and allocation into one governed financial environment.</p>
+            <div className={styles.buttonRow}>
+              <Link className={`${styles.button} ${styles.primaryButton}`} href={SITE.signUpUrl}>Open account <ArrowRight aria-hidden="true" /></Link>
+              <Link className={`${styles.button} ${styles.secondaryButton}`} href="/platform">Explore Neptlium</Link>
             </div>
-            <p className="mp-hero-note">No fabricated balances, performance or transaction states are used in this public product demonstration.</p>
+            <p className={styles.heroNote}>Product visuals on this page are illustrative. They do not represent a real customer account, balance, return history or executed transaction.</p>
           </div>
-          <div className="mp-hero-product" aria-label="Neptlium product demonstration">
-            <OperatingEnvironmentVisual />
+          <HeroCapitalVisual />
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="system-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionHead}>
+            <div><p className={styles.eyebrow}>One governed system</p><h2 id="system-title">Capital should move through one coherent operating model.</h2></div>
+            <p>Neptlium connects capital state, treasury movement, allocation decisions and portfolio context while preserving the boundaries between modeled intent, authorized action, external evidence and canonical financial consequence.</p>
+          </div>
+          <SystemRevealVisual />
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.lightSection}`} aria-labelledby="capital-title">
+        <div className={`${styles.shell} ${styles.split}`}>
+          <div className={styles.stickyCopy}>
+            <p className={styles.eyebrow}>Capital</p>
+            <h2 id="capital-title">Know where your capital stands.</h2>
+            <p>Available, reserved and allocated are different states with different consequences. Neptlium is designed to keep those distinctions visible instead of compressing them into a single ambiguous balance.</p>
+            <Link className={styles.textAction} href="/products/capital-account">Explore Capital <ArrowRight aria-hidden="true" /></Link>
+          </div>
+          <CapitalStateVisual />
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="treasury-title">
+        <div className={`${styles.shell} ${styles.splitReverse}`}>
+          <TreasuryFlowVisual />
+          <div className={styles.stickyCopy}>
+            <p className={styles.eyebrow}>Treasury</p>
+            <h2 id="treasury-title">Move capital with clarity.</h2>
+            <p>Funding, settlement, reconciliation and availability are not interchangeable. Neptlium treats each as a distinct lifecycle state and only exposes supported routes through current account capability.</p>
+            <Link className={styles.textAction} href="/products/treasury">Explore Treasury <ArrowRight aria-hidden="true" /></Link>
           </div>
         </div>
       </section>
 
-      <section className="mp-trust-band" aria-labelledby="trust-title">
-        <div className="mp-shell">
-          <div className="mp-section-heading compact">
-            <p className="mp-kicker">Institutional trust</p>
-            <h2 id="trust-title">Trust should be visible in how the product behaves.</h2>
+      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="investments-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionHead}>
+            <div><p className={styles.eyebrow}>Investment experience</p><h2 id="investments-title">Understand the opportunity before the action.</h2></div>
+            <p>Investment presentation should make objective, structure, exposure, risk, liquidity, documentation and suitability legible before a commitment is made. Availability labels below are deliberately conservative.</p>
           </div>
-          <div className="mp-trust-grid">
-            {trustPoints.map(([title, body], index) => <article key={title}>
-              <span>0{index + 1}</span>
-              <h3>{title}</h3>
-              <p>{body}</p>
-            </article>)}
+          <div className={styles.capabilityStrip}>
+            {investmentCapabilities.map(([title, status, body]) => <article className={styles.capabilityCard} key={title}><span>{status}</span><h3>{title}</h3><p>{body}</p></article>)}
+          </div>
+          <Link className={styles.textAction} href="/investments">Explore Investments <ArrowRight aria-hidden="true" /></Link>
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.lightSection}`} aria-labelledby="portfolio-title">
+        <div className={`${styles.shell} ${styles.splitReverse}`}>
+          <PortfolioIntelligenceVisual />
+          <div className={styles.stickyCopy}>
+            <p className={styles.eyebrow}>Portfolio intelligence</p>
+            <h2 id="portfolio-title">See the whole portfolio. Not fragments.</h2>
+            <p>Positions, valuation context, allocation, activity and reporting should connect without pretending uncertain or unavailable information is known. The interface stays useful by preserving provenance.</p>
+            <Link className={styles.textAction} href="/products/portfolio-intelligence">Explore Portfolio Intelligence <ArrowRight aria-hidden="true" /></Link>
           </div>
         </div>
       </section>
 
-      <section className="mp-section mp-platform-section" aria-labelledby="platform-title">
-        <div className="mp-shell mp-split">
-          <div className="mp-sticky-copy">
-            <p className="mp-kicker">Platform</p>
-            <h2 id="platform-title">One environment for understanding capital before acting on it.</h2>
-            <p>Neptlium connects capital state, portfolio context, treasury, allocation and governed financial workflows without making different states look more authoritative than they are.</p>
-            <Link className="mp-text-link" href="/platform">Explore the platform <ArrowRight aria-hidden="true" /></Link>
+      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="allocation-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionHead}>
+            <div><p className={styles.eyebrow}>Allocation</p><h2 id="allocation-title">Decisions before execution. Evidence after it.</h2></div>
+            <p>Neptlium keeps modeling, review, approval, reservation, execution and reconciliation separate so a proposed capital state never masquerades as an executed one.</p>
           </div>
-          <div className="mp-visual-plane"><CapitalSystemVisual /></div>
+          <AllocationLifecycleVisual />
+          <Link className={styles.textAction} href="/products/allocation">Explore Allocation <ArrowRight aria-hidden="true" /></Link>
         </div>
       </section>
 
-      <section className="mp-section mp-dark" aria-labelledby="investment-experience-title">
-        <div className="mp-shell">
-          <div className="mp-section-heading">
-            <p className="mp-kicker">Investment experience</p>
-            <h2 id="investment-experience-title">Information first. Capital action second.</h2>
-            <p>When investment opportunities are available, the experience should make objective, structure, exposure, risk, liquidity, documentation and eligibility understandable before a commitment is made.</p>
+      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="governance-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionHead}>
+            <div><p className={styles.eyebrow}>Security & financial governance</p><h2 id="governance-title">Financial state should be explainable.</h2></div>
+            <p>Identity, authority, execution, evidence and reconciliation are independent control boundaries. Neptlium’s public claims stay inside those boundaries and do not imply certifications, insurance or regulatory status that has not been verified.</p>
           </div>
-          <div className="mp-investment-principles">
-            {['Objective', 'Underlying exposure', 'Risk', 'Liquidity', 'Documentation', 'Eligibility'].map((item) => <span key={item}>{item}</span>)}
-          </div>
-          <Link className="mp-button mp-button-light" href="/investments">View the investment framework <ArrowRight aria-hidden="true" /></Link>
+          <GovernanceVisual />
+          <Link className={styles.textAction} href="/security">Explore Security <ArrowRight aria-hidden="true" /></Link>
         </div>
       </section>
 
-      <section className="mp-section" aria-labelledby="portfolio-title">
-        <div className="mp-shell mp-split reverse">
-          <div className="mp-visual-plane"><PortfolioVisual /></div>
-          <div className="mp-sticky-copy">
-            <p className="mp-kicker">Portfolio intelligence</p>
-            <h2 id="portfolio-title">Understand what you own without inventing what is not known.</h2>
-            <p>Portfolio views are designed to distinguish available information from unavailable or modeled state, so reporting can become more useful without becoming misleading.</p>
-            <Link className="mp-text-link" href="/products/portfolio-intelligence">Explore Portfolio Intelligence <ArrowRight aria-hidden="true" /></Link>
+      <section className={`${styles.section} ${styles.lightSection}`} aria-labelledby="activity-title">
+        <div className={`${styles.shell} ${styles.split}`}>
+          <div className={styles.stickyCopy}>
+            <p className={styles.eyebrow}>Activity & documents</p>
+            <h2 id="activity-title">Every capital event should leave a record.</h2>
+            <p>Funding evidence, settlement, reconciliation, allocation approvals, supported execution and reporting belong to one inspectable history. The lifecycle shown here is illustrative, not a real customer event stream.</p>
           </div>
+          <ActivityDocumentsVisual />
         </div>
       </section>
 
-      <section className="mp-section mp-funding" aria-labelledby="funding-title">
-        <div className="mp-shell">
-          <div className="mp-section-heading compact">
-            <p className="mp-kicker">Funding infrastructure</p>
-            <h2 id="funding-title">Funding instructions should be explicit, attributable and governed.</h2>
-            <p>Neptlium separates the customer instruction, provider evidence, canonical financial state and reconciliation required to understand where capital stands.</p>
+      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="insights-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionHead}>
+            <div><p className={styles.eyebrow}>Insights</p><h2 id="insights-title">Intelligence for clearer capital decisions.</h2></div>
+            <p>Neptlium publishes market, portfolio and capital perspectives without fabricating research inventory, authorship, performance findings or investment outcomes.</p>
           </div>
-          <div className="mp-funding-grid">
-            <article>
-              <h3>Digital asset funding</h3>
-              <p>Supported routes are exposed through account-specific funding capabilities and governed funding intents. Availability depends on the account and current supported infrastructure.</p>
-              <span>Capability-controlled</span>
-            </article>
-            <article>
-              <h3>USD funding</h3>
-              <p>USD funding is not represented on this website as a currently available public capability. Any future payment flow must preserve attribution, settlement evidence, ledger posting and reconciliation.</p>
-              <span>Not presented as live</span>
-            </article>
+          <div className={styles.insightsGrid}>
+            <Link className={styles.insightFeature} href="/insights"><span>Neptlium insights</span><h3>Market context with financial discipline.</h3><p>Editorial perspective designed to improve understanding, not simulate a recommendation.</p></Link>
+            {insightTopics.map(([title,body]) => <Link className={styles.insightItem} href="/insights" key={title}><span>Perspective</span><h3>{title}</h3><p>{body}</p></Link>)}
           </div>
-          <div className="mp-visual-plane funding-visual"><CapitalAccountVisual /></div>
+          <Link className={styles.textAction} href="/insights">Explore Insights <ArrowRight aria-hidden="true" /></Link>
         </div>
       </section>
 
-      <section className="mp-section mp-solutions" aria-labelledby="solutions-title">
-        <div className="mp-shell">
-          <div className="mp-section-heading">
-            <p className="mp-kicker">Investment solutions</p>
-            <h2 id="solutions-title">A disciplined framework for evaluating opportunities.</h2>
-            <p>Neptlium does not reduce an investment to a return number. Public investment presentation is organized around objective, strategy, structure, exposure, risk, duration, liquidity, fees, documentation and suitability.</p>
-          </div>
-          <div className="mp-solution-lines">
-            {[
-              ['Objective', 'What the investment is designed to achieve.'],
-              ['Strategy', 'How capital is intended to be deployed.'],
-              ['Risk', 'What could impair capital or outcomes.'],
-              ['Liquidity', 'When and how capital may become available.'],
-              ['Documentation', 'What supports the investment structure and investor decision.'],
-            ].map(([title, body]) => <article key={title}><h3>{title}</h3><p>{body}</p></article>)}
-          </div>
-          <Link className="mp-text-link" href="/investments">Explore investments <ArrowRight aria-hidden="true" /></Link>
-        </div>
-      </section>
-
-      <section className="mp-section mp-security" aria-labelledby="security-title">
-        <div className="mp-shell mp-split">
-          <div className="mp-sticky-copy">
-            <p className="mp-kicker">Security & financial integrity</p>
-            <h2 id="security-title">Security is part of the financial workflow.</h2>
-            <p>Identity, authorization, ownership, auditability and reconciliation are separate control boundaries. The public site does not claim certifications, insurance or regulatory status that have not been verified.</p>
-            <div className="mp-security-list">
-              <span><LockKeyhole aria-hidden="true" /> Authenticated account access</span>
-              <span><ShieldCheck aria-hidden="true" /> Server-enforced financial controls</span>
-              <span><RefreshCcw aria-hidden="true" /> Reconciliation-aware state</span>
-            </div>
-            <Link className="mp-text-link" href="/security">Explore Security <ArrowRight aria-hidden="true" /></Link>
-          </div>
-          <div className="mp-visual-plane"><SecurityFlowVisual /></div>
-        </div>
-      </section>
-
-      <section className="mp-section mp-journey" aria-labelledby="journey-title">
-        <div className="mp-shell">
-          <div className="mp-section-heading compact">
-            <p className="mp-kicker">How Neptlium works</p>
-            <h2 id="journey-title">A clearer investor journey from account access to reporting.</h2>
-          </div>
-          <ol className="mp-journey-list">
-            {journey.map(([title, body], index) => <li key={title}><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{title}</h3><p>{body}</p></div></li>)}
-          </ol>
-        </div>
-      </section>
-
-      <section className="mp-section mp-reporting" aria-labelledby="reporting-title">
-        <div className="mp-shell mp-split reverse">
-          <div className="mp-reporting-visual" aria-hidden="true">
-            <div><FileText /><span>Account statements</span></div>
-            <div><CheckCircle2 /><span>Transaction records</span></div>
-            <div><FileText /><span>Investment documents</span></div>
-            <div><FileText /><span>Portfolio reports</span></div>
-          </div>
-          <div className="mp-sticky-copy">
-            <p className="mp-kicker">Investor reporting</p>
-            <h2 id="reporting-title">The record should stay close to the decision.</h2>
-            <p>Statements, transaction records, investment documentation, disclosures and portfolio reporting are treated as part of the investor experience—not administrative leftovers.</p>
-            <Link className="mp-text-link" href="/platform">See the reporting model <ArrowRight aria-hidden="true" /></Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="mp-section mp-insights-preview" aria-labelledby="insights-title">
-        <div className="mp-shell">
-          <div className="mp-section-heading compact">
-            <p className="mp-kicker">Insights</p>
-            <h2 id="insights-title">Intelligence for understanding capital more clearly.</h2>
-            <p>Neptlium Insights is the editorial home for investment perspectives, portfolio strategy, market education, digital-asset context and product understanding. Research is published only when substantive original material exists.</p>
-          </div>
-          <div className="mp-insight-links">
-            <Link href="/learn">Investor education <ArrowRight aria-hidden="true" /></Link>
-            <Link href="/research">Research <ArrowRight aria-hidden="true" /></Link>
-            <Link href="/insights">Explore Insights <ArrowRight aria-hidden="true" /></Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="mp-disclosure" aria-label="Investment disclosure">
-        <div className="mp-shell"><p>{DISCLOSURES.investment}</p><p>{DISCLOSURES.general}</p></div>
+      <section className={styles.disclosure} aria-label="Homepage financial disclosures">
+        <div className={`${styles.shell} ${styles.disclosureInner}`}><p>{DISCLOSURES.investment}</p><p>{DISCLOSURES.availability} {DISCLOSURES.modeling}</p></div>
       </section>
     </div>
   );
