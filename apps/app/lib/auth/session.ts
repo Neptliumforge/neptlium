@@ -8,7 +8,7 @@ export interface SessionUser {
   readonly email: string | null;
 }
 
-export async function getCurrentUser(): Promise<SessionUser | null> {
+export async function getSessionUser(): Promise<SessionUser | null> {
   const supabase = await createSupabaseServerClient();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) return null;
@@ -28,7 +28,7 @@ export interface SessionProfile {
 
 /** Account/profile business state is resolved through api.neptlium.com. */
 export async function getCurrentProfile(existingUser?: SessionUser): Promise<SessionProfile | null> {
-  const user = existingUser ?? await getCurrentUser();
+  const user = existingUser ?? await getSessionUser();
   if (!user) return null;
 
   try {
@@ -50,7 +50,7 @@ export async function getCurrentProfile(existingUser?: SessionUser): Promise<Ses
 }
 
 export async function getCurrentRole(): Promise<Role | null> {
-  const user = await getCurrentUser();
+  const user = await getSessionUser();
   return user ? resolveRole(user.id) : null;
 }
 
