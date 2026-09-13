@@ -1,81 +1,73 @@
 # @neptlium/web
 
-Public institutional marketing and information website for `neptlium.com`.
+Public marketing and information website for `neptlium.com`.
 
 `apps/web` establishes Neptlium's public category, investor narrative, product meaning, editorial authority, discoverability, trust architecture, and path into the authenticated operating application. It owns no authenticated customer session, privileged financial operation, investment execution authority, or canonical financial state.
 
+## Stage 01 marketing authority
+
+The authoritative marketing-design specification is [`docs/marketing-design-system.md`](../../docs/marketing-design-system.md). It supersedes the former ivory-first visual direction and PR #68 homepage assumptions. Legacy styles remain only where later marketing routes have not yet been migrated.
+
 ## Public architecture
 
-The canonical top-level domains are:
+Canonical top-level domains are:
 
 - Platform → `/platform`
 - Investments → `/investments`
+- Capital → `/products/capital-account`
 - Insights → `/insights`
 - Security → `/security`
-- Company → `/about`
+- Company → `/company`
 
-Products and Solutions remain important second-level platform architecture:
-
-- Products → `/products`
-- Solutions → `/solutions`
-- Capital Account → `/products/capital-account`
-- Treasury → `/products/treasury`
-- Allocation → `/products/allocation`
-- Portfolio Intelligence → `/products/portfolio-intelligence`
-
-Route taxonomy, navigation data, sitemap authority, and route classification live in `lib/content/public-architecture.ts`.
+Products and Solutions remain valid second-level architecture. Route taxonomy, navigation data, sitemap authority, and route classification live in `lib/content/public-architecture.ts`.
 
 ## Positioning and conversion
 
-Canonical positioning:
+Canonical Stage 01 positioning:
 
-> **Capital, made clearer.**
-
-The public site explains Neptlium as a modern capital platform for portfolio visibility, capital management, funding workflows, reporting, and governed financial activity.
+> **Capital, intelligently managed.**
 
 Primary acquisition action:
 
-- `Get Started` → authenticated application account creation
+- `Open account` → `https://app.neptlium.com/auth/sign-up`
 
 Authenticated return action:
 
-- `Sign In` → authenticated application sign-in
+- `Sign in` → `https://app.neptlium.com/auth/sign-in`
 
 Primary homepage exploration:
 
-- `Explore the Platform` → `/platform`
-- `View Investment Solutions` → `/investments`
+- `Explore Neptlium` → `/platform`
+- `Explore Investments` → `/investments`
+- `Explore Capital` → `/products/capital-account`
+- `Explore Treasury` → `/products/treasury`
 
-Marketing may communicate the product model and investor value strongly, but it must not fabricate customers, balances, AUM, performance, returns, transaction history, investment opportunities, execution, settlement, custody, provider relationships, licences, regulatory status, or live capability.
+## Financial truth
 
-## Investment and funding truth
+Marketing must not fabricate customers, balances, AUM, performance, returns, transaction history, investment opportunities, execution, settlement, custody, provider relationships, licences, regulatory status, or live capability.
 
-Public investment content is organized around objective, strategy, structure, underlying exposure, risk, duration, liquidity, fees, documentation, eligibility, and investor suitability. Historical, target, projected, and illustrative information must remain distinguishable whenever those categories appear.
+Funding communication must match actual capability. Digital-asset funding may be described only as capability-controlled/account-specific unless a specific supported production rail is verified. USD funding must not be represented as live until a supported production funding rail is implemented and verified.
 
-Funding communication must match actual capability. Digital-asset funding may be described as capability-controlled and account-specific. USD funding must not be represented as live until a supported production funding rail is implemented and verified.
+`UNKNOWN != ZERO`. Configured is not live. Provider evidence is not canonical state. Modeled is not executed. Submitted is not settled. Settled is not reconciled.
 
 ## Visual system
 
-Neptlium Web is more editorial and cinematic than the authenticated product while remaining visibly related to it.
+Marketing is black-first, cinematic, product-first, editorial, restrained, and financially credible. Core implementation authority:
 
-Current visual direction:
+- `app/marketing-system.css`
+- `app/homepage-stage01.module.css`
+- `components/homepage-product-visuals.tsx`
+- `components/site-header.tsx`
+- `components/mobile-navigation.tsx`
+- `components/site-footer.tsx`
+- `components/global-conversion-cta.tsx`
+- `components/marketing-disclosure.tsx`
 
-- Warm Ivory / Carbon / Mineral Teal
-- medium-scale editorial typography
-- strong information hierarchy and deliberate negative space
-- restrained product visualizations based on real product architecture
-- no fabricated balances, charts, returns, holdings, or transaction screenshots
-- accessible desktop disclosures and independently designed mobile navigation
-- restrained motion with reduced-motion support
-- route-scoped composition modules for newly rebuilt marketing surfaces, while `app/neptlium-visual-direction.css` remains the global visual authority
+The authenticated product design system remains separate; Stage 01 overrides marketing design only.
 
-See [`docs/04_WEB_MARKETING_SYSTEM.md`](../../docs/04_WEB_MARKETING_SYSTEM.md).
-
-## Environment
+## Environment and commands
 
 No environment variable is required for ordinary public rendering. Browser-safe values must use `NEXT_PUBLIC_*`; privileged credentials never belong in this app.
-
-## Commands
 
 ```sh
 pnpm --filter @neptlium/web dev
@@ -85,14 +77,8 @@ pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-On Termux/Android:
-
-```sh
-pnpm --filter @neptlium/web exec next build --webpack
-```
+On Termux/Android, do not run Playwright. GitHub-hosted Ubuntu is the browser QA environment.
 
 Architecture: [`docs/00_PRODUCT_CONSTITUTION.md`](../../docs/00_PRODUCT_CONSTITUTION.md)
 
-Design: [`docs/03_DESIGN_SYSTEM.md`](../../docs/03_DESIGN_SYSTEM.md)
-
-Web system: [`docs/04_WEB_MARKETING_SYSTEM.md`](../../docs/04_WEB_MARKETING_SYSTEM.md)
+Marketing design: [`docs/marketing-design-system.md`](../../docs/marketing-design-system.md)
