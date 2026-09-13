@@ -11,13 +11,20 @@ const historical = new Set([
   'supabase/migrations/20260913123000_supabase_auth_only_cutover.sql',
 ]);
 const self = 'scripts/retired-auth-contract.mjs';
+const providerName = retired[0].toUpperCase() + retired.slice(1);
 const markers = [
   retired,
   `@${retired}`,
   retired.toUpperCase() + '_',
   'NEXT_PUBLIC_' + retired.toUpperCase() + '_',
-  retired[0]!.toUpperCase() + retired.slice(1) + 'Provider',
+  providerName + 'Provider',
   retired + 'Middleware',
+  retired + 'Client',
+  'currentUser',
+  'useUser',
+  'useAuth',
+  'SignedIn',
+  'SignedOut',
 ];
 
 const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\0').filter(Boolean);
