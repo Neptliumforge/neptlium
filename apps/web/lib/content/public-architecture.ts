@@ -95,7 +95,7 @@ export const INDEXABLE_ROUTES = [
   '/', '/platform', '/investments', '/insights',
   '/products', '/products/capital-account', '/products/treasury', '/products/allocation', '/products/portfolio-intelligence',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
-  '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
+  '/company', '/learn', '/security', '/docs', '/trust', '/contact', '/accessibility',
 ] as const;
 
 export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
@@ -119,6 +119,8 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/about': 'legacy-redirect',
   '/learn': 'canonical-indexable',
   '/security': 'canonical-indexable',
+  '/docs': 'canonical-indexable',
+  '/status': 'public-supporting-noindex',
   '/trust': 'canonical-indexable',
   '/contact': 'canonical-indexable',
   '/accessibility': 'canonical-indexable',
