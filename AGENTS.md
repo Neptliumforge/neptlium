@@ -26,7 +26,7 @@ These surfaces share one Neptlium identity. They must not be visually or operati
 
 **AUTHENTICATION: Supabase Auth only.**
 
-- Do not introduce Clerk or any Clerk dependency, middleware, environment variable, webhook, identity mapper, or hosted auth UI.
+- Do not reintroduce any retired authentication provider, dependency, middleware, environment variable, webhook, identity mapper, or hosted auth UI.
 - Do not introduce another third-party identity system without explicit architecture approval.
 - Browser applications may use only the Supabase project URL and publishable client key. Service-role credentials and provider secrets are server-only.
 - Authentication proves identity only. It never grants financial, administrative, treasury, organization, or provider-execution authority by itself.
