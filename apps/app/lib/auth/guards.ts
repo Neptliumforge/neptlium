@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { hasRole, type Role } from "@neptlium/lib/rbac";
 import { resolveRole } from "@/components/security/resolveRole";
-import { getCurrentProfile, getCurrentUser, type SessionProfile, type SessionUser } from "./session";
+import { getCurrentProfile, getSessionUser, type SessionProfile, type SessionUser } from "./session";
 
 export async function requireUser(): Promise<SessionUser> {
-  const user = await getCurrentUser();
+  const user = await getSessionUser();
 
   if (!user) {
     redirect("/auth/sign-in");
@@ -28,7 +28,7 @@ function fallbackProfile(user: SessionUser): SessionProfile {
 
 /**
  * Dashboard rendering must never treat an unavailable application profile as
- * an authentication failure. Clerk owns the session boundary; account/profile
+ * an authentication failure. Supabase Auth owns the session boundary; account/profile
  * state is optional presentation context and can recover independently.
  */
 export async function requireProvisionedUser() {
