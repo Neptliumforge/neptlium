@@ -9,16 +9,16 @@ const releaseRoutes = [
   '/capital',
   '/portfolio',
   '/allocation',
+  '/vaultrail',
   '/treasury',
+  '/payments',
   '/insights',
   '/security',
+  '/learn',
+  '/research',
   '/company',
-  '/products/capital-account',
-  '/products/treasury',
-  '/products/allocation',
-  '/products/portfolio-intelligence',
-  '/solutions/capital-visibility',
-  '/resources',
+  '/contact',
+  '/trust',
   '/risk-disclosure',
 ] as const;
 
@@ -58,6 +58,20 @@ test.describe('Neptlium unified marketing release', () => {
       await expectNoApplicationRuntimeErrors(page, route);
     });
   }
+
+  test('/allocation exposes exactly one authored H1', async ({ page }) => {
+    await page.goto('/allocation', { waitUntil: 'networkidle' });
+    const h1 = page.locator('h1');
+    await expect(h1).toHaveCount(1);
+    await expect(h1).toHaveText(/Shape how your capital is arranged\./);
+  });
+
+  test('Docs and Status Web routes hand off to their canonical products', async ({ page }) => {
+    await page.goto('/docs');
+    await expect(page).toHaveURL(/^https:\/\/docs\.neptlium\.com\/?$/);
+    await page.goto('/status');
+    await expect(page).toHaveURL(/^https:\/\/status\.neptlium\.com\/?$/);
+  });
 
   test('desktop primary navigation exposes the unified product family', async ({ page }, testInfo) => {
     test.skip(!['desktop-1440', 'laptop-1280'].includes(testInfo.project.name), 'Desktop navigation contract');
@@ -120,13 +134,8 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page).toHaveURL(/\/company\/?$/);
   });
 
-  test('current authored supporting routes remain authored pages, not stale aliases', async ({ page }) => {
-    for (const route of ['/resources', '/products/capital-account', '/products/treasury', '/products/allocation', '/products/portfolio-intelligence', '/solutions/capital-visibility']) {
-      await page.goto(route, { waitUntil: 'networkidle' });
-      const current = new URL(page.url()).pathname.replace(/\/$/, '') || '/';
-      expect(current, `${route} unexpectedly redirected to a stale canonical destination`).toBe(route);
-      await expect(page.locator('h1')).toHaveCount(1);
-      await expectNoHorizontalOverflow(page);
-    }
+  test('legacy resources route resolves to canonical Insights', async ({ page }) => {
+    await page.goto('/resources', { waitUntil: 'networkidle' });
+    await expect(page).toHaveURL(/\/insights\/?$/);
   });
 });
