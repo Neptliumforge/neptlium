@@ -3,7 +3,7 @@ import test from 'node:test';
 import { SupabaseIdentityPrincipalResolver } from '../dist/identity-principal.js';
 
 const principalId = '00000000-0000-4000-8000-000000000001';
-const clerkSubject = 'user_123';
+const authSubject = '00000000-0000-4000-8000-000000000111';
 
 function response(rows, ok = true) {
   return new Response(JSON.stringify(rows), {
@@ -12,7 +12,7 @@ function response(rows, ok = true) {
   });
 }
 
-test('resolves an active Clerk subject to the stable active Neptlium principal', async () => {
+test('resolves an active Supabase Auth subject to the stable active Neptlium principal', async () => {
   const requests = [];
   const resolver = new SupabaseIdentityPrincipalResolver(
     'https://example.supabase.co',
@@ -23,10 +23,10 @@ test('resolves an active Clerk subject to the stable active Neptlium principal',
         return response([
           {
             principal_id: principalId,
-            provider: 'CLERK',
-            provider_subject: clerkSubject,
+            provider: 'SUPABASE_AUTH',
+            provider_subject: authSubject,
             status: 'ACTIVE',
-            linked_at: '2026-08-20T00:00:00.000Z',
+            linked_at: '2026-09-13T00:00:00.000Z',
           },
         ]);
       }
@@ -42,26 +42,22 @@ test('resolves an active Clerk subject to the stable active Neptlium principal',
     },
   );
 
-  const resolved = await resolver.resolveActivePrincipal('CLERK', clerkSubject);
+  const resolved = await resolver.resolveActivePrincipal('SUPABASE_AUTH', authSubject);
   assert.equal(resolved?.principal.id, principalId);
-  assert.equal(resolved?.providerSubject, clerkSubject);
+  assert.equal(resolved?.provider, 'SUPABASE_AUTH');
+  assert.equal(resolved?.providerSubject, authSubject);
   assert.equal(requests.length, 2);
   assert.match(requests[0].url, /status=eq\.ACTIVE/);
   assert.equal(new Headers(requests[0].init.headers).get('apikey'), 'server-secret');
 });
 
-test('fails closed for legacy provider, unknown, inactive, ambiguous, malformed, and unavailable identity state', async () => {
+test('fails closed for unknown, inactive, ambiguous, malformed, and unavailable identity state', async () => {
   const unknown = new SupabaseIdentityPrincipalResolver(
     'https://example.supabase.co',
     'server-secret',
     async () => response([]),
   );
-
-  await assert.rejects(
-    () => unknown.resolveActivePrincipal('SUPABASE_AUTH', '00000000-0000-4000-8000-000000000001'),
-    (error) => error.code === 'invalid_identity_provider',
-  );
-  assert.equal(await unknown.resolveActivePrincipal('CLERK', clerkSubject), null);
+  assert.equal(await unknown.resolveActivePrincipal('SUPABASE_AUTH', authSubject), null);
 
   const inactive = new SupabaseIdentityPrincipalResolver(
     'https://example.supabase.co',
@@ -71,15 +67,15 @@ test('fails closed for legacy provider, unknown, inactive, ambiguous, malformed,
         ? response([
             {
               principal_id: principalId,
-              provider: 'CLERK',
-              provider_subject: clerkSubject,
+              provider: 'SUPABASE_AUTH',
+              provider_subject: authSubject,
               status: 'ACTIVE',
-              linked_at: '2026-08-20T00:00:00.000Z',
+              linked_at: '2026-09-13T00:00:00.000Z',
             },
           ])
         : response([]),
   );
-  assert.equal(await inactive.resolveActivePrincipal('CLERK', clerkSubject), null);
+  assert.equal(await inactive.resolveActivePrincipal('SUPABASE_AUTH', authSubject), null);
 
   const ambiguous = new SupabaseIdentityPrincipalResolver(
     'https://example.supabase.co',
@@ -87,12 +83,12 @@ test('fails closed for legacy provider, unknown, inactive, ambiguous, malformed,
     async () => response([{}, {}]),
   );
   await assert.rejects(
-    () => ambiguous.resolveActivePrincipal('CLERK', clerkSubject),
+    () => ambiguous.resolveActivePrincipal('SUPABASE_AUTH', authSubject),
     (error) => error.code === 'identity_mapping_ambiguous',
   );
 
   await assert.rejects(
-    () => unknown.resolveActivePrincipal('CLERK', ` ${clerkSubject}`),
+    () => unknown.resolveActivePrincipal('SUPABASE_AUTH', ` ${authSubject}`),
     (error) => error.code === 'invalid_identity_subject',
   );
 
@@ -102,7 +98,7 @@ test('fails closed for legacy provider, unknown, inactive, ambiguous, malformed,
     async () => response([], false),
   );
   await assert.rejects(
-    () => unavailable.resolveActivePrincipal('CLERK', clerkSubject),
+    () => unavailable.resolveActivePrincipal('SUPABASE_AUTH', authSubject),
     (error) => error.code === 'identity_storage_unavailable',
   );
 });
