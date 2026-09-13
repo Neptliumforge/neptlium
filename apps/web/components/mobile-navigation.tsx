@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import { useEffect, useRef, type RefObject } from 'react';
 import { Brand } from './brand';
 import { NAVIGATION } from '@/lib/content/public-architecture';
+import { PRODUCT_FAMILY_LINKS } from '@/lib/content/product-family';
 import { SITE } from '@/lib/content/site';
 
 const socialLinks = [
@@ -46,6 +47,7 @@ export function MobileNavigation({ path, onClose, triggerRef }: { path: string; 
         </div>
       </div>
       <nav className="mobile-command-nav" aria-label="Mobile navigation">
+        <section aria-label="Product family"><div className="mobile-section-links">{PRODUCT_FAMILY_LINKS.map((item) => <Link href={item.href} key={item.label}>{item.label}</Link>)}</div></section>
         <div className="mobile-nav-grid">{NAVIGATION.map((section) => <section key={section.label}>
           <Link className="mobile-section-label" href={section.href} aria-current={path === section.href ? 'page' : undefined}><span>{section.label}</span><ArrowRight aria-hidden="true" /></Link>
           {section.links.length > 1 ? <div className="mobile-section-links">{section.links.filter((link) => link.href !== section.href).map((link) => <Link href={link.href} key={link.href} aria-current={path === link.href ? 'page' : undefined}>{link.label}</Link>)}</div> : null}
