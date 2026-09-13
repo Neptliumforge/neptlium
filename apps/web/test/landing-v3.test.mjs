@@ -4,35 +4,37 @@ import test from 'node:test';
 
 const page = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
-const marketing = readFileSync(new URL('../app/marketing-platform.module.css', import.meta.url), 'utf8');
+const homepage = readFileSync(new URL('../app/home-elite.module.css', import.meta.url), 'utf8');
 
-test('current homepage states the premium capital proposition and focused exploration paths', () => {
-  assert.match(page, /Capital, made clearer\./);
-  assert.match(page, /portfolio visibility, capital management, funding workflows, reporting and governed financial activity/i);
-  assert.match(page, /href="\/platform">Explore the Platform/);
-  assert.match(page, /href="\/investments">View Investment Solutions/);
+test('current homepage states a concise capital proposition and focused exploration paths', () => {
+  assert.match(page, /Capital, clearly\./);
+  assert.match(page, /understand, coordinate and move through your financial world with context intact/i);
+  assert.match(page, /href="#financial-world">Explore Neptlium/);
+  assert.match(page, /href="\/business">For business/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
 });
 
-test('homepage uses truthful product compositions rather than fabricated financial screenshots', () => {
-  for (const visual of ['OperatingEnvironmentVisual','CapitalSystemVisual','PortfolioVisual','CapitalAccountVisual','SecurityFlowVisual']) {
-    assert.match(page, new RegExp(visual));
-  }
-  assert.match(page, /No fabricated balances, performance or transaction states/i);
-  assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|dashboard mockup|trading terminal/i);
+test('homepage uses clearly illustrative product compositions without fabricated customer state', () => {
+  for (const visual of ['HeroStage', 'WorldStage', 'ProductStage', 'SystemMap']) assert.match(page, new RegExp(visual));
+  assert.match(page, /Illustrative interface only\. No customer balances, returns or performance data are shown\./i);
+  assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|guaranteed returns?|projected returns?|customer AUM/i);
 });
 
-test('premium homepage styling is scoped after the established global system', () => {
+test('elite homepage styling is scoped and responsive after the established global system', () => {
   assert.match(layout, /neptlium-visual-direction\.css/);
-  assert.match(page, /marketing-platform\.module\.css/);
-  assert.match(marketing, /@media\(max-width:64rem\)/);
-  assert.match(marketing, /@media\(max-width:48rem\)/);
-  assert.match(marketing, /prefers-reduced-motion:reduce/);
+  assert.match(page, /home-elite\.module\.css/);
+  assert.match(homepage, /@media\(max-width:1080px\)/);
+  assert.match(homepage, /@media\(max-width:760px\)/);
+  assert.match(homepage, /@media\(max-width:390px\)/);
+  assert.match(homepage, /prefers-reduced-motion:reduce/);
 });
 
-test('homepage architecture explains trust, investing, funding and reporting', () => {
-  for (const context of ['Institutional trust','Investment experience','Portfolio intelligence','Funding infrastructure','Security & financial integrity','Investor reporting']) {
+test('homepage architecture introduces brand, journeys, movement, product character, coherence and intelligence', () => {
+  for (const context of ['See your financial world as one', 'Built for the way capital actually lives', 'Know what moved. Know what changed', 'Everything important, in context', 'From understanding to action', 'Context changes the decision']) {
     assert.match(page, new RegExp(context.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   }
-  assert.match(page, /USD funding is not represented on this website as a currently available public capability/i);
+  assert.match(page, /Explore Personal/);
+  assert.match(page, /Explore Business/);
+  assert.match(page, /Explore Insights/);
+  assert.doesNotMatch(page, /currently available public capability|not configured|capability unavailable/i);
 });
