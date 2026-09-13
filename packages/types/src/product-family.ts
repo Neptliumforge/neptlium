@@ -12,34 +12,14 @@ export const productDomains = {
 export type ProductDomain = keyof typeof productDomains;
 
 export const productFamilies = {
-  capital: {
-    name: 'Neptlium Capital',
-    audience: 'individuals / investors',
-  },
-  vault: {
-    name: 'VaultRail',
-    audience: 'organizations / finance teams / treasury operators',
-  },
-  pay: {
-    name: 'Neptlium Pay',
-    audience: 'public invoice/payment recipients',
-  },
-  docs: {
-    name: 'Neptlium Developers',
-    audience: 'developers and integration teams',
-  },
-  status: {
-    name: 'Neptlium Status',
-    audience: 'customers, operators, and integrators',
-  },
+  capital: { name: 'Neptlium Capital', audience: 'individuals / investors' },
+  vault: { name: 'VaultRail', audience: 'organizations / finance teams / treasury operators' },
+  pay: { name: 'Neptlium Pay', audience: 'public invoice/payment recipients' },
+  docs: { name: 'Neptlium Developers', audience: 'developers and integration teams' },
+  status: { name: 'Neptlium Status', audience: 'customers, operators, and integrators' },
 } as const;
 
-export type ProductCapabilityState =
-  | 'AVAILABLE'
-  | 'BETA'
-  | 'PLANNED'
-  | 'NOT_CONFIGURED'
-  | 'UNAVAILABLE';
+export type ProductCapabilityState = 'AVAILABLE' | 'BETA' | 'PLANNED' | 'NOT_CONFIGURED' | 'UNAVAILABLE';
 
 export type VaultRailRole =
   | 'OWNER'
@@ -50,6 +30,17 @@ export type VaultRailRole =
   | 'OPERATOR'
   | 'AUDITOR'
   | 'VIEWER';
+
+export type OrganizationAuthorityState = 'AVAILABLE' | 'NOT_CONFIGURED' | 'UNAVAILABLE';
+
+export type OrganizationAuthorityProjection = {
+  readonly state: OrganizationAuthorityState;
+  readonly organizationId?: string;
+  readonly membershipId?: string;
+  readonly role?: VaultRailRole;
+  readonly permissions?: readonly string[];
+  readonly reason?: string;
+};
 
 export type VaultRailPaymentState =
   | 'DRAFT'
@@ -75,18 +66,26 @@ export type VaultRailPaymentState =
   | 'REPLACED'
   | 'RECONCILIATION_EXCEPTION';
 
-export type TreasuryAccountClass =
-  | 'ROOT_EXTERNAL'
-  | 'SMART_ACCOUNT'
-  | 'WATCH_ONLY'
-  | 'CUSTODIAL_PROVIDER'
-  | 'BANK_ACCOUNT';
+export type TreasuryAccountClass = 'ROOT_EXTERNAL' | 'SMART_ACCOUNT' | 'WATCH_ONLY' | 'CUSTODIAL_PROVIDER' | 'BANK_ACCOUNT';
 
-export type PublicServiceState =
-  | 'OPERATIONAL'
-  | 'DEGRADED_PERFORMANCE'
-  | 'PARTIAL_OUTAGE'
-  | 'MAJOR_OUTAGE'
-  | 'MAINTENANCE';
+export type PublicPaymentIntentPresentation = {
+  readonly state: ProductCapabilityState;
+  readonly publicToken: string;
+  readonly invoiceReference?: string;
+  readonly amountDisplay?: string;
+  readonly paymentMethods?: readonly string[];
+  readonly receiptState?: 'UNAVAILABLE' | 'PENDING' | 'AVAILABLE';
+};
 
+export type PublicServiceState = 'OPERATIONAL' | 'DEGRADED_PERFORMANCE' | 'PARTIAL_OUTAGE' | 'MAJOR_OUTAGE' | 'MAINTENANCE';
 export type IncidentPhase = 'INVESTIGATING' | 'IDENTIFIED' | 'MONITORING' | 'RESOLVED';
+
+export type PublicIncident = {
+  readonly title: string;
+  readonly state: IncidentPhase;
+  readonly impact: PublicServiceState;
+  readonly startedAt: string;
+  readonly updatedAt: string;
+  readonly resolvedAt?: string;
+  readonly updates: readonly { readonly at: string; readonly body: string }[];
+};
