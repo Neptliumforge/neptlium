@@ -20,6 +20,8 @@ Canonical financial state remains governed by server-side ownership, policy, ide
 
 Current source includes Circle/Alchemy capability gates and governed Stripe subscription webhook ingress. **Stripe capital funding is not currently enabled.** Crypto asset/network support and USD funding must not be advertised as live until the deposit architecture is implemented, provider/compliance eligibility is verified, and ledger/reconciliation gates are certified.
 
+Gate 04 activation verification requires a production API deployment after the endpoint-specific Stripe webhook signing secret is configured. The production route remains `POST /v1/webhooks/stripe`; payment-mode Checkout events are ingestion evidence only and must not create capital state.
+
 See [`docs/16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md`](../../docs/16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md) for the target deposit flow.
 
 ## Environment
