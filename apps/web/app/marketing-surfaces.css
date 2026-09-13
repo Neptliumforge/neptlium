@@ -1,0 +1,167 @@
+:root {
+  --npt-carbon-950: #050505;
+  --npt-carbon-900: #0b0b0b;
+  --npt-carbon-850: #111111;
+  --npt-carbon-800: #161616;
+  --npt-on-carbon: #f7f7f2;
+  --npt-on-carbon-muted: #a3a39d;
+  --npt-pure-white: #ffffff;
+  --npt-soft-white: #fbfbf8;
+  --npt-ink: #101210;
+  --npt-ink-secondary: #5f645f;
+  --npt-ivory: #f5f3ee;
+  --npt-ivory-deep: #ece9e1;
+  --npt-cloud-50: #f7f8f6;
+  --npt-cloud-100: #f1f3f0;
+  --npt-cloud-200: #e5e9e4;
+  --npt-mineral-950: #052f2b;
+  --npt-mineral-900: #073d38;
+  --npt-mineral-800: #0a5149;
+  --npt-mineral-700: #0e685e;
+  --npt-mineral-600: #168378;
+  --npt-mineral-100: #ddf5ef;
+  --npt-mineral-50: #eef9f6;
+  --npt-teal: #35d5c1;
+}
+
+/*
+ * Marketing surfaces are semantic environments, not page themes. Existing
+ * product components continue to use their own canvas treatment while the
+ * surrounding story can move deliberately between Carbon, light and Mineral.
+ */
+[data-npt-surface] {
+  position: relative;
+  background: var(--npt-surface-bg);
+  color: var(--npt-surface-fg);
+  border-color: var(--npt-surface-line);
+  transition: background-color 180ms ease, color 180ms ease;
+  --npt-white: var(--npt-surface-fg);
+  --npt-muted: var(--npt-surface-muted);
+  --npt-line: var(--npt-surface-line);
+  --npt-black-raised: var(--npt-surface-raised);
+}
+
+[data-npt-surface='carbon'] {
+  --npt-surface-bg: var(--npt-carbon-950);
+  --npt-surface-raised: var(--npt-carbon-850);
+  --npt-surface-fg: var(--npt-on-carbon);
+  --npt-surface-muted: var(--npt-on-carbon-muted);
+  --npt-surface-line: rgb(255 255 255 / 11%);
+}
+
+[data-npt-surface='white'] {
+  --npt-surface-bg: var(--npt-pure-white);
+  --npt-surface-raised: var(--npt-soft-white);
+  --npt-surface-fg: var(--npt-ink);
+  --npt-surface-muted: var(--npt-ink-secondary);
+  --npt-surface-line: rgb(16 18 16 / 12%);
+}
+
+[data-npt-surface='ivory'] {
+  --npt-surface-bg: var(--npt-ivory);
+  --npt-surface-raised: var(--npt-soft-white);
+  --npt-surface-fg: var(--npt-ink);
+  --npt-surface-muted: var(--npt-ink-secondary);
+  --npt-surface-line: rgb(16 18 16 / 12%);
+}
+
+[data-npt-surface='cloud'] {
+  --npt-surface-bg: var(--npt-cloud-50);
+  --npt-surface-raised: var(--npt-pure-white);
+  --npt-surface-fg: var(--npt-ink);
+  --npt-surface-muted: var(--npt-ink-secondary);
+  --npt-surface-line: rgb(16 18 16 / 11%);
+  background:
+    radial-gradient(circle at 78% 12%, rgb(255 255 255 / 86%), transparent 34rem),
+    linear-gradient(180deg, var(--npt-cloud-50), var(--npt-cloud-100));
+}
+
+[data-npt-surface='mineral'] {
+  --npt-surface-bg: var(--npt-mineral-900);
+  --npt-surface-raised: var(--npt-mineral-800);
+  --npt-surface-fg: #f5fbf8;
+  --npt-surface-muted: #b5d4cd;
+  --npt-surface-line: rgb(238 249 246 / 18%);
+}
+
+[data-npt-surface='mineral-light'] {
+  --npt-surface-bg: var(--npt-mineral-50);
+  --npt-surface-raised: var(--npt-pure-white);
+  --npt-surface-fg: #07332e;
+  --npt-surface-muted: #456d65;
+  --npt-surface-line: rgb(7 61 56 / 15%);
+}
+
+/* Keep intentional product canvases dark when staged on a light or Mineral field. */
+[data-npt-product-canvas='dark'] {
+  --npt-white: var(--npt-on-carbon);
+  --npt-muted: var(--npt-on-carbon-muted);
+  --npt-line: rgb(255 255 255 / 11%);
+  --npt-black-raised: var(--npt-carbon-850);
+  color: var(--npt-on-carbon);
+}
+
+/* Surface-aware controls. */
+[data-npt-surface='white'] a[class*='buttonSecondary'],
+[data-npt-surface='ivory'] a[class*='buttonSecondary'],
+[data-npt-surface='cloud'] a[class*='buttonSecondary'],
+[data-npt-surface='mineral-light'] a[class*='buttonSecondary'] {
+  color: var(--npt-ink);
+  border-color: rgb(16 18 16 / 20%);
+}
+
+[data-npt-surface='white'] [class*='eyebrow'],
+[data-npt-surface='ivory'] [class*='eyebrow'],
+[data-npt-surface='cloud'] [class*='eyebrow'],
+[data-npt-surface='mineral-light'] [class*='eyebrow'] {
+  color: var(--npt-mineral-700);
+}
+
+[data-npt-surface='mineral'] [class*='eyebrow'] {
+  color: #82e5d8;
+}
+
+/* Type quality: one family, fewer scales, disciplined measures. */
+:is(.page-title, [class*='heroCopy'] h1) {
+  text-wrap: balance;
+  font-size: clamp(64px, 7.5vw, 124px);
+  font-weight: 540;
+  line-height: .92;
+  letter-spacing: -.065em;
+}
+
+:is([class*='sectionHead'] h2, [class*='journeyHead'] h2, [class*='sticky'] h2) {
+  text-wrap: balance;
+  font-size: clamp(44px, 5.5vw, 84px);
+  font-weight: 520;
+  line-height: .96;
+  letter-spacing: -.055em;
+}
+
+:is([class*='heroLead'], [class*='sectionHead'] p, [class*='journeyHead'] p, [class*='sticky'] > p) {
+  max-width: 66ch;
+  line-height: 1.55;
+}
+
+[data-npt-numeric] {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@media (max-width: 768px) {
+  :is(.page-title, [class*='heroCopy'] h1) {
+    font-size: clamp(48px, 13.5vw, 72px);
+    line-height: .94;
+    letter-spacing: -.055em;
+  }
+
+  :is([class*='sectionHead'] h2, [class*='journeyHead'] h2, [class*='sticky'] h2) {
+    font-size: clamp(38px, 10.5vw, 58px);
+    line-height: .98;
+  }
+}
+
+@media (max-width: 390px) {
+  :is(.page-title, [class*='heroCopy'] h1) {
+    font-size: clamp(44px, 12.6vw, 58px);
+  }
+}
