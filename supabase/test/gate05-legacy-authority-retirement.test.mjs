@@ -11,6 +11,7 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const allocate = read('supabase/functions/allocate-portfolio/index.ts');
 const yieldFn = read('supabase/functions/calculate-yield/index.ts');
 const migration = read('supabase/migrations/20260913061000_gate05_retire_legacy_financial_authority.sql');
+const grants = read('supabase/migrations/20260913062500_gate05_legacy_table_readonly_grants.sql');
 
 test('legacy portfolio allocator remains an inert 410 tombstone', () => {
   assert.match(allocate, /ALLOCATE_PORTFOLIO_RETIRED/);
@@ -35,4 +36,12 @@ test('Gate 05 migration removes browser canonical write policies and synthetic y
   assert.match(migration, /revoke insert, update, delete on table public\.portfolios from anon, authenticated/i);
   assert.match(migration, /jobname\s*=\s*'calculate-yield-daily'/i);
   assert.match(migration, /cron\.unschedule/i);
+});
+
+test('legacy customer financial tables expose read-only grants to browser roles', () => {
+  for (const table of ['transactions', 'portfolios', 'holdings', 'subscriptions']) {
+    assert.match(grants, new RegExp(`revoke all privileges on table public\\.${table} from anon, authenticated`, 'i'));
+    assert.match(grants, new RegExp(`grant select on table public\\.${table} to anon, authenticated`, 'i'));
+  }
+  assert.doesNotMatch(grants, /grant\s+(?:insert|update|delete|truncate|trigger|references)/i);
 });
