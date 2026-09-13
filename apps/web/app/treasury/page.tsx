@@ -1,0 +1,9 @@
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { TreasuryStateVisual, PaymentLifecycleVisual } from '@/components/unified-product-visuals';
+import { createPageMetadata } from '@/lib/seo';
+import styles from '../unified-marketing.module.css';
+
+export const metadata = createPageMetadata({ title: 'Treasury — Neptlium', description: 'Shared treasury concepts for liquidity, funding context, settlement, movement and reconciliation across Neptlium.', path: '/treasury' });
+
+export default function TreasuryPage(){return <div className={styles.page}><section className={styles.journeyHero} aria-labelledby="treasury-page-title"><div className={`${styles.shell} ${styles.heroGrid}`}><div className={styles.heroCopy}><p className={styles.eyebrow}>Treasury</p><h1 id="treasury-page-title">Know where capital stands before it moves.</h1><p className={styles.heroLead}>Treasury means different work for an individual investor and a business team, but both depend on explicit liquidity state, governed movement and reconciliation.</p><div className={styles.buttonRow}><Link className={`${styles.button} ${styles.buttonSecondary}`} href="/business">VaultRail for Business</Link><Link className={`${styles.button} ${styles.buttonGhost}`} href="/personal">Personal capital</Link></div></div><TreasuryStateVisual /></div></section><section className={styles.section} aria-labelledby="treasury-lifecycle-title"><div className={styles.shell}><div className={styles.sectionHead}><p className={styles.eyebrow}>Lifecycle</p><div><h2 id="treasury-lifecycle-title">Movement is not one status.</h2><p>Instruction, authorization, submission, settlement and reconciliation remain distinct so the system can explain what has actually happened.</p></div></div><PaymentLifecycleVisual /><Link className={styles.textAction} href="/platform">See the shared platform <ArrowRight aria-hidden="true" /></Link></div></section></div>}

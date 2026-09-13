@@ -1,0 +1,9 @@
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { PersonalCapitalVisual } from '@/components/unified-product-visuals';
+import { createPageMetadata } from '@/lib/seo';
+import styles from '../unified-marketing.module.css';
+
+export const metadata = createPageMetadata({ title: 'Capital — Neptlium', description: 'Understand available, reserved and allocated capital without collapsing distinct financial states.', path: '/capital' });
+
+export default function CapitalPage(){return <div className={styles.page}><section className={styles.journeyHero} aria-labelledby="capital-page-title"><div className={`${styles.shell} ${styles.heroGrid}`}><div className={styles.heroCopy}><p className={styles.eyebrow}>Personal · Capital</p><h1 id="capital-page-title">Know what is available.</h1><p className={styles.heroLead}>Neptlium separates available, reserved and allocated capital so the investor can understand what is usable, committed or already assigned.</p><div className={styles.buttonRow}><Link className={`${styles.button} ${styles.buttonSecondary}`} href="/personal">Back to Personal</Link></div></div><PersonalCapitalVisual /></div></section><section className={styles.section}><div className={styles.shell}><div className={styles.featureList}>{[['Available','Capital ready for supported use.'],['Reserved','Capital held for an authorized or pending purpose.'],['Allocated','Capital assigned to a position, investment or intended use.'],['Evidence','State changes should remain attributable and inspectable.']].map(([title,body],index)=><div key={title}><span>{String(index+1).padStart(2,'0')}</span><strong>{title}</strong><p>{body}</p></div>)}</div><Link className={styles.textAction} href="/allocation">Explore Allocation <ArrowRight aria-hidden="true" /></Link></div></section></div>}

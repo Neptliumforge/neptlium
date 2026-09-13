@@ -9,6 +9,7 @@ import './homepage-refinement.css';
 import './homepage-balance.css';
 import './architecture-rebuild.css';
 import './marketing-system.css';
+import './unified-shell.css';
 import { SiteHeader } from '@/components/site-header';
 import { GlobalConversionCta } from '@/components/global-conversion-cta';
 import { SiteFooter } from '@/components/site-footer';
@@ -19,14 +20,14 @@ const socialDestinations = ['https://bsky.app/profile/neptlium.bsky.social','htt
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: 'Neptlium — Capital, intelligently managed.', template: '%s — Neptlium' },
+  title: { default: 'Neptlium — Financial systems for modern capital', template: '%s — Neptlium' },
   description: SITE.description,
   applicationName: SITE.name,
   creator: SITE.name,
   alternates: { canonical: '/' },
   icons: { icon: [{ url: '/icon.svg', type: 'image/svg+xml' }], apple: [{ url: '/apple-icon', sizes: '180x180', type: 'image/png' }] },
-  openGraph: { type: 'website', siteName: SITE.name, title: 'Neptlium — Capital, intelligently managed.', description: SITE.description, url: SITE.url, locale: 'en_US', images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Neptlium — Capital, intelligently managed.' }] },
-  twitter: { card: 'summary_large_image', title: 'Neptlium — Capital, intelligently managed.', description: SITE.description, images: ['/opengraph-image'] },
+  openGraph: { type: 'website', siteName: SITE.name, title: 'Neptlium — Financial systems for modern capital', description: SITE.description, url: SITE.url, locale: 'en_US', images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Neptlium — Financial systems for modern capital' }] },
+  twitter: { card: 'summary_large_image', title: 'Neptlium — Financial systems for modern capital', description: SITE.description, images: ['/opengraph-image'] },
   robots: { index: true, follow: true },
 };
 

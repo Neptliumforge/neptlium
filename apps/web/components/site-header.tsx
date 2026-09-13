@@ -10,6 +10,17 @@ import { MobileNavigation } from './mobile-navigation';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 
+function AccountMenu({ kind }: { kind: 'signin' | 'start' }) {
+  const start = kind === 'start';
+  return <details className="account-menu">
+    <summary className={start ? 'account-menu-trigger account-menu-primary' : 'account-menu-trigger'}>{start ? 'Get started' : 'Sign in'}</summary>
+    <div className="account-menu-panel" role="group" aria-label={start ? 'Get started options' : 'Sign in options'}>
+      <a href={start ? SITE.personalSignUpUrl : SITE.personalSignInUrl}><strong>Personal</strong><span>Neptlium Capital</span></a>
+      <a href={start ? SITE.businessAccessUrl : SITE.businessAppUrl}><strong>Business</strong><span>{start ? 'Request VaultRail access' : 'Open VaultRail'}</span></a>
+    </div>
+  </details>;
+}
+
 export function SiteHeader() {
   const path = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -33,12 +44,8 @@ export function SiteHeader() {
         <nav className="desktop-command-nav" aria-label="Primary navigation">
           {NAVIGATION.map((item) => <Link key={item.href} href={item.href} aria-current={path === item.href || path.startsWith(`${item.href}/`) ? 'page' : undefined}>{item.label}</Link>)}
         </nav>
-        <div className="command-actions">
-          <Link href={SITE.signInUrl}>Sign in</Link>
-          <Link className="command-primary-action" href={SITE.signUpUrl}>Open account</Link>
-        </div>
+        <div className="command-actions"><AccountMenu kind="signin" /><AccountMenu kind="start" /></div>
         <div className="elite-header-actions">
-          <Link href={SITE.signInUrl}>Sign in</Link>
           <button ref={trigger} className="elite-menu-trigger" type="button" aria-expanded={mobileOpen} aria-controls="mobile-command-sheet" aria-label="Open navigation" onClick={() => setMobileOpen(true)}><Menu aria-hidden="true" /></button>
         </div>
       </div>

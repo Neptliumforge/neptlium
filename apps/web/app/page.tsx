@@ -1,167 +1,45 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import {
-  ActivityDocumentsVisual,
-  AllocationLifecycleVisual,
-  CapitalStateVisual,
-  GovernanceVisual,
-  HeroCapitalVisual,
-  PortfolioIntelligenceVisual,
-  SystemRevealVisual,
-  TreasuryFlowVisual,
-} from '@/components/homepage-product-visuals';
-import { DISCLOSURES, SITE } from '@/lib/content/site';
+import { UnifiedHeroVisual, SharedCoreVisual, PersonalCapitalVisual, VaultRailCommandVisual, PaymentLifecycleVisual } from '@/components/unified-product-visuals';
+import { DISCLOSURES } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
-import styles from './homepage-stage01.module.css';
+import styles from './unified-marketing.module.css';
 
 export const metadata = createPageMetadata({
-  title: 'Capital, intelligently managed',
-  description: 'Neptlium brings capital, treasury, investments, portfolio intelligence and allocation into one governed financial environment.',
+  title: 'One system for modern capital',
+  description: 'Neptlium brings investing, treasury, portfolio intelligence, allocation, payments and financial control into one connected environment for people and businesses.',
   path: '/',
 });
 
-const investmentCapabilities = [
-  ['Public markets', 'Informational', 'Market context and investment presentation without implying live brokerage execution.'],
-  ['Digital assets', 'Limited', 'Availability depends on supported account, provider, network and operating state.'],
-  ['Private opportunities', 'Informational', 'Opportunity presentation is used only when verified offering documentation exists.'],
-  ['Cash & treasury', 'Developing', 'Treasury concepts remain distinct from unsupported public USD funding claims.'],
-] as const;
-
 const insightTopics = [
-  ['Market intelligence', 'Understand market context without turning commentary into a promise.'],
-  ['Portfolio perspectives', 'Explore frameworks for ownership, exposure and concentration.'],
-  ['Capital management', 'Think more clearly about liquidity, allocation and financial state.'],
-  ['Digital assets', 'Separate infrastructure reality from market narrative.'],
+  ['Markets', 'Context for understanding market conditions without turning commentary into a promise.'],
+  ['Portfolio', 'Frameworks for ownership, exposure, concentration and decision quality.'],
+  ['Treasury', 'Operational thinking around liquidity, payments, policy and reconciliation.'],
+  ['Risk', 'Explainable financial control for people and businesses.'],
 ] as const;
 
 export default function HomePage() {
-  return (
-    <div className={styles.page}>
-      <section className={styles.hero} aria-labelledby="home-title">
-        <div className={`${styles.shell} ${styles.heroGrid}`}>
-          <div>
-            <p className={styles.eyebrow}>Neptlium capital platform</p>
-            <h1 id="home-title">Capital, intelligently managed.</h1>
-            <p className={styles.heroLead}>Neptlium brings capital, treasury, investments, portfolio intelligence and allocation into one governed financial environment.</p>
-            <div className={styles.buttonRow}>
-              <Link className={`${styles.button} ${styles.primaryButton}`} href={SITE.signUpUrl}>Open account <ArrowRight aria-hidden="true" /></Link>
-              <Link className={`${styles.button} ${styles.secondaryButton}`} href="/platform">Explore Neptlium</Link>
-            </div>
-            <p className={styles.heroNote}>Product visuals on this page are illustrative. They do not represent a real customer account, balance, return history or executed transaction.</p>
-          </div>
-          <HeroCapitalVisual />
-        </div>
-      </section>
+  return <div className={styles.page}>
+    <section className={styles.hero} aria-labelledby="home-title"><div className={`${styles.shell} ${styles.heroGrid}`}>
+      <div className={styles.heroCopy}><p className={styles.eyebrow}>Neptlium</p><h1 id="home-title">One system for modern capital.</h1><p className={styles.heroLead}>Neptlium brings investing, treasury, portfolio intelligence, allocation, payments and financial control into one connected environment.</p><div className={styles.buttonRow}><Link className={`${styles.button} ${styles.buttonPrimary}`} href="/personal">Explore Personal <ArrowRight aria-hidden="true" /></Link><Link className={`${styles.button} ${styles.buttonSecondary}`} href="/business">Explore Business</Link><Link className={`${styles.button} ${styles.buttonGhost}`} href="/platform">See the platform</Link></div></div>
+      <UnifiedHeroVisual />
+    </div></section>
 
-      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="system-title">
-        <div className={styles.shell}>
-          <div className={styles.sectionHead}>
-            <div><p className={styles.eyebrow}>One governed system</p><h2 id="system-title">Capital should move through one coherent operating model.</h2></div>
-            <p>Neptlium connects capital state, treasury movement, allocation decisions and portfolio context while preserving the boundaries between modeled intent, authorized action, external evidence and canonical financial consequence.</p>
-          </div>
-          <SystemRevealVisual />
-        </div>
-      </section>
+    <section className={styles.section} aria-labelledby="journeys-title"><div className={styles.shell}><div className={styles.journeyHead}><p className={styles.eyebrow}>Two product journeys</p><div><h2 id="journeys-title">One company. Two ways to operate capital.</h2><p>Personal and Business share the same Neptlium design language and financial-control philosophy. The difference is the work each customer needs to do.</p></div></div><div className={styles.journeyGrid}>
+      <article className={styles.journeyCard}><span>Personal · Neptlium Capital</span><h3>See your capital clearly.</h3><p>Track capital, portfolio state, allocation, activity and documents through one governed investment environment.</p><Link className={styles.textAction} href="/personal">Explore Personal <ArrowRight aria-hidden="true" /></Link></article>
+      <article className={styles.journeyCard}><span>Business · VaultRail</span><h3>Run treasury with control.</h3><p>Manage treasury, payments, approvals, risk, evidence and audit through a business operating environment built around explicit authority.</p><Link className={styles.textAction} href="/business">Explore Business <ArrowRight aria-hidden="true" /></Link></article>
+    </div></div></section>
 
-      <section className={`${styles.section} ${styles.lightSection}`} aria-labelledby="capital-title">
-        <div className={`${styles.shell} ${styles.split}`}>
-          <div className={styles.stickyCopy}>
-            <p className={styles.eyebrow}>Capital</p>
-            <h2 id="capital-title">Know where your capital stands.</h2>
-            <p>Available, reserved and allocated are different states with different consequences. Neptlium is designed to keep those distinctions visible instead of compressing them into a single ambiguous balance.</p>
-            <Link className={styles.textAction} href="/products/capital-account">Explore Capital <ArrowRight aria-hidden="true" /></Link>
-          </div>
-          <CapitalStateVisual />
-        </div>
-      </section>
+    <section className={`${styles.section} ${styles.compact}`} aria-labelledby="core-title"><div className={styles.shell}><div className={styles.sectionHead}><p className={styles.eyebrow}>Shared core</p><div><h2 id="core-title">One financial system underneath.</h2><p>Both journeys depend on the same principles: identity should be verified, authority should be explicit, financial state should have evidence, and important outcomes should reconcile into an explainable record.</p></div></div><SharedCoreVisual /></div></section>
 
-      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="treasury-title">
-        <div className={`${styles.shell} ${styles.splitReverse}`}>
-          <TreasuryFlowVisual />
-          <div className={styles.stickyCopy}>
-            <p className={styles.eyebrow}>Treasury</p>
-            <h2 id="treasury-title">Move capital with clarity.</h2>
-            <p>Funding, settlement, reconciliation and availability are not interchangeable. Neptlium treats each as a distinct lifecycle state and only exposes supported routes through current account capability.</p>
-            <Link className={styles.textAction} href="/products/treasury">Explore Treasury <ArrowRight aria-hidden="true" /></Link>
-          </div>
-        </div>
-      </section>
+    <section className={`${styles.section} ${styles.ivory}`} aria-labelledby="personal-preview-title"><div className={`${styles.shell} ${styles.split}`}><div className={styles.sticky}><p className={styles.eyebrow}>Personal</p><h2 id="personal-preview-title">Built for investors who want more than a balance.</h2><p>Neptlium Capital organizes capital state, portfolio context, allocation decisions, activity and reporting without treating modeled or provider-observed state as canonical financial truth.</p><Link className={styles.textAction} href="/personal">Explore Personal <ArrowRight aria-hidden="true" /></Link></div><PersonalCapitalVisual /></div></section>
 
-      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="investments-title">
-        <div className={styles.shell}>
-          <div className={styles.sectionHead}>
-            <div><p className={styles.eyebrow}>Investment experience</p><h2 id="investments-title">Understand the opportunity before the action.</h2></div>
-            <p>Investment presentation should make objective, structure, exposure, risk, liquidity, documentation and suitability legible before a commitment is made. Availability labels below are deliberately conservative.</p>
-          </div>
-          <div className={styles.capabilityStrip}>
-            {investmentCapabilities.map(([title, status, body]) => <article className={styles.capabilityCard} key={title}><span>{status}</span><h3>{title}</h3><p>{body}</p></article>)}
-          </div>
-          <Link className={styles.textAction} href="/investments">Explore Investments <ArrowRight aria-hidden="true" /></Link>
-        </div>
-      </section>
+    <section className={styles.section} aria-labelledby="business-preview-title"><div className={`${styles.shell} ${styles.split} ${styles.splitReverse}`}><VaultRailCommandVisual /><div className={styles.sticky}><p className={styles.eyebrow}>Business · VaultRail</p><h2 id="business-preview-title">Built for teams responsible for real money.</h2><p>VaultRail brings treasury visibility, payment lifecycle controls, approvals, risk evidence and audit into one business operating environment.</p><Link className={styles.textAction} href="/business">Explore VaultRail <ArrowRight aria-hidden="true" /></Link></div></div></section>
 
-      <section className={`${styles.section} ${styles.lightSection}`} aria-labelledby="portfolio-title">
-        <div className={`${styles.shell} ${styles.splitReverse}`}>
-          <PortfolioIntelligenceVisual />
-          <div className={styles.stickyCopy}>
-            <p className={styles.eyebrow}>Portfolio intelligence</p>
-            <h2 id="portfolio-title">See the whole portfolio. Not fragments.</h2>
-            <p>Positions, valuation context, allocation, activity and reporting should connect without pretending uncertain or unavailable information is known. The interface stays useful by preserving provenance.</p>
-            <Link className={styles.textAction} href="/products/portfolio-intelligence">Explore Portfolio Intelligence <ArrowRight aria-hidden="true" /></Link>
-          </div>
-        </div>
-      </section>
+    <section className={styles.section} aria-labelledby="integrity-title"><div className={styles.shell}><div className={styles.sectionHead}><p className={styles.eyebrow}>Platform integrity</p><div><h2 id="integrity-title">Financial state should be explainable.</h2><p>Intent, authorization, execution, evidence and reconciliation are different moments. Neptlium keeps those distinctions visible across investing and business treasury workflows.</p></div></div><PaymentLifecycleVisual /></div></section>
 
-      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="allocation-title">
-        <div className={styles.shell}>
-          <div className={styles.sectionHead}>
-            <div><p className={styles.eyebrow}>Allocation</p><h2 id="allocation-title">Decisions before execution. Evidence after it.</h2></div>
-            <p>Neptlium keeps modeling, review, approval, reservation, execution and reconciliation separate so a proposed capital state never masquerades as an executed one.</p>
-          </div>
-          <AllocationLifecycleVisual />
-          <Link className={styles.textAction} href="/products/allocation">Explore Allocation <ArrowRight aria-hidden="true" /></Link>
-        </div>
-      </section>
+    <section className={styles.section} aria-labelledby="insights-title"><div className={styles.shell}><div className={styles.sectionHead}><p className={styles.eyebrow}>Insights</p><div><h2 id="insights-title">One editorial layer across the product family.</h2><p>Neptlium Insights connects investing, portfolio, capital management, treasury, payments, digital assets, risk, companies and technology without creating separate audience brands.</p></div></div><div className={styles.editorialGrid}><Link href="/insights"><span>Neptlium Insights</span><h3>Financial intelligence for capital in motion.</h3><p>Research and education are published only when substantive original material exists.</p></Link>{insightTopics.map(([title, body]) => <Link href="/insights" key={title}><span>Topic</span><h3>{title}</h3><p>{body}</p></Link>)}</div></div></section>
 
-      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="governance-title">
-        <div className={styles.shell}>
-          <div className={styles.sectionHead}>
-            <div><p className={styles.eyebrow}>Security & financial governance</p><h2 id="governance-title">Financial state should be explainable.</h2></div>
-            <p>Identity, authority, execution, evidence and reconciliation are independent control boundaries. Neptlium’s public claims stay inside those boundaries and do not imply certifications, insurance or regulatory status that has not been verified.</p>
-          </div>
-          <GovernanceVisual />
-          <Link className={styles.textAction} href="/security">Explore Security <ArrowRight aria-hidden="true" /></Link>
-        </div>
-      </section>
-
-      <section className={`${styles.section} ${styles.lightSection}`} aria-labelledby="activity-title">
-        <div className={`${styles.shell} ${styles.split}`}>
-          <div className={styles.stickyCopy}>
-            <p className={styles.eyebrow}>Activity & documents</p>
-            <h2 id="activity-title">Every capital event should leave a record.</h2>
-            <p>Funding evidence, settlement, reconciliation, allocation approvals, supported execution and reporting belong to one inspectable history. The lifecycle shown here is illustrative, not a real customer event stream.</p>
-          </div>
-          <ActivityDocumentsVisual />
-        </div>
-      </section>
-
-      <section className={`${styles.section} ${styles.darkSection}`} aria-labelledby="insights-title">
-        <div className={styles.shell}>
-          <div className={styles.sectionHead}>
-            <div><p className={styles.eyebrow}>Insights</p><h2 id="insights-title">Intelligence for clearer capital decisions.</h2></div>
-            <p>Neptlium publishes market, portfolio and capital perspectives without fabricating research inventory, authorship, performance findings or investment outcomes.</p>
-          </div>
-          <div className={styles.insightsGrid}>
-            <Link className={styles.insightFeature} href="/insights"><span>Neptlium insights</span><h3>Market context with financial discipline.</h3><p>Editorial perspective designed to improve understanding, not simulate a recommendation.</p></Link>
-            {insightTopics.map(([title,body]) => <Link className={styles.insightItem} href="/insights" key={title}><span>Perspective</span><h3>{title}</h3><p>{body}</p></Link>)}
-          </div>
-          <Link className={styles.textAction} href="/insights">Explore Insights <ArrowRight aria-hidden="true" /></Link>
-        </div>
-      </section>
-
-      <section className={styles.disclosure} aria-label="Homepage financial disclosures">
-        <div className={`${styles.shell} ${styles.disclosureInner}`}><p>{DISCLOSURES.investment}</p><p>{DISCLOSURES.availability} {DISCLOSURES.modeling}</p></div>
-      </section>
-    </div>
-  );
+    <section className={styles.disclosure} aria-label="General disclosure"><div className={styles.shell}><p>{DISCLOSURES.general} {DISCLOSURES.availability}</p></div></section>
+  </div>;
 }

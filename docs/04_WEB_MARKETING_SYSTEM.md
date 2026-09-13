@@ -1,19 +1,16 @@
-# Neptlium Web Marketing System — Deprecated Visual Direction
+# Neptlium Web Marketing System
 
-**Status:** Deprecated for marketing visual design as of Stage 01 (September 2026)
+**Status:** Deprecated as an independent design authority.
 
-The authoritative marketing design and marketing-frontend specification is now:
+The current authoritative public marketing and design specification is:
 
-- `docs/marketing-design-system.md`
+[`docs/marketing-design-system.md`](./marketing-design-system.md)
 
-This document's prior ivory-first palette, five-item top-level navigation, homepage sequence, `Get Started` conversion language, and PR #68 visual assumptions are no longer authoritative.
+The unified marketing architecture is one Neptlium company with two product journeys:
 
-Route policy, financial-truth constraints, redirect behavior, SEO requirements, and backend/product capability boundaries remain governed by the repository source contracts and must not be weakened by design work.
+- Personal / Neptlium Capital
+- Business / VaultRail
 
-For current implementation authority, use:
+This file is retained only to preserve references from older engineering notes. If guidance here conflicts with `docs/marketing-design-system.md`, the unified marketing design system wins.
 
-- `apps/web/lib/content/public-architecture.ts`
-- `apps/web/lib/content/site.ts`
-- `apps/web/app/marketing-system.css`
-- `apps/web/app/homepage-stage01.module.css`
-- `docs/marketing-design-system.md`
+Financial-truth, product-constitution, security, canonical-authority, ledger and provider constraints remain governed by their respective architecture documents and are not superseded by marketing design.

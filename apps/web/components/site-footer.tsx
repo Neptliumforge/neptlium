@@ -4,10 +4,11 @@ import { Brand } from './brand';
 import { SITE } from '@/lib/content/site';
 
 const columns = [
-  { label: 'Platform', links: [{ label: 'Overview', href: '/platform' }, { label: 'Capital', href: '/products/capital-account' }, { label: 'Treasury', href: '/products/treasury' }, { label: 'Allocation', href: '/products/allocation' }] },
-  { label: 'Investments', links: [{ label: 'Investment experience', href: '/investments' }, { label: 'Portfolio intelligence', href: '/products/portfolio-intelligence' }, { label: 'Solutions', href: '/solutions' }] },
-  { label: 'Company', links: [{ label: 'Insights', href: '/insights' }, { label: 'Security', href: '/security' }, { label: 'Company', href: '/company' }, { label: 'Contact', href: '/contact' }] },
-  { label: 'Account', links: [{ label: 'Sign in', href: SITE.signInUrl }, { label: 'Open account', href: SITE.signUpUrl }] },
+  { label: 'Products', links: [{ label: 'Personal', href: '/personal' }, { label: 'Business', href: '/business' }, { label: 'Platform', href: '/platform' }] },
+  { label: 'Personal', links: [{ label: 'Capital', href: '/capital' }, { label: 'Investments', href: '/investments' }, { label: 'Portfolio', href: '/portfolio' }, { label: 'Allocation', href: '/allocation' }] },
+  { label: 'Business', links: [{ label: 'VaultRail', href: '/business' }, { label: 'Treasury', href: '/treasury' }, { label: 'Payments', href: SITE.payUrl }, { label: 'Request access', href: SITE.businessAccessUrl }] },
+  { label: 'Resources', links: [{ label: 'Insights', href: '/insights' }, { label: 'Security', href: '/security' }, { label: 'Documentation', href: SITE.docsUrl }, { label: 'Status', href: SITE.statusUrl }] },
+  { label: 'Company', links: [{ label: 'About', href: '/company' }, { label: 'Contact', href: '/contact' }] },
 ] as const;
 
 const legalLinks = [
@@ -18,21 +19,18 @@ const legalLinks = [
   { label: 'Accessibility', href: '/accessibility' },
 ] as const;
 
-const socialLinks = [
-  { label: 'X', href: 'https://x.com/Neptlium' },
-  { label: 'YouTube', href: 'https://youtube.com/@neptlium?si=fJ7q0r18UCoxjJth' },
-  { label: 'Bluesky', href: 'https://bsky.app/profile/neptlium.bsky.social' },
-  { label: 'TikTok', href: 'https://www.tiktok.com/@neptlium?_r=1&_t=ZS-98quVuRhCNt' },
+const destinations = [
+  { label: 'Neptlium Capital', href: SITE.personalAppUrl },
+  { label: 'VaultRail', href: SITE.businessAppUrl },
 ] as const;
 
 export function SiteFooter() {
   return <footer className="elite-footer" aria-label="Neptlium footer"><div className="elite-footer-shell">
     <div className="elite-footer-architecture">
-      <div className="elite-footer-identity"><Brand tone="teal" /><p className="elite-footer-statement">Capital, intelligently managed.</p><p className="elite-footer-statement">A governed financial environment for capital, treasury, investments, portfolio intelligence and allocation.</p></div>
-      {columns.map((column) => <section className="elite-footer-column" key={column.label}><span className="elite-footer-title">{column.label}</span><div className="elite-footer-links">{column.links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</div></section>)}
+      <div className="elite-footer-identity"><Brand tone="teal" /><p className="elite-footer-statement">Financial infrastructure and capital systems for people and businesses.</p><div className="elite-footer-destinations">{destinations.map((item) => <a key={item.href} href={item.href}>{item.label}<ArrowUpRight aria-hidden="true" /></a>)}</div></div>
+      {columns.map((column) => <section className="elite-footer-column" key={column.label}><span className="elite-footer-title">{column.label}</span><div className="elite-footer-links">{column.links.map((link) => link.href.startsWith('http') ? <a key={link.href} href={link.href}>{link.label}</a> : <Link key={link.href} href={link.href}>{link.label}</Link>)}</div></section>)}
     </div>
-    <section className="elite-footer-column" aria-label="Social"><span className="elite-footer-title">Social</span><div className="elite-footer-links">{socialLinks.map((social) => <a className="elite-social-link" href={social.href} key={social.href} target="_blank" rel="noopener noreferrer">{social.label}<ArrowUpRight aria-hidden="true" /></a>)}</div></section>
-    <p className="elite-footer-statement">Information on this website is informational and does not constitute investment advice. Investing and digital-asset activity involve risk, including possible loss of principal. Product availability depends on current account, provider, infrastructure and eligibility state.</p>
+    <p className="elite-footer-statement elite-footer-disclosure">Information on this website is informational and does not constitute investment advice. Investing and digital-asset activity involve risk, including possible loss of principal. Business treasury and payment capabilities depend on eligibility, supported infrastructure and current product availability.</p>
     <div className="elite-footer-base"><span>© {new Date().getFullYear()} Neptlium</span><nav className="elite-footer-legal" aria-label="Legal">{legalLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</nav></div>
   </div></footer>;
 }
