@@ -37,7 +37,7 @@ export const dashboardMobilePrimaryNavItems: readonly RoleAwareNavItem[] = [
   { label: 'Capital', href: '/dashboard/capital', minRole: 'user', icon: <Wallet className="size-4" /> },
   { label: 'Portfolio', href: '/dashboard/portfolio', minRole: 'user', icon: <Briefcase className="size-4" /> },
   { label: 'Activity', href: '/dashboard/activity', minRole: 'user', icon: <List className="size-4" /> },
-  { label: 'More', href: '/dashboard/settings', minRole: 'user', icon: <MoreHorizontal className="size-4" /> },
+  { label: 'More', href: '/dashboard/more', minRole: 'user', icon: <MoreHorizontal className="size-4" /> },
 ];
 
 export const dashboardMobileSecondaryNavItems: readonly RoleAwareNavItem[] = [
