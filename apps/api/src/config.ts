@@ -1,6 +1,6 @@
 export type Environment = 'development' | 'test' | 'preview' | 'production';
 export type ProviderRuntimeEnvironment = 'testnet' | 'production';
-export type ApiAuthMode = 'CLERK';
+export type ApiAuthMode = 'SUPABASE';
 
 function providerEnvironment(value: string | undefined, name: string): ProviderRuntimeEnvironment | undefined {
   if (!value) return undefined;
@@ -36,8 +36,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     return value;
   };
   const SUPABASE_URL = validUrl(env.SUPABASE_URL, 'SUPABASE_URL');
-  const AUTH_MODE: ApiAuthMode = 'CLERK';
-  const clerkAuthorizedParties = (env.CLERK_AUTHORIZED_PARTIES ?? '').split(',').map((value) => value.trim()).filter(Boolean);
+  const AUTH_MODE: ApiAuthMode = 'SUPABASE';
   const ALCHEMY_RPC_URL = validUrl(env.ALCHEMY_RPC_URL, 'ALCHEMY_RPC_URL');
   if ((env.ALCHEMY_API_KEY || ALCHEMY_RPC_URL) && (!env.ALCHEMY_API_KEY || !ALCHEMY_RPC_URL || !ALCHEMY_ENVIRONMENT))
     throw new Error('Alchemy requires ALCHEMY_API_KEY, ALCHEMY_RPC_URL, and ALCHEMY_ENVIRONMENT');
@@ -80,9 +79,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     API_HOST: env.API_HOST ?? '0.0.0.0', API_PORT: port, API_LOG_LEVEL: env.API_LOG_LEVEL ?? 'info', API_BUILD_ID: env.API_BUILD_ID ?? 'local',
     ENABLE_MAINNET: mainnetPermitted,
     SUPABASE_URL, SUPABASE_ANON_KEY: env.SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
-    AUTH_MODE, CLERK_SECRET_KEY: env.CLERK_SECRET_KEY, CLERK_JWT_KEY: env.CLERK_JWT_KEY,
-    CLERK_WEBHOOK_SIGNING_SECRET: env.CLERK_WEBHOOK_SIGNING_SECRET,
-    CLERK_AUTHORIZED_PARTIES: clerkAuthorizedParties,
+    AUTH_MODE,
     ALCHEMY_RPC_URL, ALCHEMY_API_KEY: env.ALCHEMY_API_KEY, ALCHEMY_ENVIRONMENT,
     ALCHEMY_WEBHOOK_SIGNING_KEY: env.ALCHEMY_WEBHOOK_SIGNING_KEY,
     ALCHEMY_PRODUCTION_CAPABILITY_VERIFIED: alchemyProductionCapabilityVerified,
@@ -102,7 +99,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
         : 'http://localhost:3000,http://localhost:3002')
     ).split(',').map((v) => v.trim()).filter(Boolean),
     databaseConfigured: Boolean(SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY),
-    clerkConfigured: Boolean(env.CLERK_SECRET_KEY && clerkAuthorizedParties.length > 0),
+    supabaseAuthConfigured: Boolean(SUPABASE_URL && env.SUPABASE_ANON_KEY),
     alchemyConfigured: Boolean(env.ALCHEMY_API_KEY && ALCHEMY_RPC_URL && ALCHEMY_ENVIRONMENT),
     circleConfigured: Boolean(circleCredentialsPresent && CIRCLE_ENVIRONMENT),
     stripeConfigured: Boolean(env.STRIPE_WEBHOOK_SECRET),
