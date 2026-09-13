@@ -92,7 +92,7 @@ export const NAVIGATION = [
 ] as const;
 
 export const INDEXABLE_ROUTES = [
-  '/', '/platform', '/investments', '/insights',
+  '/', '/personal', '/business', '/platform', '/investments', '/insights',
   '/products', '/products/capital-account', '/products/treasury', '/products/allocation', '/products/portfolio-intelligence',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
   '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
@@ -100,6 +100,8 @@ export const INDEXABLE_ROUTES = [
 
 export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/': 'canonical-indexable',
+  '/personal': 'canonical-indexable',
+  '/business': 'canonical-indexable',
   '/platform': 'canonical-indexable',
   '/investments': 'canonical-indexable',
   '/insights': 'canonical-indexable',
