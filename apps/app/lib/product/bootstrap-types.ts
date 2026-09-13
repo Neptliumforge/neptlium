@@ -1,5 +1,6 @@
 import type {
   AccountContext,
+  AccountSettings,
   AllocationState,
   CapitalActivityPage,
   CustomerDocument,
@@ -21,6 +22,7 @@ export type Projection<T> =
 
 export interface AuthenticatedProductBootstrap {
   readonly account: Pick<AccountContext, 'id' | 'email' | 'fullName' | 'displayName' | 'complianceStatus' | 'role'>;
+  readonly settings: Projection<AccountSettings>;
   readonly overview: Projection<OverviewState>;
   readonly balances: Projection<readonly CanonicalBalance[]>;
   readonly fundingCapabilities: Projection<readonly FundingCapability[]>;
