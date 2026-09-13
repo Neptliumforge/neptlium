@@ -31,6 +31,7 @@ jobs:
       - run: pnpm --filter @neptlium/api test
       - run: pnpm --filter @neptlium/api vercel-build
       - run: node --test supabase/test/stripe-webhook-retirement.test.mjs
+      - run: node --test supabase/test/gate05-legacy-authority-retirement.test.mjs
 
   validate-web:
     runs-on: ubuntu-latest
