@@ -1,6 +1,7 @@
 import 'server-only';
 
 import {
+  getAccountSettings,
   getAllocationState,
   getCapitalActivity,
   getDocuments,
@@ -19,8 +20,8 @@ import {
 import type { AccountContext } from '@/lib/api/client';
 import type { AuthenticatedProductBootstrap, Projection } from './bootstrap-types';
 
-function projection<T>(result: PromiseSettledResult<T>, select: (value: T) => T = (value) => value): Projection<T> {
-  if (result.status === 'fulfilled') return { state: 'READY', data: select(result.value) };
+function projection<T>(result: PromiseSettledResult<T>): Projection<T> {
+  if (result.status === 'fulfilled') return { state: 'READY', data: result.value };
   return { state: 'UNAVAILABLE', reason: 'projection_unavailable' };
 }
 
@@ -28,6 +29,7 @@ export async function getAuthenticatedProductBootstrap(
   account: Pick<AccountContext, 'id' | 'email' | 'fullName' | 'displayName' | 'complianceStatus' | 'role'>,
 ): Promise<AuthenticatedProductBootstrap> {
   const [
+    settings,
     overview,
     balances,
     fundingCapabilities,
@@ -41,6 +43,7 @@ export async function getAuthenticatedProductBootstrap(
     notifications,
     documents,
   ] = await Promise.allSettled([
+    getAccountSettings(),
     getOverviewState(),
     getCanonicalBalances(),
     getFundingCapabilities(),
@@ -57,6 +60,7 @@ export async function getAuthenticatedProductBootstrap(
 
   return {
     account,
+    settings: projection(settings),
     overview: projection(overview),
     balances: balances.status === 'fulfilled'
       ? { state: 'READY', data: balances.value.balances }
