@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const home = read('app/page.tsx');
+const homeElite = read('app/home-elite.module.css');
 const personal = read('app/personal/page.tsx');
 const business = read('app/business/page.tsx');
 const platform = read('app/platform/page.tsx');
@@ -24,17 +25,24 @@ const architecture = read('lib/content/public-architecture.ts');
 
 const surfacesFor = (source) => [...source.matchAll(/data-npt-surface="([^"]+)"/g)].map((match) => match[1]);
 
-test('homepage establishes one company with two product journeys', () => {
+test('homepage is a distinct brand story rather than a copied product index', () => {
   assert.equal((home.match(/<h1/g) ?? []).length, 1);
-  for (const copy of ['One system for modern capital', 'Explore Personal', 'Explore Business', 'One financial system underneath', 'Built for investors', 'Built for teams responsible for real money']) assert.match(home, new RegExp(copy, 'i'));
+  for (const copy of ['Capital, clearly', 'See your financial world as one', 'Built for the way capital actually lives', 'Know what moved', 'Everything important, in context', 'From understanding to action', 'Context changes the decision']) assert.match(home, new RegExp(copy, 'i'));
+  for (const destination of ['/personal', '/business', '/insights']) assert.match(home, new RegExp(destination.replaceAll('/', '\\/')));
+  assert.doesNotMatch(home, /STEP ONE|STEP TWO|FEATURE 0[1-9]|WHY NEPTLIUM|POWERFUL FEATURES|EVERYTHING YOU NEED|HOW IT WORKS|THE FUTURE OF FINANCE/i);
   assert.doesNotMatch(home, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i);
+  assert.doesNotMatch(home, /currently supported|not configured|capability unavailable/i);
+  assert.match(homeElite, /font-size:clamp\(64px,6\.4vw,88px\)/);
+  assert.match(homeElite, /@media\(max-width:760px\)/);
+  assert.match(homeElite, /@media\(max-width:390px\)/);
+  assert.match(homeElite, /prefers-reduced-motion:reduce/);
 });
 
 test('authoritative semantic surfaces exist and major routes do not collapse into one canvas', () => {
   for (const surface of ['carbon', 'white', 'ivory', 'cloud', 'mineral', 'mineral-light']) assert.match(surfaces, new RegExp(`data-npt-surface=['"]${surface}['"]`, 'i'));
   const homeSurfaces = surfacesFor(home);
-  for (const expected of ['carbon', 'white', 'cloud', 'mineral']) assert.ok(homeSurfaces.includes(expected));
-  assert.ok(new Set(homeSurfaces).size >= 4, 'homepage must remain a true multi-surface composition');
+  for (const expected of ['carbon', 'white', 'cloud', 'mineral', 'ivory']) assert.ok(homeSurfaces.includes(expected));
+  assert.ok(new Set(homeSurfaces).size >= 5, 'homepage must remain a true multi-surface composition');
   for (const [name, source, required] of [
     ['personal', personal, ['ivory', 'white', 'cloud', 'mineral', 'carbon']],
     ['business', business, ['mineral', 'white', 'carbon', 'cloud', 'mineral-light']],
