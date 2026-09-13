@@ -1,6 +1,16 @@
 name: Web Preview Browser QA
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/web-preview-browser-qa.yml"
+      - "apps/web/**"
+      - "packages/ui/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "turbo.json"
   workflow_dispatch:
 
 permissions:
