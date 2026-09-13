@@ -16,16 +16,12 @@ const titles: readonly [string, string][] = [
   ['/dashboard/documents', 'Documents'],
   ['/dashboard/notifications', 'Notifications'],
   ['/dashboard/settings', 'Settings'],
+  ['/dashboard/more', 'More'],
   ['/dashboard', 'Overview'],
 ];
 
 export function WorkspaceTitle() {
   const pathname = usePathname();
   const title = titles.find(([path]) => pathname === path || (path !== '/dashboard' && pathname.startsWith(`${path}/`)))?.[1] ?? 'Neptlium';
-  return (
-    <div className="workspace-context">
-      <span>{title}</span>
-      <em>Governed capital state</em>
-    </div>
-  );
+  return <div className="workspace-context"><span>{title}</span><em>Governed capital state</em></div>;
 }
