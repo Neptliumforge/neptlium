@@ -4,14 +4,22 @@ import test from 'node:test';
 
 const read = (relative) => readFileSync(new URL(relative, import.meta.url), 'utf8');
 
+const web = JSON.parse(read('../vercel.json'));
 const projects = [
-  ['web', read('../vercel.json')],
   ['app', read('../../app/vercel.json')],
   ['admin', read('../../admin/vercel.json')],
   ['api', read('../../api/vercel.json')],
 ];
 
-test('each Vercel project uses path-aware ignored-build detection', () => {
+test('Web Vercel detection compares against the last successful deployment', () => {
+  assert.equal(typeof web.ignoreCommand, 'string', 'web must define an ignored-build command');
+  assert.match(web.ignoreCommand, /VERCEL_GIT_PREVIOUS_SHA/, 'web must use the last successful deployment SHA');
+  assert.match(web.ignoreCommand, /turbo query affected/, 'web must use dependency-aware affected detection');
+  assert.match(web.ignoreCommand, /--packages @neptlium\/web/, 'web must scope affected detection to the Web package');
+  assert.match(web.ignoreCommand, /--exit-code/, 'web affected detection must drive Vercel build/skip semantics');
+});
+
+test('remaining Vercel projects use path-aware ignored-build detection', () => {
   for (const [name, source] of projects) {
     const config = JSON.parse(source);
     assert.equal(typeof config.ignoreCommand, 'string', `${name} must define an ignored-build command`);
