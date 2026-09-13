@@ -2,19 +2,19 @@
 
 Providers are replaceable infrastructure/capability adapters. Neptlium owns stable principal identity, authorization, policy, intents, canonical ledger, reservations, lifecycle, audit, and reconciliation.
 
-## Clerk — identity provider
+## Supabase Auth — identity provider
 
-Clerk is the sole runtime authentication, browser-session, recovery, and MFA provider for customer and operator surfaces.
+Supabase Auth is the sole active runtime authentication and browser-session provider for customer and operator surfaces.
 
-`apps/app` and `apps/admin` use Clerk primitives. `apps/api` verifies Clerk bearer tokens and resolves the verified `CLERK` subject to a stable Neptlium principal before authorization.
+`apps/app`, `apps/admin`, and authenticated VaultRail surfaces use shared Supabase browser/server/session primitives. `apps/api` verifies Supabase bearer tokens and resolves the verified `SUPABASE_AUTH` subject to a stable Neptlium principal before authorization.
 
-No Supabase Auth, dual-session, or legacy password-link runtime authentication path is supported.
+Historical identity-provider mappings may remain as migration/audit evidence, but they are not active runtime authentication paths.
 
 ## Supabase — persistence provider
 
-Supabase is server-side data infrastructure where configured: PostgreSQL persistence, migrations, repositories, RPCs, constraints/RLS, rate limiting, provider inboxes, audit, identity mapping storage, financial state, and reconciliation.
+Supabase is server-side data infrastructure where configured: PostgreSQL persistence, migrations, repositories, constraints/RLS, rate limiting, provider inboxes, audit, identity mapping storage, financial state, and reconciliation.
 
-Supabase service-role access is infrastructure authority only. It is not a customer/operator authentication mechanism. Historical Supabase Auth rows and old migration references may remain as inert migration/audit evidence.
+Supabase service-role access is infrastructure authority only. It is never a customer/operator browser credential or financial authorization mechanism.
 
 ## Circle
 
@@ -38,9 +38,9 @@ Target USD deposit funding may use Stripe only after a separately reviewed Payme
 
 ## Crypto deposit providers and networks
 
-The target deposit catalog includes USDT/TRC-20, USDC/Base, BTC/Bitcoin, ETH/Ethereum, LTC/Litecoin and SOL/Solana. That catalog is not itself a provider-capability claim.
+A target deposit catalog may include multiple reviewed asset/network pairs. A catalog is not itself a provider-capability claim.
 
-Each asset/network pair requires a reviewed address provider, chain observer, webhook/polling strategy, confirmation policy, compliance handling and reconciliation adapter. The API capability registry decides what is exposed to each customer.
+Each pair requires a reviewed address provider, chain observer, webhook/polling strategy, confirmation policy, compliance handling and reconciliation adapter. The API capability registry decides what is exposed to each customer.
 
 ## Adapter rules
 
