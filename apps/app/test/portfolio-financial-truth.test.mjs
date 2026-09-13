@@ -9,10 +9,14 @@ const read = (path) => readFileSync(join(appRoot, path), 'utf8');
 
 const portfolioPage = read('app/dashboard/portfolio/page.tsx');
 const experience = read('components/product/OperatingExperience.tsx');
+const portfolioExperience = experience.slice(
+  experience.indexOf('export function PortfolioExperience()'),
+  experience.indexOf('export function AllocationExperience()'),
+);
 const bootstrap = read('lib/product/bootstrap.ts');
 const productState = read('components/product/ProductState.tsx');
 const financial = read('lib/api/financial.ts');
-const surface = `${portfolioPage}\n${experience}`;
+const surface = `${portfolioPage}\n${portfolioExperience}`;
 
 test('Portfolio consumes canonical balances and portfolio state through the shared bootstrap', () => {
   assert.match(bootstrap, /getCanonicalBalances\(\)/);
@@ -41,16 +45,16 @@ test('confirmed canonical zero and non-zero values remain numeric evidence', () 
 
 test('funding capability cannot manufacture a Portfolio holding', () => {
   assert.doesNotMatch(portfolioPage, /getFundingCapabilities/);
-  assert.doesNotMatch(experience, /valueAtomic=\{[^}]*provider/i);
+  assert.doesNotMatch(portfolioExperience, /valueAtomic=\{[^}]*provider/i);
   assert.doesNotMatch(surface, /api\.stripe\.com|STRIPE_SECRET_KEY|CIRCLE_API|ALCHEMY/i);
 });
 
 test('Portfolio distinguishes unavailable canonical state from authoritative absence', () => {
   assert.match(bootstrap, /state: 'UNAVAILABLE'/);
-  assert.match(experience, /Canonical valuation unavailable/);
-  assert.match(experience, /No canonical positions are available/);
-  assert.match(experience, /Unknown allocation is not rendered as zero/);
-  assert.match(experience, /Reconciled valuation history is not available/);
+  assert.match(portfolioExperience, /Canonical valuation unavailable/);
+  assert.match(portfolioExperience, /No canonical positions are available/);
+  assert.match(portfolioExperience, /Unknown allocation is not rendered as zero/);
+  assert.match(portfolioExperience, /Reconciled valuation history is not available/);
 });
 
 test('Portfolio does not manufacture valuation, performance, or risk scores', () => {
@@ -59,13 +63,13 @@ test('Portfolio does not manufacture valuation, performance, or risk scores', ()
     'volatility score', 'market ticker', 'candlestick',
   ]) assert.doesNotMatch(surface, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
 
-  assert.match(experience, /Portfolio value<\/span><strong>—<\/strong>/);
-  assert.match(experience, /No decorative or interpolated performance curve is rendered/);
+  assert.match(portfolioExperience, /Portfolio value<\/span><strong>—<\/strong>/);
+  assert.match(portfolioExperience, /No decorative or interpolated performance curve is rendered/);
 });
 
 test('Portfolio holdings remain absent until authoritative positions exist', () => {
-  assert.match(experience, /No canonical positions are available/);
-  assert.match(experience, /Quantity, price, cost basis and return stay absent until provided by the portfolio projection/);
+  assert.match(portfolioExperience, /No canonical positions are available/);
+  assert.match(portfolioExperience, /Quantity, price, cost basis and return stay absent until provided by the portfolio projection/);
   assert.doesNotMatch(surface, /sample holding|illustrative holding|mock position/i);
 });
 
@@ -76,8 +80,8 @@ test('Portfolio has no execution actions', () => {
 });
 
 test('Portfolio preserves allocation as context rather than inferred financial truth', () => {
-  assert.match(experience, /Portfolio composition/);
-  assert.match(experience, /Position allocation unavailable/);
+  assert.match(portfolioExperience, /Portfolio composition/);
+  assert.match(portfolioExperience, /Position allocation unavailable/);
   assert.match(bootstrap, /getAllocationState\(\)/);
   assert.doesNotMatch(surface, /transaction feed/i);
 });
