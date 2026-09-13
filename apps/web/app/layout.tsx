@@ -23,14 +23,14 @@ const socialDestinations = [
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: { default: 'Neptlium — Capital Operating Platform', template: '%s — Neptlium' },
+  title: { default: 'Neptlium — Capital, made clearer.', template: '%s — Neptlium' },
   description: SITE.description,
   applicationName: SITE.name,
   creator: SITE.name,
   alternates: { canonical: '/' },
   icons: { icon: [{ url: '/icon.svg', type: 'image/svg+xml' }], apple: [{ url: '/apple-icon', sizes: '180x180', type: 'image/png' }] },
-  openGraph: { type: 'website', siteName: SITE.name, title: 'Neptlium — Capital Operating Platform', description: SITE.description, url: SITE.url, locale: 'en_US', images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Neptlium — Capital Operating Platform' }] },
-  twitter: { card: 'summary_large_image', title: 'Neptlium — Capital Operating Platform', description: SITE.description, images: ['/opengraph-image'] },
+  openGraph: { type: 'website', siteName: SITE.name, title: 'Neptlium — Capital, made clearer.', description: SITE.description, url: SITE.url, locale: 'en_US', images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Neptlium — Capital, made clearer.' }] },
+  twitter: { card: 'summary_large_image', title: 'Neptlium — Capital, made clearer.', description: SITE.description, images: ['/opengraph-image'] },
   robots: { index: true, follow: true },
 };
 

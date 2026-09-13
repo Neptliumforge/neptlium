@@ -50,25 +50,38 @@ test('all static internal Web links resolve to real App Router pages', () => {
   }
 });
 
-test('canonical product pages are authored independently rather than through FoundationPage', () => {
+test('canonical product pages use intentional authored compositions rather than retired generic page shells', () => {
   assert.equal(existsSync(join(webRoot, 'components/foundation-page.tsx')), false);
-  const productPaths = [
+  const sharedCinematicPaths = [
     'products/capital-account',
     'products/treasury',
     'products/allocation',
     'products/portfolio-intelligence',
+  ];
+  const independentlyAuthoredPaths = [
     'products/performance',
     'products/capital-universe',
   ];
-  for (const path of productPaths) {
+
+  const cinematic = readFileSync(join(webRoot, 'components/product-cinematic-page.tsx'), 'utf8');
+  assert.equal((cinematic.match(/<h1/g) ?? []).length, 1, 'Shared cinematic product composition must own one H1');
+  assert.match(cinematic, /product-cinema-hero/);
+
+  for (const path of sharedCinematicPaths) {
     const source = readFileSync(join(appRoot, path, 'page.tsx'), 'utf8');
     assert.doesNotMatch(source, /FoundationPage|DetailPage/);
-    assert.equal((source.match(/<h1/g) ?? []).length, 1, `Expected one H1 in ${path}`);
-    assert.match(source, /<section className=\{styles\.hero\}|className="[^"]*(?:story|hero)/, `Expected authored composition in ${path}`);
+    assert.match(source, /ProductCinematicPage/, `Expected shared cinematic product composition in ${path}`);
+  }
+
+  for (const path of independentlyAuthoredPaths) {
+    const source = readFileSync(join(appRoot, path, 'page.tsx'), 'utf8');
+    assert.doesNotMatch(source, /FoundationPage|DetailPage|ProductCinematicPage/);
+    assert.equal((source.match(/<h1/g) ?? []).length, 1, `Expected one route-owned H1 in ${path}`);
+    assert.match(source, /className="[^"]*(?:story|hero)/, `Expected authored route composition in ${path}`);
   }
 });
 
-test('public access CTA resolves to the canonical application root while explicit auth routes remain distinct', () => {
+test('public access CTA resolves to the canonical account creation route while explicit auth routes remain distinct', () => {
   const site = readFileSync(join(webRoot, 'lib/content/site.ts'), 'utf8');
   const publicMatch = site.match(/publicAccessUrl:\s*['"]([^'"]+)['"]/);
   const signInMatch = site.match(/signInUrl:\s*['"]([^'"]+)['"]/);

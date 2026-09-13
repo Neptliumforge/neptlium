@@ -1,0 +1,113 @@
+name: Web Preview Browser QA
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/web-preview-browser-qa.yml"
+      - "apps/web/**"
+      - "packages/ui/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "turbo.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-qa:
+    name: Protected Preview QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    env:
+      CI: "true"
+      NEPTLIUM_WEB_PREVIEW_URL: ${{ vars.NEPTLIUM_WEB_PREVIEW_URL }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Verify required configuration
+        shell: bash
+        run: |
+          if [ -z "${NEPTLIUM_WEB_PREVIEW_URL}" ]; then
+            echo "::error::NEPTLIUM_WEB_PREVIEW_URL is missing."
+            exit 1
+          fi
+
+          if [ -z "${VERCEL_AUTOMATION_BYPASS_SECRET}" ]; then
+            echo "::error::VERCEL_AUTOMATION_BYPASS_SECRET is missing."
+            exit 1
+          fi
+
+      - name: Verify protected Preview access
+        shell: bash
+        run: |
+          STATUS=$(curl -sS \
+            -L \
+            -o /tmp/neptlium-preview.html \
+            -w "%{http_code}" \
+            -H "x-vercel-protection-bypass: ${VERCEL_AUTOMATION_BYPASS_SECRET}" \
+            -H "x-vercel-set-bypass-cookie: true" \
+            "${NEPTLIUM_WEB_PREVIEW_URL}")
+
+          echo "Preview HTTP status: ${STATUS}"
+
+          if [ "${STATUS}" -ge 400 ]; then
+            echo "::error::Protected Preview returned HTTP ${STATUS}."
+            exit 1
+          fi
+
+          if grep -qiE 'sso-api|Vercel Authentication|Log in to Vercel' /tmp/neptlium-preview.html; then
+            echo "::error::Vercel SSO still intercepted the Preview."
+            exit 1
+          fi
+
+          if ! grep -qi 'neptlium' /tmp/neptlium-preview.html; then
+            echo "::error::Preview did not appear to return the Neptlium application."
+            exit 1
+          fi
+
+          echo "Protected Preview access verified."
+
+      - name: Run Playwright release QA
+        working-directory: apps/web
+        run: pnpm exec playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-web-playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 14
+
+      - name: Upload browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-web-browser-failures
+          path: apps/web/test-results/
+          retention-days: 14

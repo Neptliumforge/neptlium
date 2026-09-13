@@ -122,18 +122,37 @@
 
 .mobile-section-label,
 .mobile-social-block > span {
-  display: block;
   margin-bottom: 1rem;
-  color: #a1a3a3;
+  color: #747879;
   font-size: 0.76rem;
   font-weight: 540;
   letter-spacing: -0.01em;
   text-decoration: none;
 }
 
+.mobile-command-sheet .mobile-section-label {
+  display: flex !important;
+  min-height: 2.75rem !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .75rem !important;
+  margin-bottom: .65rem !important;
+  color: #666a6b !important;
+}
+
+.mobile-command-sheet .mobile-section-label svg {
+  width: .85rem;
+  height: .85rem;
+  flex: 0 0 auto;
+}
+
+.mobile-social-block > span {
+  display: block;
+}
+
 .mobile-section-label:hover,
 .mobile-section-label:focus-visible {
-  color: #101214;
+  color: #101214 !important;
 }
 
 .mobile-section-links {
@@ -143,7 +162,7 @@
 
 .mobile-section-links > a {
   display: flex;
-  min-height: 2.65rem;
+  min-height: 2.75rem;
   align-items: center;
   color: #101214;
   font-size: clamp(1rem, 4.6vw, 1.18rem);
@@ -154,8 +173,31 @@
 }
 
 .mobile-section-links > a[aria-current='page'],
-.mobile-platform-link[aria-current='page'] {
-  color: #0f8f86;
+.mobile-platform-link[aria-current='page'],
+.mobile-section-label[aria-current='page'] {
+  color: #08736b !important;
+}
+
+.mobile-command-sheet .mobile-enter-action {
+  display: flex !important;
+  min-height: 3.5rem !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .75rem !important;
+  margin-top: 3.25rem !important;
+  padding: .9rem 1rem !important;
+  border: 1px solid #0a746c !important;
+  border-radius: .35rem !important;
+  background: #0a746c !important;
+  color: #fff !important;
+  font-size: .9rem !important;
+  font-weight: 650 !important;
+  text-decoration: none !important;
+}
+
+.mobile-command-sheet .mobile-enter-action:focus-visible {
+  outline: 2px solid #101214 !important;
+  outline-offset: 3px !important;
 }
 
 .mobile-social-block {
@@ -202,7 +244,7 @@
   }
 
   .mobile-command-entry {
-    min-height: 2.7rem;
+    min-height: 2.75rem;
     padding-inline: 0.85rem;
     font-size: 0.68rem;
   }

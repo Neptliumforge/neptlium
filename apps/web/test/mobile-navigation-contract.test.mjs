@@ -21,17 +21,21 @@ test('mobile navigation owns an opaque editorial viewport', () => {
   assert.match(css, /\.mobile-command-wrap\s*\{[^}]*position: fixed;/s);
   assert.match(css, /\.mobile-command-wrap\s*\{[^}]*height: 100dvh;/s);
   assert.match(css, /\.mobile-command-wrap\s*\{[^}]*background: #fbfaf7;/s);
-  assert.match(css, /\.mobile-command-sheet\s*\{[^}]*grid-template-rows: auto minmax\(0, 1fr\);/s);
   assert.match(css, /\.mobile-command-nav\s*\{[^}]*overflow-y: auto;/s);
-  assert.match(css, /\.mobile-nav-grid\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
-  assert.match(css, /\.mobile-command-entry\s*\{[^}]*border-radius: 999px;/s);
 });
 
-test('mobile menu preserves canonical navigation and primary action without accordions', () => {
-  assert.match(mobile, /SITE\.publicAccessLabel/);
-  assert.match(mobile, /className="mobile-platform-link"/);
+test('mobile menu exposes canonical investor navigation and separate account actions', () => {
+  assert.match(mobile, /NAVIGATION\.map/);
   assert.match(mobile, /className="mobile-nav-grid"/);
-  assert.match(mobile, /NAVIGATION\.slice\(1\)/);
+  assert.match(mobile, /href=\{SITE\.signInUrl\}>Sign In/);
+  assert.match(mobile, /href=\{SITE\.signUpUrl\}>Get Started/);
   assert.match(mobile, /Socials/);
   assert.doesNotMatch(mobile, /aria-expanded/);
+});
+
+test('mobile navigation preserves visible acquisition and 44px top-level targets', () => {
+  assert.match(css, /\.mobile-command-sheet \.mobile-section-label\s*\{[^}]*min-height: 2\.75rem !important;/s);
+  assert.match(css, /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*min-height: 3\.5rem !important;/s);
+  assert.match(css, /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*background: #0a746c !important;/s);
+  assert.match(css, /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*color: #fff !important;/s);
 });

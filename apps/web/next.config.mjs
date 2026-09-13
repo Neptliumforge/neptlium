@@ -5,6 +5,7 @@ const nextConfig = {
   transpilePackages: ['@neptlium/ui'],
   async redirects() {
     return [
+      { source: '/resources', destination: '/insights', permanent: true },
       { source: '/capital-account', destination: '/products/capital-account', permanent: true },
       { source: '/treasury', destination: '/products/treasury', permanent: true },
       { source: '/allocation', destination: '/products/allocation', permanent: true },

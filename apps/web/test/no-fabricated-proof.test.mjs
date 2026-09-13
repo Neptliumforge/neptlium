@@ -5,6 +5,7 @@ import test from 'node:test';
 const page = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
 
 test('homepage credibility is architectural rather than synthetic scale proof', () => {
-  assert.match(page, /Capital should remain<br \/>intelligible as it moves\./);
-  assert.doesNotMatch(page, /\b[0-9]+ institutions\b|\b[0-9]+ countries\b|\b99\.9+%\b|\$[0-9]+[BMK]/i);
+  assert.match(page, /Capital, made clearer\./);
+  assert.match(page, /Trust should be visible in how the product behaves\./);
+  assert.doesNotMatch(page, /\b[0-9]+ institutions\b|\b[0-9]+ countries\b|\b99\.9+%\b|\$[0-9]+[BMK]|\bAUM\b|guaranteed return/i);
 });

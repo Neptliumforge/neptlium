@@ -4,7 +4,10 @@ import test from 'node:test';
 
 const page = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
 
-test('homepage renders one authoritative product entry in the hero', () => {
-  assert.equal((page.match(/SITE\.publicAccessUrl/g) ?? []).length, 1);
-  assert.equal((page.match(/Enter Neptlium/g) ?? []).length, 1);
+test('homepage hero keeps two focused exploration actions', () => {
+  assert.equal((page.match(/Explore the Platform/g) ?? []).length, 1);
+  assert.equal((page.match(/View Investment Solutions/g) ?? []).length, 1);
+  assert.match(page, /href="\/platform"/);
+  assert.match(page, /href="\/investments"/);
+  assert.doesNotMatch(page, /href=\{SITE\.signUpUrl\}/);
 });
