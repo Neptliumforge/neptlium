@@ -1,7 +1,7 @@
 # Neptlium Marketing Design System
 
-**Status:** Authoritative for marketing design and marketing frontend in `apps/web`  
-**Effective:** Stage 01 — September 2026  
+**Status:** Authoritative for marketing design and marketing frontend in `apps/web`
+**Effective:** Stage 01 — September 2026
 **Supersedes:** prior ivory-first homepage direction and visual assumptions in PR #68 documentation
 
 ## Product principle
