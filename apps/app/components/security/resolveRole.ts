@@ -6,7 +6,7 @@ const KNOWN_ROLES: readonly Role[] = ["user", "operator", "analyst", "manager", 
 /**
  * Navigation role is presentation context only. The API remains authoritative
  * for privileged operations, so an unavailable role lookup must not invalidate
- * a valid Clerk session or eject the user from the dashboard shell.
+ * a valid authentication session or eject the user from the dashboard shell.
  */
 export async function resolveRole(_userId: string): Promise<Role> {
   try {
