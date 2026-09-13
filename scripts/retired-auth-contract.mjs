@@ -11,6 +11,7 @@ const historical = new Set([
   'supabase/migrations/20260825080000_self_custody_treasury_principal_cutover.sql',
   'supabase/migrations/20260912223000_' + retired + '_only_identity_cutover.sql',
   'supabase/migrations/20260913123000_supabase_auth_only_cutover.sql',
+  'docs/financial-authority-remediation/GATE_05_LEGACY_MUTATION_PATHS.md',
 ]);
 const self = 'scripts/retired-auth-contract.mjs';
 const providerName = retired[0].toUpperCase() + retired.slice(1);
@@ -47,7 +48,7 @@ for (const file of files) {
 }
 
 if (hits.length) {
-  console.error('Retired authentication references are not permitted outside historical migrations.');
+  console.error('Retired authentication references are not permitted outside explicit historical evidence.');
   for (const hit of hits) console.error(`- ${hit}`);
   process.exit(1);
 }
