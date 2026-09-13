@@ -25,12 +25,15 @@ alter table public.provider_webhook_inbox
   add constraint provider_webhook_inbox_disposition_pair_check
   check (disposition_reason is null or disposition_action is not null);
 
-create or replace function public.complete_provider_webhook_with_disposition(
+-- Classified completion overload. Existing three-argument callers keep the
+-- established function below; Stripe Gate 04 uses this overload to persist the
+-- disposition that justified completion.
+create or replace function public.complete_provider_webhook(
   p_provider text,
   p_environment public.provider_environment,
   p_provider_event_id text,
   p_disposition_action text,
-  p_disposition_reason text default null
+  p_disposition_reason text
 )
 returns public.provider_webhook_inbox
 language plpgsql
@@ -80,9 +83,8 @@ begin
 end;
 $$;
 
--- Preserve the established completion contract for callers that do not yet
--- produce a business disposition. The classified function above owns the
--- durable update semantics used by Stripe Gate 04.
+-- Preserve the established unclassified completion contract for existing
+-- provider control-plane callers.
 create or replace function public.complete_provider_webhook(
   p_provider text,
   p_environment public.provider_environment,
@@ -123,15 +125,15 @@ begin
 end;
 $$;
 
-revoke all on function public.complete_provider_webhook_with_disposition(
+revoke all on function public.complete_provider_webhook(
   text, public.provider_environment, text, text, text
 ) from public, anon, authenticated;
 
-grant execute on function public.complete_provider_webhook_with_disposition(
+grant execute on function public.complete_provider_webhook(
   text, public.provider_environment, text, text, text
 ) to service_role;
 
-alter function public.complete_provider_webhook_with_disposition(
+alter function public.complete_provider_webhook(
   text, public.provider_environment, text, text, text
 ) owner to postgres;
 
