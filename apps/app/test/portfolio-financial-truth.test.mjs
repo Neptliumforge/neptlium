@@ -7,182 +7,77 @@ import test from 'node:test';
 const appRoot = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFileSync(join(appRoot, path), 'utf8');
 
-const portfolio = read('app/dashboard/portfolio/page.tsx');
-const portfolioComponents = read('components/product/PortfolioIntelligence.tsx');
-const portfolioSurface = `${portfolio}\n${portfolioComponents}`;
+const portfolioPage = read('app/dashboard/portfolio/page.tsx');
+const experience = read('components/product/OperatingExperience.tsx');
+const bootstrap = read('lib/product/bootstrap.ts');
 const productState = read('components/product/ProductState.tsx');
 const financial = read('lib/api/financial.ts');
+const surface = `${portfolioPage}\n${experience}`;
 
-test('Portfolio consumes canonical balances as financial position evidence', () => {
-  assert.equal(portfolio.includes('getCanonicalBalances'), true);
-  assert.equal(portfolio.includes('getPortfolioState'), true);
-  assert.equal(portfolioComponents.includes('Capital Account'), true);
-  assert.equal(financial.includes('readonly available_atomic: string;'), true);
-  assert.equal(financial.includes('readonly pending_atomic: string;'), true);
-  assert.equal(financial.includes('readonly reserved_atomic: string;'), true);
+test('Portfolio consumes canonical balances and portfolio state through the shared bootstrap', () => {
+  assert.match(bootstrap, /getCanonicalBalances\(\)/);
+  assert.match(bootstrap, /getPortfolioState\(\)/);
+  assert.match(bootstrap, /canonical_balances_unavailable/);
+  assert.match(bootstrap, /portfolio: projection\(portfolio\)/);
+  assert.match(portfolioPage, /PortfolioExperience/);
+  assert.match(financial, /readonly available_atomic: string;/);
+  assert.match(financial, /readonly pending_atomic: string;/);
+  assert.match(financial, /readonly reserved_atomic: string;/);
 });
 
 test('Portfolio never manufactures zero from missing canonical evidence', () => {
   for (const field of ['available_atomic', 'pending_atomic', 'reserved_atomic']) {
-    assert.equal(
-      portfolio.includes(`?.${field} ?? '0'`),
-      false,
-      `${field} still contains an unknown-to-zero fallback`,
-    );
-
-    assert.equal(
-      portfolio.includes(`?.${field} || '0'`),
-      false,
-      `${field} still contains a falsy unknown-to-zero fallback`,
-    );
+    assert.doesNotMatch(surface, new RegExp(`\\?\\.${field} \\?\\? ['\"]0['\"]`));
+    assert.doesNotMatch(surface, new RegExp(`\\?\\.${field} \\|\\| ['\"]0['\"]`));
   }
-
-  assert.equal(
-    productState.includes('if (valueAtomic === undefined || valueAtomic === null || !asset)'),
-    true,
-  );
+  assert.match(productState, /if \(valueAtomic === undefined \|\| valueAtomic === null \|\| !asset\)/);
 });
 
 test('confirmed canonical zero and non-zero values remain numeric evidence', () => {
   assert.match(productState, /formatAtomicAmount\(valueAtomic, asset, decimals \?\? undefined\)/);
-
-  assert.equal(productState.includes('const digits = negative ? value.slice(1) : value;'), true);
-
-  assert.equal(
-    productState.includes("const whole = decimals ? padded.slice(0, -decimals) || '0' : padded;"),
-    true,
-  );
+  assert.match(productState, /const digits = negative \? value\.slice\(1\) : value;/);
+  assert.match(productState, /const whole = decimals \? padded\.slice\(0, -decimals\) \|\| '0' : padded;/);
 });
 
 test('funding capability cannot manufacture a Portfolio holding', () => {
-  assert.equal(portfolio.includes('getFundingCapabilities'), false);
-  assert.equal(portfolio.includes('getCanonicalBalances'), true);
-
-  assert.equal(
-    /valueAtomic=\{[^}]*provider/i.test(portfolio),
-    false,
-    'Provider-derived values must never populate canonical Portfolio values',
-  );
-
-  assert.equal(
-    /source:\s*['"]NEPTLIUM_CANONICAL_LEDGER['"]/i.test(portfolio),
-    false,
-    'Portfolio must consume canonical API evidence rather than manufacture a source claim',
-  );
+  assert.doesNotMatch(portfolioPage, /getFundingCapabilities/);
+  assert.doesNotMatch(experience, /valueAtomic=\{[^}]*provider/i);
+  assert.doesNotMatch(surface, /api\.stripe\.com|STRIPE_SECRET_KEY|CIRCLE_API|ALCHEMY/i);
 });
 
-test('Portfolio distinguishes canonical empty state from API failure', () => {
-  assert.equal(
-    portfolioComponents.includes('No portfolio positions are currently available.'),
-    true,
-    'Successful canonical emptiness must remain an explicit non-actionable state',
-  );
-
-  assert.equal(
-    portfolio.includes('Unavailable'),
-    true,
-    'Failed canonical loading must remain unavailable rather than zero',
-  );
+test('Portfolio distinguishes unavailable canonical state from authoritative absence', () => {
+  assert.match(bootstrap, /state: 'UNAVAILABLE'/);
+  assert.match(experience, /Canonical valuation unavailable/);
+  assert.match(experience, /No canonical positions are available/);
+  assert.match(experience, /Unknown allocation is not rendered as zero/);
+  assert.match(experience, /Reconciled valuation history is not available/);
 });
 
 test('Portfolio does not manufacture valuation, performance, or risk scores', () => {
   for (const forbidden of [
-    '$0.00',
-    '0.00%',
-    'Total portfolio value',
-    'Net worth',
-    'Gain/loss',
-    'ROI',
-    'risk score',
-    'prediction score',
-    'volatility score',
-    'market ticker',
-    'candlestick',
-  ]) {
-    assert.equal(
-      portfolioSurface.toLowerCase().includes(forbidden.toLowerCase()),
-      false,
-      `Portfolio contains forbidden manufactured financial presentation: ${forbidden}`,
-    );
-  }
+    '$0.00', '0.00%', 'Net worth', 'Gain/loss', 'ROI', 'risk score', 'prediction score',
+    'volatility score', 'market ticker', 'candlestick',
+  ]) assert.doesNotMatch(surface, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
 
-  assert.equal(
-    /valueAtomic=\{[^}]*provider/i.test(portfolio),
-    false,
-    'Provider-derived values must never populate Portfolio financial values',
-  );
-
-  assert.match(portfolio, /portfolio\?\.value\.state === 'UNAVAILABLE'/);
-  assert.match(portfolio, /portfolio\.value\.reason/);
-  assert.match(
-    portfolioComponents,
-    /Assets are not\s+combined without authoritative valuation evidence\./,
-  );
+  assert.match(experience, /Portfolio value<\/span><strong>—<\/strong>/);
+  assert.match(experience, /No decorative or interpolated performance curve is rendered/);
 });
 
-test('Portfolio holdings are source-backed and preserve explicit unknown states', () => {
-  for (const column of ['Asset', 'Quantity', 'Source', 'Status']) {
-    assert.equal(
-      portfolioComponents.includes(`>${column}<`),
-      true,
-      `missing holdings column ${column}`,
-    );
-  }
-  assert.equal(portfolioComponents.includes('Observed'), true);
-  assert.equal(portfolioSurface.includes('Unavailable'), true);
-  assert.equal(portfolioSurface.includes('Awaiting source'), true);
-  assert.match(
-    portfolioComponents,
-    /<FinancialValue[\s\S]*valueAtomic=\{balance\.total_atomic\}[\s\S]*decimals=\{balance\.decimals\}/,
-  );
+test('Portfolio holdings remain absent until authoritative positions exist', () => {
+  assert.match(experience, /No canonical positions are available/);
+  assert.match(experience, /Quantity, price, cost basis and return stay absent until provided by the portfolio projection/);
+  assert.doesNotMatch(surface, /sample holding|illustrative holding|mock position/i);
 });
 
-test('Portfolio Intelligence has no execution actions', () => {
-  for (const forbidden of [
-    '#deposit',
-    'Fund capital',
-    '>Deposit<',
-    '>Withdraw<',
-    '>Buy<',
-    '>Sell<',
-    '>Trade<',
-    'Execute allocation',
-  ]) {
-    assert.equal(
-      portfolioSurface.includes(forbidden),
-      false,
-      `Portfolio contains execution action ${forbidden}`,
-    );
+test('Portfolio has no execution actions', () => {
+  for (const forbidden of ['#deposit', 'Fund capital', '>Deposit<', '>Withdraw<', '>Buy<', '>Sell<', '>Trade<', 'Execute allocation']) {
+    assert.equal(surface.includes(forbidden), false, `Portfolio contains execution action ${forbidden}`);
   }
 });
 
-test('Portfolio attention and context are evidence-bound rather than transaction-shaped', () => {
-  assert.equal(portfolioComponents.includes('No portfolio items require attention.'), true);
-  assert.equal(portfolioComponents.includes('Portfolio context'), true);
-  assert.equal(portfolio.includes('allocationOutsidePolicy'), true);
-  assert.equal(portfolio.includes('allocationReview'), true);
-  assert.equal(portfolioSurface.includes('transaction feed'), false);
-});
-
-test('Portfolio Intelligence presents holdings, exposure, and allocation as separate contexts', () => {
-  assert.match(portfolio, /Understand holdings, exposure, relationships, and strategic position\./);
-  assert.match(portfolioComponents, /Holdings intelligence/);
-  assert.match(portfolioComponents, /Exposure context/);
-  assert.match(portfolioComponents, /Allocation relationship/);
-  assert.match(portfolioComponents, /href="\/dashboard\/allocations"/);
-  assert.match(portfolio, /getAllocationWorkspace/);
-});
-
-test('App remains provider-neutral for Stripe', () => {
-  assert.equal(
-    portfolioSurface.includes('api.stripe.com'),
-    false,
-    'Portfolio must never call Stripe directly',
-  );
-
-  assert.equal(
-    portfolioSurface.includes('STRIPE_SECRET_KEY'),
-    false,
-    'Stripe credentials must never enter Portfolio',
-  );
+test('Portfolio preserves allocation as context rather than inferred financial truth', () => {
+  assert.match(experience, /Portfolio composition/);
+  assert.match(experience, /Position allocation unavailable/);
+  assert.match(bootstrap, /getAllocationState\(\)/);
+  assert.doesNotMatch(surface, /transaction feed/i);
 });
