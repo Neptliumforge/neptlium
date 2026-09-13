@@ -26,6 +26,7 @@
     "./validation": "./src/validation/index.ts",
     "./supabase/admin": "./src/supabase/admin.ts",
     "./supabase/browser": "./src/supabase/browser.ts",
-    "./supabase/server": "./src/supabase/server.ts"
+    "./supabase/server": "./src/supabase/server.ts",
+    "./supabase/proxy": "./src/supabase/proxy.ts"
   }
 }
