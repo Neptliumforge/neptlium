@@ -13,8 +13,14 @@ const releaseRoutes = [
   '/insights',
   '/security',
   '/company',
+  '/products/capital-account',
+  '/products/treasury',
+  '/products/allocation',
+  '/products/portfolio-intelligence',
+  '/solutions/capital-visibility',
+  '/resources',
   '/risk-disclosure',
-];
+] as const;
 
 const personalSignInUrl = 'https://app.neptlium.com/auth/sign-in';
 const personalSignUpUrl = 'https://app.neptlium.com/auth/sign-up';
@@ -25,23 +31,31 @@ async function expectNoHorizontalOverflow(page: any) {
   expect(overflow, 'Horizontal page overflow detected').toBe(false);
 }
 
+async function expectNoApplicationRuntimeErrors(page: any, route: string) {
+  const consoleErrors: string[] = [];
+  const failedRequests: string[] = [];
+  page.on('console', (message: any) => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+  page.on('requestfailed', (request: any) => {
+    failedRequests.push(`${request.url()} :: ${request.failure()?.errorText ?? 'request failed'}`);
+  });
+
+  const response = await page.goto(route, { waitUntil: 'networkidle' });
+  expect(response).not.toBeNull();
+  expect(response!.status()).toBeLessThan(400);
+  expect(page.url()).not.toContain('/sso-api');
+  await expect(page.locator('body')).toContainText(/neptlium/i);
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expectNoHorizontalOverflow(page);
+  expect(consoleErrors, `Console errors detected on ${route}:\n${consoleErrors.join('\n')}`).toEqual([]);
+  expect(failedRequests, `Failed requests detected on ${route}:\n${failedRequests.join('\n')}`).toEqual([]);
+}
+
 test.describe('Neptlium unified marketing release', () => {
   for (const route of releaseRoutes) {
     test(`${route} renders successfully`, async ({ page }) => {
-      const consoleErrors: string[] = [];
-      const failedRequests: string[] = [];
-      page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
-      page.on('requestfailed', (request) => { failedRequests.push(`${request.url()} :: ${request.failure()?.errorText ?? 'request failed'}`); });
-
-      const response = await page.goto(route, { waitUntil: 'networkidle' });
-      expect(response).not.toBeNull();
-      expect(response!.status()).toBeLessThan(400);
-      expect(page.url()).not.toContain('/sso-api');
-      await expect(page.locator('body')).toContainText(/neptlium/i);
-      await expect(page.locator('h1')).toHaveCount(1);
-      await expectNoHorizontalOverflow(page);
-      expect(consoleErrors, `Console errors detected on ${route}:\n${consoleErrors.join('\n')}`).toEqual([]);
-      expect(failedRequests, `Failed requests detected on ${route}:\n${failedRequests.join('\n')}`).toEqual([]);
+      await expectNoApplicationRuntimeErrors(page, route);
     });
   }
 
@@ -96,12 +110,20 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page.getByRole('link', { name: /See the platform/i }).first()).toHaveAttribute('href', '/platform');
   });
 
-  for (const [source, destination] of [['/about','/company'],['/resources','/insights'],['/products/capital-account','/capital'],['/products/treasury','/treasury'],['/products/allocation','/allocation'],['/products/portfolio-intelligence','/portfolio']] as const) {
-    test(`${source} redirects to ${destination}`, async ({ page }) => {
-      const response = await page.goto(source, { waitUntil: 'networkidle' });
-      expect(response).not.toBeNull();
-      expect(response!.status()).toBeLessThan(400);
-      await expect(page).toHaveURL(new RegExp(`${destination.replaceAll('/','\\/')}\/?$`));
-    });
-  }
+  test('about remains the intentional company alias', async ({ page }) => {
+    const response = await page.goto('/about', { waitUntil: 'networkidle' });
+    expect(response).not.toBeNull();
+    expect(response!.status()).toBeLessThan(400);
+    await expect(page).toHaveURL(/\/company\/?$/);
+  });
+
+  test('current authored supporting routes remain authored pages, not stale aliases', async ({ page }) => {
+    for (const route of ['/resources', '/products/capital-account', '/products/treasury', '/products/allocation', '/products/portfolio-intelligence', '/solutions/capital-visibility']) {
+      await page.goto(route, { waitUntil: 'networkidle' });
+      const current = new URL(page.url()).pathname.replace(/\/$/, '') || '/';
+      expect(current, `${route} unexpectedly redirected to a stale canonical destination`).toBe(route);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expectNoHorizontalOverflow(page);
+    }
+  });
 });
