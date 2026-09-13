@@ -48,6 +48,22 @@
 [data-npt-surface='white'] [class*='eyebrow'],[data-npt-surface='ivory'] [class*='eyebrow'],[data-npt-surface='cloud'] [class*='eyebrow'],[data-npt-surface='mineral-light'] [class*='eyebrow'] {color:var(--npt-mineral-700)}
 [data-npt-surface='mineral'] [class*='eyebrow'] {color:#82e5d8}
 
+/* Focus treatment follows the environment instead of relying on one teal ring
+   that can disappear on light or Mineral surfaces. */
+[data-npt-surface='white'] :focus-visible,
+[data-npt-surface='ivory'] :focus-visible,
+[data-npt-surface='cloud'] :focus-visible,
+[data-npt-surface='mineral-light'] :focus-visible {
+  outline: 3px solid var(--npt-mineral-900);
+  outline-offset: 4px;
+}
+[data-npt-surface='carbon'] :focus-visible,
+[data-npt-surface='mineral'] :focus-visible,
+[data-npt-product-canvas='dark'] :focus-visible {
+  outline: 3px solid var(--npt-teal);
+  outline-offset: 4px;
+}
+
 /* At the top of a light hero the navigation follows the surface. Once scrolling
    begins it resolves to the stable Carbon command bar to avoid section flashing. */
 .site-header.capital-command-bar[data-scrolled='false'][data-surface='white'],
