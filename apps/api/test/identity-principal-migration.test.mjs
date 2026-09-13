@@ -82,10 +82,7 @@ test('migration preserves profile UUIDs and backfills one Supabase subject per p
         status: 'ACTIVE',
       },
     ]);
-    assert.equal(
-      subjects.rows.some((row) => row.provider_subject.includes('@')),
-      false,
-    );
+    assert.equal(subjects.rows.some((row) => row.provider_subject.includes('@')), false);
 
     const events = await db.query(
       `select operation, count(*)::integer as count
@@ -177,21 +174,23 @@ test('migration preserves profile UUIDs and backfills one Supabase subject per p
   }
 });
 
-test('identity mapping constraints fail closed under duplicate and conflicting concurrent links', async () => {
+test('Supabase identity mapping constraints fail closed under duplicate and conflicting concurrent links', async () => {
   const db = await productionShapedDatabase();
   try {
     await db.exec(migration);
-    const clerkSubject = 'user_clerk_123';
+    await db.query(`delete from public.identity_provider_subjects where principal_id = $1`, [first]);
+
+    const subject = '00000000-0000-4000-8000-000000000099';
     const attempts = await Promise.allSettled([
       db.query(
         `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-         values ($1, 'CLERK', $2) returning id`,
-        [first, clerkSubject],
+         values ($1, 'SUPABASE_AUTH', $2) returning id`,
+        [first, subject],
       ),
       db.query(
         `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-         values ($1, 'CLERK', $2) returning id`,
-        [first, clerkSubject],
+         values ($1, 'SUPABASE_AUTH', $2) returning id`,
+        [first, subject],
       ),
     ]);
     assert.equal(attempts.filter((result) => result.status === 'fulfilled').length, 1);
@@ -201,8 +200,8 @@ test('identity mapping constraints fail closed under duplicate and conflicting c
       () =>
         db.query(
           `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-           values ($1, 'CLERK', $2)`,
-          [second, clerkSubject],
+           values ($1, 'SUPABASE_AUTH', $2)`,
+          [second, subject],
         ),
       /identity_provider_subjects_provider_subject_unique/,
     );
@@ -210,7 +209,7 @@ test('identity mapping constraints fail closed under duplicate and conflicting c
       () =>
         db.query(
           `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-           values ($1, 'CLERK', 'another_subject')`,
+           values ($1, 'SUPABASE_AUTH', '00000000-0000-4000-8000-000000000098')`,
           [first],
         ),
       /identity_provider_subjects_active_principal_provider_unique/,
