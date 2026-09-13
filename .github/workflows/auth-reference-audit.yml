@@ -1,0 +1,34 @@
+name: One-time Supabase Auth Reference Audit
+
+on:
+  push:
+    branches:
+      - product/authenticated-operating-environment
+    paths:
+      - .github/workflows/auth-reference-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inventory active retired-auth references
+        shell: bash
+        run: |
+          set +e
+          rg -n -i 'clerk|@clerk|CLERK_' . \
+            --glob '!supabase/migrations/20260820203000_clerk_identity_linking_commands.sql' \
+            --glob '!supabase/migrations/20260820210000_clerk_dual_session_link_service.sql' \
+            --glob '!supabase/migrations/20260820220000_clerk_application_identity_cutover.sql' \
+            --glob '!supabase/migrations/20260820221000_clerk_bootstrap_existing_account_guard.sql' \
+            --glob '!supabase/migrations/20260912223000_clerk_only_identity_cutover.sql' \
+            --glob '!supabase/migrations/20260913123000_supabase_auth_only_cutover.sql' \
+            --glob '!docs/archive/**' \
+            --glob '!.git/**' \
+            > /tmp/auth-reference-hits.txt
+          cat /tmp/auth-reference-hits.txt
+          echo "HIT_COUNT=$(wc -l < /tmp/auth-reference-hits.txt)" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
