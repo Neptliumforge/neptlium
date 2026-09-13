@@ -36,7 +36,7 @@ test('protected customer routes remain protected by Supabase session middleware'
   assert.match(proxy, /NextResponse\.redirect/);
 });
 
-test('production auth environment is Supabase-only and browser-safe', () => {
+test('production auth environment is Supabase-only and browser-safe without eager public auth validation', () => {
   const env = read('.env.example');
   const runtime = read('lib/runtime-config.ts');
   for (const expected of [
@@ -46,6 +46,8 @@ test('production auth environment is Supabase-only and browser-safe', () => {
     'NEPTLIUM_API_URL=https://api.neptlium.com',
   ]) assert.ok(env.includes(expected), `missing environment contract: ${expected}`);
   assert.doesNotMatch(env, /SERVICE_ROLE/);
-  assert.match(runtime, /NEXT_PUBLIC_SUPABASE_URL/);
-  assert.match(runtime, /NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
+  assert.doesNotMatch(runtime, /NEXT_PUBLIC_SUPABASE_URL/);
+  assert.doesNotMatch(runtime, /NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
+  assert.match(runtime, /NEXT_PUBLIC_SITE_URL/);
+  assert.match(runtime, /NEPTLIUM_API_URL/);
 });
