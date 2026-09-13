@@ -1,58 +1,51 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
-test('application root uses Clerk directly and signed-in users enter the dashboard', () => {
+test('application root uses Supabase Auth and routes users by session state', () => {
   const page = read('app/page.tsx');
-  assert.match(page, /from '@clerk\/nextjs\/server'/);
-  assert.match(page, /await auth\(\)/);
-  assert.match(page, /if \(userId\) redirect\('\/dashboard'\)/);
-  assert.match(page, /<SignIn/);
-  assert.match(page, /fallbackRedirectUrl="\/auth\/complete"/);
+  assert.match(page, /createSupabaseServerClient/);
+  assert.match(page, /supabase\.auth\.getUser\(\)/);
+  assert.match(page, /redirect\(user \? '\/dashboard' : '\/auth\/sign-in'\)/);
 });
 
-test('Clerk sign-in and sign-up complete through the authoritative Clerk bootstrap route', () => {
+test('sign-in and sign-up use the shared Supabase Auth form', () => {
   const signIn = read('app/auth/sign-in/page.tsx');
   const signUp = read('app/auth/sign-up/page.tsx');
-  for (const source of [signIn, signUp]) {
-    assert.match(source, /fallbackRedirectUrl="\/auth\/complete"/);
-    assert.match(source, /role="status"/);
-    assert.match(source, /aria-live="polite"/);
-  }
+  assert.match(signIn, /SupabaseAuthForm/);
+  assert.match(signIn, /mode="sign-in"/);
+  assert.match(signUp, /SupabaseAuthForm/);
+  assert.match(signUp, /mode="sign-up"/);
 });
 
-test('auth completion never opens a legacy authentication provider', () => {
-  const complete = read('app/auth/complete/page.tsx');
-  assert.match(complete, /bootstrapClerkIdentity\(\)/);
-  assert.match(complete, /getAccountContext\(\)/);
-  assert.match(complete, /destination = '\/dashboard'/);
-  assert.match(complete, /destination = '\/onboarding'/);
-  assert.match(complete, /No legacy password is required/);
-  assert.doesNotMatch(complete, /\/auth\/link-existing|NEXT_PUBLIC_SUPABASE|SUPABASE_SERVICE_ROLE_KEY/);
+test('no legacy auth-completion bridge remains in the production entry flow', () => {
+  assert.equal(existsSync(resolve(root, 'app/auth/complete/page.tsx')), false);
+  assert.equal(existsSync(resolve(root, 'app/api/auth/link-existing/route.ts')), false);
+  assert.equal(existsSync(resolve(root, 'app/auth/link-existing/page.tsx')), false);
 });
 
-test('protected customer routes remain protected by Clerk middleware', () => {
+test('protected customer routes remain protected by Supabase session middleware', () => {
   const proxy = read('proxy.ts');
-  assert.match(proxy, /clerkMiddleware/);
-  assert.match(proxy, /await auth\.protect\(\)/);
+  assert.match(proxy, /refreshSupabaseSession/);
+  assert.match(proxy, /protectedPrefixes/);
+  assert.match(proxy, /\/auth\/sign-in/);
+  assert.match(proxy, /NextResponse\.redirect/);
 });
 
-test('production auth environment is Clerk-only', () => {
+test('production auth environment is Supabase-only and browser-safe', () => {
   const env = read('.env.example');
   const runtime = read('lib/runtime-config.ts');
   for (const expected of [
-    'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY',
-    'CLERK_SECRET_KEY',
-    'NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/sign-in',
-    'NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/sign-up',
+    'NEXT_PUBLIC_SUPABASE_URL=',
+    'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=',
     'NEXT_PUBLIC_SITE_URL=https://app.neptlium.com',
     'NEPTLIUM_API_URL=https://api.neptlium.com',
   ]) assert.ok(env.includes(expected), `missing environment contract: ${expected}`);
-  assert.doesNotMatch(env, /SUPABASE/);
-  assert.match(runtime, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY/);
-  assert.match(runtime, /CLERK_SECRET_KEY/);
+  assert.doesNotMatch(env, /SERVICE_ROLE/);
+  assert.match(runtime, /NEXT_PUBLIC_SUPABASE_URL/);
+  assert.match(runtime, /NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
 });
