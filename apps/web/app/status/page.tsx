@@ -14,8 +14,6 @@ const components = [
   ['Capital app', 'Authenticated customer application'],
   ['API', 'Privileged application programming interface'],
   ['Authentication', 'Identity and session services'],
-  ['Payments', 'Payment-related operational capability'],
-  ['Treasury', 'Treasury-related operational capability'],
   ['Provider integrations', 'External systems used by supported workflows'],
 ] as const;
 
