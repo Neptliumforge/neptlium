@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { AuthenticatedProductBootstrap } from '@/lib/product/bootstrap-types';
 
 type BootstrapContextValue = {
@@ -17,7 +18,25 @@ export function ProductBootstrapProvider({
   readonly initial: AuthenticatedProductBootstrap;
   readonly children: ReactNode;
 }) {
-  const [snapshot] = useState(initial);
+  const router = useRouter();
+  const [snapshot, setSnapshot] = useState(initial);
+
+  useEffect(() => {
+    setSnapshot(initial);
+  }, [initial]);
+
+  useEffect(() => {
+    const refresh = () => {
+      if (document.visibilityState === 'visible') router.refresh();
+    };
+    const timer = window.setInterval(refresh, 60_000);
+    window.addEventListener('focus', refresh);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+    };
+  }, [router]);
+
   const value = useMemo<BootstrapContextValue>(() => ({ snapshot, refreshedAt: snapshot.asOf }), [snapshot]);
   return <BootstrapContext.Provider value={value}>{children}</BootstrapContext.Provider>;
 }
