@@ -1,3 +1,5 @@
-export const dynamic = 'force-dynamic';
+import { CompaniesExperience } from '@/components/product/RecordExperiences';
 
-export { default } from '../research/page';
+export default function CompaniesPage() {
+  return <CompaniesExperience />;
+}
