@@ -4,11 +4,11 @@
 
 ## Access
 
-Clerk is the sole operator authentication, session, recovery, and MFA authority. Admin server code sends the current Clerk bearer token to `api.neptlium.com`; the API resolves the Clerk subject to a stable Neptlium principal and applies Neptlium-owned role and policy authorization.
+Supabase Auth is the active operator authentication and session authority. Admin server code sends the current Supabase access token to `api.neptlium.com`; the API resolves the `SUPABASE_AUTH` subject to a stable Neptlium principal and applies Neptlium-owned role and policy authorization.
 
-A Clerk session alone does not grant admin or financial authority. Routes and commands require the appropriate Neptlium role, ownership/policy state, compliance state, and operation-specific authorization.
+An authenticated session alone does not grant admin or financial authority. Routes and commands require the appropriate Neptlium role, ownership/policy state, compliance state, and operation-specific authorization.
 
-Supabase is not an operator authentication provider. Where used by the API, it is server-side persistence infrastructure only.
+Supabase service-role credentials remain server-side infrastructure authority and never become operator credentials.
 
 ## Operational surfaces
 
@@ -34,7 +34,7 @@ Approval, submission, provider observation, settlement and reconciliation are di
 
 ## Governed control model
 
-Admin should become a client of privileged API commands and canonical read models for:
+Admin is a client of privileged API commands and canonical read models for:
 
 - principal, organization, role, entitlement, and compliance investigation;
 - deposit/withdrawal/transfer/allocation review queues;
@@ -57,7 +57,7 @@ Admin should become a client of privileged API commands and canonical read model
 - Apply idempotency and transition checks to every command.
 - Record actor, role, request ID, before/after state, timestamp and safe metadata.
 - Display provider-observed, canonical, pending, reserved, restricted, failed and unknown distinctly.
-- Never expose service-role keys, provider credentials, Clerk secrets/tokens or unnecessary personal data.
+- Never expose service-role keys, provider credentials, access/refresh tokens or unnecessary personal data.
 
 ## Operator truth rules
 
