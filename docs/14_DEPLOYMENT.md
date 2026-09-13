@@ -1,38 +1,32 @@
 # Deployment
 
-Neptlium deploys four independently versioned application boundaries from `Neptliumforge/neptlium`:
-
-| Application | Domain | Boundary |
-| --- | --- | --- |
-| `apps/web` | `neptlium.com` | Public institutional marketing |
-| `apps/app` | `app.neptlium.com` | Authenticated customer application |
-| `apps/admin` | `admin.neptlium.com` | Operator application |
-| `apps/api` | `api.neptlium.com` | Authorization, data, provider, ledger, webhook and audit boundary |
+Neptlium deploys independently versioned application boundaries from `Neptliumforge/neptlium`. Current repository applications may include Web, App, VaultRail, Pay, Docs, Status, Admin, and API; deploy only applications that actually exist and are configured.
 
 ## Authentication deployment model
 
-Clerk is the only authentication/session provider across App, Admin and authenticated API requests.
+Supabase Auth is the sole active authentication/session provider across App, Admin, authenticated VaultRail surfaces, and authenticated API requests.
 
 Required runtime principles:
 
-- App/Admin use Clerk publishable and server secret configuration.
-- API verifies Clerk bearer tokens and restricts authorized parties to approved Neptlium origins.
-- No `SUPABASE`, `DUAL`, or legacy password-link runtime authentication mode is supported.
-- Supabase configuration in API/server infrastructure is persistence-only and must not be interpreted as authentication configuration.
-- Historical legacy identity rows may remain in the database but are inert for runtime authentication.
+- Browser applications use `NEXT_PUBLIC_SUPABASE_URL` and the publishable client key only.
+- Server components use reviewed Supabase SSR/server-session helpers.
+- API verifies Supabase access tokens and resolves the immutable authenticated subject to a stable Neptlium principal.
+- No alternate runtime authentication mode is supported.
+- Supabase service-role values remain server-only persistence/infrastructure authority and are never browser credentials.
+- Historical identity-provider rows may remain as migration evidence but are inert for runtime authentication.
 
-The Clerk-only identity cutover migration is a forward database migration and must be applied through the normal separately reviewed migration process. Application deployment must not silently apply database migrations.
+Identity cutover migrations are forward database migrations and must be applied through the normal separately reviewed migration process. Application deployment must not silently apply database migrations.
 
 ## Existing-account continuity
 
-Before enabling Clerk-only bootstrap in production, verify:
+Before declaring the authentication migration complete in production, verify:
 
 1. current principal/ownership UUIDs are preserved;
-2. exact normalized profile-email matches are unique;
-3. no existing principal has conflicting active Clerk mappings;
-4. the forward bootstrap migration is applied;
-5. existing user, new user, MFA/recovery, role and ownership smoke tests pass;
-6. legacy Supabase Auth credentials are no longer accepted anywhere in runtime.
+2. each active Supabase Auth user resolves to exactly one active Neptlium principal;
+3. no conflicting active identity mappings remain;
+4. the approved forward migration is applied;
+5. existing-user, new-user, recovery/session, role, ownership and logout smoke tests pass;
+6. retired-provider credentials are no longer accepted anywhere in runtime.
 
 ## Environment boundaries
 
@@ -42,30 +36,40 @@ No privileged authentication or financial secrets.
 
 ### App
 
-Clerk publishable/server configuration plus `NEXT_PUBLIC_SITE_URL` and `NEPTLIUM_API_URL`. No Supabase browser/auth variables and no provider/service-role secrets.
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, and server-only `NEPTLIUM_API_URL` as required. No service-role or provider secrets.
+
+### VaultRail
+
+Browser-safe Supabase Auth configuration plus application/API origins. Organization, treasury, approval and payment authority remain server-owned.
 
 ### Admin
 
-Clerk publishable/server configuration plus Admin/API origins. Operator role and financial authorization remain API concerns.
+Browser-safe Supabase Auth configuration plus Admin/API origins. Operator role and financial authorization remain API concerns.
 
 ### API
 
-Server-only configuration includes Clerk verification, durable database persistence, providers, webhook secrets, allowed origins, capability gates and observability. Supabase URL/service-role values may support persistence, but user authentication is Clerk-only.
+Server-only configuration includes Supabase token verification/principal resolution, durable database persistence, service-role infrastructure, providers, webhook secrets, allowed origins, capability gates and observability.
+
+### Pay / Docs / Status
+
+Keep these applications public/minimally privileged unless a reviewed feature explicitly requires authentication. Provider and financial secrets remain outside these clients.
 
 ## Provider and financial release principles
 
 - Configuration presence does not prove capability.
 - Capability verification does not itself authorize live execution.
 - Provider observations remain evidence until canonical posting/reconciliation.
-- Stripe subscription webhook support does not imply Stripe capital funding support.
-- Crypto deposit networks/assets and USD deposit rails are enabled only from verified server capability state.
+- Stripe webhook support does not imply capital-funding support.
+- Crypto deposit networks/assets and fiat funding rails are enabled only from verified server capability state.
 - Preview/staging must not point at production financial execution by convenience.
 
 ## Build and release gates
 
-Run typecheck, lint, tests and production builds proportionate to each change. Identity/financial changes additionally require negative authorization tests, migration review, idempotency/replay tests, provider sandbox verification, webhook verification, reconciliation checks, observability and secret-redaction review.
+Run typecheck, lint, tests and production builds proportionate to each changed workspace. Identity/financial changes additionally require negative authorization tests, migration review, idempotency/replay tests, provider sandbox verification where applicable, webhook verification, reconciliation checks, observability and secret-redaction review.
 
 A Vercel READY/SUCCESS state proves deployment completion, not financial capability certification.
+
+Browser release QA should prefer local production builds where possible so visual validation is not coupled to preview authentication or deployment queues.
 
 ## Database migrations
 
@@ -76,9 +80,15 @@ A Vercel READY/SUCCESS state proves deployment completion, not financial capabil
 
 ## Canonical domains
 
+Configured production domains should map one-to-one to their authoritative application owners, for example:
+
 - `https://neptlium.com`
 - `https://app.neptlium.com`
+- `https://vault.neptlium.com`
+- `https://pay.neptlium.com`
+- `https://docs.neptlium.com`
+- `https://status.neptlium.com`
 - `https://admin.neptlium.com`
 - `https://api.neptlium.com`
 
-All auth authorized-party configuration, redirects, API origins and production links must agree with this model.
+Only claim or configure domains that actually exist in Vercel/DNS. Auth redirect origins, API origins and production links must agree with the deployed model.
