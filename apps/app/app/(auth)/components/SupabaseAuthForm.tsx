@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@neptlium/lib/supabase/browser";
@@ -8,7 +8,6 @@ import { createSupabaseBrowserClient } from "@neptlium/lib/supabase/browser";
 export function SupabaseAuthForm({ mode }: { readonly mode: "sign-in" | "sign-up" }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +22,8 @@ export function SupabaseAuthForm({ mode }: { readonly mode: "sign-in" | "sign-up
     setNotice(null);
     setSubmitting(true);
     try {
+      const supabase = createSupabaseBrowserClient();
+
       if (mode === "sign-in") {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) {
