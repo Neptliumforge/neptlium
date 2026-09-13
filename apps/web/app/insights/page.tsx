@@ -1,59 +1,93 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
-import marketing from '../marketing-platform.module.css';
-import insightStyles from './insights.module.css';
+import styles from './insights.module.css';
 
 export const metadata = createPageMetadata({
-  title: 'Insights',
-  description: 'Investment perspectives, portfolio strategy, investor education and substantive Neptlium research.',
+  title: 'Insights — Capital, Markets and Operating Context | Neptlium',
+  description: 'Neptlium Insights organizes clear thinking about capital, companies, treasury, markets, risk and financial operations without inventing publication volume.',
   path: '/insights',
 });
 
-const categories = [
-  ['Markets', 'Context for understanding market conditions without converting commentary into investment certainty.'],
-  ['Investing', 'Frameworks for evaluating objective, exposure, duration, liquidity and risk.'],
-  ['Portfolio Strategy', 'Ideas for understanding concentration, allocation, capital roles and portfolio context.'],
-  ['Digital Assets', 'Education on digital-asset structure, networks, custody boundaries and transaction risk.'],
-  ['Platform', 'How Neptlium approaches capital visibility, funding, reporting and governed workflows.'],
-  ['Investor Education', 'Clear explanations of financial concepts and account workflows.'],
+const domains = [
+  ['Personal capital', 'Frameworks for understanding liquidity, concentration, allocation and the role each part of a portfolio is meant to play.'],
+  ['Business finance', 'Clearer ways to think about operating cash, obligations, funding decisions and financial visibility inside a company.'],
+  ['Treasury', 'Context for liquidity, reserves, timing, movement and the controls that sit around consequential financial actions.'],
+  ['Markets & companies', 'Ways to separate observable facts, changing conditions and interpretation when assessing companies and market structure.'],
+  ['Risk & control', 'Practical thinking about authority, evidence, operational risk and the difference between an event being visible and being final.'],
+  ['Product thinking', 'How Neptlium reasons about financial software, product boundaries and the representation of uncertainty and state.'],
 ] as const;
 
 export default function InsightsPage() {
-  return <div className={`${marketing.scope} mp-home`}>
-    <section className="mp-hero insights-hero">
-      <div className="mp-shell mp-hero-grid">
-        <div className="mp-hero-copy">
-          <p className="mp-kicker">Insights</p>
-          <h1>Intelligence for clearer capital decisions.</h1>
-          <p className="mp-hero-lead">Neptlium Insights is the editorial home for investment perspectives, portfolio strategy, platform understanding and investor education. Research is published only when substantive original work exists.</p>
-          <div className="mp-actions">
-            <Link className="mp-button mp-button-primary" href="/learn">Explore Investor Education <ArrowRight aria-hidden="true" /></Link>
-            <Link className="mp-button mp-button-secondary" href="/research">View Research</Link>
+  return (
+    <main className={styles.page}>
+      <section className={styles.hero} aria-labelledby="insights-title">
+        <div className={styles.shell}>
+          <p className={styles.eyebrow}>Neptlium Insights</p>
+          <h1 id="insights-title">Ideas for seeing capital more clearly.</h1>
+          <p className={styles.lead}>Editorial context for understanding capital, financial systems, companies, treasury, markets, risk and the decisions that connect them.</p>
+        </div>
+      </section>
+
+      <section className={styles.featured} aria-labelledby="featured-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionIntro}>
+            <p className={styles.eyebrow}>Editorial standard</p>
+            <h2 id="featured-title">Publish when there is something worth understanding.</h2>
+          </div>
+          <div className={styles.leadStory}>
+            <div>
+              <p className={styles.label}>Current library</p>
+              <h3>Substantive authored Insights are not yet published.</h3>
+            </div>
+            <p>Rather than fill this space with invented authors, dates or market commentary, Neptlium keeps the editorial structure visible and waits for original work that can be dated, sourced and reviewed on its own merits.</p>
           </div>
         </div>
-        <div className={insightStyles.mark} aria-hidden="true"><span>Signal</span><span>Context</span><span>Evidence</span><span>Interpretation</span></div>
-      </div>
-    </section>
+      </section>
 
-    <section className="mp-section">
-      <div className="mp-shell">
-        <div className="mp-section-heading compact">
-          <p className="mp-kicker">Editorial architecture</p>
-          <h2>Financial content should make uncertainty easier to understand.</h2>
-          <p>Fact, data, model output, scenario, estimate, interpretation and opinion should remain visibly distinct. Neptlium will not invent articles, findings, reports or publication dates to make the library appear more mature than it is.</p>
+      <section className={styles.domains} aria-labelledby="domains-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionIntro}>
+            <p className={styles.eyebrow}>Editorial domains</p>
+            <h2 id="domains-title">What should become easier to understand?</h2>
+            <p>Each domain is defined by a recurring financial question, not by a need to populate a content grid.</p>
+          </div>
+          <div className={styles.domainList}>
+            {domains.map(([title, body]) => (
+              <article key={title}>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </article>
+            ))}
+          </div>
         </div>
-        <div className={insightStyles.grid}>
-          {categories.map(([title, body]) => <article key={title}><h3>{title}</h3><p>{body}</p></article>)}
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section className="mp-section mp-dark">
-      <div className="mp-shell mp-split">
-        <div className="mp-sticky-copy"><p className="mp-kicker">Learn</p><h2>Start with the concepts that shape capital decisions.</h2><p>Investor education explains product structure, financial terminology, operating states and risk without assuming prior institutional knowledge.</p><Link className="mp-button mp-button-light" href="/learn">Explore Learn <ArrowRight aria-hidden="true" /></Link></div>
-        <div className="mp-sticky-copy"><p className="mp-kicker">Research</p><h2>Original research should earn its authority.</h2><p>The Research surface remains deliberately restrained until substantive, dated Neptlium analysis exists. Publication quality matters more than volume.</p><Link className="mp-button mp-button-secondary" href="/research">Open Research <ArrowRight aria-hidden="true" /></Link></div>
-      </div>
-    </section>
-  </div>;
+      <section className={styles.method} aria-labelledby="method-title">
+        <div className={styles.shellGrid}>
+          <div>
+            <p className={styles.eyebrow}>Reading standard</p>
+            <h2 id="method-title">Fact, evidence and interpretation should not blur together.</h2>
+          </div>
+          <div className={styles.methodCopy}>
+            <p>Neptlium Insights is designed to distinguish reported facts, system states, model output, scenarios, estimates and editorial interpretation. That separation matters most when a subject is uncertain or financially consequential.</p>
+            <p>Nothing published here should be read as individualized financial, investment, legal or tax advice.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.closing}>
+        <div className={styles.shellGrid}>
+          <div>
+            <p className={styles.eyebrow}>Continue learning</p>
+            <h2>Start with the platform concepts already documented.</h2>
+          </div>
+          <div className={styles.links}>
+            <Link href="/learn">Investor education <ArrowRight aria-hidden="true" /></Link>
+            <Link href="/security">Security and authority <ArrowRight aria-hidden="true" /></Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }
