@@ -1,6 +1,5 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
-import { ClerkProvider } from '@clerk/nextjs';
 import { assertProductionRuntimeConfig } from '@/lib/runtime-config';
 import "./global.css";
 import "./dashboard-v2.css";
@@ -50,11 +49,7 @@ export default function RootLayout({ children }: { readonly children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeBoot }} /></head>
-      <body className="antialiased">
-        <ClerkProvider signInUrl="/" signUpUrl="/auth/sign-up">
-          {children}
-        </ClerkProvider>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
