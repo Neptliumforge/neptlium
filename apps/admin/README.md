@@ -4,15 +4,15 @@ Role-gated internal operations console for `admin.neptlium.com`.
 
 ## Authentication and authorization
 
-Clerk is the sole operator authentication, session, recovery, and MFA authority. Admin server code obtains the current Clerk session and sends its bearer token to `api.neptlium.com`.
+Supabase Auth is the sole operator authentication and session authority. Admin browser code uses the shared Supabase browser client; server code validates the current Supabase session and sends its bearer token to `api.neptlium.com`.
 
-The API resolves the Clerk subject to a stable Neptlium principal and then applies Neptlium-owned role, organization, policy, ownership, and operation-specific authorization. A Clerk session alone never authorizes an administrative or financial action.
+The API resolves the Supabase Auth subject to a stable Neptlium principal and then applies Neptlium-owned role, organization, policy, ownership, and operation-specific authorization. An authenticated session alone never authorizes an administrative or financial action.
 
-Supabase is not an operator authentication provider. Where Supabase is used by the API, it is server-side persistence infrastructure only and service-role credentials never reach the browser.
+Administrative authority remains explicit and server-owned. Browser role state, email identity, and user-editable metadata are never sufficient authorization.
 
 ## Environment
 
-See `.env.example`. The Admin application requires Clerk configuration plus `NEPTLIUM_API_URL` and `NEXT_PUBLIC_SITE_URL`. Provider and database service credentials remain server-side in the API boundary.
+See `.env.example`. The Admin application requires the browser-safe Supabase project URL and publishable key plus `NEPTLIUM_API_URL` and `NEXT_PUBLIC_SITE_URL`. Provider, database service-role, and signing credentials remain server-side in the API boundary.
 
 ## Commands
 
