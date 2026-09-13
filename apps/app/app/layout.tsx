@@ -6,6 +6,7 @@ import "./global.css";
 import "./dashboard-v2.css";
 import "./investment-dashboard.css";
 import "./authenticated-product.css";
+import "./authenticated-records.css";
 
 assertProductionRuntimeConfig();
 
