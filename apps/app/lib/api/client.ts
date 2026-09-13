@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
-import { auth } from '@clerk/nextjs/server';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 
 export class ApiClientError extends Error {
   constructor(
@@ -30,17 +30,16 @@ function apiOrigin(): string {
 }
 
 export async function apiRequest<T>(path: `/v1/${string}`, init: RequestInit = {}): Promise<T> {
-  const session = await auth();
-  if (!session.userId) throw new ApiClientError(401, 'session_expired', 'Your session has expired.');
-  const token = await session.getToken();
+  const supabase = await createSupabaseServerClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) throw new ApiClientError(401, 'session_expired', 'Your session has expired.');
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
   if (!token) throw new ApiClientError(401, 'session_expired', 'Your session has expired.');
 
   const method = (init.method ?? 'GET').toUpperCase();
   const requestId = randomUUID();
 
-  // The server-only client owns transport metadata for every customer API call.
-  // Caller-provided idempotency keys are preserved; otherwise governed
-  // mutations receive a stable key for the lifetime of this request.
   const headers = new Headers(init.headers);
   headers.set('accept', 'application/json');
   if (init.body && !headers.has('content-type')) {
@@ -97,13 +96,6 @@ export async function apiRequest<T>(path: `/v1/${string}`, init: RequestInit = {
     }
   }
   throw new ApiClientError(503, 'api_unavailable', 'The API is unavailable.', requestId);
-}
-
-export function bootstrapClerkAccount(): Promise<{
-  status: 'created' | 'existing';
-  profile_id: string;
-}> {
-  return apiRequest('/v1/auth/bootstrap', { method: 'POST' });
 }
 
 export type ResourceState<T = never> =
