@@ -7,6 +7,7 @@ import "./dashboard-v2.css";
 import "./investment-dashboard.css";
 import "./authenticated-product.css";
 import "./authenticated-records.css";
+import "./authenticated-mobile.css";
 
 assertProductionRuntimeConfig();
 
@@ -17,8 +18,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "dark",
-  themeColor: "#050505",
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F7F8F6" },
+    { media: "(prefers-color-scheme: dark)", color: "#050505" },
+  ],
 };
 
 const themeBoot = `(() => {
