@@ -10,6 +10,8 @@ import { MobileNavigation } from './mobile-navigation';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 
+type MarketingSurface = 'carbon' | 'white' | 'ivory' | 'cloud' | 'mineral' | 'mineral-light';
+
 function AccountMenu({ kind }: { kind: 'signin' | 'start' }) {
   const start = kind === 'start';
   return <details className="account-menu">
@@ -26,9 +28,19 @@ export function SiteHeader() {
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [topSurface, setTopSurface] = useState<MarketingSurface>('carbon');
   const trigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const readTopSurface = () => {
+      const firstSurface = document.querySelector<HTMLElement>('[data-npt-surface]');
+      const surface = firstSurface?.dataset.nptSurface as MarketingSurface | undefined;
+      if (surface) setTopSurface(surface);
+    };
+    const frame = window.requestAnimationFrame(readTopSurface);
+    return () => window.cancelAnimationFrame(frame);
+  }, [path]);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 18);
     onScroll();
@@ -38,7 +50,7 @@ export function SiteHeader() {
   useEffect(() => setMobileOpen(false), [path]);
 
   return <>
-    <header className="site-header capital-command-bar" data-scrolled={scrolled ? 'true' : 'false'}>
+    <header className="site-header capital-command-bar" data-scrolled={scrolled ? 'true' : 'false'} data-surface={scrolled ? 'carbon' : topSurface}>
       <div className="nav-shell">
         <Brand tone="teal" />
         <nav className="desktop-command-nav" aria-label="Primary navigation">
