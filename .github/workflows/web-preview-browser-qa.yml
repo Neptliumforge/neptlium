@@ -24,7 +24,6 @@ jobs:
 
     env:
       CI: "true"
-      NEPTLIUM_WEB_PREVIEW_URL: ${{ vars.NEPTLIUM_WEB_PREVIEW_URL }}
       VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
     steps:
@@ -49,6 +48,27 @@ jobs:
         working-directory: apps/web
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Resolve exact branch Preview URL
+        shell: bash
+        env:
+          FALLBACK_PREVIEW_URL: ${{ vars.NEPTLIUM_WEB_PREVIEW_URL }}
+          PR_HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ -n "${PR_HEAD_REF}" ]; then
+            BRANCH_SLUG="${PR_HEAD_REF//\//-}"
+            PREVIEW_URL="https://neptlium-web-git-${BRANCH_SLUG}-neptliumforge.vercel.app"
+          else
+            PREVIEW_URL="${FALLBACK_PREVIEW_URL}"
+          fi
+
+          if [ -z "${PREVIEW_URL}" ]; then
+            echo "::error::Unable to resolve the Neptlium Web Preview URL."
+            exit 1
+          fi
+
+          echo "NEPTLIUM_WEB_PREVIEW_URL=${PREVIEW_URL}" >> "${GITHUB_ENV}"
+          echo "Resolved Preview URL: ${PREVIEW_URL}"
+
       - name: Verify required configuration
         shell: bash
         run: |
@@ -66,6 +86,7 @@ jobs:
         shell: bash
         run: |
           STATUS=$(curl -sS \
+            --max-redirs 8 \
             -L \
             -o /tmp/neptlium-preview.html \
             -w "%{http_code}" \
