@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
 import styles from '../product-pages.module.css';
+import headerStyles from '../product-light-header.module.css';
 
 export const metadata = createPageMetadata({
   title: 'Capital — Neptlium',
@@ -16,7 +17,7 @@ const AccountRow = ({ name, state }: { name: string; state: string }) => (
 
 export default function CapitalPage() {
   return <div className={styles.page}>
-    <section className={`${styles.hero} ${styles.white} ${styles.lightHeaderHero}`} aria-labelledby="capital-page-title">
+    <section className={`${styles.hero} ${styles.white} ${headerStyles.light}`} aria-labelledby="capital-page-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>Personal capital</p>
