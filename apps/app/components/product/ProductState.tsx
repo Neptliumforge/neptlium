@@ -9,6 +9,11 @@ export type ProductStateName =
   | 'AWAITING_PROVISIONING'
   | 'CAPABILITY_DISABLED'
   | 'RESERVED'
+  | 'ALLOCATED'
+  | 'SETTLED'
+  | 'RECONCILED'
+  | 'STALE'
+  | 'ACTION_REQUIRED'
   | 'RESTRICTED'
   | 'NOT_CONFIGURED'
   | 'INELIGIBLE'
@@ -35,6 +40,11 @@ const labels: Record<ProductStateName, string> = {
   AWAITING_PROVISIONING: 'Setting up',
   CAPABILITY_DISABLED: 'Disabled',
   RESERVED: 'Reserved',
+  ALLOCATED: 'Allocated',
+  SETTLED: 'Settled',
+  RECONCILED: 'Reconciled',
+  STALE: 'Stale',
+  ACTION_REQUIRED: 'Action required',
   RESTRICTED: 'Restricted',
   NOT_CONFIGURED: 'Not configured',
   INELIGIBLE: 'Ineligible',
@@ -49,7 +59,9 @@ const descriptions: Partial<Record<ProductStateName, string>> = {
   AWAITING_PROVISIONING: 'Your account is still being prepared. Try again shortly.',
   CAPABILITY_DISABLED: 'This action is not currently available for your account.',
   NOT_CONFIGURED: 'This feature is not currently available for your account.',
-  UNAVAILABLE: 'This information is temporarily unavailable. Try again shortly.',
+  UNAVAILABLE: 'This information is temporarily unavailable. Existing account state is unchanged.',
+  STALE: 'The latest verified state is older than expected. Refresh or wait for reconciliation.',
+  ACTION_REQUIRED: 'A governed step requires your attention before this lifecycle can continue.',
   NO_ACTIVITY: 'There is no activity in this section yet.',
   NO_POSITION: 'There are no positions in this section yet.',
   ERROR: 'We could not load this information. Your existing account state is unchanged.',
@@ -63,6 +75,11 @@ const tones: Record<ProductStateName, 'success' | 'warning' | 'danger' | 'neutra
   AWAITING_PROVISIONING: 'neutral',
   CAPABILITY_DISABLED: 'neutral',
   RESERVED: 'warning',
+  ALLOCATED: 'neutral',
+  SETTLED: 'success',
+  RECONCILED: 'success',
+  STALE: 'warning',
+  ACTION_REQUIRED: 'warning',
   RESTRICTED: 'warning',
   NOT_CONFIGURED: 'neutral',
   INELIGIBLE: 'warning',
@@ -121,7 +138,7 @@ export function FinancialValue({
   valueAtomic,
   asset,
   decimals,
-  unavailableLabel = 'Not reported',
+  unavailableLabel = '—',
   className = '',
 }: {
   readonly valueAtomic?: string | null;

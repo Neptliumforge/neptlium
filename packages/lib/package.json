@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Neptlium shared persistence, custody, authorization, and validation utilities.",
+  "description": "Neptlium shared persistence, custody, authorization, authentication, and validation utilities.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -24,6 +24,9 @@
     ".": "./src/index.ts",
     "./rbac": "./src/rbac/index.ts",
     "./validation": "./src/validation/index.ts",
-    "./supabase/admin": "./src/supabase/admin.ts"
+    "./supabase/admin": "./src/supabase/admin.ts",
+    "./supabase/browser": "./src/supabase/browser.ts",
+    "./supabase/server": "./src/supabase/server.ts",
+    "./supabase/proxy": "./src/supabase/proxy.ts"
   }
 }

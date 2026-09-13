@@ -1,8 +1,6 @@
 import { ApiError } from './errors.js';
 
-// SUPABASE_AUTH remains a historical storage value so old mapping rows can be
-// inspected safely. Runtime authentication accepts CLERK only.
-export type IdentityProvider = 'SUPABASE_AUTH' | 'CLERK';
+export type IdentityProvider = 'SUPABASE_AUTH';
 export type IdentityPrincipalStatus = 'ACTIVE' | 'SUSPENDED' | 'RETIRED';
 export type IdentityProviderSubjectStatus = 'ACTIVE' | 'REVOKED';
 
@@ -41,9 +39,6 @@ type PrincipalRow = {
   retired_at: string | null;
 };
 
-const supportedRuntimeProviders = new Set<IdentityProvider>(['CLERK']);
-
-/** Supabase here is persistence transport only; it is not an authentication provider. */
 export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResolver {
   constructor(
     private readonly url: string,
@@ -73,8 +68,8 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
   }
 
   async resolveActivePrincipal(provider: IdentityProvider, providerSubject: string): Promise<ResolvedIdentityPrincipal | null> {
-    if (!supportedRuntimeProviders.has(provider))
-      throw new ApiError(400, 'invalid_identity_provider', 'Only Clerk identities are accepted at runtime');
+    if (provider !== 'SUPABASE_AUTH')
+      throw new ApiError(400, 'invalid_identity_provider', 'Only Supabase Auth identities are accepted at runtime');
     if (!providerSubject || providerSubject !== providerSubject.trim() || providerSubject.length > 255)
       throw new ApiError(400, 'invalid_identity_subject', 'Identity subject is invalid');
 
@@ -113,52 +108,5 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
       providerSubject: subject.provider_subject,
       linkedAt: subject.linked_at,
     };
-  }
-}
-
-/** Database command repository. The legacy dual-session linking command is retired. */
-export class SupabaseIdentityCommandRepository {
-  constructor(
-    private readonly url: string,
-    _legacyAnonKey: string,
-    private readonly serviceRoleKey: string,
-    private readonly request: Fetch = fetch,
-  ) {}
-
-  private async rpc(name: string, body: Record<string, unknown>): Promise<Record<string, unknown>> {
-    const response = await this.request(`${this.url}/rest/v1/rpc/${name}`, {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${this.serviceRoleKey}`,
-        apikey: this.serviceRoleKey,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(8_000),
-    });
-    if (!response.ok)
-      throw new ApiError(409, 'identity_command_unavailable', 'Identity command is unavailable');
-    return (await response.json()) as Record<string, unknown>;
-  }
-
-  async linkClerkSubject(_input: Record<string, unknown>) {
-    throw new ApiError(410, 'legacy_auth_retired', 'Legacy authentication linking has been retired. Sign in with Clerk.');
-  }
-
-  bootstrapClerkPrincipal(input: { clerkSubject: string; verifiedEmail: string; requestId: string }) {
-    return this.rpc('bootstrap_clerk_identity_principal', {
-      p_clerk_subject: input.clerkSubject,
-      p_verified_email: input.verifiedEmail,
-      p_request_id: input.requestId,
-    });
-  }
-
-  syncClerkLifecycle(input: { clerkSubject: string; eventId: string; eventType: string; eventDigest: string }) {
-    return this.rpc('sync_clerk_identity_lifecycle', {
-      p_clerk_subject: input.clerkSubject,
-      p_event_id: input.eventId,
-      p_event_type: input.eventType,
-      p_event_digest: input.eventDigest,
-    });
   }
 }

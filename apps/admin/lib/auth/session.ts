@@ -1,4 +1,4 @@
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { type Role } from "@neptlium/lib/rbac";
 import { adminApiRequest } from "@/lib/api";
 
@@ -13,13 +13,10 @@ export interface AdminSessionContext {
 }
 
 export async function getCurrentAdminUser() {
-  const session = await auth();
-  if (!session.userId) return null;
-  const user = await currentUser();
-  return {
-    id: session.userId,
-    email: user?.primaryEmailAddress?.emailAddress ?? null,
-  };
+  const supabase = await createSupabaseServerClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) return null;
+  return { id: user.id, email: user.email ?? null };
 }
 
 export async function getCurrentAdminContext(): Promise<AdminSessionContext | null> {

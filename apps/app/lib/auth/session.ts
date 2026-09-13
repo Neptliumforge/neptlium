@@ -1,4 +1,4 @@
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { hasRole, type Role } from "@neptlium/lib/rbac";
 import { resolveRole } from "@/components/security/resolveRole";
 import { ApiClientError, getAccountContext } from "@/lib/api/client";
@@ -9,19 +9,10 @@ export interface SessionUser {
 }
 
 export async function getCurrentUser(): Promise<SessionUser | null> {
-  const session = await auth();
-  if (!session.userId) return null;
-
-  let email: string | null = null;
-  try {
-    const user = await currentUser();
-    email = user?.primaryEmailAddress?.emailAddress ?? null;
-  } catch {
-    // The Clerk session remains authoritative even when profile hydration is
-    // temporarily unavailable. Do not convert that condition into a sign-out.
-  }
-
-  return { id: session.userId, email };
+  const supabase = await createSupabaseServerClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) return null;
+  return { id: user.id, email: user.email ?? null };
 }
 
 export interface SessionProfile {
@@ -35,10 +26,7 @@ export interface SessionProfile {
   readonly provisionedAt: string | null;
 }
 
-/**
- * Account/profile business state is resolved through api.neptlium.com.
- * Clerk is the application session authority. Financial ownership resolves in apps/api.
- */
+/** Account/profile business state is resolved through api.neptlium.com. */
 export async function getCurrentProfile(existingUser?: SessionUser): Promise<SessionProfile | null> {
   const user = existingUser ?? await getCurrentUser();
   if (!user) return null;

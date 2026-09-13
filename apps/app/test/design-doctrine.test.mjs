@@ -7,27 +7,19 @@ const root = new URL('../', import.meta.url).pathname;
 const css = readFileSync(join(root, 'app/global.css'), 'utf8');
 const capitalPosition = readFileSync(join(root, 'components/product/CapitalPosition.tsx'), 'utf8');
 const dashboard = readFileSync(join(root, 'app/dashboard/page.tsx'), 'utf8');
+const bootstrap = readFileSync(join(root, 'lib/product/bootstrap.ts'), 'utf8');
+const experience = readFileSync(join(root, 'components/product/OperatingExperience.tsx'), 'utf8');
 
 test('authenticated product consumes shared brand semantics with restrained institutional authority', () => {
   assert.match(css, /@neptlium\/ui\/styles\/brand\.css/);
-
-  // Carbon remains the operating authority color.
   assert.match(css, /--color-accent-primary:\s*var\(--n-carbon\)/);
   assert.match(css, /--color-border-focus:\s*#101214/);
   assert.match(css, /--color-canvas:\s*var\(--n-canvas\)/);
-
-  // Light authenticated chrome is warm-neutral; dark mode returns to Carbon.
   assert.match(css, /--color-sidebar:\s*#f5f3ee/);
   assert.match(css, /--color-sidebar:\s*#101214/);
-
-  // Mineral Teal is permitted only as a restrained semantic/focus accent.
   assert.match(css, /--n-mineral-teal:\s*#0f8f86/);
   assert.match(css, /--shadow-focus-ring:/);
-
-  // Retired decorative product blues remain absent.
   assert.doesNotMatch(css, /#258BE5|#319EED/i);
-
-  // Operating surfaces do not use atmospheric gradients.
   assert.doesNotMatch(css, /radial-gradient|linear-gradient/i);
 });
 
@@ -49,17 +41,16 @@ test('overview capital empty state stays truthful without repeated fabricated va
   assert.doesNotMatch(capitalPosition, /\$0(?:\.00)?/);
 });
 
-test('overview represents governed capital state without valuation or execution actions', () => {
-  // Capability and canonical balance inputs remain API-authoritative.
-  assert.match(dashboard, /getFundingCapabilities/);
-  assert.match(dashboard, /getTransferCapabilities/);
-  assert.match(dashboard, /item\.state === 'ENABLED'/);
-  assert.match(dashboard, /balances\.length > 0/);
-
-  // The operating home communicates state without exposing amounts or shortcuts.
-  assert.match(dashboard, /Capital Operating Environment/);
-  assert.match(dashboard, /Capital state/);
-  assert.match(dashboard, /No items require your attention\./);
-  assert.doesNotMatch(dashboard, /FinancialValue|Fund capital|#deposit/);
-  assert.doesNotMatch(dashboard, /balance\?\.total_atomic\s*\?\?\s*['\"]0['\"]/);
+test('overview derives governed capital state from the shared bootstrap without fabricated valuation', () => {
+  assert.match(dashboard, /OverviewExperience/);
+  assert.match(bootstrap, /getOverviewState\(\)/);
+  assert.match(bootstrap, /getCanonicalBalances\(\)/);
+  assert.match(bootstrap, /getFundingCapabilities\(\)/);
+  assert.match(bootstrap, /getTransferCapabilities\(\)/);
+  assert.match(experience, /snapshot\.balances\.state === 'READY'/);
+  assert.match(experience, /Total canonical capital/);
+  assert.match(experience, /Assets remain separated without an authoritative conversion basis/);
+  assert.match(experience, /PrimaryActions/);
+  assert.match(experience, /item\.state === 'ENABLED'/);
+  assert.doesNotMatch(experience, /balance\?\.total_atomic\s*\?\?\s*['\"]0['\"]/);
 });

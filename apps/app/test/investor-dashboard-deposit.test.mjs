@@ -6,11 +6,16 @@ import test from 'node:test';
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
-test('dashboard renders API-backed state instead of illustrative financial values', () => {
+test('dashboard renders shared API-backed state instead of illustrative financial values', () => {
   const dashboard = read('app/dashboard/page.tsx');
-  assert.match(dashboard, /getOverviewState/);
-  assert.match(dashboard, /Recent account events/);
-  assert.doesNotMatch(dashboard, /Public markets|Private companies|Company position updated|36%|28%/);
+  const experience = read('components/product/OperatingExperience.tsx');
+  const bootstrap = read('lib/product/bootstrap.ts');
+  assert.match(dashboard, /OverviewExperience/);
+  assert.match(bootstrap, /getOverviewState/);
+  assert.match(bootstrap, /getCanonicalBalances/);
+  assert.match(experience, /Recent account events/);
+  assert.match(experience, /Total canonical capital/);
+  assert.doesNotMatch(experience, /Public markets|Private companies|Company position updated|36%|28%/);
 });
 
 test('deposit route is a dedicated funding-method experience', () => {
