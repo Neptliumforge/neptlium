@@ -1,6 +1,6 @@
 # Neptlium Platform Product Audit — 2026-09-12
 
-**Status:** Historical engineering audit; superseded by the final platform reconciliation work.  
+**Status:** Historical engineering audit; superseded by the final platform reconciliation work.
 **Scope:** Customer application, API identity boundary, dashboard truthfulness, deposit architecture, deployment health, and product-development priorities as observed on 2026-09-12.
 
 ## Historical context
