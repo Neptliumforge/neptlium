@@ -1,0 +1,30 @@
+{
+  "name": "@neptlium/vault",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "VaultRail business treasury operating environment.",
+  "scripts": {
+    "dev": "next dev -p 3004",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint app proxy.ts --ext .ts,.tsx",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.mjs"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "7.7.9",
+    "@neptlium/types": "workspace:*",
+    "@neptlium/ui": "workspace:*",
+    "lucide-react": "^1.24.0",
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
+  }
+}

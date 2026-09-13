@@ -16,3 +16,4 @@ export * from "./risk";
 export * from "./document";
 export * from "./activity";
 export * from "./database";
+export * from "./product-family";

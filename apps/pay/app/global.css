@@ -1,0 +1,27 @@
+@import '@neptlium/ui/styles/brand.css';
+
+:root {
+  color-scheme: dark;
+  --canvas: #050505;
+  --panel: #111111;
+  --text: #f7f7f3;
+  --muted: #9b9b96;
+  --line: rgb(255 255 255 / 8%);
+  --teal: #35d5c1;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--canvas); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+.pay-shell { min-height: 100vh; display: grid; place-items: center; padding: 28px; }
+.pay-card { width: min(620px, 100%); border: 1px solid var(--line); background: var(--panel); border-radius: 12px; padding: 28px; }
+.pay-brand { font-size: 12px; letter-spacing: .12em; font-weight: 700; }
+.pay-kicker { margin-top: 36px; color: var(--teal); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+.pay-title { margin: 8px 0 8px; font-size: 32px; letter-spacing: -.03em; }
+.pay-copy { color: var(--muted); line-height: 1.6; }
+.pay-grid { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pay-field { border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 8px; }
+.pay-field span { color: var(--muted); font-size: 12px; }
+.pay-field strong { font-size: 21px; font-variant-numeric: tabular-nums; }
+.pay-state { margin-top: 28px; border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+.pay-state strong { display: block; margin-bottom: 6px; }
+.pay-state span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+@media (max-width: 560px) { .pay-grid { grid-template-columns: 1fr; } .pay-shell { padding: 16px; } }

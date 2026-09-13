@@ -8,6 +8,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Brand } from './brand';
 import { MobileNavigation } from './mobile-navigation';
 import { NAVIGATION } from '@/lib/content/public-architecture';
+import { PRODUCT_FAMILY_LINKS } from '@/lib/content/product-family';
 import { SITE } from '@/lib/content/site';
 
 type NavSection = (typeof NAVIGATION)[number];
@@ -64,7 +65,10 @@ export function SiteHeader() {
     <header className="site-header capital-command-bar" data-home={isHome ? 'true' : 'false'} data-scrolled={scrolled ? 'true' : 'false'}>
       <div className="nav-shell">
         <Brand tone={isHome ? 'teal' : 'current'} />
-        <nav className="desktop-command-nav" aria-label="Primary navigation">{NAVIGATION.map((item) => <DesktopDisclosure item={item} path={path} key={item.label} />)}</nav>
+        <nav className="desktop-command-nav" aria-label="Primary navigation">
+          {PRODUCT_FAMILY_LINKS.map((item) => <Link className="desktop-domain-link" href={item.href} key={item.label} aria-current={path === item.href ? 'page' : undefined}>{item.label}</Link>)}
+          {NAVIGATION.map((item) => <DesktopDisclosure item={item} path={path} key={item.label} />)}
+        </nav>
         <div className="command-actions">
           <Link href={SITE.signInUrl}>Sign In</Link>
           <Link className="elite-header-entry command-primary-action" href={SITE.signUpUrl}>Get Started</Link>
