@@ -1,74 +1,64 @@
 # API Architecture
 
-`apps/api` is the existing privileged backend boundary for `api.neptlium.com`. It is not future-only.
+`apps/api` is the privileged backend boundary for `api.neptlium.com`.
 
 ## CURRENT runtime and routes
 
-The dependency-light Node.js/TypeScript service supports:
+The dependency-light Node.js/TypeScript service supports public health/status routes plus governed account, capital-account, wallet, customer, admin, and webhook routes. Route presence does not prove production capability.
 
-- `GET /health`, `GET /v1/health`
-- `GET /v1/status`, `GET /v1/version`
-- `POST /v1/account/provision`, `POST /v1/account/onboarding`
-- `POST /v1/wallet/deposit-addresses` — retained only to return `410 route_replaced`
-- `POST /v1/capital-account/provider-wallet`
-- `GET /v1/capital-account/deposit-address`
-- `GET /v1/capital-account/balances`
-- `GET /v1/wallet/deposits`
-- `POST /v1/wallet/withdrawals`
-- `GET /v1/wallet/withdrawals/:withdrawal_id`
-- `POST /v1/wallet/withdrawals/:withdrawal_id/cancel`
-- `GET /v1/wallet/transactions`
-- `POST /v1/webhooks/alchemy`, `/v1/webhooks/circle`, `/v1/webhooks/stripe`
-
-Route presence does not prove production capability. Circle webhook verification is disabled. Alchemy and Stripe ingestion require official verification. Several legacy wallet routes reach unsupported durable repository methods in production and therefore fail closed.
+Several provider and financial operations remain capability-gated or deliberately unimplemented. Unsupported paths must fail closed rather than manufacture availability.
 
 ## Auth boundary
 
-Public health/status/version routes do not establish user authority. Customer and operator surfaces are Clerk-first. `apps/api` accepts `SUPABASE`, `DUAL`, or `CLERK` authentication modes and resolves an authenticated provider subject to the stable Neptlium principal before authorization when provider-independent identity storage is configured.
+Public health/status/version routes do not establish user authority.
 
-During the identity transition, existing-account linking may require both a valid legacy Supabase session and a valid Clerk session. That legacy path is temporary compatibility infrastructure, not the canonical business identity authority.
+Customer and operator bearer tokens are Supabase Auth access tokens. `apps/api` verifies the authenticated Supabase subject, resolves the active `SUPABASE_AUTH` mapping to a stable Neptlium principal, and performs Neptlium-owned authorization from that principal.
 
-Service-role credentials are confined to the API/dedicated server clients. A bearer token, UI role, or caller-supplied owner ID never bypasses resource ownership checks.
+No alternate runtime authentication mode is supported.
+
+Service-role credentials are confined to the API/dedicated server clients. A bearer token, UI role, email address, user-editable metadata, or caller-supplied owner ID never bypasses resource ownership and policy checks.
 
 ## Repository architecture
 
 `ApiRepository` defines readiness, account provisioning/onboarding, wallet/withdrawal/deposit/transaction, provider-wallet, idempotency/audit, and webhook persistence boundaries.
 
 - `MemoryRepository` is local/test only and cannot be injected in production.
-- `SupabaseRepository` currently implements readiness, provider-wallet lookup/linkage, account provisioning/onboarding RPCs, and audit insertion.
-- Durable withdrawal create/read/cancel, deposit listing, transaction listing, and webhook recording are explicitly unsupported in that adapter.
-- Production startup requires an injected durable repository and rejects memory persistence.
+- `SupabaseRepository` owns durable server-side persistence where implemented.
+- Unsupported financial operations must remain explicitly unavailable until the corresponding atomic durable path exists.
+- Production startup requires durable infrastructure and rejects memory persistence for authoritative state.
 
-Those unsupported operations must be implemented as atomic database transactions consistent with the migrations before the corresponding routes can be enabled.
+Those unsupported operations must be implemented as atomic database transactions consistent with reviewed migrations before corresponding production capability is enabled.
 
 ## Circle adapter
 
-The provider-neutral `CapitalProvider` is designed to select Circle for complete testnet or production configuration. The adapter implements existing-wallet/address/balance/transaction observation for USDC on Base Sepolia or Base. Automatic provisioning is disabled and transfer submission is unimplemented. The runtime composition passes the environment, wallet-set reference, and live-execution gate explicitly; build and provider tests lock the contract. Responses expose Neptlium domain models and provider-observed state, not raw SDK objects or canonical balances.
+The provider-neutral `CapitalProvider` may select Circle when complete environment-specific configuration and capability gates are satisfied. The adapter currently supports reviewed observation/read paths for configured assets/networks. Automatic provisioning and transfer submission remain disabled where implementation is incomplete.
+
+Responses expose Neptlium domain models and provider-observed state, not raw SDK objects or canonical balances.
 
 ## Webhooks
 
-The generic boundary enforces raw-body size limits, provider-specific verification, a provider event ID, payload digest, replay conflict detection, deduplicated inbox persistence, safe logging, and request correlation. The included timestamped HMAC verifier is test/local only. Production verification must implement each provider's reviewed official contract.
+The generic boundary enforces raw-body size limits, provider-specific verification, provider event IDs, payload digests, replay conflict detection, deduplicated inbox persistence, safe logging, and request correlation.
 
-Circle currently returns a disabled error before ingestion. Credentials or a configured route do not substitute for signature verification.
+Production webhook verification must implement each provider's reviewed official signing contract. A configured route or credential does not substitute for verification.
 
 ## Operations groundwork
 
-- `treasury.ts` evaluates withdrawal policy, allowlists, approval thresholds, and self-approval prohibition.
-- `reconciliation.ts` compares provider/internal records and classifies mismatches.
-- `workers.ts` defines leased, retryable, dead-letter jobs for webhook processing, reconciliation, and ledger settlement.
-- `observability.ts` emits safe structured request/operation signals.
-- Migration tables support durable jobs, treasury policy, approvals, reconciliation resolution, audit, and idempotency.
+- treasury policy evaluates governed withdrawal/approval conditions;
+- reconciliation compares provider/internal records and classifies mismatches;
+- workers define leased, retryable, dead-letter jobs for webhook processing, reconciliation, and settlement work;
+- observability emits safe structured request/operation signals;
+- durable tables support jobs, treasury policy, approvals, reconciliation resolution, audit, and idempotency.
 
-Memory job/rate-limit implementations are local/test only. Production requires durable jobs and a **distributed rate limiter** shared across instances. `buildApp` rejects `MemoryRateLimiter` in production. Standalone and serverless production composition uses `SupabaseRateLimiter`, backed by the service-role-only atomic `consume_api_rate_limit` RPC. The forward migration must be applied before deploying this runtime; storage failure fails closed.
+Memory job/rate-limit implementations are local/test only. Production requires durable jobs and a distributed rate limiter shared across instances. Storage failure fails closed.
 
 ## TRANSITION
 
-1. Complete atomic Supabase repository operations and readiness checks.
-2. Implement official provider webhook verifiers and durable inbox/job processing.
+1. Complete remaining atomic Supabase repository operations and readiness checks.
+2. Complete official provider webhook verifiers and durable inbox/job processing.
 3. Connect ledger posting and reconciliation through reviewed transactions.
-4. Replace direct admin financial status updates with privileged API commands.
-5. Complete Clerk-first runtime certification while retaining the legacy Supabase identity path only where continuity requires it.
-6. Consider `CLERK`-only API mode only after the dual-session transition has been explicitly certified.
+4. Keep Admin financial actions behind privileged API commands.
+5. Complete Supabase Auth session/browser QA across App, Admin, and VaultRail.
+6. Retain historical identity migration evidence without reintroducing retired runtime authentication paths.
 
 ## TARGET domains
 
@@ -78,15 +68,15 @@ Mandates, policies, targets, observations, scenarios, proposals, reviews, approv
 
 ### Transfer API
 
-Alias resolution, safe recipient verification, intent creation, validation, authorization, reservation, internal posting, provider execution, lifecycle, activity, and reconciliation.
+Alias resolution, recipient verification, intent creation, validation, authorization, reservation, internal posting, provider execution, lifecycle, activity, and reconciliation.
 
 ### Treasury API
 
-Read-only canonical liquidity projections, reserve requirement/coverage, restrictions, commitments, freshness, policy state, and exceptions. Treasury does not execute transfers.
+Read-only canonical liquidity projections, reserve requirement/coverage, restrictions, commitments, freshness, policy state, and exceptions. Treasury does not execute transfers merely because it presents state.
 
 ### Stripe APIs
 
-Stripe Treasury is excluded. The current Stripe route verifies and persists provider evidence; Stripe payment/onramp funding is not implemented. Provider evidence does not establish availability without attribution, ledger posting, failure/refund handling, and reconciliation.
+The current Stripe boundary is evidence ingress for reviewed use cases. Stripe capital funding is not live merely because webhook infrastructure exists. Funding requires attribution, failure/refund handling, ledger posting, reconciliation, and explicit capability approval.
 
 ## API invariants
 
@@ -94,3 +84,4 @@ Stripe Treasury is excluded. The current Stripe route verifies and persists prov
 - Ambiguous provider timeouts are looked up/reconciled before retry.
 - No route reports canonical settlement from a provider response alone.
 - Secrets and raw sensitive provider payloads never appear in client responses or logs.
+- Authentication identifies the principal; authorization and financial authority remain separate server-owned concerns.
