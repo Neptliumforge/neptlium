@@ -4,6 +4,7 @@ export type PublicRouteClass =
   | 'authentication-system'
   | 'generated-metadata-asset'
   | 'legacy-redirect'
+  | 'external-product'
   | 'dead-obsolete';
 
 export type NavigationLink = {
@@ -22,14 +23,18 @@ export const PERSONAL_LINKS = [
 
 export const BUSINESS_LINKS = [
   { label: 'Business', href: '/business', description: 'VaultRail for treasury, payments, approvals, risk, evidence and audit.' },
+  { label: 'VaultRail', href: '/vaultrail', description: 'The governed business financial operating environment.' },
   { label: 'Treasury', href: '/treasury', description: 'Understand business liquidity, movement, settlement and reconciliation.' },
+  { label: 'Payments', href: '/payments', description: 'Govern payment intent, authority, progression and evidence.' },
 ] as const satisfies readonly NavigationLink[];
 
 export const PRODUCTS = [
   { label: 'Capital', href: '/capital', description: 'Available, reserved and allocated capital.' },
-  { label: 'Treasury', href: '/treasury', description: 'Liquidity, movement, settlement and reconciliation.' },
-  { label: 'Allocation', href: '/allocation', description: 'Governed capital decisions before execution.' },
   { label: 'Portfolio', href: '/portfolio', description: 'Positions, valuation context, activity and reporting.' },
+  { label: 'Allocation', href: '/allocation', description: 'Governed capital decisions before execution.' },
+  { label: 'VaultRail', href: '/vaultrail', description: 'Business treasury and financial operations.' },
+  { label: 'Treasury', href: '/treasury', description: 'Liquidity, movement, settlement and reconciliation.' },
+  { label: 'Payments', href: '/payments', description: 'Governed payment intent and operating context.' },
 ] as const satisfies readonly NavigationLink[];
 
 export const PRIMARY_PRODUCTS = PRODUCTS;
@@ -71,7 +76,8 @@ export const NAVIGATION = [
 ] as const;
 
 export const INDEXABLE_ROUTES = [
-  '/', '/personal', '/business', '/platform', '/investments', '/capital', '/portfolio', '/allocation', '/treasury', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
+  '/', '/personal', '/business', '/platform', '/investments', '/capital', '/portfolio', '/allocation',
+  '/vaultrail', '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
 ] as const;
 
@@ -84,7 +90,9 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/capital': 'canonical-indexable',
   '/portfolio': 'canonical-indexable',
   '/allocation': 'canonical-indexable',
+  '/vaultrail': 'canonical-indexable',
   '/treasury': 'canonical-indexable',
+  '/payments': 'canonical-indexable',
   '/insights': 'canonical-indexable',
   '/company': 'canonical-indexable',
   '/learn': 'canonical-indexable',
@@ -92,6 +100,8 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/trust': 'canonical-indexable',
   '/contact': 'canonical-indexable',
   '/accessibility': 'canonical-indexable',
+  '/docs': 'external-product',
+  '/status': 'external-product',
   '/solutions': 'canonical-indexable',
   '/solutions/capital-visibility': 'canonical-indexable',
   '/solutions/treasury-coordination': 'canonical-indexable',
