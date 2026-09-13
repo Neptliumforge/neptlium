@@ -103,11 +103,14 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
   });
 
-  test('homepage journey CTAs remain canonical', async ({ page }) => {
+  test('homepage brand and journey CTAs remain canonical', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Capital, clearly.' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Explore Neptlium/i })).toHaveAttribute('href', '#financial-world');
+    await expect(page.getByRole('link', { name: /For business/i })).toHaveAttribute('href', '/business');
     await expect(page.getByRole('link', { name: /Explore Personal/i }).first()).toHaveAttribute('href', '/personal');
     await expect(page.getByRole('link', { name: /Explore Business/i }).first()).toHaveAttribute('href', '/business');
-    await expect(page.getByRole('link', { name: /See the platform/i }).first()).toHaveAttribute('href', '/platform');
+    await expect(page.getByRole('link', { name: /Explore Insights/i })).toHaveAttribute('href', '/insights');
   });
 
   test('about remains the intentional company alias', async ({ page }) => {
