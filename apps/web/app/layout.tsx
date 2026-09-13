@@ -11,6 +11,7 @@ import './architecture-rebuild.css';
 import './marketing-system.css';
 import './marketing-surfaces.css';
 import './unified-shell.css';
+import './elite-product-visuals.css';
 import './elite-route-calibration.css';
 import { SiteHeader } from '@/components/site-header';
 import { GlobalConversionCta } from '@/components/global-conversion-cta';
