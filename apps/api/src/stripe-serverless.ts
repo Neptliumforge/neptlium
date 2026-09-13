@@ -4,7 +4,7 @@ import { loadConfig, type Config } from './config.js';
 import { ApiError } from './errors.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
 import { StripeSubscriptionRepository } from './stripe-subscription.js';
-import { completeWebhookWithDisposition } from './webhook-completion.js';
+import { completeWebhookWithDisposition as completeWebhook } from './webhook-completion.js';
 import {
   stripeIngressDisposition,
   verifyStripeWebhook,
@@ -141,7 +141,7 @@ export async function executeStripeWebhook(
       if (disposition.action === 'subscription_update')
         await subscriptions.apply(disposition.command);
 
-      await completeWebhookWithDisposition({
+      await completeWebhook({
         supabaseUrl: config.SUPABASE_URL,
         serviceRoleKey: config.SUPABASE_SERVICE_ROLE_KEY,
         provider: 'stripe',
