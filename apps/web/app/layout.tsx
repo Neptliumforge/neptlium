@@ -9,6 +9,7 @@ import './homepage-refinement.css';
 import './homepage-balance.css';
 import './architecture-rebuild.css';
 import './marketing-system.css';
+import './marketing-surfaces.css';
 import './unified-shell.css';
 import { SiteHeader } from '@/components/site-header';
 import { GlobalConversionCta } from '@/components/global-conversion-cta';
@@ -31,9 +32,9 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = { colorScheme: 'dark', themeColor: '#050505', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { colorScheme: 'light dark', themeColor: '#050505', width: 'device-width', initialScale: 1 };
 const jsonLd = { '@context': 'https://schema.org', '@type': 'Organization', name: SITE.name, url: SITE.url, logo: SITE.url + '/icon.svg', description: SITE.description, email: SITE.supportEmail, sameAs: socialDestinations };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en" data-theme="dark"><body><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /><SkipLink /><SiteHeader /><main id="main-content">{children}</main><GlobalConversionCta /><SiteFooter /></body></html>;
+  return <html lang="en"><body><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /><SkipLink /><SiteHeader /><main id="main-content">{children}</main><GlobalConversionCta /><SiteFooter /></body></html>;
 }
