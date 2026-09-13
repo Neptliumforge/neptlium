@@ -30,6 +30,7 @@ const requiredRuntimeModules = [
   'stripe-webhook.js',
   'stripe-serverless.js',
   'stripe-subscription.js',
+  'webhook-completion.js',
   'security.js',
   'reconciliation.js',
 ];
