@@ -16,7 +16,7 @@ export async function completeWebhookWithDisposition(input: {
 }) {
   const request = input.request ?? fetch;
   const response = await request(
-    `${input.supabaseUrl}/rest/v1/rpc/complete_provider_webhook_with_disposition`,
+    `${input.supabaseUrl}/rest/v1/rpc/complete_provider_webhook`,
     {
       method: 'POST',
       headers: {
