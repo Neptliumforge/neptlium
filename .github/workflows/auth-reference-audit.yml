@@ -19,15 +19,16 @@ jobs:
         shell: bash
         run: |
           set +e
-          rg -n -i 'clerk|@clerk|CLERK_' . \
-            --glob '!supabase/migrations/20260820203000_clerk_identity_linking_commands.sql' \
-            --glob '!supabase/migrations/20260820210000_clerk_dual_session_link_service.sql' \
-            --glob '!supabase/migrations/20260820220000_clerk_application_identity_cutover.sql' \
-            --glob '!supabase/migrations/20260820221000_clerk_bootstrap_existing_account_guard.sql' \
-            --glob '!supabase/migrations/20260912223000_clerk_only_identity_cutover.sql' \
-            --glob '!supabase/migrations/20260913123000_supabase_auth_only_cutover.sql' \
-            --glob '!docs/archive/**' \
-            --glob '!.git/**' \
+          grep -RniE 'clerk|@clerk|CLERK_' . \
+            --exclude-dir=.git \
+            --exclude-dir=node_modules \
+            --exclude='20260820203000_clerk_identity_linking_commands.sql' \
+            --exclude='20260820210000_clerk_dual_session_link_service.sql' \
+            --exclude='20260820220000_clerk_application_identity_cutover.sql' \
+            --exclude='20260820221000_clerk_bootstrap_existing_account_guard.sql' \
+            --exclude='20260912223000_clerk_only_identity_cutover.sql' \
+            --exclude='20260913123000_supabase_auth_only_cutover.sql' \
+            | grep -v '^./docs/archive/' \
             > /tmp/auth-reference-hits.txt
           cat /tmp/auth-reference-hits.txt
           echo "HIT_COUNT=$(wc -l < /tmp/auth-reference-hits.txt)" >> "$GITHUB_STEP_SUMMARY"
