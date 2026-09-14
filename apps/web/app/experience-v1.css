@@ -1,0 +1,18 @@
+/* Canonical Neptlium experience overrides. Loaded last on the marketing surface. */
+[data-npt-nts='display-xl']{font-size:var(--np-type-display-xl)!important;line-height:var(--np-type-display-xl-line)!important;font-weight:var(--np-type-display-xl-weight)!important;letter-spacing:var(--np-type-display-xl-track)!important}
+[data-npt-nts='hero']{font-size:var(--np-type-hero)!important;line-height:var(--np-type-hero-line)!important;font-weight:var(--np-type-hero-weight)!important;letter-spacing:var(--np-type-hero-track)!important}
+[data-npt-nts='h1']{font-size:var(--np-type-h1)!important;line-height:var(--np-type-h1-line)!important;font-weight:var(--np-type-h1-weight)!important;letter-spacing:var(--np-type-h1-track)!important}
+[data-npt-nts='h2']{font-size:var(--np-type-h2)!important;line-height:var(--np-type-h2-line)!important;font-weight:var(--np-type-h2-weight)!important;letter-spacing:var(--np-type-h2-track)!important}
+[data-npt-nts='h3']{font-size:var(--np-type-h3)!important;line-height:var(--np-type-h3-line)!important;font-weight:var(--np-type-h3-weight)!important;letter-spacing:var(--np-type-h3-track)!important}
+[data-npt-nts='lead']{font-size:var(--np-type-lead)!important;line-height:var(--np-type-lead-line)!important;font-weight:var(--np-type-lead-weight)!important;letter-spacing:var(--np-type-lead-track)!important}
+
+.neptlium-minimal-footer{background:#080a09;color:#f5f5f2;border-top:1px solid rgb(255 255 255 / 10%)}
+.neptlium-minimal-footer__shell{width:min(1280px,calc(100% - 48px));margin-inline:auto;padding:clamp(3.5rem,6vw,5.5rem) 0 2rem}
+.neptlium-minimal-footer__top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3rem;align-items:start;padding-bottom:3.5rem}
+.neptlium-minimal-footer__identity{max-width:34rem}.neptlium-minimal-footer__identity p{margin:1.25rem 0 0;color:#a9aaa6;font-size:1rem;line-height:1.6}
+.neptlium-minimal-footer__status{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;color:#a9aaa6;font-size:.8125rem}.neptlium-minimal-footer__status a{color:#f5f5f2;font-weight:550}
+.neptlium-minimal-footer__base{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;padding-top:1.5rem;border-top:1px solid rgb(255 255 255 / 10%)}
+.neptlium-minimal-footer__legal{display:flex;flex-wrap:wrap;gap:.85rem 1.25rem;color:#a9aaa6;font-size:.75rem}.neptlium-minimal-footer__legal a:hover{color:#f5f5f2}
+.neptlium-minimal-footer__social{display:flex;gap:1rem;margin-top:1.5rem;color:#a9aaa6;font-size:.8125rem}.neptlium-minimal-footer__social a:hover{color:#f5f5f2}
+.neptlium-minimal-footer__copyright{color:#73746f;font-size:.75rem}
+@media(max-width:720px){.neptlium-minimal-footer__shell{width:min(100% - 32px,1280px)}.neptlium-minimal-footer__top{grid-template-columns:1fr;gap:2rem}.neptlium-minimal-footer__status{align-items:flex-start}.neptlium-minimal-footer__base{align-items:flex-start;flex-direction:column}.neptlium-minimal-footer__legal{max-width:28rem}}
