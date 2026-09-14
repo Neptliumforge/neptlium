@@ -69,7 +69,7 @@ export const RESOURCES = [
 ] as const satisfies readonly NavigationLink[];
 
 export const COMPANY = [
-  { label: 'Company', href: '/company', description: 'Neptlium’s company thesis, product family and long-term direction.' },
+  { label: 'Company', href: '/company', description: 'Neptlium is the financial platform company within parent company Neptliumforge, spanning Capital, Treasury, Institutional and Infrastructure.' },
   { label: 'Contact', href: '/contact', description: 'Start a conversation with Neptlium.' },
 ] as const satisfies readonly NavigationLink[];
 
@@ -81,7 +81,7 @@ export const NAVIGATION = [
   { label: 'Institutional', href: '/institutional', description: 'Funds, family offices, asset managers and institutional APIs.', links: INSTITUTIONAL_LINKS },
   { label: 'Infrastructure', href: '/infrastructure', description: 'Pay, API and developer infrastructure.', links: INFRASTRUCTURE_LINKS },
   { label: 'Insights', href: '/insights', description: 'Markets, investing, capital, treasury and risk.', links: INSIGHTS },
-  { label: 'Company', href: '/company', description: 'Neptlium as the parent company and product family.', links: COMPANY },
+  { label: 'Company', href: '/company', description: 'Neptlium within the Neptliumforge parent-company architecture.', links: COMPANY },
 ] as const;
 
 export const INDEXABLE_ROUTES = [
