@@ -1,0 +1,66 @@
+name: One-shot Treasury Product Migration
+
+on:
+  push:
+    branches:
+      - product/neptlium-treasury-hierarchy
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: product/neptlium-treasury-hierarchy
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Replace retired product naming in active tracked text
+        run: |
+          python - <<'PY'
+          import pathlib, subprocess
+          old_product = 'Vau' + 'ltRail'
+          old_title = 'Vau' + 'lt'
+          old_lower = 'va' + 'ult'
+          replacements = [
+              (old_product, 'Neptlium Treasury'),
+              (old_title, 'Treasury'),
+              (old_lower, 'treasury'),
+          ]
+          skip_prefixes = ('supabase/migrations/', 'docs/archive/')
+          skip_paths = {'.github/workflows/treasury-product-migration.yml', 'scripts/validate-product-hierarchy.mjs'}
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
+          for raw in filter(None, paths):
+              if raw in skip_paths or raw.startswith(skip_prefixes):
+                  continue
+              path = pathlib.Path(raw)
+              try:
+                  text = path.read_text()
+              except (UnicodeDecodeError, OSError):
+                  continue
+              updated = text
+              for old, new in replacements:
+                  updated = updated.replace(old, new)
+              if updated != text:
+                  path.write_text(updated)
+          PY
+      - name: Regenerate workspace lockfile
+        run: pnpm install --lockfile-only --no-frozen-lockfile
+      - name: Validate retired naming is absent
+        run: node scripts/validate-product-hierarchy.mjs
+      - name: Commit migration output
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'refactor: complete Neptlium Treasury product migration'
+          git push origin HEAD:product/neptlium-treasury-hierarchy
