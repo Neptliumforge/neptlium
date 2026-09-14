@@ -1,9 +1,9 @@
 const services = [
   'Neptlium Website',
   'Neptlium Capital',
-  'VaultRail',
-  'API',
-  'Payments',
+  'Neptlium Treasury',
+  'Neptlium API',
+  'Neptlium Pay',
   'Provider Ingress',
   'Notifications',
   'Documents',
