@@ -58,12 +58,15 @@ export function canonicalAssetKey(input: Pick<CanonicalAssetIdentity, 'symbol' |
 
 export function validateCanonicalAsset(input: CanonicalAssetIdentity): CanonicalAssetIdentity & { readonly assetKey: string } {
   if (!Number.isInteger(input.decimals) || input.decimals < 0 || input.decimals > 36) throw new Error('asset decimals out of range');
-  const assetKey = canonicalAssetKey(input);
+  const normalizedContract = input.contractAddress?.trim().toLowerCase() || null;
+  if (input.kind === 'token' && !normalizedContract) throw new Error('token assets require a contract address');
+  if ((input.kind === 'native' || input.kind === 'fiat') && normalizedContract) throw new Error(`${input.kind} assets cannot have a contract address`);
+  const assetKey = canonicalAssetKey({ ...input, contractAddress: normalizedContract });
   return {
     ...input,
     symbol: input.symbol.trim().toUpperCase(),
     networkIdentifier: input.networkIdentifier.trim().toLowerCase(),
-    contractAddress: input.contractAddress?.trim().toLowerCase() || null,
+    contractAddress: normalizedContract,
     assetKey,
   };
 }
