@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './global.css';
 
 export const metadata: Metadata = {
-  title: 'VaultRail — Neptlium',
-  description: 'Governed business treasury operating environment.',
+  title: 'Neptlium Treasury',
+  description: 'Governed business treasury, payments, approvals, policy, risk and reporting.',
 };
 
 export default function RootLayout({ children }: { readonly children: React.ReactNode }) {
