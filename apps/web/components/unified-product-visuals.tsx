@@ -5,11 +5,11 @@ function DemoTag({ children = 'Illustrative interface' }: { children?: string })
 }
 
 export function UnifiedHeroVisual() {
-  return <div className="uv-frame uv-hero" aria-label="Illustrative Neptlium Personal and Business product composition">
+  return <div className="uv-frame uv-hero" aria-label="Illustrative Neptlium Capital and Treasury product composition">
     <header><strong>Neptlium</strong><DemoTag /></header>
     <div className="uv-dual">
       <section><span className="uv-label">Personal</span><h3>Neptlium Capital</h3><div className="uv-grid"><div><span>Capital</span><strong>State-aware</strong></div><div><span>Portfolio</span><strong>Context</strong></div><div><span>Allocation</span><strong>Governed</strong></div><div><span>Activity</span><strong>Recorded</strong></div></div></section>
-      <section><span className="uv-label">Business</span><h3>VaultRail</h3><div className="uv-grid"><div><span>Treasury</span><strong>Visible</strong></div><div><span>Payments</span><strong>Controlled</strong></div><div><span>Approvals</span><strong>Explicit</strong></div><div><span>Risk</span><strong>Explainable</strong></div></div></section>
+      <section><span className="uv-label">Business</span><h3>Neptlium Treasury</h3><div className="uv-grid"><div><span>Treasury</span><strong>Visible</strong></div><div><span>Payments</span><strong>Controlled</strong></div><div><span>Approvals</span><strong>Explicit</strong></div><div><span>Risk</span><strong>Explainable</strong></div></div></section>
     </div>
     <SharedCoreVisual compact />
   </div>;
@@ -34,8 +34,8 @@ export function AllocationLifecycleVisual() {
   return <div className="uv-frame" aria-label="Illustrative governed allocation lifecycle"><header><strong>Allocation lifecycle</strong><DemoTag /></header><ol className="uv-lifecycle">{stages.map((stage, index) => <li key={stage}><span>{String(index + 1).padStart(2, '0')}</span><strong>{stage}</strong>{index < stages.length - 1 ? <ArrowRight aria-hidden="true" /> : null}</li>)}</ol><p className="uv-note">A proposal is not execution. Execution is not reconciliation.</p></div>;
 }
 
-export function VaultRailCommandVisual() {
-  return <div className="uv-frame" aria-label="Illustrative VaultRail treasury command center"><header><strong>VaultRail</strong><DemoTag /></header><div className="uv-grid uv-business-grid"><div><span>Treasury</span><strong>Liquidity state</strong></div><div><span>Payments</span><strong>Controlled lifecycle</strong></div><div><span>Approvals</span><strong>Authority visible</strong></div><div><span>Risk</span><strong>Evidence first</strong></div></div><div className="uv-attention"><ShieldCheck aria-hidden="true" /><span>Requires attention</span><strong>Review remains explicit before authority is granted</strong></div></div>;
+export function TreasuryCommandVisual() {
+  return <div className="uv-frame" aria-label="Illustrative Neptlium Treasury command center"><header><strong>Neptlium Treasury</strong><DemoTag /></header><div className="uv-grid uv-business-grid"><div><span>Treasury</span><strong>Liquidity state</strong></div><div><span>Payments</span><strong>Controlled lifecycle</strong></div><div><span>Approvals</span><strong>Authority visible</strong></div><div><span>Risk</span><strong>Evidence first</strong></div></div><div className="uv-attention"><ShieldCheck aria-hidden="true" /><span>Requires attention</span><strong>Review remains explicit before authority is granted</strong></div></div>;
 }
 
 export function TreasuryStateVisual() {
