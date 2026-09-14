@@ -19,11 +19,4 @@ export function assertProductionRuntimeConfig(env: NodeJS.ProcessEnv = process.e
 
   exactOrigin(env.NEXT_PUBLIC_SITE_URL, PRODUCTION_SITE_ORIGIN, 'NEXT_PUBLIC_SITE_URL');
   exactOrigin(env.NEPTLIUM_API_URL, PRODUCTION_API_ORIGIN, 'NEPTLIUM_API_URL');
-
-  if (!env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
-    throw new Error('Invalid production application configuration: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY');
-  }
-  if (!env.CLERK_SECRET_KEY) {
-    throw new Error('Invalid production application configuration: CLERK_SECRET_KEY');
-  }
 }

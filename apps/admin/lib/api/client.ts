@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
-import { auth } from '@clerk/nextjs/server';
+import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 
 export class AdminApiError extends Error {
   constructor(
@@ -82,9 +82,11 @@ export async function adminApiRequest<T>(
   path: `/v1/admin${string}`,
   init: RequestInit = {},
 ): Promise<T> {
-  const session = await auth();
-  if (!session.userId) throw new AdminApiError(401, 'session_expired', 'Your session has expired.');
-  const token = await session.getToken();
+  const supabase = await createSupabaseServerClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) throw new AdminApiError(401, 'session_expired', 'Your session has expired.');
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
   if (!token) throw new AdminApiError(401, 'session_expired', 'Your session has expired.');
   return execute<T>(token, path, init);
 }

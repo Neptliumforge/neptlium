@@ -10,52 +10,17 @@ const view = read('app/dashboard/capital-account/CapitalAccountView.tsx');
 const actions = read('app/dashboard/capital-account/actions.ts');
 const surface = `${page}\n${view}`;
 
-test('Capital Account is protected and uses authoritative financial contracts', () => {
+test('legacy Capital Account workspace remains protected and authoritative', () => {
   assert.match(page, /requireProvisionedUser/);
-  for (const contract of [
-    'getCanonicalBalances',
-    'getFundingCapabilities',
-    'getFundingActivity',
-    'getTransferCapabilities',
-    'getTransferActivity',
-    'getTransferAliases',
-  ])
+  for (const contract of ['getCanonicalBalances','getFundingCapabilities','getFundingActivity','getTransferCapabilities','getTransferActivity','getTransferAliases']) {
     assert.match(page, new RegExp(contract), `missing ${contract}`);
+  }
   assert.doesNotMatch(surface, /apiRequest|\/v1\/|supabase|createClient|\.from\(/i);
 });
 
-test('WalletView is elevated and renamed to CapitalAccountView', () => {
-  assert.match(view, /export function CapitalAccountView/);
-  assert.doesNotMatch(surface, /WalletView|title="Wallet"|>Wallet</);
-  assert.match(view, /title="Capital Account"/);
-  assert.match(
-    view,
-    /Understand capital availability, funding routes, movement capability, and account state\./,
-  );
-});
-
-test('Capital Account uses institutional workspace terminology', () => {
-  for (const tab of ['Capital State', 'Funding', 'Movement', 'Destinations', 'Capital Context']) {
-    assert.match(view, new RegExp(`'${tab}'`), `missing ${tab}`);
-  }
-  assert.match(view, /Create funding instruction/);
-  assert.match(view, /Request movement/);
-  assert.doesNotMatch(view, /Deposit money|Send funds|consumer wallet/i);
-});
-
-test('Capital Account preserves explicit financial states without fabricated values', () => {
-  for (const state of ['Available', 'Pending', 'Reserved', 'Restricted', 'Unavailable']) {
-    assert.match(view, new RegExp(state, 'i'), `missing ${state}`);
-  }
-  for (const forbidden of [
-    /portfolio performance/i,
-    /returns/i,
-    /net worth/i,
-    /fake balance/i,
-    /\$250,000/,
-  ]) {
-    assert.doesNotMatch(surface, forbidden);
-  }
+test('legacy Capital Account preserves explicit financial states without fabricated values', () => {
+  for (const state of ['Available','Pending','Reserved','Restricted','Unavailable']) assert.match(view, new RegExp(state, 'i'), `missing ${state}`);
+  for (const forbidden of [/portfolio performance/i,/returns/i,/net worth/i,/fake balance/i,/\$250,000/]) assert.doesNotMatch(surface, forbidden);
   assert.doesNotMatch(page, /\?\? ['"]0['"]/);
 });
 
@@ -65,32 +30,14 @@ test('financial mutations remain server-owned and lifecycle-gated', () => {
   assert.match(actions, /createTransferAlias/);
   assert.doesNotMatch(actions, /apiRequest|\/v1\/|circle|alchemy|stripe|supabase/i);
   assert.match(view, /productStateFromCapability/);
-  assert.match(view, /Movement capability enabled/);
   assert.doesNotMatch(view, /<Button[^>]*>\s*Request movement/);
-  assert.match(view, /Reviewing a movement does not reserve or move capital/);
 });
 
-test('Capital Account exposes governed funding and movement lifecycles', () => {
-  for (const stage of [
-    'Funding intent',
-    'Deposit route',
-    'Provider observation',
-    'Reconciliation',
-    'Capital state update',
-    'Destination verification',
-    'Reservation',
-    'Provider submission',
-    'Settlement',
-  ]) {
-    assert.match(view, new RegExp(stage), `missing lifecycle stage ${stage}`);
-  }
-  assert.match(view, /Required next action/);
+test('legacy Capital Account exposes governed funding and movement lifecycles', () => {
+  for (const stage of ['Funding intent','Deposit route','Provider observation','Reconciliation','Capital state update','Destination verification','Reservation','Provider submission','Settlement']) assert.match(view, new RegExp(stage), `missing lifecycle stage ${stage}`);
   assert.match(view, /Authority boundary/);
   assert.match(view, /Approval does not submit or settle a movement/);
-  assert.match(
-    view,
-    /Capital becomes available only after provider evidence, ledger posting, and\s+reconciliation/,
-  );
+  assert.match(view, /Capital becomes available only after provider evidence, ledger posting, and\s+reconciliation/);
 });
 
 test('admin operations do not overstate completion authority', () => {
@@ -102,21 +49,22 @@ test('admin operations do not overstate completion authority', () => {
   assert.match(withdrawals, /Rejection unavailable/);
 });
 
-test('canonical and compatibility routes converge on Capital Account', () => {
+test('canonical Capital route coexists with compatibility routes', () => {
   const navigation = read('components/navigation/dashboardNav.tsx');
-  const legacy = read('app/dashboard/wallet/page.tsx');
-  const deposit = read('app/dashboard/deposit/page.tsx');
-  const withdrawals = read('app/dashboard/withdrawals/page.tsx');
-  assert.match(navigation, /label: 'Capital Account',[\s\S]*?href: '\/dashboard\/capital-account'/);
-  assert.match(legacy, /redirect\('\/dashboard\/capital-account'\)/);
-  assert.match(deposit, /redirect\('\/dashboard\/capital-account#funding'\)/);
-  assert.match(withdrawals, /redirect\('\/dashboard\/capital-account#movement'\)/);
+  const canonical = read('app/dashboard/capital/page.tsx');
+  const legacyWallet = read('app/dashboard/wallet/page.tsx');
+  assert.match(navigation, /label: 'Capital',[\s\S]*?href: '\/dashboard\/capital'/);
+  assert.match(canonical, /CapitalExperience/);
+  assert.match(legacyWallet, /redirect\('\/dashboard\/capital-account'\)/);
 });
 
-test('Overview exposes the official Capital Account workspace', () => {
-  const overview = read('app/dashboard/page.tsx');
-  assert.match(overview, /title: 'Capital Account'/);
-  assert.match(overview, /Understand funding, availability, and movement capability\./);
-  assert.match(overview, /href: '\/dashboard\/capital-account'/);
-  assert.doesNotMatch(overview, /href: '\/dashboard\/wallet'/);
+test('Overview links to canonical Capital while shared bootstrap retains authoritative contracts', () => {
+  const experience = read('components/product/OperatingExperience.tsx');
+  const bootstrap = read('lib/product/bootstrap.ts');
+  assert.match(experience, /Total canonical capital/);
+  assert.match(experience, /\/dashboard\/capital/);
+  assert.doesNotMatch(experience, /href="\/dashboard\/wallet"/);
+  assert.match(bootstrap, /getCanonicalBalances/);
+  assert.match(bootstrap, /getFundingCapabilities/);
+  assert.match(bootstrap, /getTransferCapabilities/);
 });

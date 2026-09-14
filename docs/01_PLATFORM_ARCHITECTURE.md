@@ -4,51 +4,35 @@
 
 ## System boundaries
 
-Neptlium is a four-application capital operating platform:
+Neptlium is a multi-application capital operating platform. Current repository boundaries include public Web, authenticated App, Admin, API, and dedicated product-family applications where present.
 
-- `apps/web` → `neptlium.com`
-- `apps/app` → `app.neptlium.com`
-- `apps/admin` → `admin.neptlium.com`
-- `apps/api` → `api.neptlium.com`
-
-These are deliberate trust boundaries. Public Web has no privileged financial authority. App and Admin are authenticated interaction surfaces. API is the privileged authorization, product-state, provider, ledger, webhook, audit, and reconciliation boundary.
+Public Web has no privileged financial authority. App and Admin are authenticated interaction surfaces. API is the privileged authorization, product-state, provider, ledger, webhook, audit, and reconciliation boundary.
 
 ## Authentication and identity
 
-Clerk is the current and only runtime authentication/session/recovery/MFA provider for customer and operator surfaces.
+Supabase Auth is the sole active runtime authentication/session provider for customer and operator surfaces.
 
-App/Admin send Clerk bearer tokens to API. API verifies Clerk, resolves the verified `CLERK` subject to a stable Neptlium principal, and performs Neptlium-owned authorization from that principal.
+App/Admin obtain Supabase sessions and send the current access token to API. API verifies the Supabase identity, resolves the verified `SUPABASE_AUTH` subject to a stable Neptlium principal, and performs Neptlium-owned authorization from that principal.
 
-Supabase Auth is not part of runtime authentication. Supabase may remain server-side persistence infrastructure. Historical legacy identity rows/migrations are retained as migration evidence and must not be rewritten.
+Historical identity rows and migrations may remain as migration evidence. They are not runtime authentication authority and must not be rewritten merely to erase history.
 
 ## Authenticated application
 
-`apps/app` contains Clerk authentication, dashboard/onboarding, role-aware navigation, API-client infrastructure, and product workspaces including Capital Account, Treasury, Portfolio, Companies and Allocation.
-
-The target customer hierarchy is:
-
-1. Overview
-2. Assets / Capital Account
-3. Deposit
-4. Treasury
-5. Portfolio
-6. Companies
-7. Allocation
-8. Activity / Documents / Settings
+`apps/app` contains Supabase authentication, dashboard/onboarding, role-aware navigation, API-client infrastructure, and product workspaces including Capital, Treasury, Portfolio, Companies and Allocation.
 
 The browser does not determine canonical balances or privileged financial consequence.
 
 ## Admin
 
-`apps/admin` authenticates operators with Clerk and delegates role/financial authorization to API. Admin is for investigation, review, approval, reconciliation exceptions, security operations, capability visibility, and other governed workflows.
+`apps/admin` authenticates operators with Supabase Auth and delegates role/financial authorization to API. Admin is for investigation, review, approval, reconciliation exceptions, security operations, capability visibility, and other governed workflows.
 
-An admin status update alone never proves execution or settlement.
+An authenticated operator is not automatically an administrator. An admin status update alone never proves execution or settlement.
 
 ## API
 
 `apps/api` owns:
 
-- Clerk bearer-token verification;
+- Supabase bearer-token verification;
 - stable-principal resolution;
 - ownership and role authorization;
 - product/business state;
@@ -66,15 +50,15 @@ Provider credentials remain server-side.
 
 ## Persistence
 
-Supabase is used where configured as durable server-side PostgreSQL/persistence infrastructure: migrations, repositories, RPCs, RLS/constraints, audit, provider inboxes, identity mapping storage, financial records, and reconciliation.
+Supabase provides durable PostgreSQL/persistence infrastructure, migrations, repositories, RLS/constraints, audit, provider inboxes, identity mapping storage, financial records, and reconciliation.
 
-Its service-role key is infrastructure authority, not a user credential. Browser/server Supabase Auth session clients are not part of the current application authentication architecture.
+The service-role key is infrastructure authority, never a user credential and never browser-visible.
 
 ## Identity persistence
 
-Stable Neptlium principal UUIDs separate external authentication identity from financial ownership. Existing ownership UUIDs must be preserved during identity migrations.
+Stable Neptlium principal UUIDs separate authentication identity from financial ownership. Existing ownership UUIDs must be preserved during identity migrations.
 
-Forward migrations are append-only/reviewed. Historical migrations that reference older authentication architecture remain historical evidence; current runtime behavior is defined by current application/API source plus the latest approved forward migration.
+Forward migrations are append-only and reviewed. Historical migrations that reference retired authentication architecture remain evidence; current runtime behavior is defined by current application/API source plus the latest approved forward migration.
 
 ## Financial truth
 
@@ -86,11 +70,11 @@ The platform distinguishes observed, modeled, proposed, approved, submitted, pro
 
 Deposit is a first-class Capital Account workflow. The governing architecture is [`16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md`](./16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md).
 
-Target crypto asset/network combinations and Stripe USD funding are capability-controlled architecture. They are not production claims until the server capability registry, provider integration, compliance, posting and reconciliation path are certified.
+Target crypto asset/network combinations and USD funding are capability-controlled architecture. They are not production claims until the server capability registry, provider integration, compliance, posting and reconciliation path are certified.
 
 ## Provider architecture
 
-Circle, Alchemy, Stripe and future providers are adapters. Clerk is identity infrastructure. Supabase is persistence infrastructure. None of them replaces Neptlium's authorization, ownership, ledger, lifecycle, audit, or reconciliation model.
+Circle, Alchemy, Stripe and future providers are adapters. Supabase Auth provides identity and Supabase provides persistence. None replaces Neptlium's authorization, ownership, ledger, lifecycle, audit, or reconciliation model.
 
 ## Trust boundaries
 
@@ -103,7 +87,7 @@ Circle, Alchemy, Stripe and future providers are adapters. Clerk is identity inf
 
 ## Architectural invariants
 
-1. Clerk-only runtime authentication.
+1. Supabase Auth is the sole active authentication system.
 2. Stable provider-independent Neptlium principals.
 3. Explicit ownership and authorization.
 4. Server-side privileged operations.

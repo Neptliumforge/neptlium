@@ -4,22 +4,21 @@ Authenticated customer application for `app.neptlium.com`.
 
 ## Authentication
 
-Clerk is the sole browser authentication, session, recovery, and MFA authority.
+Supabase Auth is the sole browser authentication and session authority.
 
-- `ClerkProvider` owns the application identity context.
-- Clerk middleware protects `/dashboard` and `/onboarding`.
-- `/auth/sign-in` and `/auth/sign-up` use Clerk components.
-- Authenticated requests to `api.neptlium.com` use the current Clerk bearer token.
-- The application does not create, refresh, validate, or link Supabase Auth sessions.
-- No Supabase URL, publishable key, password endpoint, cookie session, or legacy account-linking UI is part of the customer authentication flow.
+- Shared Supabase SSR/browser clients own application identity context and session refresh.
+- Protected customer routes require a valid Supabase session.
+- `/auth/sign-in` and related account entry surfaces use the native Supabase Auth flow.
+- Authenticated requests to `api.neptlium.com` use the current Supabase access token.
+- Browser-safe Supabase configuration is limited to the project URL and publishable key; service-role credentials never belong in this application.
 
-First authenticated entry calls `POST /v1/auth/bootstrap`. The API resolves the verified Clerk subject to a stable Neptlium principal. Existing accounts are preserved through the forward Clerk-only identity cutover migration; new users receive a new principal and continue to onboarding.
+First authenticated entry provisions or resolves the stable Neptlium principal through the governed API boundary. Existing canonical ownership is preserved through the forward Supabase-auth cutover; new users receive normal account provisioning and continue to onboarding.
 
 ## Data boundary
 
-`api.neptlium.com` is the customer product and financial authority consumed by this application. The server-only API client obtains the current Clerk session token, forwards it as a bearer token, adds request correlation, uses bounded timeouts, retries reads only, and never manufactures financial state.
+`api.neptlium.com` is the customer product and financial authority consumed by this application. The server-only API client validates the current Supabase user/session, forwards the access token as a bearer token, adds request correlation, uses bounded timeouts, retries reads only, and never manufactures financial state.
 
-Supabase may remain behind `apps/api` as server-side persistence infrastructure. It is not an authentication provider for this application and no Supabase service-role or browser key belongs in `apps/app`.
+Supabase Auth identifies the user. Neptlium server authorization determines what that user may do. Browser authentication never grants financial execution authority.
 
 ## Product truth
 
@@ -31,7 +30,7 @@ Supabase may remain behind `apps/api` as server-side persistence infrastructure.
 
 ## Environment
 
-See `.env.example`. Required identity variables are Clerk configuration only, plus the canonical application/API origins.
+See `.env.example`. Required identity variables are the browser-safe Supabase project URL and publishable key plus the canonical application/API origins.
 
 ## Commands
 

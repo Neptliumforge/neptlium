@@ -127,14 +127,14 @@ export async function executeAdminHttp(
       };
     const authorization = headers.authorization;
     if (!authorization?.startsWith('Bearer '))
-      throw new ApiError(401, 'authentication_required', 'A valid Clerk bearer token is required');
+      throw new ApiError(401, 'authentication_required', 'A valid Supabase Auth bearer token is required');
     await (injected?.rateLimiter ?? rateLimiterFor(config)).consume(
       `${input.clientAddress}:admin:${input.method.toUpperCase() === 'GET' ? 'read' : 'write'}`,
       input.method.toUpperCase() === 'GET' ? 120 : 30,
       60_000,
     );
     const principal = await (injected?.authenticate ?? ((token: string) => authenticate(config, token)))(authorization.slice(7));
-    if (!principal) throw new ApiError(401, 'authentication_required', 'A valid Clerk bearer token is required');
+    if (!principal) throw new ApiError(401, 'authentication_required', 'A valid Supabase Auth bearer token is required');
 
     let body: unknown;
     try { body = input.payload ? JSON.parse(input.payload) : undefined; }

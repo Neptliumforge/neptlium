@@ -22,6 +22,17 @@ The governing product distinction is:
 
 These surfaces share one Neptlium identity. They must not be visually or operationally collapsed into one UI language.
 
+### Authentication authority
+
+**AUTHENTICATION: Supabase Auth only.**
+
+- Do not reintroduce any retired authentication provider, dependency, middleware, environment variable, webhook, identity mapper, or hosted auth UI.
+- Do not introduce another third-party identity system without explicit architecture approval.
+- Browser applications may use only the Supabase project URL and publishable client key. Service-role credentials and provider secrets are server-only.
+- Authentication proves identity only. It never grants financial, administrative, treasury, organization, or provider-execution authority by itself.
+- Authorization remains server-owned through immutable Neptlium principals, role/membership/policy state, governed API commands, RLS where applicable, and the financial authority chain.
+- Never authorize from user-editable metadata, email-domain heuristics, browser-provided user IDs, or client-visible role state.
+
 ### Public Web independence
 
 `apps/web` is not an engineering-status surface. Ordinary public Marketing must not be forced to narrate repository progress, build completion, migration state, environment configuration, provider setup, capability flags, deployment health, App/Admin/API readiness, or implementation chronology.

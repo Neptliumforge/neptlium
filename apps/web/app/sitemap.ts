@@ -1,14 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { INDEXABLE_ROUTES } from '@/lib/content/public-architecture';
 
-const highPriorityRoutes = new Set([
-  '/',
-  '/platform',
-  '/investments',
-  '/insights',
-  '/security',
-  '/company',
-]);
+const highPriorityRoutes = new Set(['/', '/personal', '/business', '/platform', '/insights', '/security', '/company']);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return INDEXABLE_ROUTES.map((route) => ({

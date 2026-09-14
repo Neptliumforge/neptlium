@@ -1,89 +1,32 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 
-const baseURL =
-  process.env.NEPTLIUM_WEB_PREVIEW_URL ??
-  "http://localhost:3000";
-
-const bypassSecret =
-  process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-
-if (
-  process.env.CI &&
-  baseURL.includes("vercel.app") &&
-  !bypassSecret
-) {
-  throw new Error(
-    "VERCEL_AUTOMATION_BYPASS_SECRET is required for protected Vercel preview QA",
-  );
-}
+const baseURL = process.env.NEPTLIUM_WEB_BASE_URL ?? "http://127.0.0.1:3000";
 
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 45_000,
-
-  expect: {
-    timeout: 10_000,
-  },
-
+  expect: { timeout: 10_000 },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 2 : undefined,
-
   reporter: [
     ["list"],
     ["html", { outputFolder: "playwright-report", open: "never" }],
   ],
-
   use: {
     baseURL,
+    browserName: "chromium",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
-
-    extraHTTPHeaders: bypassSecret
-      ? {
-          "x-vercel-protection-bypass": bypassSecret,
-          "x-vercel-set-bypass-cookie": "true",
-        }
-      : undefined,
   },
-
   projects: [
-    {
-      name: "desktop-1440",
-      use: {
-        viewport: { width: 1440, height: 1000 },
-      },
-    },
-    {
-      name: "laptop-1280",
-      use: {
-        viewport: { width: 1280, height: 900 },
-      },
-    },
-    {
-      name: "tablet-768",
-      use: {
-        viewport: { width: 768, height: 1024 },
-      },
-    },
-    {
-      name: "mobile-390",
-      use: {
-        ...devices["iPhone 13"],
-        viewport: { width: 390, height: 844 },
-      },
-    },
-    {
-      name: "mobile-360",
-      use: {
-        viewport: { width: 360, height: 800 },
-        isMobile: true,
-        hasTouch: true,
-      },
-    },
+    { name: "desktop-1440", use: { viewport: { width: 1440, height: 1000 } } },
+    { name: "laptop-1280", use: { viewport: { width: 1280, height: 900 } } },
+    { name: "tablet-768", use: { viewport: { width: 768, height: 1024 } } },
+    { name: "mobile-390", use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
+    { name: "mobile-360", use: { viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true } },
   ],
-
   outputDir: "test-results",
 });

@@ -1,9 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * Server-only database administration client.
- * Supabase is used here strictly as persistence infrastructure; Clerk owns
- * customer/operator authentication and sessions.
+ * Server-only Supabase administration client.
+ * This client is restricted to trusted server-side persistence and authority
+ * workflows. Supabase Auth session clients must never expose the service role.
  */
 export function createSupabaseAdminClient() {
   const url = process.env.SUPABASE_URL;

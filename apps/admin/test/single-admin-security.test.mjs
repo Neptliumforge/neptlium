@@ -38,8 +38,9 @@ test("unauthenticated users are redirected before role authorization", () => {
   assert.match(guards, /redirect\("\/unauthorized"\)/);
 });
 
-test("successful Clerk authentication still requires API-backed admin authorization", () => {
-  assert.match(login, /<SignIn/);
+test("successful Supabase authentication still requires API-backed admin authorization", () => {
+  assert.match(login, /createSupabaseBrowserClient/);
+  assert.match(login, /signInWithPassword/);
   assert.doesNotMatch(login, /SignUp/);
   assert.match(session, /adminApiRequest/);
   assert.match(session, /"\/v1\/admin\/session"/);

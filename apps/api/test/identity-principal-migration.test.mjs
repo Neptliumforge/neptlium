@@ -82,10 +82,7 @@ test('migration preserves profile UUIDs and backfills one Supabase subject per p
         status: 'ACTIVE',
       },
     ]);
-    assert.equal(
-      subjects.rows.some((row) => row.provider_subject.includes('@')),
-      false,
-    );
+    assert.equal(subjects.rows.some((row) => row.provider_subject.includes('@')), false);
 
     const events = await db.query(
       `select operation, count(*)::integer as count
@@ -177,44 +174,39 @@ test('migration preserves profile UUIDs and backfills one Supabase subject per p
   }
 });
 
-test('identity mapping constraints fail closed under duplicate and conflicting concurrent links', async () => {
+test('Supabase identity mapping uniqueness constraints fail closed without mutating historical evidence', async () => {
   const db = await productionShapedDatabase();
   try {
     await db.exec(migration);
-    const clerkSubject = 'user_clerk_123';
-    const attempts = await Promise.allSettled([
-      db.query(
-        `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-         values ($1, 'CLERK', $2) returning id`,
-        [first, clerkSubject],
-      ),
-      db.query(
-        `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-         values ($1, 'CLERK', $2) returning id`,
-        [first, clerkSubject],
-      ),
-    ]);
-    assert.equal(attempts.filter((result) => result.status === 'fulfilled').length, 1);
-    assert.equal(attempts.filter((result) => result.status === 'rejected').length, 1);
 
     await assert.rejects(
       () =>
         db.query(
           `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-           values ($1, 'CLERK', $2)`,
-          [second, clerkSubject],
+           values ($1, 'SUPABASE_AUTH', $2)`,
+          [second, first],
         ),
       /identity_provider_subjects_provider_subject_unique/,
     );
+
     await assert.rejects(
       () =>
         db.query(
           `insert into public.identity_provider_subjects(principal_id, provider, provider_subject)
-           values ($1, 'CLERK', 'another_subject')`,
+           values ($1, 'SUPABASE_AUTH', '00000000-0000-4000-8000-000000000099')`,
           [first],
         ),
       /identity_provider_subjects_active_principal_provider_unique/,
     );
+
+    const subjects = await db.query(
+      `select principal_id, provider, provider_subject, status
+       from public.identity_provider_subjects order by principal_id`,
+    );
+    assert.deepEqual(subjects.rows, [
+      { principal_id: first, provider: 'SUPABASE_AUTH', provider_subject: first, status: 'ACTIVE' },
+      { principal_id: second, provider: 'SUPABASE_AUTH', provider_subject: second, status: 'ACTIVE' },
+    ]);
   } finally {
     await db.close();
   }

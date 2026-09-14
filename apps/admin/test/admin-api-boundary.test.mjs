@@ -16,7 +16,7 @@ function sourceFiles(dir) {
 }
 const adminSource = sourceFiles(root).map((path) => [path, readFileSync(path, "utf8")]);
 
-test("apps/admin uses Clerk only for identity/session and never direct database authority", () => {
+test("apps/admin uses Supabase Auth only for identity/session and never direct database authority", () => {
   for (const [path, source] of adminSource) {
     assert.equal(source.includes("createSupabaseAdminClient"), false, path);
     assert.equal(source.includes("SUPABASE_SERVICE_ROLE_KEY"), false, path);
@@ -27,18 +27,17 @@ test("apps/admin uses Clerk only for identity/session and never direct database 
   }
   const login = readFileSync(join(root, "app/(auth)/login/page.tsx"), "utf8");
   const session = readFileSync(join(root, "lib/auth/session.ts"), "utf8");
-  assert.match(login, /<SignIn/);
+  assert.match(login, /createSupabaseBrowserClient/);
+  assert.match(login, /signInWithPassword/);
   assert.match(session, /adminApiRequest/);
   assert.match(session, /\/v1\/admin\/session/);
 });
 
-test("admin runtime env contains only auth/session public config plus server-only API origin", () => {
+test("admin runtime env contains only browser-safe auth config plus server-only API origin", () => {
   const env = readFileSync(join(root, ".env.example"), "utf8").trim().split(/\r?\n/);
   assert.deepEqual(env, [
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=",
-    "CLERK_SECRET_KEY=",
-    "NEXT_PUBLIC_CLERK_SIGN_IN_URL=/login",
-    "NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard",
+    "NEXT_PUBLIC_SUPABASE_URL=",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=",
     "NEXT_PUBLIC_SITE_URL=https://admin.neptlium.com",
     "NEPTLIUM_API_URL=https://api.neptlium.com",
   ]);

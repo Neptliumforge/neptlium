@@ -22,15 +22,15 @@ The browser is an interaction surface, not the privileged financial control plan
 
 ## Identity
 
-Clerk is the authoritative authentication, browser-session, recovery, and MFA provider for customer and operator surfaces.
+Supabase Auth is the sole active authentication, browser-session, recovery, and account identity provider for customer and operator surfaces.
 
-Neptlium financial ownership is attached to a stable provider-independent internal principal:
+Neptlium financial ownership is attached to a stable internal principal:
 
-Clerk identity → Neptlium principal → authorization and financial ownership.
+Supabase Auth identity → Neptlium principal → authorization and financial ownership.
 
 Changing or evolving authentication infrastructure must never rewrite canonical financial history, balances, ownership UUIDs, audit attribution, provider evidence, or ledger records.
 
-Supabase remains a server-side data/persistence platform where used. It is not a Neptlium user authentication provider.
+Supabase service-role access remains server-side infrastructure authority and is never browser authentication or customer financial authority.
 
 ## Capital universe
 
@@ -103,7 +103,7 @@ Canonical financial operations must preserve:
 
 ## Provider principle
 
-Examples of infrastructure dependencies may include Clerk, Supabase persistence, Stripe, Circle, Alchemy, and future reviewed providers. They remain replaceable adapters around stable Neptlium primitives.
+Examples of infrastructure dependencies may include Supabase, Stripe, Circle, Alchemy, and future reviewed providers. They remain replaceable adapters around stable Neptlium primitives.
 
 Configuration is not capability. Capability is not authorization. Provider success is not settlement. Browser completion is not canonical financial movement.
 

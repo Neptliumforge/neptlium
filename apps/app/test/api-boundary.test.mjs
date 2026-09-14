@@ -27,10 +27,12 @@ test('customer product pages do not directly access database product tables or s
   }
 });
 
-test('server-only API client owns Clerk bearer authentication and customer data transport', () => {
+test('server-only API client owns Supabase bearer authentication and customer data transport', () => {
   const source = read('lib/api/client.ts');
   assert.match(source, /import 'server-only'/);
-  assert.match(source, /getToken\(\)/);
+  assert.match(source, /createSupabaseServerClient/);
+  assert.match(source, /supabase\.auth\.getUser\(\)/);
+  assert.match(source, /supabase\.auth\.getSession\(\)/);
   assert.match(source, /headers\.set\('authorization', `Bearer \$\{token\}`\)/);
   assert.match(source, /headers\.set\('x-request-id', requestId\)/);
   assert.match(source, /cache: 'no-store'/);
@@ -40,11 +42,11 @@ test('server-only API client owns Clerk bearer authentication and customer data 
   }
 });
 
-test('production application runtime contains no Supabase authentication bridge', () => {
+test('production application runtime uses Supabase Auth without a legacy account-link bridge', () => {
   const env = read('.env.example');
-  assert.match(env, /NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY/);
-  assert.match(env, /CLERK_SECRET_KEY/);
-  assert.doesNotMatch(env, /SUPABASE/);
+  assert.match(env, /NEXT_PUBLIC_SUPABASE_URL/);
+  assert.match(env, /NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
+  assert.doesNotMatch(env, /SERVICE_ROLE/);
   assert.equal(existsSync(resolve(root, 'app/api/auth/link-existing/route.ts')), false);
   assert.equal(existsSync(resolve(root, 'app/auth/link-existing/page.tsx')), false);
 });

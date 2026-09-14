@@ -48,7 +48,7 @@ The client sends a governed request such as:
 }
 ```
 
-The server authenticates the Clerk session, resolves the Neptlium principal, validates compliance/limits/capability and creates an idempotent deposit intent.
+The server authenticates the Supabase Auth session, resolves the Neptlium principal, validates compliance/limits/capability and creates an idempotent deposit intent.
 
 ### 3. Display instructions
 
@@ -162,7 +162,7 @@ Evidence uploads require a governed document API. Files must be scanned, size/ty
 
 ## Dashboard integration
 
-The next dashboard redesign should expose quick actions near the balance summary:
+The dashboard should expose quick actions near the balance summary when capability permits:
 
 - Deposit
 - Withdraw
@@ -172,7 +172,7 @@ Deposit opens `/dashboard/deposit` directly. The overview and Capital Account th
 
 ## Security invariants
 
-- Clerk authenticates every deposit request.
+- Supabase Auth authenticates every deposit request.
 - The server derives the principal; clients never choose owner IDs.
 - Deposit addresses are provider/server-issued, never browser-generated.
 - Asset and network are explicit and validated.
@@ -185,4 +185,4 @@ Deposit opens `/dashboard/deposit` directly. The overview and Capital Account th
 
 ## Design direction
 
-The workflow should be extremely clean: white + Neptlium green in light mode; deep charcoal + green in dark mode; restrained typography; one decision per step; large readable asset/network rows; strong copy controls; status timeline; no cluttered exchange-style charts inside the deposit wizard.
+The workflow should be extremely clean: restrained Neptlium surfaces, one decision per step, large readable asset/network rows, strong copy controls, a clear status timeline, and no cluttered exchange-style charts inside the deposit wizard.

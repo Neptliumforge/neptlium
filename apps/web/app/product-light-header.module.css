@@ -1,0 +1,2 @@
+.light{background:linear-gradient(to bottom,var(--npt-black) 0 76px,var(--npt-white) 76px 100%)}
+@media(max-width:640px){.light{background:linear-gradient(to bottom,var(--npt-black) 0 68px,var(--npt-white) 68px 100%)}}

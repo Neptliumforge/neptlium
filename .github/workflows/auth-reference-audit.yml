@@ -1,0 +1,22 @@
+name: Supabase Auth Source Contract
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - release/final-platform-reconciliation
+
+permissions:
+  contents: read
+
+jobs:
+  retired-auth-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Enforce Supabase Auth only
+        run: node scripts/retired-auth-contract.mjs

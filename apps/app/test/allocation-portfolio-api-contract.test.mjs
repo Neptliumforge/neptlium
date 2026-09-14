@@ -46,31 +46,28 @@ test('Allocation execution remains explicitly unavailable', () => {
   assert.doesNotMatch(workspace, /Execution available/);
 });
 
-test('Portfolio intelligence consumes governed allocation state', () => {
+test('Portfolio intelligence consumes governed allocation state through the authenticated bootstrap', () => {
+  const bootstrap = read('lib/product/bootstrap.ts');
   const page = read('app/dashboard/portfolio/page.tsx');
+  const experience = read('components/product/OperatingExperience.tsx');
 
-  assert.match(page, /getAllocationWorkspace/);
-  assert.match(page, /allocationPolicy/);
-  assert.match(page, /allocationDrift/);
-  assert.match(page, /allocationOutsidePolicy/);
-  assert.match(page, /allocationReview/);
-  assert.match(page, /allocationValuationUnavailable/);
-
-  assert.match(page, /No authoritative allocation policy is established/);
-  assert.match(page, /portfolio\?\.value\.state === 'UNAVAILABLE'/);
-  assert.match(page, /href: '\/dashboard\/allocations'/);
-  assert.doesNotMatch(
-    page,
-    /createAllocationPolicy|updateAllocationPolicy|authorizeAllocationPolicy|createAllocationModel|createAllocationPlan/,
-  );
+  assert.match(bootstrap, /getAllocationState\(\)/);
+  assert.match(bootstrap, /allocation: projection\(allocation\)/);
+  assert.match(page, /PortfolioExperience/);
+  assert.match(experience, /snapshot\.allocation\.state === 'READY'/);
+  assert.match(experience, /MODEL','REVIEW','APPROVE','RESERVE','EXECUTE','RECONCILE/);
+  assert.doesNotMatch(page, /createAllocationPolicy|updateAllocationPolicy|authorizeAllocationPolicy|createAllocationModel|createAllocationPlan/);
 });
 
-test('Portfolio quantities remain canonical and valuation does not become fabricated', () => {
-  const page = read('app/dashboard/portfolio/page.tsx');
-  const components = read('components/product/PortfolioIntelligence.tsx');
+test('Portfolio financial truth is sourced once and valuation remains unavailable without evidence', () => {
+  const bootstrap = read('lib/product/bootstrap.ts');
+  const experience = read('components/product/OperatingExperience.tsx');
 
-  assert.match(page, /getCanonicalBalances/);
-  assert.match(components, /Capital Account/);
-  assert.match(components, /Assets are not\s+combined without authoritative valuation evidence/);
-  assert.match(page, /portfolio API did not return authoritative valuation evidence/);
+  assert.match(bootstrap, /getCanonicalBalances\(\)/);
+  assert.match(bootstrap, /getPortfolioState\(\)/);
+  assert.match(bootstrap, /canonical_balances_unavailable/);
+  assert.match(experience, /Canonical valuation unavailable/);
+  assert.match(experience, /Unknown allocation is not rendered as zero/);
+  assert.match(experience, /No canonical positions are available/);
+  assert.doesNotMatch(experience, /mock|illustrative|sample holding|fake valuation/i);
 });

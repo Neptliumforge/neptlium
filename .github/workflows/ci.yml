@@ -33,6 +33,25 @@ jobs:
       - run: node --test supabase/test/stripe-webhook-retirement.test.mjs
       - run: node --test supabase/test/gate05-legacy-authority-retirement.test.mjs
 
+  validate-app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git diff --check "$(git merge-base HEAD origin/main)" HEAD
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @neptlium/app typecheck
+      - run: pnpm --filter @neptlium/app lint
+      - run: pnpm --filter @neptlium/app test
+      - run: pnpm --filter @neptlium/app build
+
   validate-web:
     runs-on: ubuntu-latest
     timeout-minutes: 20
