@@ -9,7 +9,7 @@ function withRefreshedCookies(target: NextResponse, refreshed: NextResponse) {
 export default async function proxy(request: NextRequest) {
   const { response, user } = await refreshSupabaseSession(request);
   const { pathname, search } = request.nextUrl;
-  const protectedRoute = pathname === '/dashboard' || pathname.startsWith('/dashboard/');
+  const protectedRoute = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname === '/onboarding' || pathname.startsWith('/onboarding/');
 
   if (!user && protectedRoute) {
     const signIn = request.nextUrl.clone();
