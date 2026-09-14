@@ -22,7 +22,6 @@ export const PERSONAL_LINKS = [
 ] as const satisfies readonly NavigationLink[];
 
 export const BUSINESS_LINKS = [
-  { label: 'Business', href: '/business', description: 'Neptlium Treasury for treasury, payments, approvals, risk, evidence and audit.' },
   { label: 'Neptlium Treasury', href: '/business', description: 'The governed business financial operating environment.' },
   { label: 'Treasury', href: '/treasury', description: 'Understand business liquidity, movement, settlement and reconciliation.' },
   { label: 'Payments', href: '/payments', description: 'Govern payment intent, authority, progression and evidence.' },
@@ -77,7 +76,7 @@ export const NAVIGATION = [
 
 export const INDEXABLE_ROUTES = [
   '/', '/personal', '/business', '/platform', '/investments', '/capital', '/portfolio', '/allocation',
-  '/business', '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
+  '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
 ] as const;
 
@@ -90,7 +89,6 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/capital': 'canonical-indexable',
   '/portfolio': 'canonical-indexable',
   '/allocation': 'canonical-indexable',
-  '/business': 'canonical-indexable',
   '/treasury': 'canonical-indexable',
   '/payments': 'canonical-indexable',
   '/insights': 'canonical-indexable',
