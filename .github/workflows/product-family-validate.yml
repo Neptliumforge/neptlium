@@ -23,13 +23,13 @@ jobs:
         with:
           fetch-depth: 0
       - run: git diff --check
+      - run: node scripts/validate-product-hierarchy.mjs
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: node scripts/validate-product-hierarchy.mjs
       - run: pnpm --filter @neptlium/types typecheck
       - run: pnpm --filter @neptlium/types lint
       - run: pnpm --filter @neptlium/treasury typecheck
