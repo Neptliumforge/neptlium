@@ -27,9 +27,9 @@ function FlowDot({ active = false }: { active?: boolean }) {
   return <span className={`${styles.flowDot} ${active ? styles.flowDotActive : ''}`} aria-hidden="true" />;
 }
 
-export function Neptlium TreasuryPage() {
+export function BusinessTreasuryPage() {
   return (
-    <div className={`${styles.page} ${styles.treasuryRail}`}>
+    <div className={`${styles.page} ${styles.treasuryProduct}`}>
       <section className={`${styles.hero} ${styles.treasuryHero}`}>
         <div className={styles.shell}>
           <div className={styles.heroCopy}>
@@ -187,7 +187,7 @@ export function TreasuryPage() {
             <Label>Treasury</Label>
             <h1>See treasury clearly.</h1>
             <p>Understand where organizational funds sit, what is available for operating needs, and the movement and control context around each destination.</p>
-            <PrimaryActions secondaryHref="/treasuryrail" secondaryLabel="Explore Neptlium Treasury" />
+            <PrimaryActions secondaryHref="/business" secondaryLabel="Explore Neptlium Treasury" />
           </div>
           <div className={`${styles.productStage} ${styles.treasuryStage}`} aria-label="Treasury workspace illustration">
             <div className={styles.treasuryHeader}><span>Treasury overview</span><span className={styles.quietBadge}>Organizational view</span></div>
@@ -284,7 +284,7 @@ export function PaymentsPage() {
             <Label inverse>Payments</Label>
             <h1>Move money with context.</h1>
             <p>Shape payment intent around the recipient, purpose, policy and authority that should remain visible from creation through the operating record.</p>
-            <PrimaryActions secondaryHref="/treasuryrail" secondaryLabel="Explore Neptlium Treasury" />
+            <PrimaryActions secondaryHref="/business" secondaryLabel="Explore Neptlium Treasury" />
           </div>
           <div className={`${styles.productStage} ${styles.paymentStage}`} aria-label="Governed payment flow illustration">
             <div className={styles.paymentFormHead}><span>New payment</span><span className={styles.quietBadge}>Draft intent</span></div>

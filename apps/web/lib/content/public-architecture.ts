@@ -23,7 +23,7 @@ export const PERSONAL_LINKS = [
 
 export const BUSINESS_LINKS = [
   { label: 'Business', href: '/business', description: 'Neptlium Treasury for treasury, payments, approvals, risk, evidence and audit.' },
-  { label: 'Neptlium Treasury', href: '/treasuryrail', description: 'The governed business financial operating environment.' },
+  { label: 'Neptlium Treasury', href: '/business', description: 'The governed business financial operating environment.' },
   { label: 'Treasury', href: '/treasury', description: 'Understand business liquidity, movement, settlement and reconciliation.' },
   { label: 'Payments', href: '/payments', description: 'Govern payment intent, authority, progression and evidence.' },
 ] as const satisfies readonly NavigationLink[];
@@ -32,7 +32,7 @@ export const PRODUCTS = [
   { label: 'Capital', href: '/capital', description: 'Available, reserved and allocated capital.' },
   { label: 'Portfolio', href: '/portfolio', description: 'Positions, valuation context, activity and reporting.' },
   { label: 'Allocation', href: '/allocation', description: 'Governed capital decisions before execution.' },
-  { label: 'Neptlium Treasury', href: '/treasuryrail', description: 'Business treasury and financial operations.' },
+  { label: 'Neptlium Treasury', href: '/business', description: 'Business treasury and financial operations.' },
   { label: 'Treasury', href: '/treasury', description: 'Liquidity, movement, settlement and reconciliation.' },
   { label: 'Payments', href: '/payments', description: 'Governed payment intent and operating context.' },
 ] as const satisfies readonly NavigationLink[];
@@ -77,7 +77,7 @@ export const NAVIGATION = [
 
 export const INDEXABLE_ROUTES = [
   '/', '/personal', '/business', '/platform', '/investments', '/capital', '/portfolio', '/allocation',
-  '/treasuryrail', '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
+  '/business', '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
 ] as const;
 
@@ -90,7 +90,7 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/capital': 'canonical-indexable',
   '/portfolio': 'canonical-indexable',
   '/allocation': 'canonical-indexable',
-  '/treasuryrail': 'canonical-indexable',
+  '/business': 'canonical-indexable',
   '/treasury': 'canonical-indexable',
   '/payments': 'canonical-indexable',
   '/insights': 'canonical-indexable',
