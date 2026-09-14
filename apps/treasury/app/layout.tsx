@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import '@neptlium/ui/styles/nts.css';
 import './global.css';
 
 export const metadata: Metadata = {
   title: 'Neptlium Treasury',
-  description: 'Governed business treasury, payments, approvals, policy, risk and reporting.',
+  description: 'Organizational capital, payments, stablecoins, approvals, policies and treasury context in one governed environment.',
 };
 
 export default function RootLayout({ children }: { readonly children: React.ReactNode }) {
