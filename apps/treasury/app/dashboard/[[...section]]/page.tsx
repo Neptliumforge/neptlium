@@ -29,27 +29,27 @@ const routeCopy: Record<string, [string,string]> = {
 };
 
 function Sidebar() {
-  return <aside className="vault-sidebar"><div className="vault-brand"><strong>NEPTLIUM</strong><span>VaultRail</span></div>{groups.map(([group,items]) => <nav className="vault-nav-group" key={group}><span>{group}</span>{items.map(([label,href]) => <Link key={href} href={href}>{label}</Link>)}</nav>)}</aside>;
+  return <aside className="treasury-sidebar"><div className="treasury-brand"><strong>NEPTLIUM</strong><span>Treasury</span></div>{groups.map(([group,items]) => <nav className="treasury-nav-group" key={group}><span>{group}</span>{items.map(([label,href]) => <Link key={href} href={href}>{label}</Link>)}</nav>)}</aside>;
 }
 
 function MobileNav() {
-  return <nav className="vault-mobile" aria-label="VaultRail mobile navigation"><Link href="/dashboard">Home</Link><Link href="/dashboard/treasury">Treasury</Link><Link href="/dashboard/payments">Payments</Link><Link href="/dashboard/approvals">Approvals</Link><Link href="/dashboard/settings">More</Link></nav>;
+  return <nav className="treasury-mobile" aria-label="Neptlium Treasury mobile navigation"><Link href="/dashboard">Home</Link><Link href="/dashboard/treasury">Treasury</Link><Link href="/dashboard/payments">Payments</Link><Link href="/dashboard/approvals">Approvals</Link><Link href="/dashboard/settings">More</Link></nav>;
 }
 
 function Overview() {
   return <>
-    <p className="vault-eyebrow">Command center</p><h1 className="vault-title">Good morning.</h1><p className="vault-copy">VaultRail separates organization identity, policy, approval, execution evidence and reconciliation. No authenticated browser session alone grants treasury authority.</p>
-    <div className="vault-grid">
-      {['Treasury value','Available','Reserved','In transit'].map((label) => <article className="vault-panel vault-metric" key={label}><span>{label}</span><strong>—</strong><small className="vault-state">Canonical treasury projection unavailable</small></article>)}
+    <p className="treasury-eyebrow">Command center</p><h1 className="treasury-title">Good morning.</h1><p className="treasury-copy">Neptlium Treasury separates organization identity, policy, approval, execution evidence and reconciliation. No authenticated browser session alone grants treasury authority.</p>
+    <div className="treasury-grid">
+      {['Treasury value','Available','Reserved','In transit'].map((label) => <article className="treasury-panel treasury-metric" key={label}><span>{label}</span><strong>—</strong><small className="treasury-state">Canonical treasury projection unavailable</small></article>)}
     </div>
-    <section className="vault-panel vault-section"><h2>Requires attention</h2><div className="vault-empty"><strong>No actionable treasury events.</strong><span>Attention items appear only from organization-scoped policy, approval, settlement or reconciliation evidence.</span></div></section>
-    <section className="vault-panel vault-section"><h2>Recent activity</h2><div className="vault-empty"><strong>No treasury activity yet.</strong><span>Nothing is fabricated from provider or wallet state.</span></div></section>
+    <section className="treasury-panel treasury-section"><h2>Requires attention</h2><div className="treasury-empty"><strong>No actionable treasury events.</strong><span>Attention items appear only from organization-scoped policy, approval, settlement or reconciliation evidence.</span></div></section>
+    <section className="treasury-panel treasury-section"><h2>Recent activity</h2><div className="treasury-empty"><strong>No treasury activity yet.</strong><span>Nothing is fabricated from provider or wallet state.</span></div></section>
   </>;
 }
 
-export default async function VaultDashboard({ params }: { readonly params: Promise<{ section?: string[] }> }) {
+export default async function TreasuryDashboard({ params }: { readonly params: Promise<{ section?: string[] }> }) {
   const { section = [] } = await params;
   const key = section[0] ?? 'overview';
   const copy = routeCopy[key];
-  return <div className="vault-shell"><Sidebar/><main className="vault-main"><header className="vault-topbar"><span>{copy?.[0] ?? 'Overview'}</span><div className="vault-topbar-actions"><small>Organization authority unavailable</small><SignOutButton /></div></header><div className="vault-content">{key === 'overview' ? <Overview/> : <><p className="vault-eyebrow">VaultRail</p><h1 className="vault-title">{copy?.[0] ?? 'Workspace'}</h1><p className="vault-copy">{copy?.[1] ?? 'This capability is not configured.'}</p>{key === 'payments' ? <section className="vault-panel vault-section"><h2>Governed payment lifecycle</h2><div className="vault-lifecycle">{paymentLifecycle.map((state) => <span key={state}>{state.replaceAll('_',' ')}</span>)}</div><div className="vault-empty"><strong>Payment execution unavailable</strong><span>No browser → Circle, browser → Alchemy, or browser → canonical payment mutation path is present in this foundation.</span></div></section> : <section className="vault-panel vault-section"><h2>Capability unavailable</h2><div className="vault-empty"><strong>No authoritative organization projection is available.</strong><span>This shell is intentionally inert until server-side organization membership, role, permission and capability contracts exist.</span></div></section>}</>}</div></main><MobileNav/></div>;
+  return <div className="treasury-shell"><Sidebar/><main className="treasury-main"><header className="treasury-topbar"><span>{copy?.[0] ?? 'Overview'}</span><div className="treasury-topbar-actions"><small>Organization authority unavailable</small><SignOutButton /></div></header><div className="treasury-content">{key === 'overview' ? <Overview/> : <><p className="treasury-eyebrow">Neptlium Treasury</p><h1 className="treasury-title">{copy?.[0] ?? 'Workspace'}</h1><p className="treasury-copy">{copy?.[1] ?? 'This capability is not configured.'}</p>{key === 'payments' ? <section className="treasury-panel treasury-section"><h2>Governed payment lifecycle</h2><div className="treasury-lifecycle">{paymentLifecycle.map((state) => <span key={state}>{state.replaceAll('_',' ')}</span>)}</div><div className="treasury-empty"><strong>Payment execution unavailable</strong><span>No browser → Circle, browser → Alchemy, or browser → canonical payment mutation path is present in this foundation.</span></div></section> : <section className="treasury-panel treasury-section"><h2>Capability unavailable</h2><div className="treasury-empty"><strong>No authoritative organization projection is available.</strong><span>This shell is intentionally inert until server-side organization membership, role, permission and capability contracts exist.</span></div></section>}</>}</div></main><MobileNav/></div>;
 }
