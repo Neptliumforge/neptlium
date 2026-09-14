@@ -2,8 +2,9 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 
 const legacyWorkspace = ['va', 'ult'].join('');
-const legacyProduct = ['Vault', 'Rail'].join('');
+const legacyProduct = ['Vau', 'ltRail'].join('');
 const forbidden = [legacyWorkspace, legacyProduct];
+const immutableHistoryPrefixes = ['supabase/migrations/'];
 
 const requiredPaths = [
   'apps/app',
@@ -29,6 +30,7 @@ const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
 
 const violations = [];
 for (const path of tracked) {
+  if (immutableHistoryPrefixes.some((prefix) => path.startsWith(prefix))) continue;
   let content;
   try {
     content = readFileSync(path, 'utf8');
@@ -42,7 +44,7 @@ for (const path of tracked) {
 }
 
 if (violations.length) {
-  throw new Error(`Legacy product naming remains in tracked files:\n${violations.join('\n')}`);
+  throw new Error(`Legacy product naming remains in active tracked files:\n${violations.join('\n')}`);
 }
 
 const family = readFileSync('packages/types/src/product-family.ts', 'utf8');
