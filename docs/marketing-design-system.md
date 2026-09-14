@@ -5,7 +5,7 @@
 **Architecture:** one company, two product journeys
 
 - **Personal / Neptlium Capital** — individual investors and capital customers
-- **Business / VaultRail** — organizations and treasury teams
+- **Business / Neptlium Treasury** — organizations and treasury teams
 
 This document supersedes the former Stage 01 Personal-first navigation, PR #68 visual assumptions, ivory-first direction, and any guidance that treats `black-first` as `black-only`. It does not override the product constitution, canonical financial authority, authenticated App/Admin architecture, API authority, ledger logic, Gate 04/05 evidence, security boundaries or provider architecture.
 
@@ -89,7 +89,7 @@ Do not build a page as Carbon → Carbon → Carbon. Typical rhythm should alter
 
 - **Home:** Carbon hero; meaningful Cloud/White/Ivory storytelling; a major Mineral Business moment; Carbon only where it adds authority.
 - **Personal:** lighter consumer-investor experience led by Ivory/White/Cloud, with selected Mineral and Carbon control moments.
-- **Business / VaultRail:** stronger Mineral identity with White operational clarity, Cloud breathing room and Carbon payment/audit canvases.
+- **Business / Neptlium Treasury:** stronger Mineral identity with White operational clarity, Cloud breathing room and Carbon payment/audit canvases.
 - **Platform:** architectural Carbon → Cloud/White → Mineral/Carbon progression.
 - **Security:** Carbon for authority, but White/Cloud/Mineral must carry explanatory sections.
 - **Company:** primarily White/Ivory/Cloud with selective dark or Mineral resets.
@@ -138,7 +138,7 @@ Business concepts: Treasury state, Payment lifecycle, Approvals and policy, Pref
 
 Shared concepts: Identity, Authority, Evidence, Ledger, Reconciliation, Audit.
 
-Product visuals should intentionally cross surface environments: dark Capital UI on White, dark VaultRail command center on Cloud or Mineral, and light content fields against Carbon where appropriate. Any structural example that could be mistaken for live state must be labeled illustrative. No fake balances, AUM, returns, customer counts, payment history, opportunity inventory, licensing or partner relationships.
+Product visuals should intentionally cross surface environments: dark Capital UI on White, dark Neptlium Treasury command center on Cloud or Mineral, and light content fields against Carbon where appropriate. Any structural example that could be mistaken for live state must be labeled illustrative. No fake balances, AUM, returns, customer counts, payment history, opportunity inventory, licensing or partner relationships.
 
 ## Financial truth
 

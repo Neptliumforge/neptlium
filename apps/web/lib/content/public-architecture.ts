@@ -22,8 +22,8 @@ export const PERSONAL_LINKS = [
 ] as const satisfies readonly NavigationLink[];
 
 export const BUSINESS_LINKS = [
-  { label: 'Business', href: '/business', description: 'VaultRail for treasury, payments, approvals, risk, evidence and audit.' },
-  { label: 'VaultRail', href: '/vaultrail', description: 'The governed business financial operating environment.' },
+  { label: 'Business', href: '/business', description: 'Neptlium Treasury for treasury, payments, approvals, risk, evidence and audit.' },
+  { label: 'Neptlium Treasury', href: '/treasuryrail', description: 'The governed business financial operating environment.' },
   { label: 'Treasury', href: '/treasury', description: 'Understand business liquidity, movement, settlement and reconciliation.' },
   { label: 'Payments', href: '/payments', description: 'Govern payment intent, authority, progression and evidence.' },
 ] as const satisfies readonly NavigationLink[];
@@ -32,7 +32,7 @@ export const PRODUCTS = [
   { label: 'Capital', href: '/capital', description: 'Available, reserved and allocated capital.' },
   { label: 'Portfolio', href: '/portfolio', description: 'Positions, valuation context, activity and reporting.' },
   { label: 'Allocation', href: '/allocation', description: 'Governed capital decisions before execution.' },
-  { label: 'VaultRail', href: '/vaultrail', description: 'Business treasury and financial operations.' },
+  { label: 'Neptlium Treasury', href: '/treasuryrail', description: 'Business treasury and financial operations.' },
   { label: 'Treasury', href: '/treasury', description: 'Liquidity, movement, settlement and reconciliation.' },
   { label: 'Payments', href: '/payments', description: 'Governed payment intent and operating context.' },
 ] as const satisfies readonly NavigationLink[];
@@ -68,7 +68,7 @@ export const PRIMARY_COMPANY = COMPANY;
 
 export const NAVIGATION = [
   { label: 'Personal', href: '/personal', description: 'Neptlium Capital for individual investors.', links: PERSONAL_LINKS },
-  { label: 'Business', href: '/business', description: 'VaultRail for business treasury and financial operations.', links: BUSINESS_LINKS },
+  { label: 'Business', href: '/business', description: 'Neptlium Treasury for business treasury and financial operations.', links: BUSINESS_LINKS },
   { label: 'Platform', href: '/platform', description: 'The shared Neptlium financial system underneath both journeys.', links: [{ label: 'Platform', href: '/platform', description: 'How Personal and Business experiences share identity, authority, evidence, reconciliation and audit.' }] },
   { label: 'Insights', href: '/insights', description: 'One editorial system for investing, capital, treasury, payments and risk.', links: INSIGHTS },
   { label: 'Security', href: '/security', description: 'One governance story across Personal and Business.', links: [{ label: 'Security', href: '/security', description: 'Identity, authorization, financial authority, evidence, reconciliation and data security.' }, { label: 'Trust', href: '/trust', description: 'How evidence, uncertainty, authority and consequence are represented.' }] },
@@ -77,7 +77,7 @@ export const NAVIGATION = [
 
 export const INDEXABLE_ROUTES = [
   '/', '/personal', '/business', '/platform', '/investments', '/capital', '/portfolio', '/allocation',
-  '/vaultrail', '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
+  '/treasuryrail', '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
 ] as const;
 
@@ -90,7 +90,7 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/capital': 'canonical-indexable',
   '/portfolio': 'canonical-indexable',
   '/allocation': 'canonical-indexable',
-  '/vaultrail': 'canonical-indexable',
+  '/treasuryrail': 'canonical-indexable',
   '/treasury': 'canonical-indexable',
   '/payments': 'canonical-indexable',
   '/insights': 'canonical-indexable',

@@ -60,7 +60,7 @@ test('personal and business journeys remain differentiated but share product tru
   assert.equal((personal.match(/<h1/g) ?? []).length, 1);
   assert.equal((business.match(/<h1/g) ?? []).length, 1);
   for (const copy of ['Neptlium Capital', 'Available', 'Reserved', 'Allocated', 'Decisions before execution']) assert.match(personal, new RegExp(copy, 'i'));
-  for (const copy of ['VaultRail', 'Treasury', 'Payments', 'Approvals', 'Policies', 'Risk', 'Audit', 'Intelligence without authority']) assert.match(business, new RegExp(copy, 'i'));
+  for (const copy of ['Neptlium Treasury', 'Treasury', 'Payments', 'Approvals', 'Policies', 'Risk', 'Audit', 'Intelligence without authority']) assert.match(business, new RegExp(copy, 'i'));
   assert.match(business, /Illustrative|Developing|Concept/i);
   assert.doesNotMatch(business, /guaranteed|bank-grade|risk-free/i);
 });
@@ -83,7 +83,7 @@ test('canonical navigation is Personal Business Platform Insights Security Compa
   for (const route of ['/personal', '/business', '/platform', '/capital', '/portfolio', '/allocation', '/treasury']) assert.match(architecture, new RegExp(route.replaceAll('/', '\\/')));
   assert.match(header, /Get started/);
   assert.match(header, /Neptlium Capital/);
-  assert.match(header, /VaultRail/);
+  assert.match(header, /Neptlium Treasury/);
   assert.match(header, /data-surface=/);
   assert.match(header, /window\.scrollY > 18/);
   assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
@@ -92,11 +92,11 @@ test('canonical navigation is Personal Business Platform Insights Security Compa
 
 test('product destinations remain separated by audience', () => {
   assert.match(site, /personalAppUrl:\s*'https:\/\/app\.neptlium\.com'/);
-  assert.match(site, /businessAppUrl:\s*'https:\/\/vault\.neptlium\.com'/);
+  assert.match(site, /businessAppUrl:\s*'https:\/\/treasury\.neptlium\.com'/);
   assert.match(site, /payUrl:\s*'https:\/\/pay\.neptlium\.com'/);
   assert.match(site, /docsUrl:\s*'https:\/\/docs\.neptlium\.com'/);
   assert.match(footer, /Neptlium Capital/);
-  assert.match(footer, /VaultRail/);
+  assert.match(footer, /Neptlium Treasury/);
 });
 
 test('shared elite layout is responsive, reduced-motion aware, and product visuals bind globally', () => {
