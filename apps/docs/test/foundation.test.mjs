@@ -14,6 +14,7 @@ test('developer docs label speculative domains instead of presenting them as liv
 
 test('developer docs preserve one shared API boundary and contain no real secrets', () => {
   assert.match(page, /api\.neptlium\.com/);
-  assert.doesNotMatch(page, /vault-api\.neptlium\.com|pay-api\.neptlium\.com/);
+  assert.match(page, /Neptlium Treasury/);
+  assert.doesNotMatch(page, /treasury-api\.neptlium\.com|pay-api\.neptlium\.com/);
   assert.doesNotMatch(page, /sk_live_|whsec_|service_role|private_key/i);
 });
