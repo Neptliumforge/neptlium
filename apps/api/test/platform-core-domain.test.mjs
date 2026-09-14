@@ -18,7 +18,13 @@ test('canonical asset identity is deterministic and network scoped', () => {
 
 test('canonical asset rejects invalid precision and contract addresses', () => {
   assert.throws(() => validateCanonicalAsset({ symbol: 'USDC', networkIdentifier: 'base-mainnet', contractAddress: 'not-an-address', decimals: 6, kind: 'token' }));
-  assert.throws(() => validateCanonicalAsset({ symbol: 'USDC', networkIdentifier: 'base-mainnet', decimals: 100, kind: 'token' }));
+  assert.throws(() => validateCanonicalAsset({ symbol: 'USDC', networkIdentifier: 'base-mainnet', contractAddress: '0x0000000000000000000000000000000000000001', decimals: 100, kind: 'token' }));
+});
+
+test('token identity requires a contract while native assets forbid one', () => {
+  assert.throws(() => validateCanonicalAsset({ symbol: 'USDC', networkIdentifier: 'base-mainnet', decimals: 6, kind: 'token' }), /require a contract/);
+  assert.throws(() => validateCanonicalAsset({ symbol: 'ETH', networkIdentifier: 'ethereum-mainnet', contractAddress: '0x0000000000000000000000000000000000000001', decimals: 18, kind: 'native' }), /cannot have a contract/);
+  assert.equal(validateCanonicalAsset({ symbol: 'ETH', networkIdentifier: 'ethereum-mainnet', decimals: 18, kind: 'native' }).assetKey, 'ethereum-mainnet:ETH:native');
 });
 
 test('organization roles separate operation from approval authority', () => {
@@ -37,18 +43,18 @@ test('membership scope must be active and organization exact', () => {
 
 test('double entry must balance per canonical asset', () => {
   assert.doesNotThrow(() => validateBalancedLedgerPostings([
-    { accountId: 'a', owner: individual, assetKey: 'base-mainnet:USDC:native', direction: 'debit', amountAtomic: '1000000' },
-    { accountId: 'b', owner: individual, assetKey: 'base-mainnet:USDC:native', direction: 'credit', amountAtomic: '1000000' },
+    { accountId: 'a', owner: individual, assetKey: 'base-mainnet:USDC:0x0000000000000000000000000000000000000001', direction: 'debit', amountAtomic: '1000000' },
+    { accountId: 'b', owner: individual, assetKey: 'base-mainnet:USDC:0x0000000000000000000000000000000000000001', direction: 'credit', amountAtomic: '1000000' },
   ]));
   assert.throws(() => validateBalancedLedgerPostings([
-    { accountId: 'a', owner: individual, assetKey: 'base-mainnet:USDC:native', direction: 'debit', amountAtomic: '1000000' },
-    { accountId: 'b', owner: individual, assetKey: 'base-mainnet:USDC:native', direction: 'credit', amountAtomic: '999999' },
+    { accountId: 'a', owner: individual, assetKey: 'base-mainnet:USDC:0x0000000000000000000000000000000000000001', direction: 'debit', amountAtomic: '1000000' },
+    { accountId: 'b', owner: individual, assetKey: 'base-mainnet:USDC:0x0000000000000000000000000000000000000001', direction: 'credit', amountAtomic: '999999' },
   ]), /unbalanced/);
 });
 
 test('a single journal cannot cross owner boundaries', () => {
   assert.throws(() => validateBalancedLedgerPostings([
-    { accountId: 'a', owner: individual, assetKey: 'base-mainnet:USDC:native', direction: 'debit', amountAtomic: '1' },
-    { accountId: 'b', owner: organization, assetKey: 'base-mainnet:USDC:native', direction: 'credit', amountAtomic: '1' },
+    { accountId: 'a', owner: individual, assetKey: 'ethereum-mainnet:ETH:native', direction: 'debit', amountAtomic: '1' },
+    { accountId: 'b', owner: organization, assetKey: 'ethereum-mainnet:ETH:native', direction: 'credit', amountAtomic: '1' },
   ]), /cross-owner/);
 });
