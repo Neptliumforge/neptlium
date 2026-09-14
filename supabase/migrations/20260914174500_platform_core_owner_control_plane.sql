@@ -62,6 +62,11 @@ create table public.canonical_assets (
   constraint canonical_assets_contract_normalized check (
     contract_address is null or contract_address ~ '^0x[0-9a-f]{40}$'
   ),
+  constraint canonical_assets_kind_contract_consistent check (
+    (asset_kind = 'token' and contract_address is not null)
+    or (asset_kind in ('native','fiat') and contract_address is null)
+    or asset_kind in ('security','fund','other')
+  ),
   constraint canonical_assets_key_consistent check (
     asset_key = network_identifier || ':' || symbol || ':' || coalesce(contract_address, 'native')
   )
