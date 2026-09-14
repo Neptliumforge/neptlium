@@ -13,6 +13,6 @@ test('status page does not fabricate uptime or an operational state', () => {
 });
 
 test('status page exposes only public service categories', () => {
-  for (const service of ['Neptlium Website','Neptlium Capital','VaultRail','API','Payments','Provider Ingress','Notifications','Documents']) assert.match(page, new RegExp(service));
+  for (const service of ['Neptlium Website','Neptlium Capital','Neptlium Treasury','Neptlium API','Neptlium Pay','Provider Ingress','Notifications','Documents']) assert.match(page, new RegExp(service));
   assert.doesNotMatch(page, /postgres|supabase|vercel function|circle api key|alchemy key/i);
 });
