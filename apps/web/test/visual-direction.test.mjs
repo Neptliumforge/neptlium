@@ -28,7 +28,7 @@ const surfacesFor = (source) => [...source.matchAll(/data-npt-surface="([^"]+)"/
 test('homepage is a distinct brand story rather than a copied product index', () => {
   assert.equal((home.match(/<h1/g) ?? []).length, 1);
   for (const copy of ['Capital, clearly', 'See your financial world as one', 'Built for the way capital actually lives', 'Know what moved', 'Everything important, in context', 'From understanding to action', 'Context changes the decision']) assert.match(home, new RegExp(copy, 'i'));
-  for (const destination of ['/personal', '/business', '/insights']) assert.match(home, new RegExp(destination.replaceAll('/', '\\/')));
+  for (const destination of ['/capital', '/business', '/institutional', '/infrastructure', '/insights']) assert.match(home, new RegExp(destination.replaceAll('/', '\\/')));
   assert.doesNotMatch(home, /STEP ONE|STEP TWO|FEATURE 0[1-9]|WHY NEPTLIUM|POWERFUL FEATURES|EVERYTHING YOU NEED|HOW IT WORKS|THE FUTURE OF FINANCE/i);
   assert.doesNotMatch(home, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i);
   assert.doesNotMatch(home, /currently supported|not configured|capability unavailable/i);
@@ -78,9 +78,9 @@ test('insights uses editorial coverage architecture instead of a placeholder top
   assert.doesNotMatch(insights, /Reserved for substantive Neptlium material when original work is available\./);
 });
 
-test('canonical navigation is Personal Business Platform Insights Security Company', () => {
-  for (const label of ['Personal', 'Business', 'Platform', 'Insights', 'Security', 'Company']) assert.match(architecture, new RegExp(`label: '${label}'`));
-  for (const route of ['/personal', '/business', '/platform', '/capital', '/portfolio', '/allocation', '/treasury']) assert.match(architecture, new RegExp(route.replaceAll('/', '\\/')));
+test('canonical navigation is Capital Treasury Institutional Infrastructure Insights Company', () => {
+  for (const label of ['Capital', 'Treasury', 'Institutional', 'Infrastructure', 'Insights', 'Company']) assert.match(architecture, new RegExp(`label: '${label}'`));
+  for (const route of ['/capital', '/business', '/institutional', '/infrastructure', '/insights', '/company']) assert.match(architecture, new RegExp(route.replaceAll('/', '\\/')));
   assert.match(header, /Get started/);
   assert.match(header, /Neptlium Capital/);
   assert.match(header, /Neptlium Treasury/);
@@ -90,13 +90,14 @@ test('canonical navigation is Personal Business Platform Insights Security Compa
   assert.match(mobile, /event\.key === 'Escape'/);
 });
 
-test('product destinations remain separated by audience', () => {
+test('product destinations remain separated by audience while the public footer stays minimal', () => {
   assert.match(site, /personalAppUrl:\s*'https:\/\/app\.neptlium\.com'/);
   assert.match(site, /businessAppUrl:\s*'https:\/\/treasury\.neptlium\.com'/);
   assert.match(site, /payUrl:\s*'https:\/\/pay\.neptlium\.com'/);
   assert.match(site, /docsUrl:\s*'https:\/\/docs\.neptlium\.com'/);
-  assert.match(footer, /Neptlium Capital/);
-  assert.match(footer, /Neptlium Treasury/);
+  assert.match(footer, /Capital systems for people, businesses and institutions/);
+  assert.match(footer, /View system status/);
+  assert.doesNotMatch(footer, /Neptlium Capital|Neptlium Treasury/);
 });
 
 test('shared elite layout is responsive, reduced-motion aware, and product visuals bind globally', () => {
