@@ -13,6 +13,7 @@ export { validateProviderOperationIntent } from './provider-operation-intent.js'
 export { providerSupportsOperation, requireProviderOperation } from './provider-operation-policy.js';
 export { providerOutcome } from './provider-outcome.js';
 export { providerExecutionPermitted } from './provider-policy.js';
+export { providerCapabilityReadyForExecution, providerCapabilityReadyForObservation } from './provider-readiness.js';
 export { canPassProviderGate, gatePredecessors } from './provider-release-gate.js';
 export { selectProviderCapability } from './provider-selection.js';
 export { projectProviderStatus } from './provider-status.js';
@@ -27,6 +28,7 @@ export type { ProviderHealth, ProviderHealthState } from './provider-health.js';
 export type { ProviderOperationIntent } from './provider-operation-intent.js';
 export type { ProviderOutcome, ProviderSubmissionState } from './provider-outcome.js';
 export type { ProviderExecutionPolicyContext } from './provider-policy.js';
+export type { ProviderReadiness } from './provider-readiness.js';
 export type { ProviderReleaseGate } from './provider-release-gate.js';
 export type { ProviderSelectionRequest } from './provider-selection.js';
 export type { ProviderStatusProjection } from './provider-status.js';
