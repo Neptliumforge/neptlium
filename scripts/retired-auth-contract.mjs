@@ -3,12 +3,12 @@ import { readFileSync } from 'node:fs';
 
 const retired = ['cl', 'erk'].join('');
 const historical = new Set([
-  'supabase/migrations/20260820190000_identity_principal_provider_subject_foundation.sql',
-  'supabase/migrations/20260820203000_' + retired + '_identity_linking_commands.sql',
-  'supabase/migrations/20260820210000_' + retired + '_dual_session_link_service.sql',
-  'supabase/migrations/20260820220000_' + retired + '_application_identity_cutover.sql',
-  'supabase/migrations/20260820221000_' + retired + '_bootstrap_existing_account_guard.sql',
-  'supabase/migrations/20260825080000_self_custody_treasury_principal_cutover.sql',
+  'supabase/migrations/20260825051902_identity_principal_provider_subject_foundation.sql',
+  'supabase/migrations/20260825051927_' + retired + '_identity_linking_commands.sql',
+  'supabase/migrations/20260825053722_' + retired + '_dual_session_link_service.sql',
+  'supabase/migrations/20260825053749_' + retired + '_application_identity_cutover.sql',
+  'supabase/migrations/20260825053809_' + retired + '_bootstrap_existing_account_guard.sql',
+  'supabase/migrations/20260825082059_self_custody_treasury_principal_cutover.sql',
   'supabase/migrations/20260912223000_' + retired + '_only_identity_cutover.sql',
   'supabase/migrations/20260913123000_supabase_auth_only_cutover.sql',
   'docs/financial-authority-remediation/GATE_05_LEGACY_MUTATION_PATHS.md',
