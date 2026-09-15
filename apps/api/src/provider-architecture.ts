@@ -5,6 +5,7 @@ export { assertProviderCapability, capabilityCanExecute } from './provider-capab
 export { providerCapabilityKey } from './provider-capability-key.js';
 export { canTransitionProviderCapability, requireProviderCapabilityTransition } from './provider-capability-transition.js';
 export { buildConfiguredProviderCapabilities } from './provider-capability-registry.js';
+export { normalizedProviderError } from './provider-error.js';
 export { providerEvidence } from './provider-evidence.js';
 export { providerIsOperational, validateProviderHealth } from './provider-health.js';
 export { validateProviderOperationIntent } from './provider-operation-intent.js';
@@ -18,6 +19,7 @@ export { validateProviderCorrelation } from './provider-correlation.js';
 export type { PrimaryProvider } from './provider-doctrine.js';
 export type { ChainDefinition, ChainId } from './chain-registry.js';
 export type { ProviderCapability, ProviderCapabilityState, ProviderOperation } from './provider-capabilities.js';
+export type { NormalizedProviderError, ProviderErrorKind } from './provider-error.js';
 export type { ProviderEvidence, ProviderEvidenceKind } from './provider-evidence.js';
 export type { ProviderHealth, ProviderHealthState } from './provider-health.js';
 export type { ProviderOperationIntent } from './provider-operation-intent.js';
