@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './global.css';
 
 export const metadata: Metadata = {
-  title: 'VaultRail — Neptlium',
+  title: 'Neptlium Treasury',
   description: 'Governed business treasury operating environment.',
 };
 
