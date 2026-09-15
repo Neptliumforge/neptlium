@@ -5,14 +5,11 @@ import test from 'node:test';
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const routes = [
   'app/page.tsx',
-  'app/platform/page.tsx',
-  'app/investments/page.tsx',
+  'app/business/page.tsx',
+  'app/institutional/page.tsx',
+  'app/infrastructure/page.tsx',
   'app/insights/page.tsx',
   'app/products/page.tsx',
-  'app/products/capital-account/page.tsx',
-  'app/products/treasury/page.tsx',
-  'app/products/allocation/page.tsx',
-  'app/products/portfolio-intelligence/page.tsx',
   'app/solutions/page.tsx',
   'app/learn/page.tsx',
   'app/research/page.tsx',
@@ -27,23 +24,19 @@ const publicCopy = routes.map(read).join('\n');
 const architecture = read('lib/content/public-architecture.ts');
 const footer = read('components/site-footer.tsx');
 
-test('institutional public architecture covers the investor and capital product surfaces', () => {
+test('public architecture covers the canonical Neptlium product families and supporting trust surfaces', () => {
   for (const phrase of [
-    'Capital, made clearer',
-    'Investments',
-    'Insights',
-    'Capital Account',
+    'Capital, clearly',
+    'Capital',
     'Treasury',
-    'Allocation',
-    'Portfolio Intelligence',
-    'Capital visibility',
-    'Treasury coordination',
-    'Allocation workflows',
-    'Governance and control',
+    'Institutional',
+    'Infrastructure',
+    'Insights',
     'Learn',
     'Research',
     'Security',
     'Trust',
+    'Company',
     'About',
     'Contact',
     'Press',
@@ -64,9 +57,10 @@ test('research and press remain truthful when verified material is unavailable',
   assert.doesNotMatch(`${research}\n${press}`, /award-winning|featured in|as seen in|client story|case study/i);
 });
 
-test('secondary product discovery remains contracted while footer remains complete', () => {
-  assert.match(architecture, /PRIMARY_PRODUCTS = PRODUCTS\.slice\(0, 4\)/);
-  assert.match(architecture, /PRIMARY_COMPANY = COMPANY\.slice\(0, 2\)/);
-  for (const topLevel of ['Platform','Investments','Insights','Security','Company']) assert.match(architecture, new RegExp(`label: '${topLevel}'`));
-  for (const legal of ['Privacy', 'Terms', 'Cookie Policy', 'Risk Disclosure', 'Accessibility']) assert.match(footer, new RegExp(legal));
+test('primary discovery follows the four-family hierarchy while the footer remains minimal and complete', () => {
+  assert.match(architecture, /export const PRIMARY_PRODUCTS = PRODUCTS;/);
+  assert.match(architecture, /export const PRIMARY_COMPANY = COMPANY;/);
+  for (const topLevel of ['Capital', 'Treasury', 'Institutional', 'Infrastructure', 'Insights', 'Company']) assert.match(architecture, new RegExp(`label: '${topLevel}'`));
+  for (const legal of ['Security', 'Privacy', 'Terms', 'Risk disclosure', 'Accessibility', 'Cookies']) assert.match(footer, new RegExp(legal, 'i'));
+  assert.match(footer, /View system status/);
 });
