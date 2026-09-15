@@ -6,7 +6,7 @@ import styles from './home-elite.module.css';
 
 export const metadata = createPageMetadata({
   title: 'Capital, clearly',
-  description: 'Neptlium is a financial environment for understanding, coordinating and acting on capital across personal and business contexts.',
+  description: 'Neptlium is a financial environment for understanding, coordinating and acting on capital across personal, business and institutional contexts.',
   path: '/',
 });
 
@@ -72,14 +72,20 @@ function SystemMap() {
   </div>;
 }
 
+const families = [
+  { label: 'Capital', title: 'Personal wealth in context.', copy: 'Understand portfolio, investments, allocation and activity as one personal financial picture.', href: '/capital', tone: 'personal' },
+  { label: 'Treasury', title: 'Operating money, coordinated.', copy: 'Manage organizational liquidity, payments, stablecoins, approvals and financial controls.', href: '/business', tone: 'business' },
+  { label: 'Institutional', title: 'Systems for complex capital.', copy: 'A developing environment for funds, family offices and asset managers with deeper mandates and reporting.', href: '/institutional', tone: 'personal' },
+  { label: 'Infrastructure', title: 'Build on Neptlium.', copy: 'Pay, API and developer systems designed around explicit financial authority boundaries.', href: '/infrastructure', tone: 'business' },
+] as const;
+
 export default function HomePage() {
   return <div className={styles.page}>
     <section className={styles.hero} data-npt-surface="carbon" aria-labelledby="home-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
-          <p className={styles.kicker}>Neptlium</p>
-          <h1 id="home-title">Capital, clearly.</h1>
-          <p className={styles.lead}>One place to understand, coordinate and move through your financial world with context intact.</p>
+          <h1 id="home-title" data-npt-nts="hero">Capital, clearly.</h1>
+          <p className={styles.lead} data-npt-nts="lead">One place to understand, coordinate and move through your financial world with context intact.</p>
           <div className={styles.actions}>
             <Link className={styles.primary} href="#financial-world">Explore Neptlium <ArrowRight aria-hidden="true" /></Link>
             <Link className={styles.secondary} href="/business">For business</Link>
@@ -92,7 +98,7 @@ export default function HomePage() {
     <section id="financial-world" className={`${styles.section} ${styles.cloud}`} data-npt-surface="cloud" aria-labelledby="world-title">
       <div className={styles.shell}>
         <div className={styles.sectionIntro}>
-          <h2 id="world-title" className={styles.sectionTitle}>See your financial world as one.</h2>
+          <h2 id="world-title" className={styles.sectionTitle} data-npt-nts="h2">See your financial world as one.</h2>
           <p>Accounts, capital activity, investments, operating money and financial records should not feel like unrelated systems. Neptlium brings the picture together without flattening the context around it.</p>
         </div>
         <WorldStage />
@@ -100,27 +106,21 @@ export default function HomePage() {
     </section>
 
     <section className={`${styles.crossroads} ${styles.light}`} data-npt-surface="white" aria-labelledby="crossroads-title">
-      <div className={`${styles.shell} ${styles.crossroadsIntro}`}><h2 id="crossroads-title" className={styles.sectionTitle}>Built for the way capital actually lives.</h2></div>
+      <div className={`${styles.shell} ${styles.crossroadsIntro}`}><h2 id="crossroads-title" className={styles.sectionTitle} data-npt-nts="h2">Built for the way capital actually lives.</h2></div>
       <div className={styles.paths}>
-        <Link className={`${styles.path} ${styles.pathPersonal}`} href="/personal">
+        {families.map((family) => <Link className={`${styles.path} ${family.tone === 'personal' ? styles.pathPersonal : styles.pathBusiness}`} href={family.href} key={family.label}>
           <div className={styles.pathVisual} aria-hidden="true" />
-          <span className={styles.pathLabel}>Personal</span>
-          <div><h3 className={styles.pathTitle}>Your capital, in view.</h3><p className={styles.pathCopy}>A clearer way to understand capital, portfolio shape, allocation and activity without turning the homepage into the product manual.</p></div>
-          <div className={styles.pathFooter}><span>Explore Personal</span><ArrowRight aria-hidden="true" /></div>
-        </Link>
-        <Link className={`${styles.path} ${styles.pathBusiness}`} href="/business">
-          <div className={styles.pathVisual} aria-hidden="true" />
-          <span className={styles.pathLabel}>Business</span>
-          <div><h3 className={styles.pathTitle}>Operating money, coordinated.</h3><p className={styles.pathCopy}>A financial environment for teams navigating treasury, payments, approvals and operating context across the business.</p></div>
-          <div className={styles.pathFooter}><span>Explore Business</span><ArrowRight aria-hidden="true" /></div>
-        </Link>
+          <span className={styles.pathLabel}>{family.label}</span>
+          <div><h3 className={styles.pathTitle} data-npt-nts="h3">{family.title}</h3><p className={styles.pathCopy}>{family.copy}</p></div>
+          <div className={styles.pathFooter}><span>Explore {family.label}</span><ArrowRight aria-hidden="true" /></div>
+        </Link>)}
       </div>
     </section>
 
     <section className={`${styles.section} ${styles.mineral}`} data-npt-surface="mineral" aria-labelledby="movement-title">
       <div className={styles.shell}>
         <div className={styles.movementIntro}>
-          <h2 id="movement-title" className={styles.movementTitle}>Know what moved. Know what changed.</h2>
+          <h2 id="movement-title" className={styles.movementTitle} data-npt-nts="h2">Know what moved. Know what changed.</h2>
           <p>Capital becomes useful when movement, context and decisions remain connected. Neptlium is designed to keep those relationships legible as financial activity unfolds.</p>
         </div>
         <div className={styles.flow} aria-label="Illustrative capital-in-motion sequence">
@@ -136,7 +136,7 @@ export default function HomePage() {
     <section className={`${styles.section} ${styles.cloud}`} data-npt-surface="cloud" aria-labelledby="product-title">
       <div className={styles.shell}>
         <div className={styles.productIntro}>
-          <h2 id="product-title" className={styles.productTitle}>Everything important, in context.</h2>
+          <h2 id="product-title" className={styles.productTitle} data-npt-nts="h2">Everything important, in context.</h2>
           <p>Neptlium’s product character is calm, explicit and information-dense without becoming noisy. The interface should help important relationships become easier to see.</p>
         </div>
         <ProductStage />
@@ -146,7 +146,7 @@ export default function HomePage() {
     <section className={`${styles.section} ${styles.carbon}`} data-npt-surface="carbon" aria-labelledby="system-title">
       <div className={styles.shell}>
         <div className={styles.systemIntro}>
-          <h2 id="system-title" className={styles.systemTitle}>From understanding to action.</h2>
+          <h2 id="system-title" className={styles.systemTitle} data-npt-nts="h2">From understanding to action.</h2>
           <p>Identity, capital, decisions, movement and records belong to the same financial story. Neptlium connects them into a coherent environment without making the homepage read like an architecture document.</p>
         </div>
         <SystemMap />
@@ -156,7 +156,7 @@ export default function HomePage() {
     <section className={`${styles.section} ${styles.ivory}`} data-npt-surface="ivory" aria-labelledby="intelligence-title">
       <div className={styles.shell}>
         <div className={styles.intelligenceIntro}>
-          <h2 id="intelligence-title" className={styles.intelligenceTitle}>Context changes the decision.</h2>
+          <h2 id="intelligence-title" className={styles.intelligenceTitle} data-npt-nts="h2">Context changes the decision.</h2>
           <p>Understanding a financial world means seeing more than a balance: what changed, what it relates to, and which information deserves attention next.</p>
         </div>
         <div className={styles.intelligenceGrid}>

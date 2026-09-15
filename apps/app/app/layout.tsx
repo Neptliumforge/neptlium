@@ -1,6 +1,7 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
 import { assertProductionRuntimeConfig } from '@/lib/runtime-config';
+import '@neptlium/ui/styles/nts.css';
 import "./global.css";
 import "./dashboard-v2.css";
 import "./investment-dashboard.css";
@@ -11,8 +12,8 @@ import "./authenticated-mobile.css";
 assertProductionRuntimeConfig();
 
 export const metadata: Metadata = {
-  title: "Neptlium | Capital Operating Environment",
-  description: "Governed capital operating environment",
+  title: "Neptlium Capital",
+  description: "Personal investing, portfolio and wealth context in one governed financial environment.",
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
 

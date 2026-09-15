@@ -29,12 +29,13 @@ test('elite homepage styling is scoped and responsive after the established glob
   assert.match(homepage, /prefers-reduced-motion:reduce/);
 });
 
-test('homepage architecture introduces brand, journeys, movement, product character, coherence and intelligence', () => {
+test('homepage architecture introduces financial world, product families, movement, product character, coherence and intelligence', () => {
   for (const context of ['See your financial world as one', 'Built for the way capital actually lives', 'Know what moved. Know what changed', 'Everything important, in context', 'From understanding to action', 'Context changes the decision']) {
     assert.match(page, new RegExp(context.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   }
-  assert.match(page, /Explore Personal/);
-  assert.match(page, /Explore Business/);
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure']) assert.match(page, new RegExp(`label: '${family}'`));
+  for (const href of ['/capital', '/business', '/institutional', '/infrastructure', '/insights']) assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
+  assert.match(page, /Explore \{family\.label\}/);
   assert.match(page, /Explore Insights/);
   assert.doesNotMatch(page, /currently available public capability|not configured|capability unavailable/i);
 });

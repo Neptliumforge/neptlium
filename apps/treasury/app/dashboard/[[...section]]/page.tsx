@@ -39,6 +39,7 @@ function MobileNav() {
 function Overview() {
   return <>
     <p className="treasury-eyebrow">Command center</p><h1 className="treasury-title">Good morning.</h1><p className="treasury-copy">Neptlium Treasury separates organization identity, policy, approval, execution evidence and reconciliation. No authenticated browser session alone grants treasury authority.</p>
+    <section className="treasury-panel treasury-section"><h2>Organization readiness</h2><div className="treasury-empty"><strong>Set up your Treasury operating context.</strong><span>Establish organization, team, connection and policy boundaries before governed financial capabilities are activated.</span><Link href="/onboarding">Open organization setup →</Link></div></section>
     <div className="treasury-grid">
       {['Treasury value','Available','Reserved','In transit'].map((label) => <article className="treasury-panel treasury-metric" key={label}><span>{label}</span><strong>—</strong><small className="treasury-state">Canonical treasury projection unavailable</small></article>)}
     </div>

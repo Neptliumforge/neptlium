@@ -14,20 +14,20 @@ const footer = read('components/site-footer.tsx');
 const shell = `${page}\n${visualCss}\n${marketingCss}\n${mobileCss}\n${layout}\n${header}\n${mobile}\n${footer}`;
 const contentShell = `${page}\n${layout}\n${header}\n${mobile}\n${footer}`;
 
-test('production public Web keeps a single institutional investor hero and truthful product architecture', () => {
-  assert.match(page, /Capital, made clearer\./);
-  assert.match(page, /Institutional trust/);
-  assert.match(page, /Funding infrastructure/);
-  assert.match(page, /Investor reporting/);
+test('production public Web keeps a single canonical hero and truthful product-family architecture', () => {
+  assert.match(page, /Capital, clearly\./);
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure']) assert.match(page, new RegExp(`label: '${family}'`));
+  assert.match(page, /Illustrative product environment/);
+  assert.match(page, /No customer balances, returns or performance data are shown\./);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.match(page, /OperatingEnvironmentVisual/);
-  assert.match(page, /SecurityFlowVisual/);
+  for (const visual of ['HeroStage', 'WorldStage', 'ProductStage', 'SystemMap']) assert.match(page, new RegExp(visual));
   assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|fake balance|projected return/i);
 });
 
 test('production visual system remains consolidated without retired global override layers', () => {
   assert.match(layout, /neptlium-visual-direction\.css/);
-  assert.match(page, /marketing-platform\.module\.css/);
+  assert.match(layout, /experience-v1\.css/);
+  assert.match(page, /home-elite\.module\.css/);
   assert.doesNotMatch(layout, /production-hardening\.css/);
   for (const retired of [
     'marketing-shell.css',
@@ -59,9 +59,15 @@ test('production shell preserves responsive, reduced-motion and mobile overlay h
   assert.match(header, /createPortal/);
 });
 
-test('homepage header keeps acquisition visually primary over return sign-in', () => {
-  assert.match(header, /<Link href=\{SITE\.signInUrl\}>Sign In<\/Link>/);
-  assert.match(header, /className="elite-header-entry command-primary-action" href=\{SITE\.signUpUrl\}>Get Started/);
+test('homepage header keeps acquisition visually primary while separating personal and business return access', () => {
+  assert.match(header, /AccountMenu\(\{ kind \}/);
+  assert.match(header, /start \? 'Get started' : 'Sign in'/);
+  assert.match(header, /account-menu-primary/);
+  assert.match(header, /SITE\.personalSignInUrl/);
+  assert.match(header, /SITE\.personalSignUpUrl/);
+  assert.match(header, /SITE\.businessAppUrl/);
+  assert.match(header, /Neptlium Capital/);
+  assert.match(header, /Neptlium Treasury/);
 });
 
 test('production public shell remains free of fabricated financial authority', () => {

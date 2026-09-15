@@ -13,27 +13,37 @@ export type NavigationLink = {
   readonly description: string;
 };
 
-export const PERSONAL_LINKS = [
-  { label: 'Personal', href: '/personal', description: 'The Neptlium Capital experience for individual investors and capital customers.' },
-  { label: 'Capital', href: '/capital', description: 'Understand available, reserved and allocated capital with operating context intact.' },
-  { label: 'Investments', href: '/investments', description: 'Evaluate investment structure, objective, risk, liquidity and documentation.' },
+export const CAPITAL_LINKS = [
+  { label: 'Capital', href: '/capital', description: 'Neptlium Capital for individual investors, portfolios and wealth context.' },
+  { label: 'Investing', href: '/investments', description: 'Evaluate investment structure, objective, risk, liquidity and documentation.' },
   { label: 'Portfolio', href: '/portfolio', description: 'Understand positions, valuation context, allocation, activity and reporting.' },
-  { label: 'Allocation', href: '/allocation', description: 'Model and govern capital decisions before execution and reconciliation.' },
+  { label: 'Allocation', href: '/allocation', description: 'Understand how capital is distributed across the portfolio.' },
 ] as const satisfies readonly NavigationLink[];
 
-export const BUSINESS_LINKS = [
-  { label: 'Neptlium Treasury', href: '/business', description: 'The governed business financial operating environment.' },
-  { label: 'Treasury', href: '/treasury', description: 'Understand business liquidity, movement, settlement and reconciliation.' },
+export const TREASURY_LINKS = [
+  { label: 'Treasury', href: '/business', description: 'Neptlium Treasury for organizational capital and financial operations.' },
+  { label: 'Liquidity', href: '/treasury', description: 'Understand business liquidity, stablecoins, movement, settlement and reconciliation.' },
   { label: 'Payments', href: '/payments', description: 'Govern payment intent, authority, progression and evidence.' },
 ] as const satisfies readonly NavigationLink[];
 
+export const INSTITUTIONAL_LINKS = [
+  { label: 'Institutional', href: '/institutional', description: 'The planned Neptlium environment for funds, family offices and asset managers.' },
+] as const satisfies readonly NavigationLink[];
+
+export const INFRASTRUCTURE_LINKS = [
+  { label: 'Infrastructure', href: '/infrastructure', description: 'Neptlium Pay, API and developer infrastructure.' },
+  { label: 'Documentation', href: 'https://docs.neptlium.com', description: 'Developer documentation and integration contracts.' },
+  { label: 'Status', href: 'https://status.neptlium.com', description: 'Public service-status information.' },
+] as const satisfies readonly NavigationLink[];
+
+export const PERSONAL_LINKS = CAPITAL_LINKS;
+export const BUSINESS_LINKS = TREASURY_LINKS;
+
 export const PRODUCTS = [
-  { label: 'Capital', href: '/capital', description: 'Available, reserved and allocated capital.' },
-  { label: 'Portfolio', href: '/portfolio', description: 'Positions, valuation context, activity and reporting.' },
-  { label: 'Allocation', href: '/allocation', description: 'Governed capital decisions before execution.' },
-  { label: 'Neptlium Treasury', href: '/business', description: 'Business treasury and financial operations.' },
-  { label: 'Treasury', href: '/treasury', description: 'Liquidity, movement, settlement and reconciliation.' },
-  { label: 'Payments', href: '/payments', description: 'Governed payment intent and operating context.' },
+  { label: 'Neptlium Capital', href: '/capital', description: 'Personal investing, portfolio and wealth context.' },
+  { label: 'Neptlium Treasury', href: '/business', description: 'Business treasury, payments, stablecoins, approvals and policies.' },
+  { label: 'Neptlium Institutional', href: '/institutional', description: 'Planned capital systems for complex organizations.' },
+  { label: 'Neptlium Infrastructure', href: '/infrastructure', description: 'Pay, API and developer infrastructure.' },
 ] as const satisfies readonly NavigationLink[];
 
 export const PRIMARY_PRODUCTS = PRODUCTS;
@@ -59,23 +69,23 @@ export const RESOURCES = [
 ] as const satisfies readonly NavigationLink[];
 
 export const COMPANY = [
-  { label: 'Company', href: '/company', description: 'Neptlium’s company thesis, product family and long-term direction.' },
+  { label: 'Company', href: '/company', description: 'Neptlium is the financial platform company within parent company Neptliumforge, spanning Capital, Treasury, Institutional and Infrastructure.' },
   { label: 'Contact', href: '/contact', description: 'Start a conversation with Neptlium.' },
 ] as const satisfies readonly NavigationLink[];
 
 export const PRIMARY_COMPANY = COMPANY;
 
 export const NAVIGATION = [
-  { label: 'Personal', href: '/personal', description: 'Neptlium Capital for individual investors.', links: PERSONAL_LINKS },
-  { label: 'Business', href: '/business', description: 'Neptlium Treasury for business treasury and financial operations.', links: BUSINESS_LINKS },
-  { label: 'Platform', href: '/platform', description: 'The shared Neptlium financial system underneath both journeys.', links: [{ label: 'Platform', href: '/platform', description: 'How Personal and Business experiences share identity, authority, evidence, reconciliation and audit.' }] },
-  { label: 'Insights', href: '/insights', description: 'One editorial system for investing, capital, treasury, payments and risk.', links: INSIGHTS },
-  { label: 'Security', href: '/security', description: 'One governance story across Personal and Business.', links: [{ label: 'Security', href: '/security', description: 'Identity, authorization, financial authority, evidence, reconciliation and data security.' }, { label: 'Trust', href: '/trust', description: 'How evidence, uncertainty, authority and consequence are represented.' }] },
-  { label: 'Company', href: '/company', description: 'Neptlium as the parent company and product family.', links: COMPANY },
+  { label: 'Capital', href: '/capital', description: 'Personal investing, portfolio and wealth.', links: CAPITAL_LINKS },
+  { label: 'Treasury', href: '/business', description: 'Business treasury, payments, stablecoins, approvals and policies.', links: TREASURY_LINKS },
+  { label: 'Institutional', href: '/institutional', description: 'Funds, family offices, asset managers and institutional APIs.', links: INSTITUTIONAL_LINKS },
+  { label: 'Infrastructure', href: '/infrastructure', description: 'Pay, API and developer infrastructure.', links: INFRASTRUCTURE_LINKS },
+  { label: 'Insights', href: '/insights', description: 'Markets, investing, capital, treasury and risk.', links: INSIGHTS },
+  { label: 'Company', href: '/company', description: 'Neptlium within the Neptliumforge parent-company architecture.', links: COMPANY },
 ] as const;
 
 export const INDEXABLE_ROUTES = [
-  '/', '/personal', '/business', '/platform', '/investments', '/capital', '/portfolio', '/allocation',
+  '/', '/personal', '/business', '/capital', '/institutional', '/infrastructure', '/platform', '/investments', '/portfolio', '/allocation',
   '/treasury', '/payments', '/insights', '/company', '/learn', '/security', '/trust', '/contact', '/accessibility',
   '/solutions', '/solutions/capital-visibility', '/solutions/treasury-coordination', '/solutions/allocation-workflows', '/solutions/governance-control',
 ] as const;
@@ -84,9 +94,11 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/': 'canonical-indexable',
   '/personal': 'canonical-indexable',
   '/business': 'canonical-indexable',
+  '/capital': 'canonical-indexable',
+  '/institutional': 'canonical-indexable',
+  '/infrastructure': 'canonical-indexable',
   '/platform': 'canonical-indexable',
   '/investments': 'canonical-indexable',
-  '/capital': 'canonical-indexable',
   '/portfolio': 'canonical-indexable',
   '/allocation': 'canonical-indexable',
   '/treasury': 'canonical-indexable',
