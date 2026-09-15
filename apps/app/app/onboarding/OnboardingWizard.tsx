@@ -153,7 +153,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
         {stepIndex === 0 && (
           <form onSubmit={advance} className="space-y-5">
-            <Heading title="Set up Neptlium Capital" copy="Start with the personal identity details supported by your account today. Organization information belongs in Neptlium Treasury, not here." />
+            <Heading title="Set up Neptlium Capital" copy="Start with the personal identity details supported by your account today. Organization details are not required for your personal account; organization information belongs in Neptlium Treasury, not here." />
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField
                 label="Legal first name"
