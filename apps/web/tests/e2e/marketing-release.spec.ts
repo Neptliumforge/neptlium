@@ -9,7 +9,6 @@ const releaseRoutes = [
   '/capital',
   '/portfolio',
   '/allocation',
-  '/business',
   '/treasury',
   '/payments',
   '/insights',
