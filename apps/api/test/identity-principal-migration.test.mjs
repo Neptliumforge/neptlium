@@ -5,7 +5,7 @@ import { PGlite } from '@electric-sql/pglite';
 
 const migration = await readFile(
   new URL(
-    '../../../supabase/migrations/20260820190000_identity_principal_provider_subject_foundation.sql',
+    '../../../supabase/migrations/20260825051902_identity_principal_provider_subject_foundation.sql',
     import.meta.url,
   ),
   'utf8',
