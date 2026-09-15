@@ -2,6 +2,7 @@ export { providerDoctrine, providerAuthorityInvariants, requirePrimaryProvider }
 export { chainRegistry, getChainDefinition, listAlchemyProductionChains } from './chain-registry.js';
 export { loadAlchemyChainEndpoints, alchemyRpcEnvironmentKey } from './alchemy-chain-config.js';
 export { assertProviderCapability, capabilityCanExecute } from './provider-capabilities.js';
+export { providerCapabilityKey } from './provider-capability-key.js';
 export { buildConfiguredProviderCapabilities } from './provider-capability-registry.js';
 export { providerEvidence } from './provider-evidence.js';
 export { providerIsOperational, validateProviderHealth } from './provider-health.js';
