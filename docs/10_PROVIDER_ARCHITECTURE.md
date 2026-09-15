@@ -6,7 +6,7 @@ Providers are replaceable infrastructure/capability adapters. Neptlium owns stab
 
 Supabase Auth is the sole active runtime authentication and browser-session provider for customer and operator surfaces.
 
-`apps/app`, `apps/admin`, and authenticated VaultRail surfaces use shared Supabase browser/server/session primitives. `apps/api` verifies Supabase bearer tokens and resolves the verified `SUPABASE_AUTH` subject to a stable Neptlium principal before authorization.
+`apps/app`, `apps/admin`, and authenticated Neptlium Treasury surfaces use shared Supabase browser/server/session primitives. `apps/api` verifies Supabase bearer tokens and resolves the verified `SUPABASE_AUTH` subject to a stable Neptlium principal before authorization.
 
 Historical identity-provider mappings may remain as migration/audit evidence, but they are not active runtime authentication paths.
 

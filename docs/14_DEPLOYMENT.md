@@ -1,10 +1,10 @@
 # Deployment
 
-Neptlium deploys independently versioned application boundaries from `Neptliumforge/neptlium`. Current repository applications may include Web, App, VaultRail, Pay, Docs, Status, Admin, and API; deploy only applications that actually exist and are configured.
+Neptlium deploys independently versioned application boundaries from `Neptliumforge/neptlium`. Current repository applications may include Web, App, Neptlium Treasury, Pay, Docs, Status, Admin, and API; deploy only applications that actually exist and are configured.
 
 ## Authentication deployment model
 
-Supabase Auth is the sole active authentication/session provider across App, Admin, authenticated VaultRail surfaces, and authenticated API requests.
+Supabase Auth is the sole active authentication/session provider across App, Admin, authenticated Neptlium Treasury surfaces, and authenticated API requests.
 
 Required runtime principles:
 
@@ -38,7 +38,7 @@ No privileged authentication or financial secrets.
 
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, and server-only `NEPTLIUM_API_URL` as required. No service-role or provider secrets.
 
-### VaultRail
+### Neptlium Treasury
 
 Browser-safe Supabase Auth configuration plus application/API origins. Organization, treasury, approval and payment authority remain server-owned.
 
@@ -84,7 +84,7 @@ Configured production domains should map one-to-one to their authoritative appli
 
 - `https://neptlium.com`
 - `https://app.neptlium.com`
-- `https://vault.neptlium.com`
+- `https://treasury.neptlium.com`
 - `https://pay.neptlium.com`
 - `https://docs.neptlium.com`
 - `https://status.neptlium.com`

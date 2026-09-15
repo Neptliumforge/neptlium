@@ -6,7 +6,7 @@ Security is a cross-application and financial-correctness boundary. This documen
 
 Supabase Auth is the sole active authentication and session provider for customer and operator surfaces.
 
-- `apps/app`, `apps/admin`, and authenticated VaultRail surfaces use Supabase browser/server/session primitives.
+- `apps/app`, `apps/admin`, and authenticated Neptlium Treasury surfaces use Supabase browser/server/session primitives.
 - `apps/api` verifies Supabase access tokens and resolves the verified `SUPABASE_AUTH` subject to a stable Neptlium principal before authorization.
 - Historical identity rows may remain as audit/migration evidence only.
 - Service-role credentials are never part of browser authentication.

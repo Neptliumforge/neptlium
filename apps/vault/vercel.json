@@ -1,5 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "[ -z \"$VERCEL_GIT_PREVIOUS_SHA\" ] && exit 1; cd ../.. && pnpm exec turbo query affected --base=\"$VERCEL_GIT_PREVIOUS_SHA\" --packages @neptlium/vault --exit-code",
-  "buildCommand": "pnpm --filter @neptlium/vault build"
-}

@@ -9,7 +9,7 @@ This applies to:
 - `app.neptlium.com`
 - `admin.neptlium.com`
 - bearer-token authentication at `api.neptlium.com`
-- authenticated VaultRail surfaces where applicable
+- authenticated Neptlium Treasury surfaces where applicable
 
 Browser applications use only the Supabase project URL and publishable client key. Service-role credentials remain server-only.
 
@@ -46,9 +46,9 @@ Account provisioning and onboarding read/write Neptlium business state through `
 
 Dashboard access requires explicit server-owned administrative authorization. Authentication alone is never sufficient.
 
-## VaultRail
+## Neptlium Treasury
 
-VaultRail uses Supabase Auth for user identity. Organization authority, treasury permissions, approvals, policy, and payment execution remain separate server-owned authorization domains.
+Neptlium Treasury uses Supabase Auth for user identity. Organization authority, treasury permissions, approvals, policy, and payment execution remain separate server-owned authorization domains.
 
 ## API
 

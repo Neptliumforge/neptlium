@@ -10,56 +10,48 @@ const brand = read('components/brand.tsx');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
 
-test('homepage states the investor proposition without fabricated financial proof', () => {
-  assert.match(page, /Capital, made clearer\./);
-  assert.match(page, /portfolio visibility, capital management, funding workflows, reporting and governed financial activity/i);
-  assert.match(page, /Explore the Platform/);
-  assert.match(page, /View Investment Solutions/);
-  assert.match(page, /No fabricated balances, performance or transaction states/i);
+test('homepage states the canonical capital proposition without fabricated financial proof', () => {
+  assert.match(page, /Capital, clearly\./);
+  assert.match(page, /understand, coordinate and move through your financial world with context intact/i);
+  assert.match(page, /Explore Neptlium/);
+  assert.match(page, /For business/);
+  assert.match(page, /Illustrative interface only\. No customer balances, returns or performance data are shown\./i);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|customer count|testimonial/i);
 });
 
-test('homepage covers institutional trust, investment discipline, funding truth and reporting', () => {
-  for (const copy of [
-    'Institutional trust',
-    'Investment experience',
-    'Portfolio intelligence',
-    'Funding infrastructure',
-    'Investment solutions',
-    'Security & financial integrity',
-    'How Neptlium works',
-    'Investor reporting',
-    'Insights',
-  ]) assert.match(page, new RegExp(copy.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
-  assert.match(page, /USD funding is not represented on this website as a currently available public capability/i);
-  assert.match(page, /DISCLOSURES\.investment/);
+test('homepage exposes the four canonical product families and contextual intelligence', () => {
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure']) assert.match(page, new RegExp(`label: '${family}'`));
+  for (const href of ['/capital', '/business', '/institutional', '/infrastructure']) assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
+  assert.match(page, /Explore \{family\.label\}/);
+  assert.match(page, /Explore Insights/);
+  assert.match(page, /DISCLOSURES\.general/);
 });
 
-test('public conversion separates acquisition, return sign-in and exploration', () => {
-  assert.match(site, /publicAccessLabel:\s*'Get Started'/);
-  assert.match(site, /signInUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
-  assert.match(site, /signUpUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
-  assert.match(header, /href=\{SITE\.signInUrl\}>Sign In/);
-  assert.match(header, /href=\{SITE\.signUpUrl\}>Get Started/);
-  assert.match(page, /href="\/platform">Explore the Platform/);
-  assert.match(page, /href="\/investments">View Investment Solutions/);
+test('public conversion separates personal and business account contexts', () => {
+  assert.match(site, /personalSignInUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
+  assert.match(site, /personalSignUpUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
+  assert.match(header, /SITE\.personalSignInUrl/);
+  assert.match(header, /SITE\.personalSignUpUrl/);
+  assert.match(header, /SITE\.businessAppUrl/);
+  assert.match(header, /Neptlium Capital/);
+  assert.match(header, /Neptlium Treasury/);
 });
 
-test('navigation is the five-domain investor marketing architecture', () => {
-  for (const domain of ['Platform', 'Investments', 'Insights', 'Security', 'Company'])
-    assert.match(architecture, new RegExp(`label: '${domain}'`));
-  for (const contract of ['aria-expanded', 'aria-controls', 'aria-haspopup', "event.key === 'Escape'", 'trigger.current?.focus()'])
-    assert.match(header, new RegExp(contract.replace(/[.*+?^$()|[\]\\]/g, '\\$&')));
+test('navigation exposes product families plus insights and company', () => {
+  for (const domain of ['Capital', 'Treasury', 'Institutional', 'Infrastructure', 'Insights', 'Company']) assert.match(architecture, new RegExp(`label: '${domain}'`));
+  assert.match(header, /NAVIGATION\.map/);
+  assert.match(header, /aria-label="Primary navigation"/);
 });
 
-test('footer exposes real account, platform, company and legal destinations', () => {
-  for (const label of ['Overview', 'Investments', 'Funding', 'Security', 'About', 'Insights', 'Contact', 'Sign In', 'Create Account'])
-    assert.match(footer, new RegExp(label));
-  for (const legal of ['Privacy', 'Terms', 'Risk Disclosure', 'Cookie Policy', 'Accessibility'])
-    assert.match(footer, new RegExp(legal));
-  assert.match(footer, /does not constitute investment advice/i);
-  assert.match(footer, /rel="noopener noreferrer"/);
+test('footer is intentionally minimal and exposes trust, social and real status destinations', () => {
+  assert.match(footer, /Capital systems for people, businesses and institutions\./);
+  for (const social of ['X', 'Bluesky', 'YouTube']) assert.match(footer, new RegExp(`label: '${social}'`));
+  for (const legal of ['Security', 'Privacy', 'Terms', 'Risk disclosure', 'Accessibility', 'Cookies']) assert.match(footer, new RegExp(`label: '${legal}'`));
+  assert.match(footer, /SITE\.statusUrl/);
+  assert.match(footer, /View system status/);
+  assert.doesNotMatch(footer, /All systems operational/i);
+  assert.doesNotMatch(footer, /Overview|Create Account|Investment Solutions/);
 });
 
 test('canonical brand remains repository-authoritative', () => {

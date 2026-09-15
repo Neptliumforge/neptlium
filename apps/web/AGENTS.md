@@ -4,7 +4,7 @@
 
 `apps/web` owns `neptlium.com`, the public marketing, investor-information, business-product, editorial, SEO and acquisition surface. It owns no authenticated customer session, privileged financial operation, canonical financial state, custody, execution or settlement authority.
 
-Marketing design authority is `docs/marketing-design-system.md`. It defines one Neptlium company with two product journeys: **Personal / Neptlium Capital** and **Business / VaultRail**. It overrides former PR #68, ivory-first and Personal-only marketing assumptions. It does not override authenticated App/Admin design, the product constitution, financial truth, security boundaries, API authority, ledger logic, migrations, Gate 04/05 evidence or provider architecture.
+Marketing design authority is `docs/marketing-design-system.md`. It defines one Neptlium company with two product journeys: **Personal / Neptlium Capital** and **Business / Neptlium Treasury**. It overrides former PR #68, ivory-first and Personal-only marketing assumptions. It does not override authenticated App/Admin design, the product constitution, financial truth, security boundaries, API authority, ledger logic, migrations, Gate 04/05 evidence or provider architecture.
 
 Before Web work, follow root `AGENTS.md`, `docs/00_PRODUCT_CONSTITUTION.md`, `docs/marketing-design-system.md`, current Web source/tests/configuration and relevant open PRs. Do not change App, Admin, API, migrations, providers, remote environments or shared packages unless a verified dependency requires it and task scope explicitly authorizes it.
 
@@ -19,7 +19,7 @@ Before Web work, follow root `AGENTS.md`, `docs/00_PRODUCT_CONSTITUTION.md`, `do
 
 Canonical product-story routes include `/investments`, `/capital`, `/portfolio`, `/allocation` and `/treasury`.
 
-Personal authenticates at `app.neptlium.com`. Business returns to VaultRail at `vault.neptlium.com`. Do not force one audience through the other product’s login.
+Personal authenticates at `app.neptlium.com`. Business returns to Neptlium Treasury at `treasury.neptlium.com`. Do not force one audience through the other product’s login.
 
 Route taxonomy and classification are centralized in `lib/content/public-architecture.ts`. Keep them aligned with redirects, metadata, sitemap, header, footer and tests.
 

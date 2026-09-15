@@ -1,0 +1,153 @@
+/**
+ * NTS — Neptlium Typography System
+ *
+ * Quiet typography at enormous scale. Precision at small scale.
+ * Semantic roles are shared across marketing, Capital, Treasury,
+ * Institutional and Infrastructure surfaces. Product density may select a
+ * smaller role, but individual components should not invent their own scale.
+ */
+:root {
+  --np-font-sans: var(--font-geist, var(--font-inter-sans, Inter)), 'SF Pro Text', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --np-font-mono: var(--font-geist-mono, var(--font-ibm-plex-mono, 'IBM Plex Mono')), ui-monospace, 'SFMono-Regular', monospace;
+
+  --np-text-primary: var(--color-text-primary, #f5f5f2);
+  --np-text-secondary: var(--color-text-secondary, #a9aaa6);
+  --np-text-tertiary: var(--color-text-muted, #73746f);
+  --np-text-muted: var(--color-text-muted, #73746f);
+  --np-text-inverse: #111210;
+  --np-text-accent: var(--color-accent-primary, #2764ff);
+  --np-text-positive: var(--color-success, #2dba72);
+  --np-text-warning: var(--color-warning, #d7a13c);
+  --np-text-critical: var(--color-danger, #d9534f);
+
+  --np-type-display-xl: clamp(3.25rem, 6.111vw, 5.5rem);
+  --np-type-display-xl-line: 0.96;
+  --np-type-display-xl-weight: 500;
+  --np-type-display-xl-track: -0.045em;
+
+  --np-type-hero: clamp(3rem, 5vw, 4.5rem);
+  --np-type-hero-line: 1;
+  --np-type-hero-weight: 500;
+  --np-type-hero-track: -0.045em;
+
+  --np-type-h1: clamp(2.5rem, 3.889vw, 3.5rem);
+  --np-type-h1-line: 1.05;
+  --np-type-h1-weight: 500;
+  --np-type-h1-track: -0.04em;
+
+  --np-type-h2: clamp(2rem, 2.778vw, 2.5rem);
+  --np-type-h2-line: 1.1;
+  --np-type-h2-weight: 500;
+  --np-type-h2-track: -0.03em;
+
+  --np-type-h3: clamp(1.625rem, 1.944vw, 1.75rem);
+  --np-type-h3-line: 1.15;
+  --np-type-h3-weight: 500;
+  --np-type-h3-track: -0.025em;
+
+  --np-type-lead: clamp(1.25rem, 1.667vw, 1.5rem);
+  --np-type-lead-line: 1.45;
+  --np-type-lead-weight: 400;
+  --np-type-lead-track: -0.015em;
+
+  --np-type-body-lg: 1.125rem;
+  --np-type-body-lg-line: 1.55;
+  --np-type-body: 1rem;
+  --np-type-body-line: 1.55;
+  --np-type-small: 0.875rem;
+  --np-type-small-line: 1.45;
+  --np-type-label: 0.75rem;
+  --np-type-label-line: 1.3;
+
+  --np-reading-wide: 46rem;
+  --np-reading: 40rem;
+  --np-reading-compact: 32rem;
+}
+
+.np-display-xl,
+.np-hero,
+.np-h1,
+.np-h2,
+.np-h3 {
+  margin: 0;
+  color: var(--np-text-primary);
+  font-family: var(--np-font-sans);
+  text-wrap: balance;
+}
+
+.np-display-xl {
+  max-width: 14ch;
+  font-size: var(--np-type-display-xl);
+  font-weight: var(--np-type-display-xl-weight);
+  line-height: var(--np-type-display-xl-line);
+  letter-spacing: var(--np-type-display-xl-track);
+}
+
+.np-hero {
+  max-width: 15ch;
+  font-size: var(--np-type-hero);
+  font-weight: var(--np-type-hero-weight);
+  line-height: var(--np-type-hero-line);
+  letter-spacing: var(--np-type-hero-track);
+}
+
+.np-h1 {
+  max-width: 18ch;
+  font-size: var(--np-type-h1);
+  font-weight: var(--np-type-h1-weight);
+  line-height: var(--np-type-h1-line);
+  letter-spacing: var(--np-type-h1-track);
+}
+
+.np-h2 {
+  max-width: 22ch;
+  font-size: var(--np-type-h2);
+  font-weight: var(--np-type-h2-weight);
+  line-height: var(--np-type-h2-line);
+  letter-spacing: var(--np-type-h2-track);
+}
+
+.np-h3 {
+  max-width: 26ch;
+  font-size: var(--np-type-h3);
+  font-weight: var(--np-type-h3-weight);
+  line-height: var(--np-type-h3-line);
+  letter-spacing: var(--np-type-h3-track);
+}
+
+.np-lead {
+  max-width: var(--np-reading-wide);
+  margin: 0;
+  color: var(--np-text-secondary);
+  font-size: var(--np-type-lead);
+  font-weight: var(--np-type-lead-weight);
+  line-height: var(--np-type-lead-line);
+  letter-spacing: var(--np-type-lead-track);
+}
+
+.np-body-lg,
+.np-body,
+.np-small,
+.np-label,
+.np-metric,
+.np-code {
+  margin: 0;
+  font-family: var(--np-font-sans);
+}
+
+.np-body-lg { font-size: var(--np-type-body-lg); line-height: var(--np-type-body-lg-line); }
+.np-body { font-size: var(--np-type-body); line-height: var(--np-type-body-line); }
+.np-small { font-size: var(--np-type-small); line-height: var(--np-type-small-line); }
+.np-label { font-size: var(--np-type-label); font-weight: 600; line-height: var(--np-type-label-line); letter-spacing: .06em; text-transform: uppercase; }
+.np-metric { font-variant-numeric: tabular-nums; letter-spacing: -.025em; }
+.np-code { font-family: var(--np-font-mono); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 640px) {
+  .np-display-xl,
+  .np-hero,
+  .np-h1,
+  .np-h2,
+  .np-h3 {
+    text-wrap: pretty;
+  }
+}

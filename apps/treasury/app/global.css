@@ -1,0 +1,73 @@
+@import '@neptlium/ui/styles/brand.css';
+
+:root {
+  color-scheme: dark;
+  --app-black: #050505;
+  --app-black-raised: #0b0b0b;
+  --app-panel: #111111;
+  --app-panel-2: #161616;
+  --app-text: #f7f7f3;
+  --app-muted: #9b9b96;
+  --app-tertiary: #70706b;
+  --app-line: rgb(255 255 255 / 8%);
+  --app-teal: #35d5c1;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--app-black); }
+body { margin: 0; min-height: 100vh; background: var(--app-black); color: var(--app-text); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+.treasury-shell { min-height: 100vh; display: grid; grid-template-columns: 240px minmax(0, 1fr); }
+.treasury-sidebar { position: sticky; top: 0; height: 100vh; border-right: 1px solid var(--app-line); padding: 24px 18px; background: var(--app-black-raised); overflow: auto; }
+.treasury-brand { display: grid; gap: 2px; margin-bottom: 28px; }
+.treasury-brand strong { letter-spacing: .08em; font-size: 13px; }
+.treasury-brand span { color: var(--app-teal); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
+.treasury-nav-group { margin-top: 22px; }
+.treasury-nav-group > span { display: block; margin: 0 10px 8px; color: var(--app-tertiary); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.treasury-nav-group a { display: block; padding: 9px 10px; border-radius: 8px; color: var(--app-muted); font-size: 14px; }
+.treasury-nav-group a:hover { background: var(--app-panel); color: var(--app-text); }
+.treasury-main { min-width: 0; }
+.treasury-topbar { height: 64px; border-bottom: 1px solid var(--app-line); display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 0 32px; background: rgb(5 5 5 / 94%); position: sticky; top: 0; z-index: 4; }
+.treasury-topbar-actions { display: flex; align-items: center; gap: 16px; }
+.treasury-sign-out { border: 1px solid var(--app-line); border-radius: 7px; background: transparent; color: var(--app-muted); padding: 7px 10px; cursor: pointer; }
+.treasury-sign-out:hover, .treasury-sign-out:focus-visible { color: var(--app-text); border-color: rgb(255 255 255 / 18%); }
+.treasury-content { max-width: 1480px; margin: 0 auto; padding: 36px 32px 80px; }
+.treasury-eyebrow { color: var(--app-teal); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; }
+.treasury-title { margin: 8px 0 8px; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.035em; font-weight: 620; }
+.treasury-copy { max-width: 760px; color: var(--app-muted); font-size: 15px; line-height: 1.6; }
+.treasury-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-top: 28px; }
+.treasury-panel { border: 1px solid var(--app-line); background: var(--app-panel); border-radius: 10px; padding: 20px; }
+.treasury-panel h2 { margin: 0 0 14px; font-size: 16px; font-weight: 560; }
+.treasury-metric { display: grid; gap: 10px; min-height: 132px; }
+.treasury-metric span { color: var(--app-tertiary); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.treasury-metric strong { font-size: 34px; font-variant-numeric: tabular-nums; font-weight: 540; }
+.treasury-state { color: var(--app-muted); font-size: 12px; }
+.treasury-section { margin-top: 28px; }
+.treasury-empty { min-height: 190px; display: grid; align-content: center; gap: 8px; border-top: 1px solid var(--app-line); color: var(--app-muted); }
+.treasury-empty strong { color: var(--app-text); font-size: 15px; }
+.treasury-lifecycle { display: flex; gap: 8px; flex-wrap: wrap; }
+.treasury-lifecycle span { border: 1px solid var(--app-line); padding: 8px 10px; border-radius: 999px; color: var(--app-tertiary); font-size: 11px; letter-spacing: .06em; }
+.treasury-mobile { display: none; }
+.treasury-auth-shell { min-height: 100vh; display: grid; place-items: center; padding: 32px 20px; background: var(--app-black); }
+.treasury-auth-card { width: min(100%, 430px); padding: 32px; border: 1px solid var(--app-line); border-radius: 12px; background: var(--app-panel); }
+.treasury-auth-card h1 { margin: 10px 0 12px; font-size: 32px; letter-spacing: -.035em; }
+.treasury-auth-card > p:not(.treasury-eyebrow) { color: var(--app-muted); line-height: 1.6; }
+.treasury-auth-form { display: grid; gap: 16px; margin-top: 26px; }
+.treasury-auth-form label { display: grid; gap: 7px; color: var(--app-muted); font-size: 12px; }
+.treasury-auth-form input { min-height: 46px; border: 1px solid var(--app-line); border-radius: 7px; padding: 0 12px; background: #0b0b0b; color: var(--app-text); outline: none; }
+.treasury-auth-form input:focus { border-color: var(--app-teal); }
+.treasury-auth-form button { min-height: 46px; border: 0; border-radius: 7px; background: var(--app-teal); color: #06110f; font-weight: 700; cursor: pointer; }
+.treasury-auth-form button:disabled { opacity: .55; cursor: wait; }
+.treasury-auth-form [role='alert'] { margin: 0; color: #ef8f8f; font-size: 13px; }
+@media (max-width: 960px) {
+  .treasury-shell { display: block; padding-bottom: 72px; }
+  .treasury-sidebar { display: none; }
+  .treasury-topbar { padding: 0 20px; }
+  .treasury-topbar-actions small { display: none; }
+  .treasury-content { padding: 28px 18px 88px; }
+  .treasury-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .treasury-mobile { position: fixed; inset: auto 0 0 0; z-index: 10; display: grid; grid-template-columns: repeat(5,1fr); border-top: 1px solid var(--app-line); background: #090909; padding-bottom: env(safe-area-inset-bottom); }
+  .treasury-mobile a { min-height: 58px; display: grid; place-items: center; color: var(--app-muted); font-size: 11px; }
+}
+@media (max-width: 620px) { .treasury-grid { grid-template-columns: 1fr; } .treasury-auth-card { padding: 24px 20px; } }

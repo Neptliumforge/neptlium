@@ -7,10 +7,11 @@ const root = new URL('../', import.meta.url).pathname;
 const layout = readFileSync(join(root, 'app/layout.tsx'), 'utf8');
 const css = readFileSync(join(root, 'app/neptlium-visual-direction.css'), 'utf8');
 
-test('marketing root loads the canonical visual-direction layer', () => {
-  assert.match(layout, /data-theme="light"/);
-  assert.match(layout, /colorScheme:\s*'light'/);
+test('marketing root loads the canonical visual-direction and experience layers', () => {
+  assert.match(layout, /<html lang="en">/);
+  assert.match(layout, /colorScheme:\s*'light dark'/);
   assert.match(layout, /import '\.\/neptlium-visual-direction\.css';/);
+  assert.match(layout, /import '\.\/experience-v1\.css';/);
   assert.doesNotMatch(layout, /footer-depth\.css/);
   assert.match(css, /--web-ivory:\s*#f5f3ee/i);
   assert.match(css, /--web-carbon:\s*#101214/i);

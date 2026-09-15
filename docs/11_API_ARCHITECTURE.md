@@ -57,7 +57,7 @@ Memory job/rate-limit implementations are local/test only. Production requires d
 2. Complete official provider webhook verifiers and durable inbox/job processing.
 3. Connect ledger posting and reconciliation through reviewed transactions.
 4. Keep Admin financial actions behind privileged API commands.
-5. Complete Supabase Auth session/browser QA across App, Admin, and VaultRail.
+5. Complete Supabase Auth session/browser QA across App, Admin, and Neptlium Treasury.
 6. Retain historical identity migration evidence without reintroducing retired runtime authentication paths.
 
 ## TARGET domains

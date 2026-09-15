@@ -1,39 +1,41 @@
-name: Product Family Phase A Validation
+name: Neptlium Product Family Validation
 
 on:
+  pull_request:
   push:
     branches:
-      - product/product-family-phase-a-v10
+      - main
+      - product/neptlium-treasury-hierarchy
 
 permissions:
   contents: read
 
 concurrency:
-  group: product-family-validate-v2-${{ github.ref }}
+  group: neptlium-product-family-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: git diff --check origin/product/authenticated-operating-environment...HEAD
+      - run: git diff --check
+      - run: node scripts/validate-product-hierarchy.mjs
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @neptlium/types typecheck
       - run: pnpm --filter @neptlium/types lint
-      - run: pnpm --filter @neptlium/vault typecheck
-      - run: pnpm --filter @neptlium/vault lint
-      - run: pnpm --filter @neptlium/vault test
-      - run: pnpm --filter @neptlium/vault build
+      - run: pnpm --filter @neptlium/treasury typecheck
+      - run: pnpm --filter @neptlium/treasury lint
+      - run: pnpm --filter @neptlium/treasury test
+      - run: pnpm --filter @neptlium/treasury build
       - run: pnpm --filter @neptlium/pay typecheck
       - run: pnpm --filter @neptlium/pay lint
       - run: pnpm --filter @neptlium/pay test

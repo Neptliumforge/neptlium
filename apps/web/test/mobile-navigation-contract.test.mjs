@@ -9,7 +9,7 @@ const css = readFileSync(new URL('../app/mobile-navigation-fix.css', import.meta
 
 test('mobile navigation is portaled outside the header stacking context', () => {
   assert.match(header, /import \{ createPortal \} from 'react-dom'/);
-  assert.match(header, /mounted && mobileNavigation \? createPortal\(mobileNavigation, document\.body\)/);
+  assert.match(header, /mounted && mobileOpen \? createPortal\(<MobileNavigation[\s\S]*document\.body\) : null/);
   assert.match(mobile, /role="dialog"/);
   assert.match(mobile, /aria-modal="true"/);
   assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
@@ -24,11 +24,13 @@ test('mobile navigation owns an opaque editorial viewport', () => {
   assert.match(css, /\.mobile-command-nav\s*\{[^}]*overflow-y: auto;/s);
 });
 
-test('mobile menu exposes canonical investor navigation and separate account actions', () => {
+test('mobile menu exposes canonical product-family navigation and separate account actions', () => {
   assert.match(mobile, /NAVIGATION\.map/);
   assert.match(mobile, /className="mobile-nav-grid"/);
-  assert.match(mobile, /href=\{SITE\.signInUrl\}>Sign In/);
-  assert.match(mobile, /href=\{SITE\.signUpUrl\}>Get Started/);
+  assert.match(mobile, /href=\{SITE\.personalSignInUrl\}>Sign in/);
+  assert.match(mobile, /href=\{SITE\.personalSignUpUrl\}>Open account/);
+  assert.match(mobile, /href=\{SITE\.businessAppUrl\}>Open Neptlium Treasury/);
+  assert.match(mobile, /Treasury access/);
   assert.match(mobile, /Socials/);
   assert.doesNotMatch(mobile, /aria-expanded/);
 });

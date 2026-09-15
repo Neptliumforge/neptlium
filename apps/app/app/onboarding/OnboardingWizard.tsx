@@ -138,7 +138,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
     return (
       <OnboardingShell step={1} totalSteps={2}>
         <p className="text-sm text-text-muted" role="status">
-          Preparing your account…
+          Preparing Neptlium Capital…
         </p>
       </OnboardingShell>
     );
@@ -148,22 +148,22 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
     <OnboardingShell step={stepIndex + 1} totalSteps={2}>
       <OnboardingPanel>
         <div aria-live="polite" className="sr-only">
-          {error ?? (provisioning ? 'Finishing account setup.' : '')}
+          {error ?? (provisioning ? 'Finishing Capital setup.' : '')}
         </div>
 
         {stepIndex === 0 && (
           <form onSubmit={advance} className="space-y-5">
-            <Heading title="Welcome to Neptlium" copy="A few details are all we need to prepare your personal account." />
+            <Heading title="Set up Neptlium Capital" copy="Start with the personal identity details supported by your account today. Organization details are not required for your personal account; organization information belongs in Neptlium Treasury, not here." />
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField
-                label="First name"
+                label="Legal first name"
                 id="first-name"
                 value={data.firstName ?? ''}
                 onChange={(value) => update('firstName', value)}
                 autoComplete="given-name"
               />
               <TextField
-                label="Last name"
+                label="Legal last name"
                 id="last-name"
                 value={data.lastName ?? ''}
                 onChange={(value) => update('lastName', value)}
@@ -171,13 +171,14 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
               />
             </div>
             <TextField
-              label="Country"
+              label="Country of residence"
               id="country"
               value={data.country ?? ''}
               onChange={(value) => update('country', value)}
               autoComplete="country-name"
             />
             <p className="text-xs text-text-muted">Signed in as {email}</p>
+            <p className="text-xs leading-5 text-text-muted">Financial profile, investment profile, stronger security and funding stages will appear progressively only as their authoritative eligibility and persistence services are enabled.</p>
             <ErrorMessage error={error} />
             <Button type="submit" variant="accent" className="w-full">
               Continue
@@ -187,17 +188,17 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
         {stepIndex === 1 && (
           <form onSubmit={finish} className="space-y-6">
-            <Heading title="Review your account" copy="Confirm your details and enter Neptlium." />
+            <Heading title="Review your Capital account" copy="Confirm the identity foundation we can provision today." />
             <dl className="divide-y divide-border-hairline border-y border-border-default">
               <ReviewRow
                 label="Name"
                 value={`${data.firstName ?? ''} ${data.lastName ?? ''}`.trim()}
               />
-              <ReviewRow label="Country" value={data.country ?? ''} />
-              <ReviewRow label="Account" value="Personal" />
+              <ReviewRow label="Residence" value={data.country ?? ''} />
+              <ReviewRow label="Account context" value="Neptlium Capital · Individual" />
             </dl>
             <p className="text-sm leading-6 text-text-secondary">
-              Organization details are not required for your personal account.
+              Your personal financial context remains separate from any organization you may later join in Neptlium Treasury.
             </p>
             <label className="flex cursor-pointer gap-3 text-sm leading-5 text-text-secondary">
               <input
@@ -229,7 +230,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
                 loading={provisioning}
                 className="w-full sm:w-auto sm:min-w-48"
               >
-                Enter Neptlium
+                Enter Neptlium Capital
               </Button>
             </div>
           </form>
@@ -241,11 +242,9 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
 function Heading({ title, copy }: { readonly title: string; readonly copy: string }) {
   return (
-    <div className="space-y-1.5">
-      <h1 className="text-[1.625rem] font-semibold leading-tight tracking-tight text-text-primary">
-        {title}
-      </h1>
-      <p className="text-sm leading-5 text-text-secondary">{copy}</p>
+    <div className="space-y-2">
+      <h1 className="np-h3 text-text-primary">{title}</h1>
+      <p className="text-sm leading-6 text-text-secondary">{copy}</p>
     </div>
   );
 }

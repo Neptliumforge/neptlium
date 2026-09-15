@@ -28,7 +28,7 @@ export function SignInForm() {
     router.refresh();
   }
 
-  return <form className="vault-auth-form" onSubmit={submit}>
+  return <form className="treasury-auth-form" onSubmit={submit}>
     <label><span>Email</span><input required autoComplete="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
     <label><span>Password</span><input required autoComplete="current-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
     {error ? <p role="alert">{error}</p> : null}

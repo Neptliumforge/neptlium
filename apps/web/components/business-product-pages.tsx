@@ -27,13 +27,13 @@ function FlowDot({ active = false }: { active?: boolean }) {
   return <span className={`${styles.flowDot} ${active ? styles.flowDotActive : ''}`} aria-hidden="true" />;
 }
 
-export function VaultRailPage() {
+export function BusinessTreasuryPage() {
   return (
-    <div className={`${styles.page} ${styles.vaultRail}`}>
-      <section className={`${styles.hero} ${styles.vaultHero}`}>
+    <div className={`${styles.page} ${styles.treasuryProduct}`}>
+      <section className={`${styles.hero} ${styles.treasuryHero}`}>
         <div className={styles.shell}>
           <div className={styles.heroCopy}>
-            <Label inverse>VaultRail</Label>
+            <Label inverse>Neptlium Treasury</Label>
             <h1>Run financial operations with clarity.</h1>
             <p>
               A business operating environment for treasury context, payments, approvals, policy, counterparties and the record around every decision.
@@ -41,12 +41,12 @@ export function VaultRailPage() {
             <PrimaryActions secondaryHref="/treasury" secondaryLabel="Explore Treasury" />
           </div>
 
-          <div className={`${styles.productStage} ${styles.vaultStage}`} aria-label="VaultRail operating workspace illustration">
+          <div className={`${styles.productStage} ${styles.treasuryStage}`} aria-label="Neptlium Treasury operating workspace illustration">
             <div className={styles.workspaceTopbar}>
-              <span>VaultRail</span>
+              <span>Neptlium Treasury</span>
               <div><span className={styles.signal} /> Finance operations</div>
             </div>
-            <div className={styles.vaultWorkspace}>
+            <div className={styles.treasuryWorkspace}>
               <aside className={styles.workspaceNav} aria-hidden="true">
                 <strong>Workspace</strong>
                 <span className={styles.navActive}>Overview</span>
@@ -94,7 +94,7 @@ export function VaultRailPage() {
             <h2>Finance work stays connected.</h2>
           </div>
           <p>
-            Treasury tells the team where funds sit. Payments captures movement intent. VaultRail keeps those actions beside the authority, policy, counterparty and activity context that explains them.
+            Treasury tells the team where funds sit. Payments captures movement intent. Neptlium Treasury keeps those actions beside the authority, policy, counterparty and activity context that explains them.
           </p>
         </div>
         <div className={`${styles.shell} ${styles.operatingBand}`}>
@@ -158,7 +158,7 @@ export function VaultRailPage() {
           <div>
             <Label>Audit and continuity</Label>
             <h2>A record teams can follow.</h2>
-            <p>VaultRail keeps financial decisions legible over time: what was intended, what was reviewed, what changed and which context travelled with it.</p>
+            <p>Neptlium Treasury keeps financial decisions legible over time: what was intended, what was reviewed, what changed and which context travelled with it.</p>
           </div>
           <div className={styles.recordLine}>
             <div><FlowDot active /><span><b>Intent created</b><small>Purpose and counterparty captured</small></span></div>
@@ -170,7 +170,7 @@ export function VaultRailPage() {
 
       <section className={`${styles.closing} ${styles.carbonSection}`}>
         <div className={`${styles.shell} ${styles.closingInner}`}>
-          <div><Label inverse>VaultRail</Label><h2>One place to understand the operation before acting on it.</h2></div>
+          <div><Label inverse>Neptlium Treasury</Label><h2>One place to understand the operation before acting on it.</h2></div>
           <PrimaryActions secondaryHref="/payments" secondaryLabel="Explore Payments" />
         </div>
       </section>
@@ -187,7 +187,7 @@ export function TreasuryPage() {
             <Label>Treasury</Label>
             <h1>See treasury clearly.</h1>
             <p>Understand where organizational funds sit, what is available for operating needs, and the movement and control context around each destination.</p>
-            <PrimaryActions secondaryHref="/vaultrail" secondaryLabel="Explore VaultRail" />
+            <PrimaryActions secondaryHref="/business" secondaryLabel="Explore Neptlium Treasury" />
           </div>
           <div className={`${styles.productStage} ${styles.treasuryStage}`} aria-label="Treasury workspace illustration">
             <div className={styles.treasuryHeader}><span>Treasury overview</span><span className={styles.quietBadge}>Organizational view</span></div>
@@ -284,7 +284,7 @@ export function PaymentsPage() {
             <Label inverse>Payments</Label>
             <h1>Move money with context.</h1>
             <p>Shape payment intent around the recipient, purpose, policy and authority that should remain visible from creation through the operating record.</p>
-            <PrimaryActions secondaryHref="/vaultrail" secondaryLabel="Explore VaultRail" />
+            <PrimaryActions secondaryHref="/business" secondaryLabel="Explore Neptlium Treasury" />
           </div>
           <div className={`${styles.productStage} ${styles.paymentStage}`} aria-label="Governed payment flow illustration">
             <div className={styles.paymentFormHead}><span>New payment</span><span className={styles.quietBadge}>Draft intent</span></div>

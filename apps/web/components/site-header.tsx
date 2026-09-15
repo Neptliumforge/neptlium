@@ -18,7 +18,7 @@ function AccountMenu({ kind }: { kind: 'signin' | 'start' }) {
     <summary className={start ? 'account-menu-trigger account-menu-primary' : 'account-menu-trigger'}>{start ? 'Get started' : 'Sign in'}</summary>
     <div className="account-menu-panel" role="group" aria-label={start ? 'Get started options' : 'Sign in options'}>
       <a href={start ? SITE.personalSignUpUrl : SITE.personalSignInUrl}><strong>Personal</strong><span>Neptlium Capital</span></a>
-      <a href={start ? SITE.businessAccessUrl : SITE.businessAppUrl}><strong>Business</strong><span>{start ? 'Request VaultRail access' : 'Open VaultRail'}</span></a>
+      <a href={SITE.businessAppUrl}><strong>Business</strong><span>{start ? 'Open Neptlium Treasury' : 'Sign in to Neptlium Treasury'}</span></a>
     </div>
   </details>;
 }

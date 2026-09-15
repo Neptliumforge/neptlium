@@ -2,7 +2,7 @@
 
 Public marketing and information website for `neptlium.com`.
 
-`apps/web` represents one Neptlium company with two product journeys: **Personal / Neptlium Capital** and **Business / VaultRail**. It owns public positioning, product storytelling, editorial authority, SEO, trust architecture and acquisition. It owns no authenticated customer session, privileged financial operation, canonical financial state, custody, execution or settlement authority.
+`apps/web` represents one Neptlium company with two product journeys: **Personal / Neptlium Capital** and **Business / Neptlium Treasury**. It owns public positioning, product storytelling, editorial authority, SEO, trust architecture and acquisition. It owns no authenticated customer session, privileged financial operation, canonical financial state, custody, execution or settlement authority.
 
 ## Marketing authority
 
@@ -22,14 +22,14 @@ Canonical product-story routes include `/investments`, `/capital`, `/portfolio`,
 ## Product destinations
 
 - Personal / Neptlium Capital → `https://app.neptlium.com`
-- Business / VaultRail → `https://vault.neptlium.com`
+- Business / Neptlium Treasury → `https://treasury.neptlium.com`
 - Payments → `https://pay.neptlium.com`
 - API → `https://api.neptlium.com`
 - Docs → `https://docs.neptlium.com`
 - Admin → `https://admin.neptlium.com`
 - Status → `https://status.neptlium.com`
 
-Do not send business users through the investor login. Do not represent VaultRail as the entire Neptlium company.
+Do not send business users through the investor login. Do not represent Neptlium Treasury as the entire Neptlium company.
 
 ## Financial truth
 

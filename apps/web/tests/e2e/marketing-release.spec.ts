@@ -9,7 +9,6 @@ const releaseRoutes = [
   '/capital',
   '/portfolio',
   '/allocation',
-  '/vaultrail',
   '/treasury',
   '/payments',
   '/insights',
@@ -24,7 +23,7 @@ const releaseRoutes = [
 
 const personalSignInUrl = 'https://app.neptlium.com/auth/sign-in';
 const personalSignUpUrl = 'https://app.neptlium.com/auth/sign-up';
-const businessAppUrl = 'https://vault.neptlium.com';
+const businessAppUrl = 'https://treasury.neptlium.com';
 
 async function expectNoHorizontalOverflow(page: any) {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
@@ -90,11 +89,11 @@ test.describe('Neptlium unified marketing release', () => {
     await page.locator('summary').filter({ hasText: 'Sign in' }).click();
     const openMenu = page.locator('details[open]').filter({ hasText: 'Sign in' });
     await expect(openMenu.getByRole('link', { name: /Personal Neptlium Capital/i })).toHaveAttribute('href', personalSignInUrl);
-    await expect(openMenu.getByRole('link', { name: /Business Open VaultRail/i })).toHaveAttribute('href', businessAppUrl);
+    await expect(openMenu.getByRole('link', { name: /Business Open Neptlium Treasury/i })).toHaveAttribute('href', businessAppUrl);
     await page.locator('summary').filter({ hasText: 'Get started' }).click();
     const startMenu = page.locator('details[open]').filter({ hasText: 'Get started' });
     await expect(startMenu.getByRole('link', { name: /Personal Neptlium Capital/i })).toHaveAttribute('href', personalSignUpUrl);
-    await expect(startMenu.getByRole('link', { name: /Business Request VaultRail access/i })).toHaveAttribute('href', '/contact');
+    await expect(startMenu.getByRole('link', { name: /Business Request Neptlium Treasury access/i })).toHaveAttribute('href', '/contact');
   });
 
   test('mobile navigation preserves both journeys and restores page state', async ({ page }, testInfo) => {
@@ -108,7 +107,7 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(dialog.getByRole('link', { name: 'Personal', exact: true }).first()).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Business', exact: true }).first()).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Open account', exact: false })).toHaveAttribute('href', personalSignUpUrl);
-    await expect(dialog.getByRole('link', { name: 'Open VaultRail', exact: true })).toHaveAttribute('href', businessAppUrl);
+    await expect(dialog.getByRole('link', { name: 'Open Neptlium Treasury', exact: true })).toHaveAttribute('href', businessAppUrl);
     await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
     await expectNoHorizontalOverflow(page);
     await page.keyboard.press('Escape');

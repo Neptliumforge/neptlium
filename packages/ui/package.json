@@ -15,6 +15,10 @@
     "./styles/tokens.css": {
       "style": "./src/styles/tokens.css",
       "default": "./src/styles/tokens.css"
+    },
+    "./styles/nts.css": {
+      "style": "./src/styles/nts.css",
+      "default": "./src/styles/nts.css"
     }
   },
   "files": [

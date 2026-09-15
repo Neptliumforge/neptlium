@@ -49,7 +49,7 @@ export function MobileNavigation({ path, onClose, triggerRef }: { path: string; 
         </section>)}</div>
         <div className="mobile-account-grid" aria-label="Account destinations">
           <section><span>Personal</span><a href={SITE.personalSignInUrl}>Sign in</a><a className="mobile-enter-action" href={SITE.personalSignUpUrl}>Open account <ArrowRight aria-hidden="true" /></a></section>
-          <section><span>Business</span><a href={SITE.businessAppUrl}>Open VaultRail</a><Link className="mobile-enter-action mobile-enter-secondary" href={SITE.businessAccessUrl}>Request access <ArrowRight aria-hidden="true" /></Link></section>
+          <section><span>Business</span><a href={SITE.businessAppUrl}>Open Neptlium Treasury</a><a className="mobile-enter-action mobile-enter-secondary" href={SITE.businessAppUrl}>Treasury access <ArrowRight aria-hidden="true" /></a></section>
         </div>
         <section className="mobile-social-block" aria-label="Social channels"><span>Socials</span><div>{socialLinks.map((social) => <a href={social.href} key={social.href} target="_blank" rel="noopener noreferrer">{social.label}<ArrowUpRight aria-hidden="true" /></a>)}</div></section>
       </nav>
