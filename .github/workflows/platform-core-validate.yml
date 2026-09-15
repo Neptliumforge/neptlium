@@ -1,0 +1,49 @@
+name: Platform Core Validation
+
+on:
+  pull_request:
+    paths:
+      - 'apps/api/**'
+      - 'supabase/migrations/**'
+      - 'supabase/test/**'
+      - 'docs/01_PLATFORM_CORE_V02.md'
+      - '.github/workflows/platform-core-validate.yml'
+  push:
+    branches:
+      - feat/platform-core-v0.2
+    paths:
+      - 'apps/api/**'
+      - 'supabase/migrations/**'
+      - 'supabase/test/**'
+      - 'docs/01_PLATFORM_CORE_V02.md'
+      - '.github/workflows/platform-core-validate.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-core-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git diff --check
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @neptlium/api typecheck
+      - run: pnpm --filter @neptlium/api lint
+      - run: pnpm --filter @neptlium/api test
+      - run: pnpm --filter @neptlium/api vercel-build
+      - run: node --test apps/api/test/platform-core-migration-authority.test.mjs
+      - run: node --test supabase/test/stripe-webhook-retirement.test.mjs
+      - run: node --test supabase/test/gate05-legacy-authority-retirement.test.mjs
