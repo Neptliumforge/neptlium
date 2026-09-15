@@ -1,0 +1,54 @@
+name: Treasury Provider Foundation
+
+on:
+  pull_request:
+    paths:
+      - 'apps/api/**'
+      - 'apps/treasury/**'
+      - 'packages/types/**'
+      - 'docs/**TREASURY**'
+      - '.github/workflows/treasury-provider-foundation.yml'
+  push:
+    branches:
+      - feat/treasury-provider-orchestration-foundation
+    paths:
+      - 'apps/api/**'
+      - 'apps/treasury/**'
+      - 'packages/types/**'
+      - 'docs/**TREASURY**'
+      - '.github/workflows/treasury-provider-foundation.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: treasury-provider-foundation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git diff --check
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @neptlium/types typecheck
+      - run: pnpm --filter @neptlium/types lint
+      - run: pnpm --filter @neptlium/api typecheck
+      - run: pnpm --filter @neptlium/api lint
+      - run: pnpm --filter @neptlium/api test
+      - run: pnpm --filter @neptlium/api vercel-build
+      - run: pnpm --filter @neptlium/treasury typecheck
+      - run: pnpm --filter @neptlium/treasury lint
+      - run: pnpm --filter @neptlium/treasury test
+      - run: pnpm --filter @neptlium/treasury build
+      - run: node --test supabase/test/stripe-webhook-retirement.test.mjs
+      - run: node --test supabase/test/gate05-legacy-authority-retirement.test.mjs

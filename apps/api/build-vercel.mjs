@@ -33,6 +33,10 @@ const requiredRuntimeModules = [
   'webhook-completion.js',
   'security.js',
   'reconciliation.js',
+  'treasury-orchestration-domain.js',
+  'treasury-provider-boundaries.js',
+  'treasury-policy.js',
+  'treasury-preflight.js',
 ];
 if (requiredRuntimeModules.some((module) => !existsSync(join(root, 'dist', module)))) {
   throw new Error('Neptlium API production build did not emit required runtime modules');
