@@ -21,10 +21,9 @@ test('homepage states the canonical capital proposition without fabricated finan
 });
 
 test('homepage exposes the four canonical product families and contextual intelligence', () => {
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure']) {
-    assert.match(page, new RegExp(`label: '${family}'`));
-    assert.match(page, new RegExp(`Explore ${family}`));
-  }
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure']) assert.match(page, new RegExp(`label: '${family}'`));
+  for (const href of ['/capital', '/business', '/institutional', '/infrastructure']) assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
+  assert.match(page, /Explore \{family\.label\}/);
   assert.match(page, /Explore Insights/);
   assert.match(page, /DISCLOSURES\.general/);
 });
@@ -40,8 +39,7 @@ test('public conversion separates personal and business account contexts', () =>
 });
 
 test('navigation exposes product families plus insights and company', () => {
-  for (const domain of ['Capital', 'Treasury', 'Institutional', 'Infrastructure', 'Insights', 'Company'])
-    assert.match(architecture, new RegExp(`label: '${domain}'`));
+  for (const domain of ['Capital', 'Treasury', 'Institutional', 'Infrastructure', 'Insights', 'Company']) assert.match(architecture, new RegExp(`label: '${domain}'`));
   assert.match(header, /NAVIGATION\.map/);
   assert.match(header, /aria-label="Primary navigation"/);
 });
@@ -49,8 +47,7 @@ test('navigation exposes product families plus insights and company', () => {
 test('footer is intentionally minimal and exposes trust, social and real status destinations', () => {
   assert.match(footer, /Capital systems for people, businesses and institutions\./);
   for (const social of ['X', 'Bluesky', 'YouTube']) assert.match(footer, new RegExp(`label: '${social}'`));
-  for (const legal of ['Security', 'Privacy', 'Terms', 'Risk disclosure', 'Accessibility', 'Cookies'])
-    assert.match(footer, new RegExp(`label: '${legal}'`));
+  for (const legal of ['Security', 'Privacy', 'Terms', 'Risk disclosure', 'Accessibility', 'Cookies']) assert.match(footer, new RegExp(`label: '${legal}'`));
   assert.match(footer, /SITE\.statusUrl/);
   assert.match(footer, /View system status/);
   assert.doesNotMatch(footer, /All systems operational/i);
