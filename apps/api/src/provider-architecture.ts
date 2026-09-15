@@ -3,6 +3,7 @@ export { chainRegistry, getChainDefinition, listAlchemyProductionChains } from '
 export { loadAlchemyChainEndpoints, alchemyRpcEnvironmentKey } from './alchemy-chain-config.js';
 export { assertProviderCapability, capabilityCanExecute } from './provider-capabilities.js';
 export { providerCapabilityKey } from './provider-capability-key.js';
+export { validateProviderCapabilityScope } from './provider-capability-scope.js';
 export { canTransitionProviderCapability, requireProviderCapabilityTransition } from './provider-capability-transition.js';
 export { buildConfiguredProviderCapabilities } from './provider-capability-registry.js';
 export { normalizedProviderError } from './provider-error.js';
