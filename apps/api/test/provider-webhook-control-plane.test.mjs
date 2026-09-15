@@ -5,7 +5,7 @@ import { SupabaseFinancialOperations } from '../dist/financial-operations.js';
 
 const migration = readFileSync(
   new URL(
-    '../../../supabase/migrations/20260908053000_provider_webhook_control_plane.sql',
+    '../../../supabase/migrations/20260908091732_provider_webhook_control_plane.sql',
     import.meta.url,
   ),
   'utf8',

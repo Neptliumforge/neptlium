@@ -9,7 +9,7 @@ import {
 } from '../dist/treasury-destination-domain.js';
 
 const migrationUrl = new URL(
-  '../../../supabase/migrations/20260818120000_self_custody_treasury_destination_foundation.sql',
+  '../../../supabase/archive/superseded/20260818120000_self_custody_treasury_destination_foundation.sql',
   import.meta.url,
 );
 const migration = await readFile(migrationUrl, 'utf8');
