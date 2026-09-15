@@ -27,22 +27,18 @@ export const viewport: Viewport = {
 
 const themeBoot = `(() => {
   try {
-    const path = location.pathname;
-    if (path.startsWith('/dashboard')) {
-      document.documentElement.dataset.theme = 'dark';
-      document.documentElement.dataset.themePreference = 'dark';
-      return;
-    }
     const stored = localStorage.getItem('neptlium-theme');
     const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
-    const resolved = preference === 'system'
-      ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      : preference;
+    const media = matchMedia('(prefers-color-scheme: dark)');
+    const resolved = preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
     document.documentElement.dataset.theme = resolved;
     document.documentElement.dataset.themePreference = preference;
+    document.documentElement.style.colorScheme = resolved;
   } catch (_) {
-    document.documentElement.dataset.theme = 'dark';
-    document.documentElement.dataset.themePreference = 'dark';
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    document.documentElement.dataset.themePreference = 'system';
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
   }
 })();`;
 
