@@ -1,6 +1,7 @@
 export { providerDoctrine, providerAuthorityInvariants, requirePrimaryProvider } from './provider-doctrine.js';
 export { chainRegistry, getChainDefinition, listAlchemyProductionChains } from './chain-registry.js';
 export { loadAlchemyChainEndpoints, alchemyRpcEnvironmentKey } from './alchemy-chain-config.js';
+export { validateProviderAuditEvent } from './provider-audit-event.js';
 export { assertProviderCapability, capabilityCanExecute } from './provider-capabilities.js';
 export { providerCapabilityKey } from './provider-capability-key.js';
 export { validateProviderCapabilityScope } from './provider-capability-scope.js';
@@ -21,6 +22,7 @@ export { validateProviderCorrelation } from './provider-correlation.js';
 
 export type { PrimaryProvider } from './provider-doctrine.js';
 export type { ChainDefinition, ChainId } from './chain-registry.js';
+export type { ProviderAuditAction, ProviderAuditEvent } from './provider-audit-event.js';
 export type { ProviderCapability, ProviderCapabilityState, ProviderOperation } from './provider-capabilities.js';
 export type { NormalizedProviderError, ProviderErrorKind } from './provider-error.js';
 export type { ProviderEvidence, ProviderEvidenceKind } from './provider-evidence.js';
