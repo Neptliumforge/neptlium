@@ -38,7 +38,7 @@ test('homepage is a distinct brand story rather than a copied product index', ()
   assert.match(homeElite, /prefers-reduced-motion:reduce/);
 });
 
-test('authoritative semantic surfaces exist and major routes do not collapse into one canvas', () => {
+test('authoritative semantic surfaces exist and major marketing routes do not collapse into one canvas', () => {
   for (const surface of ['carbon', 'white', 'ivory', 'cloud', 'mineral', 'mineral-light']) assert.match(surfaces, new RegExp(`data-npt-surface=['"]${surface}['"]`, 'i'));
   const homeSurfaces = surfacesFor(home);
   for (const expected of ['carbon', 'white', 'cloud', 'mineral', 'ivory']) assert.ok(homeSurfaces.includes(expected));
@@ -47,19 +47,21 @@ test('authoritative semantic surfaces exist and major routes do not collapse int
     ['personal', personal, ['ivory', 'white', 'cloud', 'mineral', 'carbon']],
     ['business', business, ['mineral', 'white', 'carbon', 'cloud', 'mineral-light']],
     ['platform', platform, ['carbon', 'cloud', 'white', 'mineral']],
-    ['security', security, ['carbon', 'white', 'cloud', 'mineral']],
     ['company', company, ['ivory', 'white', 'cloud', 'mineral']],
   ]) {
     const routeSurfaces = surfacesFor(source);
     for (const expected of required) assert.ok(routeSurfaces.includes(expected), `${name} must include ${expected}`);
     assert.ok(new Set(routeSurfaces).size >= 3, `${name} must remain visually multi-surface`);
   }
+  assert.match(security, /security\.module\.css/);
+  assert.match(security, /Control starts with clear authority/);
+  assert.match(security, /Login does not equal financial authority/);
 });
 
 test('personal and business journeys remain differentiated but share product truth', () => {
   assert.equal((personal.match(/<h1/g) ?? []).length, 1);
   assert.equal((business.match(/<h1/g) ?? []).length, 1);
-  for (const copy of ['Neptlium Capital', 'Available', 'Reserved', 'Allocated', 'Decisions before execution']) assert.match(personal, new RegExp(copy, 'i'));
+  for (const copy of ['Neptlium Capital', 'Capital', 'Portfolio', 'Allocation', 'Activity', 'Illustrative interface']) assert.match(personal, new RegExp(copy, 'i'));
   for (const copy of ['Neptlium Treasury', 'Treasury', 'Payments', 'Approvals', 'Policies', 'Risk', 'Audit', 'Intelligence without authority']) assert.match(business, new RegExp(copy, 'i'));
   assert.match(business, /Illustrative|Developing|Concept/i);
   assert.doesNotMatch(business, /guaranteed|bank-grade|risk-free/i);
@@ -71,11 +73,14 @@ test('platform presents one shared financial core without generic card-only arch
   assert.match(system, /\.platformMap/);
 });
 
-test('insights uses editorial coverage architecture instead of a placeholder topic-card wall', () => {
-  assert.match(insights, /Editorial coverage/i);
+test('insights uses a truthful editorial standard without invented publications', () => {
+  assert.match(insights, /Editorial standard/i);
+  assert.match(insights, /Publish when there is something worth understanding/i);
+  assert.match(insights, /Current library/i);
+  assert.match(insights, /Substantive authored Insights are not yet published/i);
   assert.match(insights, /Personal capital/i);
-  assert.match(insights, /Operating capital/i);
-  assert.doesNotMatch(insights, /Reserved for substantive Neptlium material when original work is available\./);
+  assert.match(insights, /Treasury/i);
+  assert.doesNotMatch(insights, /award-winning|featured in|as seen in|customer story/i);
 });
 
 test('canonical navigation is Capital Treasury Institutional Infrastructure Insights Company', () => {
