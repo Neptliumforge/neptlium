@@ -9,9 +9,15 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 test('company intelligence preserves annual history and governed ratios', () => {
   const source = read('lib/company-intelligence.ts');
   for (const token of [
-    'CompanyHistoricalPeriod', 'revenue_growth_yoy', 'gross_margin', 'operating_margin',
-    'net_margin', 'liabilities_to_assets', 'cash_to_assets',
-  ]) assert.equal(source.includes(token), true, `missing ${token}`);
+    'CompanyHistoricalPeriod',
+    'revenue_growth_yoy',
+    'gross_margin',
+    'operating_margin',
+    'net_margin',
+    'liabilities_to_assets',
+    'cash_to_assets',
+  ])
+    assert.equal(source.includes(token), true, `missing ${token}`);
   assert.match(source, /numerator\.periodEnd !== denominator\.periodEnd/);
   assert.match(source, /slice\(0, 5\)/);
 });
@@ -40,13 +46,16 @@ test('Companies separates authenticated exposure from public company research', 
   const research = read('app/dashboard/research/page.tsx');
 
   assert.match(companiesPage, /CompaniesExperience/);
-  assert.match(navigation, /label: 'Companies'/);
-  assert.match(navigation, /href: '\/dashboard\/companies'/);
+  assert.doesNotMatch(navigation, /label: 'Companies'/);
+  assert.match(read('components/product/OperatingExperience.tsx'), /'\/dashboard\/companies'/);
   assert.match(records, /No authenticated company exposure projection is available/);
   assert.match(records, /will not infer portfolio exposure from public market research/);
   assert.match(records, /Public company research remains separate from customer holdings/);
   assert.match(records, /href="\/dashboard\/research"/);
-  assert.match(research, /Understand companies through verified identity, financial evidence, and primary sources/);
+  assert.match(
+    research,
+    /Understand companies through verified identity, financial evidence, and primary sources/,
+  );
   assert.match(research, /Begin with a company/);
   assert.match(research, /Resolve Company/);
 });
@@ -62,7 +71,14 @@ test('Company Intelligence retains primary SEC evidence without market or adviso
   assert.match(source, /companyfacts/);
   assert.match(company, /View filing/);
   assert.match(company, /Verified primary filing/);
-  for (const forbidden of ['price prediction', 'analyst rating', 'Buy rating', 'Sell rating', 'price target', 'stock chart']) {
+  for (const forbidden of [
+    'price prediction',
+    'analyst rating',
+    'Buy rating',
+    'Sell rating',
+    'price target',
+    'stock chart',
+  ]) {
     assert.doesNotMatch(surface, new RegExp(forbidden, 'i'));
   }
 });

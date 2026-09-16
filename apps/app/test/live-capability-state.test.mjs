@@ -11,7 +11,10 @@ test('authenticated capability presentation is mapped only from backend states',
   const capitalAccount = read('app/dashboard/capital-account/CapitalAccountView.tsx');
   const treasury = read('app/dashboard/treasury/TreasuryView.tsx');
 
-  assert.match(productState, /export type BackendCapabilityState = 'ENABLED' \| 'DISABLED' \| 'NOT_CONFIGURED' \| 'INELIGIBLE'/);
+  assert.match(
+    productState,
+    /export type BackendCapabilityState = 'ENABLED' \| 'DISABLED' \| 'NOT_CONFIGURED' \| 'INELIGIBLE'/,
+  );
   assert.match(productState, /productStateFromCapability/);
   assert.match(capitalAccount, /productStateFromCapability\(selected\.state\)/);
   assert.match(treasury, /productStateFromCapability\(item\.state\)/);
@@ -25,11 +28,18 @@ test('legacy frontend capability assumptions no longer exist', () => {
     'lib/services/transfer.ts',
     'components/product/CapitalAccountExperience.tsx',
     'app/dashboard/allocations/AllocationModes.tsx',
-  ]) assert.equal(existsSync(resolve(root, path)), false, path);
+  ])
+    assert.equal(existsSync(resolve(root, path)), false, path);
 });
 
 test('orphaned user routes redirect instead of inventing capability state', () => {
-  assert.match(read('app/dashboard/counterparties/page.tsx'), /redirect\('\/dashboard\/treasury'\)/);
+  assert.match(
+    read('app/dashboard/counterparties/page.tsx'),
+    /redirect\('\/dashboard\/treasury'\)/,
+  );
   assert.match(read('app/dashboard/risk/page.tsx'), /redirect\('\/dashboard\/portfolio'\)/);
-  assert.doesNotMatch(read('app/dashboard/reports/page.tsx'), /coming soon|unsupported|not supported/i);
+  assert.doesNotMatch(
+    read('app/dashboard/reports/page.tsx'),
+    /coming soon|unsupported|not supported/i,
+  );
 });

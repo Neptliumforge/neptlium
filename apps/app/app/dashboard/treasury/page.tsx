@@ -1,5 +1,5 @@
-import { TreasuryExperience } from '@/components/product/OperatingExperience';
+import { redirect } from 'next/navigation';
 
-export default function TreasuryPage() {
-  return <TreasuryExperience />;
+export default function TreasuryPage(): never {
+  redirect('/dashboard/treasury-upgrade');
 }

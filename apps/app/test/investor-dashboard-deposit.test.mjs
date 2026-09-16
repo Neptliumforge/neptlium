@@ -13,9 +13,12 @@ test('dashboard renders shared API-backed state instead of illustrative financia
   assert.match(dashboard, /OverviewExperience/);
   assert.match(bootstrap, /getOverviewState/);
   assert.match(bootstrap, /getCanonicalBalances/);
-  assert.match(experience, /Recent account events/);
-  assert.match(experience, /Total canonical capital/);
-  assert.doesNotMatch(experience, /Public markets|Private companies|Company position updated|36%|28%/);
+  assert.match(experience, /Recent activity/);
+  assert.match(experience, /Your capital/);
+  assert.doesNotMatch(
+    experience,
+    /Public markets|Private companies|Company position updated|36%|28%/,
+  );
 });
 
 test('deposit route is a dedicated funding-method experience', () => {
@@ -30,6 +33,9 @@ test('crypto deposit creates instructions through the governed funding action', 
   const flow = read('app/dashboard/deposit/crypto/CryptoDepositFlow.tsx');
   assert.match(flow, /createFundingIntentAction/);
   assert.match(flow, /deposit_address/);
-  assert.match(flow, /Balance credit occurs only after Neptlium verifies observation, posting, settlement, and reconciliation/);
+  assert.match(
+    flow,
+    /Balance credit occurs only after Neptlium verifies observation, posting, settlement, and reconciliation/,
+  );
   assert.doesNotMatch(flow, /https?:\/\/.*qr/i);
 });

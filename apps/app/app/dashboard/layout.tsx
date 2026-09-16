@@ -21,8 +21,15 @@ export default async function DashboardLayout({ children }: { readonly children:
   const navItems = filterNavByRole(dashboardNavItems, role);
   const secondaryItems = filterNavByRole(dashboardSecondaryNavItems, role);
   const mobilePrimaryItems = filterNavByRole(dashboardMobilePrimaryNavItems, role);
-  const displayName = profile.fullName ?? profile.displayName ?? profile.email ?? user.email ?? 'Account';
-  const profileMenu = <ProfileMenu name={displayName} email={profile.email ?? user.email ?? ''} verified={profile.complianceStatus === 'active'} />;
+  const displayName =
+    profile.fullName ?? profile.displayName ?? profile.email ?? user.email ?? 'Account';
+  const profileMenu = (
+    <ProfileMenu
+      name={displayName}
+      email={profile.email ?? user.email ?? ''}
+      verified={profile.complianceStatus === 'active'}
+    />
+  );
   const bootstrap = await getAuthenticatedProductBootstrap({
     id: user.id,
     email: profile.email ?? user.email ?? null,
@@ -32,18 +39,24 @@ export default async function DashboardLayout({ children }: { readonly children:
     role,
   });
 
-  return <ProductBootstrapProvider initial={bootstrap}>
-    <Link href="#app-workspace" className="app-skip-link">Skip to application workspace</Link>
-    <AppShell
-      brandDescriptor="Capital operating environment"
-      brandTone="teal"
-      sidebar={<Sidebar items={navItems} />}
-      sidebarFooter={<Sidebar items={secondaryItems} />}
-      header={<WorkspaceTitle />}
-      utility={profileMenu}
-      mobileNav={<ProductMobileNavigation items={mobilePrimaryItems} profile={profileMenu} />}
-    >
-      <div id="app-workspace" tabIndex={-1}>{children}</div>
-    </AppShell>
-  </ProductBootstrapProvider>;
+  return (
+    <ProductBootstrapProvider initial={bootstrap}>
+      <Link href="#app-workspace" className="app-skip-link">
+        Skip to application workspace
+      </Link>
+      <AppShell
+        brandDescriptor="Personal investing"
+        brandTone="teal"
+        sidebar={<Sidebar items={navItems} />}
+        sidebarFooter={<Sidebar items={secondaryItems} />}
+        header={<WorkspaceTitle />}
+        utility={profileMenu}
+        mobileNav={<ProductMobileNavigation items={mobilePrimaryItems} profile={profileMenu} />}
+      >
+        <div id="app-workspace" tabIndex={-1}>
+          {children}
+        </div>
+      </AppShell>
+    </ProductBootstrapProvider>
+  );
 }

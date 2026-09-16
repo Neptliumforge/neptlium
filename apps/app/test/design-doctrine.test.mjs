@@ -32,7 +32,10 @@ test('authenticated product remains operationally quiet and numerically precise'
 
 test('overview capital empty state stays truthful without repeated fabricated values', () => {
   assert.match(capitalPosition, /Capital not established yet\./);
-  assert.match(capitalPosition, /Balances appear only after governed capital is available and reconciled\./);
+  assert.match(
+    capitalPosition,
+    /Balances appear only after governed capital is available and reconciled\./,
+  );
   assert.match(capitalPosition, /Provider observations are never presented as canonical balance\./);
   assert.match(capitalPosition, /View Capital Account/);
   assert.match(capitalPosition, /current governed capability response/);
@@ -48,8 +51,8 @@ test('overview derives governed capital state from the shared bootstrap without 
   assert.match(bootstrap, /getFundingCapabilities\(\)/);
   assert.match(bootstrap, /getTransferCapabilities\(\)/);
   assert.match(experience, /snapshot\.balances\.state === 'READY'/);
-  assert.match(experience, /Total canonical capital/);
-  assert.match(experience, /Assets remain separated without an authoritative conversion basis/);
+  assert.match(experience, /Your capital/);
+  assert.match(experience, /Shown separately because no verified combined valuation is available/);
   assert.match(experience, /PrimaryActions/);
   assert.match(experience, /item\.state === 'ENABLED'/);
   assert.doesNotMatch(experience, /balance\?\.total_atomic\s*\?\?\s*['\"]0['\"]/);

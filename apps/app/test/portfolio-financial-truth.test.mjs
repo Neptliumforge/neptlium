@@ -34,13 +34,19 @@ test('Portfolio never manufactures zero from missing canonical evidence', () => 
     assert.doesNotMatch(surface, new RegExp(`\\?\\.${field} \\?\\? ['\"]0['\"]`));
     assert.doesNotMatch(surface, new RegExp(`\\?\\.${field} \\|\\| ['\"]0['\"]`));
   }
-  assert.match(productState, /if \(valueAtomic === undefined \|\| valueAtomic === null \|\| !asset\)/);
+  assert.match(
+    productState,
+    /if \(valueAtomic === undefined \|\| valueAtomic === null \|\| !asset\)/,
+  );
 });
 
 test('confirmed canonical zero and non-zero values remain numeric evidence', () => {
   assert.match(productState, /formatAtomicAmount\(valueAtomic, asset, decimals \?\? undefined\)/);
   assert.match(productState, /const digits = negative \? value\.slice\(1\) : value;/);
-  assert.match(productState, /const whole = decimals \? padded\.slice\(0, -decimals\) \|\| '0' : padded;/);
+  assert.match(
+    productState,
+    /const whole = decimals \? padded\.slice\(0, -decimals\) \|\| '0' : padded;/,
+  );
 });
 
 test('funding capability cannot manufacture a Portfolio holding', () => {
@@ -59,23 +65,48 @@ test('Portfolio distinguishes unavailable canonical state from authoritative abs
 
 test('Portfolio does not manufacture valuation, performance, or risk scores', () => {
   for (const forbidden of [
-    '$0.00', '0.00%', 'Net worth', 'Gain/loss', 'ROI', 'risk score', 'prediction score',
-    'volatility score', 'market ticker', 'candlestick',
-  ]) assert.doesNotMatch(surface, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
+    '$0.00',
+    '0.00%',
+    'Net worth',
+    'Gain/loss',
+    'ROI',
+    'risk score',
+    'prediction score',
+    'volatility score',
+    'market ticker',
+    'candlestick',
+  ])
+    assert.doesNotMatch(surface, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
 
-  assert.match(portfolioExperience, /Portfolio value<\/span><strong>—<\/strong>/);
+  assert.match(portfolioExperience, /Portfolio value<\/span>[\s\S]*?<strong>—<\/strong>/);
   assert.match(portfolioExperience, /No decorative or interpolated performance curve is rendered/);
 });
 
 test('Portfolio holdings remain absent until authoritative positions exist', () => {
   assert.match(portfolioExperience, /No canonical positions are available/);
-  assert.match(portfolioExperience, /Quantity, price, cost basis and return stay absent until provided by the portfolio projection/);
+  assert.match(
+    portfolioExperience,
+    /Quantity, price, cost basis and return stay absent until provided by the portfolio\s+projection/,
+  );
   assert.doesNotMatch(surface, /sample holding|illustrative holding|mock position/i);
 });
 
 test('Portfolio has no execution actions', () => {
-  for (const forbidden of ['#deposit', 'Fund capital', '>Deposit<', '>Withdraw<', '>Buy<', '>Sell<', '>Trade<', 'Execute allocation']) {
-    assert.equal(surface.includes(forbidden), false, `Portfolio contains execution action ${forbidden}`);
+  for (const forbidden of [
+    '#deposit',
+    'Fund capital',
+    '>Deposit<',
+    '>Withdraw<',
+    '>Buy<',
+    '>Sell<',
+    '>Trade<',
+    'Execute allocation',
+  ]) {
+    assert.equal(
+      surface.includes(forbidden),
+      false,
+      `Portfolio contains execution action ${forbidden}`,
+    );
   }
 });
 

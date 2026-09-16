@@ -43,10 +43,16 @@ test('sign up is personal-first and carries the canonical Neptlium identity', ()
   assert.match(signUp, /<SupabaseAuthForm mode="sign-up"/);
   assert.match(authForm, /Create your Neptlium account with email and password/);
   assert.match(authForm, /supabase\.auth\.signUp/);
-  assert.doesNotMatch(signUp + authForm, /organization name|company website|company role|upload.*logo/i);
+  assert.doesNotMatch(
+    signUp + authForm,
+    /organization name|company website|company role|upload.*logo/i,
+  );
   assert.doesNotMatch(signUp + authForm, /capital operating environment|Create access/);
   assert.match(authShell, /tone="teal"/);
-  assert.doesNotMatch(authShell, /Operating environment|Secure operating access|governed environment/);
+  assert.doesNotMatch(
+    authShell,
+    /Operating environment|Secure operating access|governed environment/,
+  );
 });
 
 test('onboarding is a two-step personal account flow without organization-first fields', () => {
@@ -58,7 +64,10 @@ test('onboarding is a two-step personal account flow without organization-first 
   assert.match(wizard, /organizationName: ''/);
   assert.match(wizard, /companyRole: ''/);
   assert.match(wizard, /website: ''/);
-  assert.doesNotMatch(wizard, /label="Organization name"|label="Company website"|label="Company role"|upload.*logo/i);
+  assert.doesNotMatch(
+    wizard,
+    /label="Organization name"|label="Company website"|label="Company role"|upload.*logo/i,
+  );
   assert.doesNotMatch(wizard, /Account type|Family office|Investment firm|Treasury team/);
   assert.match(steps, /details/);
   assert.match(steps, /review/);
@@ -69,8 +78,11 @@ test('authenticated shell is quiet and brand-linked rather than tenant-console s
   const layout = read('app/dashboard/layout.tsx');
   const styles = read('app/global.css');
   assert.match(layout, /brandTone="teal"/);
-  assert.match(layout, /brandDescriptor="Capital operating environment"/);
-  assert.doesNotMatch(layout, /Current operating context|Canonical and governed where available|Capital state/);
+  assert.match(layout, /brandDescriptor="Personal investing"/);
+  assert.doesNotMatch(
+    layout,
+    /Current operating context|Canonical and governed where available|Capital state/,
+  );
   assert.match(styles, /--color-sidebar: #f5f3ee/);
   assert.match(styles, /--n-mineral-teal: #0f8f86/);
 });
@@ -85,7 +97,11 @@ test('ordinary customer surfaces reject build-stage and internal implementation 
   for (const path of ordinaryCustomerSurfaces) {
     const source = read(path);
     for (const phrase of forbiddenOrdinaryCopy) {
-      assert.doesNotMatch(source, phrase, `${path} contains prohibited ordinary customer copy: ${phrase}`);
+      assert.doesNotMatch(
+        source,
+        phrase,
+        `${path} contains prohibited ordinary customer copy: ${phrase}`,
+      );
     }
   }
 });
@@ -96,9 +112,15 @@ test('capital account and treasury zero/error states read as finished product st
   assert.match(capital, /No capital positions yet/);
   assert.match(capital, /No destinations saved/);
   assert.match(capital, /No capital context yet/);
-  assert.doesNotMatch(capital, /Canonical ledger balances|No customer funding capability|frontend review|apps\/app does not have an API mutation/);
+  assert.doesNotMatch(
+    capital,
+    /Canonical ledger balances|No customer funding capability|frontend review|apps\/app does not have an API mutation/,
+  );
   assert.match(treasury, /No capital positions yet/);
   assert.match(treasury, /No transfers yet/);
   assert.match(treasury, /No destinations saved/);
-  assert.doesNotMatch(treasury, /canonical liquidity|governed funding rail|canonical lifecycle events|provider aggregate/i);
+  assert.doesNotMatch(
+    treasury,
+    /canonical liquidity|governed funding rail|canonical lifecycle events|provider aggregate/i,
+  );
 });
