@@ -26,7 +26,7 @@ const footer = read('components/site-footer.tsx');
 
 test('public architecture covers the canonical Neptlium product families and supporting trust surfaces', () => {
   for (const phrase of [
-    'Capital, clearly',
+    'Capital, intelligently managed',
     'Capital',
     'Treasury',
     'Institutional',
@@ -40,12 +40,19 @@ test('public architecture covers the canonical Neptlium product families and sup
     'About',
     'Contact',
     'Press',
-  ]) assert.match(`${publicCopy}\n${architecture}\n${footer}`, new RegExp(phrase, 'i'));
+  ])
+    assert.match(`${publicCopy}\n${architecture}\n${footer}`, new RegExp(phrase, 'i'));
 });
 
 test('public copy avoids unsupported institutional proof and promotional shorthand', () => {
-  assert.doesNotMatch(publicCopy, /\bAUM\b|assets under management|customer count|transaction volume|guaranteed return|SOC\s*2|ISO\s*27001|licensed custodian|regulated bank|regulated broker/i);
-  assert.doesNotMatch(publicCopy, /revolutioni[sz]e|supercharge|all-in-one|next-generation|seamless experience|AI-powered/i);
+  assert.doesNotMatch(
+    publicCopy,
+    /\bAUM\b|assets under management|customer count|transaction volume|guaranteed return|SOC\s*2|ISO\s*27001|licensed custodian|regulated bank|regulated broker/i,
+  );
+  assert.doesNotMatch(
+    publicCopy,
+    /revolutioni[sz]e|supercharge|all-in-one|next-generation|seamless experience|AI-powered/i,
+  );
   assert.doesNotMatch(publicCopy, /\bPredict\b/i);
 });
 
@@ -54,13 +61,25 @@ test('research and press remain truthful when verified material is unavailable',
   const press = read('app/press/page.tsx');
   assert.match(research, /when|published|available/i);
   assert.match(press, /verified|available|press/i);
-  assert.doesNotMatch(`${research}\n${press}`, /award-winning|featured in|as seen in|client story|case study/i);
+  assert.doesNotMatch(
+    `${research}\n${press}`,
+    /award-winning|featured in|as seen in|client story|case study/i,
+  );
 });
 
-test('primary discovery follows the four-family hierarchy while the footer remains minimal and complete', () => {
+test('primary discovery follows the audience hierarchy while the footer remains minimal and complete', () => {
   assert.match(architecture, /export const PRIMARY_PRODUCTS = PRODUCTS;/);
   assert.match(architecture, /export const PRIMARY_COMPANY = COMPANY;/);
-  for (const topLevel of ['Capital', 'Treasury', 'Institutional', 'Infrastructure', 'Insights', 'Company']) assert.match(architecture, new RegExp(`label: '${topLevel}'`));
-  for (const legal of ['Security', 'Privacy', 'Terms', 'Risk disclosure', 'Accessibility', 'Cookies']) assert.match(footer, new RegExp(legal, 'i'));
+  for (const topLevel of ['Individuals', 'Institutions', 'Investments', 'Company'])
+    assert.match(architecture, new RegExp(`label: '${topLevel}'`));
+  for (const legal of [
+    'Security',
+    'Privacy',
+    'Terms',
+    'Risk disclosure',
+    'Accessibility',
+    'Cookies',
+  ])
+    assert.match(footer, new RegExp(legal, 'i'));
   assert.match(footer, /View system status/);
 });

@@ -2,9 +2,9 @@ export const SITE = {
   name: 'Neptlium',
   url: 'https://neptlium.com',
   domain: 'neptlium.com',
-  positioning: 'Financial infrastructure and capital systems for people, businesses and institutions.',
+  positioning: 'Capital, intelligently managed.',
   description:
-    'Neptlium connects investing, treasury, portfolio intelligence, payments, controls and financial infrastructure through one governed platform for people, businesses and institutions.',
+    'Neptlium is a capital operating platform for individuals and institutions, connecting investing, portfolio, treasury, intelligence and financial infrastructure.',
   supportEmail: 'support@neptlium.com',
   personalAppUrl: 'https://app.neptlium.com',
   personalSignInUrl: 'https://app.neptlium.com/auth/sign-in',

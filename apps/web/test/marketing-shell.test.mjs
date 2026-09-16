@@ -11,20 +11,31 @@ const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
 
 test('homepage states the canonical capital proposition without fabricated financial proof', () => {
-  assert.match(page, /Capital, clearly\./);
-  assert.match(page, /understand, coordinate and move through your financial world with context intact/i);
-  assert.match(page, /Explore Neptlium/);
-  assert.match(page, /For business/);
-  assert.match(page, /Illustrative interface only\. No customer balances, returns or performance data are shown\./i);
+  assert.match(page, /Capital, intelligently managed\./);
+  assert.match(
+    page,
+    /Invest, manage and move capital through one financial platform built for[\s\S]*individuals[\s\S]*and institutions/i,
+  );
+  assert.match(page, /Get started/);
+  assert.match(page, /For institutions/);
+  assert.match(
+    page,
+    /Illustrative interface only\.[\s\S]*No customer balances, returns or performance data are[\s\S]*shown\./i,
+  );
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|customer count|testimonial/i);
+  assert.doesNotMatch(
+    page,
+    /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|customer count|testimonial/i,
+  );
 });
 
 test('homepage exposes the four canonical product families and contextual intelligence', () => {
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure']) assert.match(page, new RegExp(`label: '${family}'`));
-  for (const href of ['/capital', '/business', '/institutional', '/infrastructure']) assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
+    assert.match(page, new RegExp(`label: '${family}'`));
+  for (const href of ['/capital', '/business', '/institutional', '/infrastructure'])
+    assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
   assert.match(page, /Explore \{family\.label\}/);
-  assert.match(page, /Explore Insights/);
+  assert.match(page, /Explore Intelligence/);
   assert.match(page, /DISCLOSURES\.general/);
 });
 
@@ -33,21 +44,30 @@ test('public conversion separates personal and business account contexts', () =>
   assert.match(site, /personalSignUpUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
   assert.match(header, /SITE\.personalSignInUrl/);
   assert.match(header, /SITE\.personalSignUpUrl/);
-  assert.match(header, /SITE\.businessAppUrl/);
-  assert.match(header, /Neptlium Capital/);
-  assert.match(header, /Neptlium Treasury/);
+  assert.match(header, /command-primary-action/);
+  assert.match(architecture, /label: 'Institutions'/);
 });
 
-test('navigation exposes product families plus insights and company', () => {
-  for (const domain of ['Capital', 'Treasury', 'Institutional', 'Infrastructure', 'Insights', 'Company']) assert.match(architecture, new RegExp(`label: '${domain}'`));
+test('navigation exposes the public audience hierarchy', () => {
+  for (const domain of ['Individuals', 'Institutions', 'Investments', 'Company'])
+    assert.match(architecture, new RegExp(`label: '${domain}'`));
   assert.match(header, /NAVIGATION\.map/);
   assert.match(header, /aria-label="Primary navigation"/);
 });
 
 test('footer is intentionally minimal and exposes trust, social and real status destinations', () => {
   assert.match(footer, /Capital systems for people, businesses and institutions\./);
-  for (const social of ['X', 'Bluesky', 'YouTube']) assert.match(footer, new RegExp(`label: '${social}'`));
-  for (const legal of ['Security', 'Privacy', 'Terms', 'Risk disclosure', 'Accessibility', 'Cookies']) assert.match(footer, new RegExp(`label: '${legal}'`));
+  for (const social of ['X', 'Bluesky', 'YouTube'])
+    assert.match(footer, new RegExp(`label: '${social}'`));
+  for (const legal of [
+    'Security',
+    'Privacy',
+    'Terms',
+    'Risk disclosure',
+    'Accessibility',
+    'Cookies',
+  ])
+    assert.match(footer, new RegExp(`label: '${legal}'`));
   assert.match(footer, /SITE\.statusUrl/);
   assert.match(footer, /View system status/);
   assert.doesNotMatch(footer, /All systems operational/i);
@@ -62,7 +82,13 @@ test('canonical brand remains repository-authoritative', () => {
 
 test('marketing contains no privileged financial authority', () => {
   const marketing = `${page}\n${header}\n${footer}\n${architecture}`;
-  assert.doesNotMatch(marketing, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|transaction volume|testimonial|licensed|regulated partner/i);
+  assert.doesNotMatch(
+    marketing,
+    /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|customer count|transaction volume|testimonial|licensed|regulated partner/i,
+  );
   assert.doesNotMatch(marketing, /guaranteed (?:return|profit|income)/i);
-  assert.doesNotMatch(marketing, /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|STRIPE_SECRET_KEY|CIRCLE_API_KEY/);
+  assert.doesNotMatch(
+    marketing,
+    /SUPABASE_SERVICE_ROLE_KEY|createSupabaseAdminClient|STRIPE_SECRET_KEY|CIRCLE_API_KEY/,
+  );
 });
