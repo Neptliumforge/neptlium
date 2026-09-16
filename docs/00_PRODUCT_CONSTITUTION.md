@@ -5,9 +5,11 @@
 
 ## Product
 
-Neptlium is a capital operating platform designed to make capital understandable, governable, fundable, transferable, allocatable, and operationally controlled through one coherent system.
+Neptlium is a capital operating platform for individuals and institutions. It makes capital understandable, governable, fundable, transferable, allocatable, and operationally controlled through one coherent system.
 
-> Complex capital, rendered with absolute clarity.
+> Every movement has authority. Every position has evidence.
+
+The universal public proposition is **Capital, intelligently managed.** Audience language then becomes more specific: personal and action-oriented for individuals; operational and authoritative for institutions; technical only inside engineering and internal control boundaries.
 
 Neptlium is not defined by a single asset class, blockchain, authentication vendor, database, custody provider, payment rail, or execution venue. Provider systems extend Neptlium capabilities; they do not become Neptlium's domain authority.
 
@@ -106,6 +108,8 @@ Canonical financial operations must preserve:
 Examples of infrastructure dependencies may include Supabase, Stripe, Circle, Alchemy, and future reviewed providers. They remain replaceable adapters around stable Neptlium primitives.
 
 Configuration is not capability. Capability is not authorization. Provider success is not settlement. Browser completion is not canonical financial movement.
+
+Providers supply rails. They never become Neptlium's canonical financial truth. Neptlium owns identity, the customer relationship, capital state, ledger consequence, portfolio context, treasury context, authority, activity, records, reconciliation and governance.
 
 ## Security principle
 

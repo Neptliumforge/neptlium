@@ -12,6 +12,8 @@ Neptlium makes complex capital systems understandable, governable, and actionabl
 
 The governing principles are **precision, restraint, depth, and certainty**.
 
+Public expression is deliberately simpler than the system beneath it: few words, large ideas, substantial negative space, decisive hierarchy and restrained motion. Individual language is personal and action-oriented. Institutional language is operational and authoritative. Engineering vocabulary such as canonical ledger, idempotency and provider references does not leak into ordinary investor UX.
+
 Sophistication must come from hierarchy, evidence, information quality, interaction clarity, and implementation coherence—not spectacle. The interface must never be more confident than the underlying domain.
 
 The operating progression is:
@@ -71,16 +73,16 @@ Application icons and favicons derive from the same canonical geometry. Product 
 
 ### Marketing identity palette
 
-| Name | Value | Role |
-| --- | --- | --- |
-| Warm Ivory | `#F5F3EE` | Primary editorial and Marketing canvas |
-| Carbon | `#101214` | Authority surface and primary dark tone |
-| Mineral Teal | `#0F8F86` | Marketing precision signal and selective primary action |
-| Interaction Teal | `#20AFA3` | Marketing hover/focus emphasis |
-| Graphite | `#343A3F` | Secondary dark neutral |
-| Stone | `#D8D5CE` | Structural divider |
-| Soft Mist | `#ECEAE5` | Secondary light surface |
-| Signal Amber | `#C88B28` | Warning/attention only |
+| Name             | Value     | Role                                                    |
+| ---------------- | --------- | ------------------------------------------------------- |
+| Warm Ivory       | `#F5F3EE` | Primary editorial and Marketing canvas                  |
+| Carbon           | `#101214` | Authority surface and primary dark tone                 |
+| Mineral Teal     | `#0F8F86` | Marketing precision signal and selective primary action |
+| Interaction Teal | `#20AFA3` | Marketing hover/focus emphasis                          |
+| Graphite         | `#343A3F` | Secondary dark neutral                                  |
+| Stone            | `#D8D5CE` | Structural divider                                      |
+| Soft Mist        | `#ECEAE5` | Secondary light surface                                 |
+| Signal Amber     | `#C88B28` | Warning/attention only                                  |
 
 **Ivory creates editorial space. Carbon creates authority. Teal signals precision. State communicates truth.**
 
@@ -102,18 +104,18 @@ Success, warning, danger, informational, disabled, focus, selected, loading, sta
 
 `UNKNOWN != ZERO`.
 
-| State | Meaning |
-| --- | --- |
-| Known | Required authoritative evidence supports the value |
-| Confirmed zero | Evidence confirms zero in the stated scope |
-| Unknown | Evidence cannot establish the value |
-| Unavailable | Capability/value cannot currently be supplied |
-| Loading | A bounded operation is in progress and implies no value |
-| Stale | Prior information exists but freshness requirements fail |
-| Error | Retrieval or processing failed |
-| Pending | Lifecycle progression has begun without reaching the next authoritative state |
-| Modeled | Computed scenario or estimate, not observed authoritative state |
-| Restricted | State may exist but permission/policy prevents access or action |
+| State          | Meaning                                                                       |
+| -------------- | ----------------------------------------------------------------------------- |
+| Known          | Required authoritative evidence supports the value                            |
+| Confirmed zero | Evidence confirms zero in the stated scope                                    |
+| Unknown        | Evidence cannot establish the value                                           |
+| Unavailable    | Capability/value cannot currently be supplied                                 |
+| Loading        | A bounded operation is in progress and implies no value                       |
+| Stale          | Prior information exists but freshness requirements fail                      |
+| Error          | Retrieval or processing failed                                                |
+| Pending        | Lifecycle progression has begun without reaching the next authoritative state |
+| Modeled        | Computed scenario or estimate, not observed authoritative state               |
+| Restricted     | State may exist but permission/policy prevents access or action               |
 
 Never render `$0`, `$0.00`, `0%`, `0 units`, or an ambiguous dash unless the meaning is established. Provider-observed is not automatically canonical. Modeled is not observed. AI interpretation is not authoritative evidence.
 
@@ -169,6 +171,10 @@ Marketing may use large editorial statements, original structural diagrams, data
 The homepage should establish what Neptlium is, why it matters, verified capability, trust, and next action. It should progress through **Capital → Structure → Intelligence → Action**, not default to a generic hero/cards/features/CTA template.
 
 Avoid token walls, candlesticks as decoration, order books, crypto imagery, glowing spheres, fabricated dashboards, unsupported provider imagery, generic AI particles, stock-photo finance, and speculative wealth imagery.
+
+### Capital rails
+
+Neptlium Capital Rails is the canonical public infrastructure motif: thin architectural paths, controlled nodes, intersections and subtle movement on a near-black field with restrained Mineral Teal illumination. It represents banking rails, markets, ledger infrastructure, settlement, blockchain connectivity and capital movement without depicting coins, tokens, candlesticks or science-fiction spectacle. Motion must clarify direction through infrastructure, respect reduced-motion preferences and remain inexpensive on mobile GPUs.
 
 ## 11. Application composition
 

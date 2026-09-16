@@ -12,17 +12,6 @@ import { SITE } from '@/lib/content/site';
 
 type MarketingSurface = 'carbon' | 'white' | 'ivory' | 'cloud' | 'mineral' | 'mineral-light';
 
-function AccountMenu({ kind }: { kind: 'signin' | 'start' }) {
-  const start = kind === 'start';
-  return <details className="account-menu">
-    <summary className={start ? 'account-menu-trigger account-menu-primary' : 'account-menu-trigger'}>{start ? 'Get started' : 'Sign in'}</summary>
-    <div className="account-menu-panel" role="group" aria-label={start ? 'Get started options' : 'Sign in options'}>
-      <a href={start ? SITE.personalSignUpUrl : SITE.personalSignInUrl}><strong>Personal</strong><span>Neptlium Capital</span></a>
-      <a href={SITE.businessAppUrl}><strong>Business</strong><span>{start ? 'Open Neptlium Treasury' : 'Sign in to Neptlium Treasury'}</span></a>
-    </div>
-  </details>;
-}
-
 export function SiteHeader() {
   const path = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -49,19 +38,62 @@ export function SiteHeader() {
   }, []);
   useEffect(() => setMobileOpen(false), [path]);
 
-  return <>
-    <header className="site-header capital-command-bar" data-scrolled={scrolled ? 'true' : 'false'} data-surface={scrolled ? 'carbon' : topSurface}>
-      <div className="nav-shell">
-        <Brand tone="teal" />
-        <nav className="desktop-command-nav" aria-label="Primary navigation">
-          {NAVIGATION.map((item) => <Link key={item.href} href={item.href} aria-current={path === item.href || path.startsWith(`${item.href}/`) ? 'page' : undefined}>{item.label}</Link>)}
-        </nav>
-        <div className="command-actions"><AccountMenu kind="signin" /><AccountMenu kind="start" /></div>
-        <div className="elite-header-actions">
-          <button ref={trigger} className="elite-menu-trigger" type="button" aria-expanded={mobileOpen} aria-controls="mobile-command-sheet" aria-label="Open navigation" onClick={() => setMobileOpen(true)}><Menu aria-hidden="true" /></button>
+  return (
+    <>
+      <header
+        className="site-header capital-command-bar"
+        data-scrolled={scrolled ? 'true' : 'false'}
+        data-surface={scrolled ? 'carbon' : topSurface}
+      >
+        <div className="nav-shell">
+          <Brand tone="teal" />
+          <nav className="desktop-command-nav" aria-label="Primary navigation">
+            {NAVIGATION.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={
+                  path === item.href || path.startsWith(`${item.href}/`) ? 'page' : undefined
+                }
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="command-actions">
+            <a href={SITE.personalSignInUrl}>Sign in</a>
+            <a className="command-primary-action" href={SITE.personalSignUpUrl}>
+              Get started
+            </a>
+          </div>
+          <div className="elite-header-actions">
+            <a className="elite-header-entry" href={SITE.personalSignUpUrl}>
+              Sign up
+            </a>
+            <button
+              ref={trigger}
+              className="elite-menu-trigger"
+              type="button"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-command-sheet"
+              aria-label="Open navigation"
+              onClick={() => setMobileOpen(true)}
+            >
+              <Menu aria-hidden="true" />
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
-    {mounted && mobileOpen ? createPortal(<MobileNavigation path={path} onClose={() => setMobileOpen(false)} triggerRef={trigger} />, document.body) : null}
-  </>;
+      </header>
+      {mounted && mobileOpen
+        ? createPortal(
+            <MobileNavigation
+              path={path}
+              onClose={() => setMobileOpen(false)}
+              triggerRef={trigger}
+            />,
+            document.body,
+          )
+        : null}
+    </>
+  );
 }

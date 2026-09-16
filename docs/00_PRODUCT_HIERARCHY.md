@@ -6,6 +6,10 @@ This document is the canonical naming and product-family contract for Neptlium.
 
 **Neptlium** is the company and platform brand. Product names extend the master brand; they do not create disconnected sub-brands.
 
+Canonical definition: **Neptlium is a capital operating platform for individuals and institutions.**
+
+Public audience language is organized as Individuals, Institutions, Investments and Company. This navigation language does not collapse the durable Capital, Treasury, Institutional and Infrastructure product boundaries below.
+
 ## Long-term hierarchy
 
 ### Neptlium Capital

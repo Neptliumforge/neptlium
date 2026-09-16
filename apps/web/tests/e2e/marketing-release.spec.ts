@@ -26,7 +26,9 @@ const personalSignUpUrl = 'https://app.neptlium.com/auth/sign-up';
 const businessAppUrl = 'https://treasury.neptlium.com';
 
 async function expectNoHorizontalOverflow(page: any) {
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
+  );
   expect(overflow, 'Horizontal page overflow detected').toBe(false);
 }
 
@@ -47,8 +49,14 @@ async function expectNoApplicationRuntimeErrors(page: any, route: string) {
   await expect(page.locator('body')).toContainText(/neptlium/i);
   await expect(page.locator('h1')).toHaveCount(1);
   await expectNoHorizontalOverflow(page);
-  expect(consoleErrors, `Console errors detected on ${route}:\n${consoleErrors.join('\n')}`).toEqual([]);
-  expect(failedRequests, `Failed requests detected on ${route}:\n${failedRequests.join('\n')}`).toEqual([]);
+  expect(
+    consoleErrors,
+    `Console errors detected on ${route}:\n${consoleErrors.join('\n')}`,
+  ).toEqual([]);
+  expect(
+    failedRequests,
+    `Failed requests detected on ${route}:\n${failedRequests.join('\n')}`,
+  ).toEqual([]);
 }
 
 test.describe('Neptlium unified marketing release', () => {
@@ -72,8 +80,13 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page).toHaveURL(/^https:\/\/status\.neptlium\.com\/?$/);
   });
 
-  test('desktop primary navigation exposes the unified product family', async ({ page }, testInfo) => {
-    test.skip(!['desktop-1440', 'laptop-1280'].includes(testInfo.project.name), 'Desktop navigation contract');
+  test('desktop primary navigation exposes the unified product family', async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      !['desktop-1440', 'laptop-1280'].includes(testInfo.project.name),
+      'Desktop navigation contract',
+    );
     await page.goto('/', { waitUntil: 'networkidle' });
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });
     for (const label of ['Personal', 'Business', 'Platform', 'Insights', 'Security', 'Company']) {
@@ -83,21 +96,39 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page).toHaveURL(/\/business\/?$/);
   });
 
-  test('desktop account chooser keeps Personal and Business destinations separate', async ({ page }, testInfo) => {
-    test.skip(!['desktop-1440', 'laptop-1280'].includes(testInfo.project.name), 'Desktop account chooser contract');
+  test('desktop account chooser keeps Personal and Business destinations separate', async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      !['desktop-1440', 'laptop-1280'].includes(testInfo.project.name),
+      'Desktop account chooser contract',
+    );
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.locator('summary').filter({ hasText: 'Sign in' }).click();
     const openMenu = page.locator('details[open]').filter({ hasText: 'Sign in' });
-    await expect(openMenu.getByRole('link', { name: /Personal Neptlium Capital/i })).toHaveAttribute('href', personalSignInUrl);
-    await expect(openMenu.getByRole('link', { name: /Business Open Neptlium Treasury/i })).toHaveAttribute('href', businessAppUrl);
+    await expect(
+      openMenu.getByRole('link', { name: /Personal Neptlium Capital/i }),
+    ).toHaveAttribute('href', personalSignInUrl);
+    await expect(
+      openMenu.getByRole('link', { name: /Business Open Neptlium Treasury/i }),
+    ).toHaveAttribute('href', businessAppUrl);
     await page.locator('summary').filter({ hasText: 'Get started' }).click();
     const startMenu = page.locator('details[open]').filter({ hasText: 'Get started' });
-    await expect(startMenu.getByRole('link', { name: /Personal Neptlium Capital/i })).toHaveAttribute('href', personalSignUpUrl);
-    await expect(startMenu.getByRole('link', { name: /Business Request Neptlium Treasury access/i })).toHaveAttribute('href', '/contact');
+    await expect(
+      startMenu.getByRole('link', { name: /Personal Neptlium Capital/i }),
+    ).toHaveAttribute('href', personalSignUpUrl);
+    await expect(
+      startMenu.getByRole('link', { name: /Business Request Neptlium Treasury access/i }),
+    ).toHaveAttribute('href', '/contact');
   });
 
-  test('mobile navigation preserves both journeys and restores page state', async ({ page }, testInfo) => {
-    test.skip(!['mobile-390', 'mobile-360'].includes(testInfo.project.name), 'Mobile navigation contract');
+  test('mobile navigation preserves both journeys and restores page state', async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      !['mobile-390', 'mobile-360'].includes(testInfo.project.name),
+      'Mobile navigation contract',
+    );
     await page.goto('/', { waitUntil: 'networkidle' });
     const trigger = page.getByRole('button', { name: 'Open navigation' });
     await trigger.focus();
@@ -106,8 +137,13 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(dialog).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Personal', exact: true }).first()).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Business', exact: true }).first()).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Open account', exact: false })).toHaveAttribute('href', personalSignUpUrl);
-    await expect(dialog.getByRole('link', { name: 'Open Neptlium Treasury', exact: true })).toHaveAttribute('href', businessAppUrl);
+    await expect(dialog.getByRole('link', { name: 'Open account', exact: false })).toHaveAttribute(
+      'href',
+      personalSignUpUrl,
+    );
+    await expect(
+      dialog.getByRole('link', { name: 'Open Neptlium Treasury', exact: true }),
+    ).toHaveAttribute('href', businessAppUrl);
     await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
     await expectNoHorizontalOverflow(page);
     await page.keyboard.press('Escape');
@@ -118,12 +154,29 @@ test.describe('Neptlium unified marketing release', () => {
 
   test('homepage brand and journey CTAs remain canonical', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
-    await expect(page.getByRole('heading', { name: 'Capital, clearly.' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Explore Neptlium/i })).toHaveAttribute('href', '#financial-world');
-    await expect(page.getByRole('link', { name: /For business/i })).toHaveAttribute('href', '/business');
-    await expect(page.getByRole('link', { name: /Explore Personal/i }).first()).toHaveAttribute('href', '/personal');
-    await expect(page.getByRole('link', { name: /Explore Business/i }).first()).toHaveAttribute('href', '/business');
-    await expect(page.getByRole('link', { name: /Explore Insights/i })).toHaveAttribute('href', '/insights');
+    await expect(
+      page.getByRole('heading', { name: 'Capital, intelligently managed.' }),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: /Get started/i }).first()).toHaveAttribute(
+      'href',
+      'https://app.neptlium.com/auth/sign-up',
+    );
+    await expect(page.getByRole('link', { name: /For institutions/i })).toHaveAttribute(
+      'href',
+      '/institutional',
+    );
+    await expect(page.getByRole('link', { name: /Explore Personal/i }).first()).toHaveAttribute(
+      'href',
+      '/personal',
+    );
+    await expect(page.getByRole('link', { name: /Explore Business/i }).first()).toHaveAttribute(
+      'href',
+      '/business',
+    );
+    await expect(page.getByRole('link', { name: /Explore Insights/i })).toHaveAttribute(
+      'href',
+      '/insights',
+    );
   });
 
   test('about remains the intentional company alias', async ({ page }) => {
