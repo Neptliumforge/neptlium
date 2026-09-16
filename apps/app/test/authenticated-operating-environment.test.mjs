@@ -32,11 +32,21 @@ test('authenticated bootstrap refreshes without per-route blocking loaders', () 
   assert.match(provider, /router\.refresh\(\)/);
 });
 
-test('desktop and mobile navigation use the product hierarchy', () => {
-  for (const label of ['Overview', 'Capital', 'Treasury', 'Portfolio', 'Allocation', 'Companies', 'Activity', 'Documents', 'Notifications', 'Settings']) {
+test('desktop and mobile navigation use the personal Capital hierarchy', () => {
+  for (const label of [
+    'Overview',
+    'Portfolio',
+    'Invest',
+    'Activity',
+    'More',
+    'Help & Support',
+    'Settings',
+  ]) {
     assert.match(nav, new RegExp(`label: '${label}'`));
   }
-  for (const label of ['Home', 'Capital', 'Portfolio', 'Activity', 'More']) {
+  assert.doesNotMatch(nav, /label: 'Treasury'/);
+  assert.doesNotMatch(nav, /href: '\/dashboard\/treasury'/);
+  for (const label of ['Overview', 'Portfolio', 'Invest', 'Activity', 'More']) {
     assert.match(nav, new RegExp(`label: '${label}'`));
   }
   assert.doesNotMatch(mobile, /Menu|drawer|dialog|aria-modal/i);
@@ -52,9 +62,10 @@ test('portfolio and allocation surfaces fail truthfully when canonical data is u
 });
 
 test('high-value actions are capability gated', () => {
-  assert.match(experience, /funding\.length > 0/);
-  assert.match(experience, /transfers\.length > 0/);
+  assert.match(experience, /const canFund = funding\.length > 0/);
+  assert.match(experience, /const canMove = transfers\.length > 0/);
   assert.match(experience, /state === 'ENABLED'/);
+  assert.match(experience, /Review funding/);
 });
 
 test('authenticated product keeps the carbon and mineral-teal system', () => {

@@ -37,7 +37,17 @@ test('server-only API client owns Supabase bearer authentication and customer da
   assert.match(source, /headers\.set\('x-request-id', requestId\)/);
   assert.match(source, /cache: 'no-store'/);
   assert.match(source, /8_000/);
-  for (const route of ['customer/overview','customer/portfolio','customer/treasury','customer/allocation','capital-activity','notifications','documents','account/context','account/settings']) {
+  for (const route of [
+    'customer/overview',
+    'customer/portfolio',
+    'customer/treasury',
+    'customer/allocation',
+    'capital-activity',
+    'notifications',
+    'documents',
+    'account/context',
+    'account/settings',
+  ]) {
     assert.ok(source.includes(`/v1/${route}`));
   }
 });

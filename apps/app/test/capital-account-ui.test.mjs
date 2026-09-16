@@ -12,15 +12,30 @@ const surface = `${page}\n${view}`;
 
 test('legacy Capital Account workspace remains protected and authoritative', () => {
   assert.match(page, /requireProvisionedUser/);
-  for (const contract of ['getCanonicalBalances','getFundingCapabilities','getFundingActivity','getTransferCapabilities','getTransferActivity','getTransferAliases']) {
+  for (const contract of [
+    'getCanonicalBalances',
+    'getFundingCapabilities',
+    'getFundingActivity',
+    'getTransferCapabilities',
+    'getTransferActivity',
+    'getTransferAliases',
+  ]) {
     assert.match(page, new RegExp(contract), `missing ${contract}`);
   }
   assert.doesNotMatch(surface, /apiRequest|\/v1\/|supabase|createClient|\.from\(/i);
 });
 
 test('legacy Capital Account preserves explicit financial states without fabricated values', () => {
-  for (const state of ['Available','Pending','Reserved','Restricted','Unavailable']) assert.match(view, new RegExp(state, 'i'), `missing ${state}`);
-  for (const forbidden of [/portfolio performance/i,/returns/i,/net worth/i,/fake balance/i,/\$250,000/]) assert.doesNotMatch(surface, forbidden);
+  for (const state of ['Available', 'Pending', 'Reserved', 'Restricted', 'Unavailable'])
+    assert.match(view, new RegExp(state, 'i'), `missing ${state}`);
+  for (const forbidden of [
+    /portfolio performance/i,
+    /returns/i,
+    /net worth/i,
+    /fake balance/i,
+    /\$250,000/,
+  ])
+    assert.doesNotMatch(surface, forbidden);
   assert.doesNotMatch(page, /\?\? ['"]0['"]/);
 });
 
@@ -34,10 +49,24 @@ test('financial mutations remain server-owned and lifecycle-gated', () => {
 });
 
 test('legacy Capital Account exposes governed funding and movement lifecycles', () => {
-  for (const stage of ['Funding intent','Deposit route','Provider observation','Reconciliation','Capital state update','Destination verification','Reservation','Provider submission','Settlement']) assert.match(view, new RegExp(stage), `missing lifecycle stage ${stage}`);
+  for (const stage of [
+    'Funding intent',
+    'Deposit route',
+    'Provider observation',
+    'Reconciliation',
+    'Capital state update',
+    'Destination verification',
+    'Reservation',
+    'Provider submission',
+    'Settlement',
+  ])
+    assert.match(view, new RegExp(stage), `missing lifecycle stage ${stage}`);
   assert.match(view, /Authority boundary/);
   assert.match(view, /Approval does not submit or settle a movement/);
-  assert.match(view, /Capital becomes available only after provider evidence, ledger posting, and\s+reconciliation/);
+  assert.match(
+    view,
+    /Capital becomes available only after provider evidence, ledger posting, and\s+reconciliation/,
+  );
 });
 
 test('admin operations do not overstate completion authority', () => {
@@ -49,11 +78,11 @@ test('admin operations do not overstate completion authority', () => {
   assert.match(withdrawals, /Rejection unavailable/);
 });
 
-test('canonical Capital route coexists with compatibility routes', () => {
+test('personal Capital actions remain reachable without entering primary navigation', () => {
   const navigation = read('components/navigation/dashboardNav.tsx');
   const canonical = read('app/dashboard/capital/page.tsx');
   const legacyWallet = read('app/dashboard/wallet/page.tsx');
-  assert.match(navigation, /label: 'Capital',[\s\S]*?href: '\/dashboard\/capital'/);
+  assert.match(navigation, /label: 'Capital actions',[\s\S]*?href: '\/dashboard\/capital'/);
   assert.match(canonical, /CapitalExperience/);
   assert.match(legacyWallet, /redirect\('\/dashboard\/capital-account'\)/);
 });
@@ -61,7 +90,7 @@ test('canonical Capital route coexists with compatibility routes', () => {
 test('Overview links to canonical Capital while shared bootstrap retains authoritative contracts', () => {
   const experience = read('components/product/OperatingExperience.tsx');
   const bootstrap = read('lib/product/bootstrap.ts');
-  assert.match(experience, /Total canonical capital/);
+  assert.match(experience, /Your capital/);
   assert.match(experience, /\/dashboard\/capital/);
   assert.doesNotMatch(experience, /href="\/dashboard\/wallet"/);
   assert.match(bootstrap, /getCanonicalBalances/);

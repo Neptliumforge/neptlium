@@ -55,8 +55,13 @@ test('Portfolio intelligence consumes governed allocation state through the auth
   assert.match(bootstrap, /allocation: projection\(allocation\)/);
   assert.match(page, /PortfolioExperience/);
   assert.match(experience, /snapshot\.allocation\.state === 'READY'/);
-  assert.match(experience, /MODEL','REVIEW','APPROVE','RESERVE','EXECUTE','RECONCILE/);
-  assert.doesNotMatch(page, /createAllocationPolicy|updateAllocationPolicy|authorizeAllocationPolicy|createAllocationModel|createAllocationPlan/);
+  for (const stage of ['MODEL', 'REVIEW', 'APPROVE', 'RESERVE', 'EXECUTE', 'RECONCILE']) {
+    assert.match(experience, new RegExp(`'${stage}'`));
+  }
+  assert.doesNotMatch(
+    page,
+    /createAllocationPolicy|updateAllocationPolicy|authorizeAllocationPolicy|createAllocationModel|createAllocationPlan/,
+  );
 });
 
 test('Portfolio financial truth is sourced once and valuation remains unavailable without evidence', () => {

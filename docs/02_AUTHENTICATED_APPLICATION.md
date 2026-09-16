@@ -5,7 +5,7 @@
 
 ## Purpose
 
-The authenticated application is Neptlium's governed capital operating environment. It presents authoritative customer state across Capital, Treasury, Portfolio, Allocation, Companies, Activity, Documents, Notifications, and Settings, while keeping intent, authority, provider evidence, ledger state, settlement, and reconciliation distinct.
+The authenticated application is the individual Neptlium Capital experience. It presents the customer's portfolio, available capital, supported investment discovery, activity and account controls while preserving the authority and evidence boundaries beneath the interface.
 
 The browser is an interaction and projection surface. It is never an independent source of financial truth.
 
@@ -46,48 +46,38 @@ If evidence is unavailable, the UI renders a truthful unavailable/unknown state 
 
 The authenticated product is deliberately restrained and information-first. Product UI does not use decorative financial curves, neon crypto styling, or marketing-scale typography to imply financial truth.
 
-The dashboard layout owns one shared authenticated bootstrap projection. Overview, Capital, Treasury, Portfolio, Allocation, Activity, Documents, Notifications, and Settings consume that shared snapshot so navigation is immediate and one unavailable projection does not blank unrelated account state. The snapshot refreshes in the background while the customer remains active.
+The dashboard layout owns one shared authenticated bootstrap projection. Overview, Portfolio, Invest, Activity and supporting account surfaces consume that shared snapshot so navigation is immediate and one unavailable projection does not blank unrelated account state. The snapshot refreshes in the background while the customer remains active.
 
 Desktop hierarchy:
 
 - Overview
-- Capital
-  - Capital
-  - Treasury
+- Portfolio
 - Invest
-  - Portfolio
-  - Allocation
-  - Companies
-- Records
-  - Activity
-  - Documents
-  - Notifications
+- Activity
+- More
 - Account
+  - Help & Support
   - Settings
 
 Mobile primary navigation:
 
-- Home
-- Capital
+- Overview
 - Portfolio
+- Invest
 - Activity
 - More
 
-`More` exposes Treasury, Allocation, Companies, Documents, Notifications, and Settings. The mobile product does not duplicate the desktop sidebar as a drawer.
+`More` exposes personal Capital actions, Allocation, Companies, Documents, Notifications and Settings. Treasury is not part of individual navigation; its separate organization onboarding may be offered contextually. The mobile product does not duplicate the desktop sidebar as a drawer.
 
 ## Surface responsibilities
 
 ### Overview
 
-Answers the immediate question: "What is the state of my capital?" It prioritizes canonical capital, liquidity state, reconciled portfolio availability, contextual next actions, allocation state, and recent governed activity. High-value actions render only when the API reports the corresponding capability.
+Answers the immediate questions: "What is my capital position? What can I invest? What changed?" It prioritizes portfolio value when available, available capital, performance, investments and recent activity. Deposit, Invest, Transfer and Withdraw remain explicit actions. Funding or movement routes remain capability-driven and fall back to review states when availability is unknown.
 
 ### Capital
 
 Presents canonical customer capital and its available, reserved, and pending states. Asset values remain separated when there is no authoritative cross-asset conversion basis.
-
-### Treasury
-
-Presents liquidity readiness, verified funding routes, destinations, movements, settlement, and reconciliation. Capability retrieval failure is distinct from an authoritative empty or disabled capability set.
 
 ### Portfolio
 
@@ -100,6 +90,10 @@ Presents the governed lifecycle as distinct MODEL → REVIEW → APPROVE → RES
 ### Companies
 
 Represents authenticated investment entities and customer exposure only when authoritative account context exists. Public company research remains separate so research coverage cannot be mistaken for a portfolio relationship.
+
+### Invest
+
+Provides the individual discovery entry point. It exposes only opportunities, terms, documents, risks and eligibility supported by current product data. Planned categories are never presented as current inventory.
 
 ### Records and Settings
 

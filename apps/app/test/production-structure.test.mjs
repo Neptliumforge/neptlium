@@ -22,38 +22,60 @@ test('authenticated application enforces neutral operating authority', () => {
   assert.doesNotMatch(global, /gradient|radial|crystalline|glow/i);
 });
 
-test('desktop authenticated navigation reflects the final product hierarchy', () => {
+test('desktop authenticated navigation reflects the personal Capital hierarchy', () => {
   const nav = read('components/navigation/dashboardNav.tsx');
   const expected = [
-    ['Overview', '/dashboard', 'Overview'],
-    ['Capital', '/dashboard/capital', 'Capital'],
-    ['Treasury', '/dashboard/treasury', 'Capital'],
-    ['Portfolio', '/dashboard/portfolio', 'Invest'],
-    ['Allocation', '/dashboard/allocation', 'Invest'],
-    ['Companies', '/dashboard/companies', 'Invest'],
-    ['Activity', '/dashboard/activity', 'Records'],
-    ['Documents', '/dashboard/documents', 'Records'],
-    ['Notifications', '/dashboard/notifications', 'Records'],
+    ['Overview', '/dashboard', 'Capital'],
+    ['Portfolio', '/dashboard/portfolio', 'Capital'],
+    ['Invest', '/dashboard/invest', 'Capital'],
+    ['Activity', '/dashboard/activity', 'Capital'],
+    ['More', '/dashboard/more', 'Capital'],
   ];
   for (const [label, href, group] of expected) {
-    assert.match(nav, new RegExp(`label: '${label}'.*href: '${href}'.*group: '${group}'`));
+    assert.match(
+      nav,
+      new RegExp(`label: '${label}'[\\s\\S]*?href: '${href}'[\\s\\S]*?group: '${group}'`),
+    );
   }
-  assert.match(nav, /label: 'Settings'.*href: '\/dashboard\/settings'.*group: 'Account'/);
+  assert.match(
+    nav,
+    /label: 'Help & Support'[\s\S]*?href: '\/dashboard\/support'[\s\S]*?group: 'Account'/,
+  );
+  assert.match(
+    nav,
+    /label: 'Settings'[\s\S]*?href: '\/dashboard\/settings'[\s\S]*?group: 'Account'/,
+  );
+  assert.doesNotMatch(nav, /label: 'Treasury'/);
+  assert.doesNotMatch(nav, /href: '\/dashboard\/treasury'/);
 });
 
-test('mobile navigation is Home Capital Portfolio Activity More with governed secondary routes', () => {
+test('mobile navigation is Overview Portfolio Invest Activity More with account secondary routes', () => {
   const nav = read('components/navigation/dashboardNav.tsx');
-  const primary = nav.slice(nav.indexOf('dashboardMobilePrimaryNavItems'), nav.indexOf('dashboardMobileSecondaryNavItems'));
+  const primary = nav.slice(
+    nav.indexOf('dashboardMobilePrimaryNavItems'),
+    nav.indexOf('dashboardMobileSecondaryNavItems'),
+  );
   for (const [label, href] of [
-    ['Home', '/dashboard'], ['Capital', '/dashboard/capital'], ['Portfolio', '/dashboard/portfolio'],
-    ['Activity', '/dashboard/activity'], ['More', '/dashboard/more'],
-  ]) assert.match(primary, new RegExp(`label: '${label}'.*href: '${href}'`));
+    ['Overview', '/dashboard'],
+    ['Portfolio', '/dashboard/portfolio'],
+    ['Invest', '/dashboard/invest'],
+    ['Activity', '/dashboard/activity'],
+    ['More', '/dashboard/more'],
+  ])
+    assert.match(primary, new RegExp(`label: '${label}'[\\s\\S]*?href: '${href}'`));
   assert.equal((primary.match(/href:/g) ?? []).length, 5);
 
   const more = read('components/product/OperatingExperience.tsx');
-  for (const route of ['/dashboard/treasury', '/dashboard/allocation', '/dashboard/companies', '/dashboard/documents', '/dashboard/notifications', '/dashboard/settings']) {
+  for (const route of [
+    '/dashboard/allocation',
+    '/dashboard/companies',
+    '/dashboard/documents',
+    '/dashboard/notifications',
+    '/dashboard/settings',
+  ]) {
     assert.match(more, new RegExp(route.replaceAll('/', '\\/')));
   }
+  assert.doesNotMatch(more, /href=['"]\/dashboard\/treasury['"]/);
 });
 
 test('authenticated shell preserves keyboard access, stable shared bootstrap and responsive containment', () => {
@@ -63,7 +85,7 @@ test('authenticated shell preserves keyboard access, stable shared bootstrap and
   const global = read('app/global.css');
 
   assert.match(layout, /ProductBootstrapProvider/);
-  assert.match(layout, /brandDescriptor="Capital operating environment"/);
+  assert.match(layout, /brandDescriptor="Personal investing"/);
   assert.match(layout, /brandTone="teal"/);
   assert.match(layout, /Skip to application workspace/);
   assert.match(layout, /id="app-workspace"/);
@@ -79,10 +101,23 @@ test('authenticated shell preserves keyboard access, stable shared bootstrap and
 test('product-wide state vocabulary remains explicit and non-color-only', () => {
   const productState = read('components/product/ProductState.tsx');
   for (const state of [
-    'LOADING', 'AVAILABLE', 'READY', 'PENDING', 'AWAITING_PROVISIONING', 'CAPABILITY_DISABLED',
-    'RESERVED', 'RESTRICTED', 'REQUIRES_APPROVAL', 'NOT_CONFIGURED', 'INELIGIBLE',
-    'UNAVAILABLE', 'NO_ACTIVITY', 'NO_POSITION', 'ERROR',
-  ]) assert.match(productState, new RegExp(`'${state}'`));
+    'LOADING',
+    'AVAILABLE',
+    'READY',
+    'PENDING',
+    'AWAITING_PROVISIONING',
+    'CAPABILITY_DISABLED',
+    'RESERVED',
+    'RESTRICTED',
+    'REQUIRES_APPROVAL',
+    'NOT_CONFIGURED',
+    'INELIGIBLE',
+    'UNAVAILABLE',
+    'NO_ACTIVITY',
+    'NO_POSITION',
+    'ERROR',
+  ])
+    assert.match(productState, new RegExp(`'${state}'`));
   assert.match(productState, /role=\{state === 'ERROR' \? 'alert'/);
   assert.match(productState, /state === 'LOADING' \? 'status'/);
 });
@@ -93,23 +128,29 @@ test('Overview is a shared-bootstrap capital home without fabricated valuation',
   const experience = read('components/product/OperatingExperience.tsx');
 
   assert.match(page, /OverviewExperience/);
-  for (const source of ['getOverviewState()', 'getCanonicalBalances()', 'getFundingCapabilities()', 'getTransferCapabilities()', 'getFundingActivity()', 'getTransferActivity()']) {
+  for (const source of [
+    'getOverviewState()',
+    'getCanonicalBalances()',
+    'getFundingCapabilities()',
+    'getTransferCapabilities()',
+    'getFundingActivity()',
+    'getTransferActivity()',
+  ]) {
     assert.equal(bootstrap.includes(source), true, `missing shared bootstrap source ${source}`);
   }
-  assert.match(experience, /Total canonical capital/);
-  assert.match(experience, /Assets remain separated without an authoritative conversion basis/);
-  assert.match(experience, /Portfolio history is not available yet/);
+  assert.match(experience, /Your capital/);
+  assert.match(experience, /Shown separately because no verified combined valuation is available/);
+  assert.match(experience, /Performance is not available yet/);
   assert.doesNotMatch(experience, /balance\?\.total_atomic\s*\?\?\s*['\"]0['\"]/);
   assert.doesNotMatch(page, /getCanonicalBalances|getFundingCapabilities|getTransferCapabilities/);
 });
 
-test('Capital and Treasury keep financial actions capability-driven and failure-aware', () => {
+test('Capital financial actions remain capability-driven and failure-aware', () => {
   const experience = read('components/product/OperatingExperience.tsx');
   assert.match(experience, /item\.state === 'ENABLED'/);
   assert.match(experience, /Funding capability unavailable/);
-  assert.match(experience, /Transfer capability unavailable/);
-  assert.match(experience, /authoritative capability response contains no funding routes/i);
   assert.match(experience, /Outbound capability unavailable/);
+  assert.match(experience, /authoritative capability response contains no funding routes/i);
   assert.doesNotMatch(experience, /Request movement/);
 });
 
@@ -126,8 +167,12 @@ test('Portfolio remains evidence-aware and contains no execution authority', () 
 
 test('Allocation preserves MODEL REVIEW APPROVE RESERVE EXECUTE RECONCILE distinctions', () => {
   const experience = read('components/product/OperatingExperience.tsx');
-  assert.match(experience, /\['MODEL','REVIEW','APPROVE','RESERVE','EXECUTE','RECONCILE'\]/);
-  assert.match(experience, /Model, approval, reservation, execution and reconciliation remain distinct governed states/);
+  for (const stage of ['MODEL', 'REVIEW', 'APPROVE', 'RESERVE', 'EXECUTE', 'RECONCILE'])
+    assert.match(experience, new RegExp(`'${stage}'`));
+  assert.match(
+    experience,
+    /Capital decisions remain separate from approval, reservation, execution and\s+reconciliation/,
+  );
   assert.match(experience, /Observed allocation unavailable/);
 });
 

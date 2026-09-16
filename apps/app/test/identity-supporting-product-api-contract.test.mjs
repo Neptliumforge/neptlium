@@ -13,9 +13,14 @@ const readIfExists = (relative) => {
 test('supporting product state is consumed through server-only API contracts', () => {
   const client = read('lib/api/client.ts');
   for (const contract of [
-    '/v1/account/settings', '/v1/account/onboarding-draft', '/v1/account/provision',
-    '/v1/account/onboarding', '/v1/notifications', '/v1/documents',
-  ]) assert.match(client, new RegExp(contract.replaceAll('/', '\\/')));
+    '/v1/account/settings',
+    '/v1/account/onboarding-draft',
+    '/v1/account/provision',
+    '/v1/account/onboarding',
+    '/v1/notifications',
+    '/v1/documents',
+  ])
+    assert.match(client, new RegExp(contract.replaceAll('/', '\\/')));
   assert.match(client, /import 'server-only'/);
 });
 
@@ -82,23 +87,34 @@ test('reports no longer instruct the customer to connect product persistence dir
   assert.match(reports, /getDocuments/);
   assert.match(reports, /document\.category === 'report'/);
   assert.match(reports, /current API response contains no reports/);
-  assert.doesNotMatch(reports, /Connect to Supabase|createClient|createServerClient|\.from\(|\.rpc\(/i);
+  assert.doesNotMatch(
+    reports,
+    /Connect to Supabase|createClient|createServerClient|\.from\(|\.rpc\(/i,
+  );
 });
 
 test('existing-account migration bridge remains an intentional isolated exception', () => {
   const bridge = readIfExists('app/api/auth/link-existing/route.ts');
   if (!bridge) return;
   assert.doesNotMatch(
-    read('app/dashboard/settings/page.tsx') + read('app/dashboard/documents/page.tsx') + read('app/dashboard/notifications/page.tsx'),
+    read('app/dashboard/settings/page.tsx') +
+      read('app/dashboard/documents/page.tsx') +
+      read('app/dashboard/notifications/page.tsx'),
     /link-existing/,
   );
 });
 
 test('supporting-product UI contains no direct provider authority', () => {
   const sources = [
-    read('app/dashboard/settings/page.tsx'), read('app/dashboard/documents/page.tsx'),
-    read('app/dashboard/notifications/page.tsx'), read('app/dashboard/reports/page.tsx'),
-    read('app/onboarding/page.tsx'), read('components/product/RecordExperiences.tsx'),
+    read('app/dashboard/settings/page.tsx'),
+    read('app/dashboard/documents/page.tsx'),
+    read('app/dashboard/notifications/page.tsx'),
+    read('app/dashboard/reports/page.tsx'),
+    read('app/onboarding/page.tsx'),
+    read('components/product/RecordExperiences.tsx'),
   ].join('\n');
-  assert.doesNotMatch(sources, /ALCHEMY|CIRCLE_API|STRIPE_SECRET|STRIPE_TREASURY|SUPABASE_SERVICE_ROLE/);
+  assert.doesNotMatch(
+    sources,
+    /ALCHEMY|CIRCLE_API|STRIPE_SECRET|STRIPE_TREASURY|SUPABASE_SERVICE_ROLE/,
+  );
 });

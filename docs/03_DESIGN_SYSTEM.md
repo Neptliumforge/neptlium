@@ -182,7 +182,7 @@ Application is a precision capital operating environment, not Marketing reduced 
 
 Primary expression is **white + black + neutral grayscale**. Information itself is the visual centerpiece. Favor strong typography, white space, precise dividers, tabular data, explicit state, low-noise navigation, controlled density, and clear action hierarchy.
 
-Canonical desktop navigation remains Overview, Portfolio, Capital Account, Treasury, and Allocation until superseded by a newer authenticated-application authority.
+Canonical individual navigation is Overview, Portfolio, Invest, Activity and More. Personal Capital actions remain explicit as Deposit, Invest, Transfer and Withdraw. Treasury is a separate organization product and never occupies the individual investor's primary navigation.
 
 ## 12. Admin composition
 

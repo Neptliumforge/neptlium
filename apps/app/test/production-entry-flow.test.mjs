@@ -20,6 +20,23 @@ test('sign-in and sign-up use the shared Supabase Auth form', () => {
   assert.match(signIn, /mode="sign-in"/);
   assert.match(signUp, /SupabaseAuthForm/);
   assert.match(signUp, /mode="sign-up"/);
+  const form = read('app/(auth)/components/SupabaseAuthForm.tsx');
+  const callback = read('app/auth/callback/route.ts');
+  assert.match(form, /href="\/forgot-password"/);
+  assert.match(form, /safeInternalPath/);
+  assert.match(callback, /safeInternalPath/);
+});
+
+test('individual entry exposes the canonical investor navigation and truthful Invest route', () => {
+  const nav = read('components/navigation/dashboardNav.tsx');
+  const invest = read('app/dashboard/invest/page.tsx');
+  const experience = read('components/product/OperatingExperience.tsx');
+  for (const label of ['Overview', 'Portfolio', 'Invest', 'Activity', 'More']) {
+    assert.match(nav, new RegExp(`label: '${label}'`));
+  }
+  assert.match(invest, /InvestExperience/);
+  assert.match(experience, /Investment discovery is not available yet/);
+  assert.match(experience, /planned categories as current inventory/);
 });
 
 test('no legacy auth-completion bridge remains in the production entry flow', () => {
@@ -44,7 +61,8 @@ test('production auth environment is Supabase-only and browser-safe without eage
     'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=',
     'NEXT_PUBLIC_SITE_URL=https://app.neptlium.com',
     'NEPTLIUM_API_URL=https://api.neptlium.com',
-  ]) assert.ok(env.includes(expected), `missing environment contract: ${expected}`);
+  ])
+    assert.ok(env.includes(expected), `missing environment contract: ${expected}`);
   assert.doesNotMatch(env, /SERVICE_ROLE/);
   assert.doesNotMatch(runtime, /NEXT_PUBLIC_SUPABASE_URL/);
   assert.doesNotMatch(runtime, /NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);

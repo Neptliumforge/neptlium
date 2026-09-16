@@ -1,13 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
+import { safeInternalPath } from '@/app/(auth)/auth-utils';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
-  const requestedNext = url.searchParams.get('next');
-  const next = requestedNext?.startsWith('/') && !requestedNext.startsWith('//')
-    ? requestedNext
-    : '/dashboard';
+  const next = safeInternalPath(url.searchParams.get('next'));
 
   if (!code) {
     return NextResponse.redirect(new URL('/auth/sign-in?error=missing_auth_code', url.origin));

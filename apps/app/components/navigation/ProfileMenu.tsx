@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@neptlium/lib/supabase/browser';
-import { ChevronDown, LogOut, X } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, LogOut, X } from 'lucide-react';
 
 type Theme = 'light' | 'dark' | 'system';
 interface ProfileMenuProps {
@@ -20,7 +20,8 @@ const destinations = [
 ] as const;
 
 function applyTheme(theme: Theme) {
-  const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+  const dark =
+    theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   document.documentElement.dataset.themePreference = theme;
   document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
@@ -65,9 +66,12 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
       if (event.key === 'Escape') setOpen(false);
       if (event.key !== 'Tab' || !panel.current) return;
       const stops = [
-        ...panel.current.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled])'),
+        ...panel.current.querySelectorAll<HTMLElement>(
+          'a[href],button:not([disabled]),input:not([disabled])',
+        ),
       ];
-      const first = stops[0], last = stops.at(-1);
+      const first = stops[0],
+        last = stops.at(-1);
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last?.focus();
@@ -113,14 +117,23 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
         onClick={() => setOpen(true)}
         className="flex min-h-11 items-center gap-2 rounded-md px-1.5 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
       >
-        <span className="flex size-9 items-center justify-center rounded-full border border-border-default bg-surface-2 text-xs font-semibold">{initials}</span>
+        <span className="flex size-9 items-center justify-center rounded-full border border-border-default bg-surface-2 text-xs font-semibold">
+          {initials}
+        </span>
         <span className="hidden min-w-0 text-left sm:block">
           <span className="block max-w-36 truncate text-sm text-text-primary">{name}</span>
           <span className="block text-[11px] text-text-muted">{email || 'Email not provided'}</span>
         </span>
         <ChevronDown className="size-4 text-text-muted" aria-hidden="true" />
       </button>
-      {open && <button type="button" aria-label="Close profile menu" className="fixed inset-0 z-40 bg-surface-overlay/70 sm:bg-transparent" onClick={() => setOpen(false)} />}
+      {open && (
+        <button
+          type="button"
+          aria-label="Close profile menu"
+          className="fixed inset-0 z-40 bg-surface-overlay/70 sm:bg-transparent"
+          onClick={() => setOpen(false)}
+        />
+      )}
       {open && (
         <div
           ref={panel}
@@ -129,28 +142,74 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
           aria-label="Profile menu"
           className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-xl border border-border-default bg-surface-1 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-80 sm:rounded-lg sm:p-3"
         >
-          <button type="button" aria-label="Close profile menu" onClick={() => setOpen(false)} className="absolute right-3 top-3 flex size-11 items-center justify-center sm:hidden"><X className="size-5" /></button>
+          <button
+            type="button"
+            aria-label="Close profile menu"
+            onClick={() => setOpen(false)}
+            className="absolute right-3 top-3 flex size-11 items-center justify-center sm:hidden"
+          >
+            <X className="size-5" />
+          </button>
           <div className="border-b border-border-hairline px-2 pb-3 pr-12 sm:pr-2">
             <p className="truncate text-sm font-medium">{name || 'Account'}</p>
             <p className="truncate text-xs text-text-muted">{email || 'Email not provided'}</p>
-            {verified && <p className="mt-1 text-xs text-success">Verified account</p>}
-            <p className="mt-1 text-xs text-text-muted">{email ? 'Authenticated account' : 'Email not provided'}</p>
+            {verified && <p className="mt-1 text-xs text-success">Identity verified</p>}
+            <p className="mt-1 text-xs text-text-muted">Personal Capital account</p>
           </div>
           <nav aria-label="Account settings" className="py-2">
             {destinations.map(([label, hash]) => (
-              <Link key={hash} href={`/dashboard/settings#${hash}`} onClick={() => setOpen(false)} className="flex min-h-11 items-center rounded-md px-2 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">{label}</Link>
+              <Link
+                key={hash}
+                href={`/dashboard/settings#${hash}`}
+                onClick={() => setOpen(false)}
+                className="flex min-h-11 items-center rounded-md px-2 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+              >
+                {label}
+              </Link>
             ))}
           </nav>
           <fieldset id="appearance" className="border-y border-border-hairline px-2 py-3">
             <legend className="text-xs font-medium text-text-muted">Appearance</legend>
             <div className="mt-2 grid grid-cols-3 gap-1">
               {(['light', 'dark', 'system'] as Theme[]).map((option) => (
-                <button key={option} type="button" aria-pressed={theme === option} onClick={() => chooseTheme(option)} className={`min-h-11 rounded-md border text-xs capitalize ${theme === option ? 'border-accent-primary text-accent-primary' : 'border-border-default text-text-secondary'}`}>{option}</button>
+                <button
+                  key={option}
+                  type="button"
+                  aria-pressed={theme === option}
+                  onClick={() => chooseTheme(option)}
+                  className={`min-h-11 rounded-md border text-xs capitalize ${theme === option ? 'border-accent-primary text-accent-primary' : 'border-border-default text-text-secondary'}`}
+                >
+                  {option}
+                </button>
               ))}
             </div>
           </fieldset>
-          <Link href="/dashboard/settings#support" onClick={() => setOpen(false)} className="flex min-h-11 items-center rounded-md px-2 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">Help and support</Link>
-          <button type="button" disabled={signingOut} onClick={signOut} className="flex min-h-11 w-full items-center gap-3 px-2 pt-2 text-sm text-text-secondary hover:text-text-primary disabled:opacity-60">
+          <Link
+            href="/dashboard/support"
+            onClick={() => setOpen(false)}
+            className="flex min-h-11 items-center rounded-md px-2 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+          >
+            Help and support
+          </Link>
+          <Link
+            href="/dashboard/treasury-upgrade"
+            onClick={() => setOpen(false)}
+            className="my-2 flex min-h-16 items-center justify-between rounded-lg border border-border-default bg-surface-2 px-3 py-2 text-sm text-text-primary hover:border-accent-primary"
+          >
+            <span>
+              <strong className="block">Upgrade to Treasury</strong>
+              <small className="text-text-muted">
+                Business finance, team controls and payments
+              </small>
+            </span>
+            <ArrowUpRight className="size-4" />
+          </Link>
+          <button
+            type="button"
+            disabled={signingOut}
+            onClick={signOut}
+            className="flex min-h-11 w-full items-center gap-3 px-2 pt-2 text-sm text-text-secondary hover:text-text-primary disabled:opacity-60"
+          >
             <LogOut className="size-4" />
             {signingOut ? 'Signing out…' : 'Sign out'}
           </button>

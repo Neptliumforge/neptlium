@@ -35,7 +35,7 @@ test('Capital Account server actions consume financial-domain commands rather th
   assert.doesNotMatch(actions, /circle|alchemy|stripe|supabase/i);
 });
 
-test('Treasury distinguishes authoritative empty capability state from retrieval failure', () => {
+test('personal Capital distinguishes empty capability state from retrieval failure', () => {
   const bootstrap = read('lib/product/bootstrap.ts');
   const experience = read('components/product/OperatingExperience.tsx');
 
@@ -43,8 +43,8 @@ test('Treasury distinguishes authoritative empty capability state from retrieval
   assert.match(bootstrap, /transfer_capability_unavailable/);
   assert.match(experience, /snapshot\.fundingCapabilities\.state !== 'READY'/);
   assert.match(experience, /Funding capability unavailable/);
-  assert.match(experience, /snapshot\.transferCapabilities\.state !== 'READY'/);
-  assert.match(experience, /Transfer capability unavailable/);
+  assert.match(experience, /transferCapabilitiesAvailable/);
+  assert.match(experience, /Outbound capability unavailable/);
   assert.match(experience, /authoritative capability response contains no funding routes/i);
   assert.doesNotMatch(experience, /fundingCapabilities\.state !== 'READY' \? \[\]/);
 });
@@ -55,8 +55,5 @@ test('withdrawal submission remains inert until governed reservation authority e
   assert.match(capitalAccount, /productStateFromCapability/);
   assert.match(capitalAccount, /No execution action is exposed here/);
   assert.match(capitalAccount, /Reviewing a movement does not reserve or move capital/);
-  assert.doesNotMatch(
-    capitalAccount,
-    /<Button[^>]*>\s*Request movement\s*<\/Button>/,
-  );
+  assert.doesNotMatch(capitalAccount, /<Button[^>]*>\s*Request movement\s*<\/Button>/);
 });
