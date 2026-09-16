@@ -57,8 +57,8 @@ test('funding capability cannot manufacture a Portfolio holding', () => {
 
 test('Portfolio distinguishes unavailable canonical state from authoritative absence', () => {
   assert.match(bootstrap, /state: 'UNAVAILABLE'/);
-  assert.match(portfolioExperience, /Canonical valuation unavailable/);
-  assert.match(portfolioExperience, /No canonical positions are available/);
+  assert.match(portfolioExperience, /Portfolio valuation is not available yet/);
+  assert.match(portfolioExperience, /Investment positions are not available/);
   assert.match(portfolioExperience, /Unknown allocation is not rendered as zero/);
   assert.match(portfolioExperience, /Reconciled valuation history is not available/);
 });
@@ -83,10 +83,10 @@ test('Portfolio does not manufacture valuation, performance, or risk scores', ()
 });
 
 test('Portfolio holdings remain absent until authoritative positions exist', () => {
-  assert.match(portfolioExperience, /No canonical positions are available/);
+  assert.match(portfolioExperience, /Investment positions are not available/);
   assert.match(
     portfolioExperience,
-    /Quantity, price, cost basis and return stay absent until provided by the portfolio\s+projection/,
+    /Quantity, price, cost basis and return stay absent until the portfolio projection\s+provides authoritative investment-position records/,
   );
   assert.doesNotMatch(surface, /sample holding|illustrative holding|mock position/i);
 });
@@ -115,4 +115,20 @@ test('Portfolio preserves allocation as context rather than inferred financial t
   assert.match(portfolioExperience, /Position allocation unavailable/);
   assert.match(bootstrap, /getAllocationState\(\)/);
   assert.doesNotMatch(surface, /transaction feed/i);
+});
+
+test('Portfolio exposes the complete investor information architecture without fabricating values', () => {
+  for (const section of [
+    'Overview',
+    'Positions',
+    'Allocation',
+    'Performance',
+    'Income',
+    'Documents',
+  ]) {
+    assert.match(portfolioExperience, new RegExp(`['"]${section}['"]`));
+  }
+  assert.match(portfolioExperience, /Capital balances are not presented\s+as investments/);
+  assert.match(portfolioExperience, /No income records are available/);
+  assert.match(portfolioExperience, /\/dashboard\/documents/);
 });

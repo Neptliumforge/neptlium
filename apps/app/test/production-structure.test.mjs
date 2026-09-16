@@ -158,9 +158,9 @@ test('Portfolio remains evidence-aware and contains no execution authority', () 
   const page = read('app/dashboard/portfolio/page.tsx');
   const experience = read('components/product/OperatingExperience.tsx');
   assert.match(page, /PortfolioExperience/);
-  assert.match(experience, /Canonical valuation unavailable/);
+  assert.match(experience, /Portfolio valuation is not available yet/);
   assert.match(experience, /Reconciled valuation history is not available/);
-  assert.match(experience, /No canonical positions are available/);
+  assert.match(experience, /Investment positions are not available/);
   assert.match(experience, /Unknown allocation is not rendered as zero/);
   assert.doesNotMatch(experience, />Buy<|>Sell<|>Trade<|Execute allocation/);
 });

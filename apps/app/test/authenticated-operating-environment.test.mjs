@@ -53,7 +53,7 @@ test('desktop and mobile navigation use the personal Capital hierarchy', () => {
 });
 
 test('portfolio and allocation surfaces fail truthfully when canonical data is unavailable', () => {
-  assert.match(experience, /Canonical valuation unavailable/);
+  assert.match(experience, /Portfolio valuation is not available yet/);
   assert.match(experience, /No decorative or interpolated performance curve is rendered/);
   assert.match(experience, /Unknown allocation is not rendered as zero/);
   assert.match(experience, /MODEL/);
@@ -69,8 +69,8 @@ test('high-value actions are capability gated', () => {
 });
 
 test('authenticated product keeps the carbon and mineral-teal system', () => {
-  assert.match(css, /--color-canvas:#050505/);
-  assert.match(css, /--color-text-primary:#f7f7f3/);
-  assert.match(css, /--color-accent-primary:#35d5c1/);
+  assert.match(css, /--color-canvas:\s*#050505/);
+  assert.match(css, /--color-text-primary:\s*#f7f7f3/);
+  assert.match(css, /--color-accent-primary:\s*#35d5c1/);
   assert.doesNotMatch(css, /backdrop-filter:.*blur\(2[0-9]/i);
 });
