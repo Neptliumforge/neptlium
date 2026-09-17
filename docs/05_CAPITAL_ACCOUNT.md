@@ -4,59 +4,57 @@ The Capital Account is the customer-facing boundary for funding, balances, withd
 
 ## CURRENT
 
-The repository contains two generations of groundwork:
+The authenticated individual application now has a coherent first funding vertical slice:
 
-- Legacy `wallets`, `wallet_transactions`, `custody_addresses`, withdrawal-address, allocation-request, provider-event, and transfer-alias schema remains in migration history and application services.
-- The API foundation adds private `wallet_accounts`, `wallet_addresses`, `wallet_deposits`, `wallet_withdrawals`, immutable ledger primitives, idempotency records, audit events, webhook inbox records, and reconciliation records.
-- Production containment disables legacy funding and execution functions that could imply unsupported financial movement. Their history remains preserved.
+`Overview → Capital → Add money → Crypto deposit → governed funding intent → account-specific instructions → Activity`
 
-`apps/app` has Capital Account/wallet views for deposit address, balance, withdrawal, and transaction activity. Several flows intentionally render unavailable or pending states rather than inventing data.
+The customer experience uses personal-investor language while the API preserves authority, provider, ledger, settlement, and reconciliation distinctions underneath.
+
+- Overview and Capital read canonical balances and account activity through the Neptlium API.
+- Add money exposes only funding methods whose capability state can be verified.
+- Crypto deposit creates a server-side funding intent before requesting account-specific instructions.
+- An instruction without a usable address is explicitly pending; the customer is told not to send funds.
+- Creating instructions never marks a deposit received, settled, reconciled, or available.
+- Successful funding-intent creation invalidates Overview, Capital, Capital Account, Activity, and Deposit server projections so navigation returns current API-backed state.
+- Session expiry and unavailable provider capability fail closed.
+- USD bank/card funding remains unavailable in the customer product until its financial contract is actually certified.
+
+The repository also retains earlier financial groundwork and migration history. Production containment remains in force for execution paths that have not completed provider, ledger, policy, reconciliation, and operational certification.
 
 ### Circle foundation
 
-Circle Developer-Controlled Wallets contains provider-neutral code for existing-wallet/address/balance/transaction observation for USDC on configured Base Sepolia or Base environments. The runtime composes the adapter with its explicit environment and live-execution gates; automatic wallet provisioning is disabled and transfer submission remains unimplemented.
+Circle Developer-Controlled Wallets is provider infrastructure for supported digital-dollar/stablecoin wallet and settlement operations. It does not own Neptlium balances or authorization.
 
-- An authenticated owner can idempotently provision/link a Circle EOA through `/v1/capital-account/provider-wallet` when reviewed server credentials and a wallet-set reference are configured.
-- The API can return the linked deposit address and provider-observed USDC balance.
-- Provider transfer creation is explicitly disabled.
-- Circle webhook verification is not implemented; no Circle webhook route may be represented as live.
-- Provider wallet links store safe references and reconciliation state, never API keys, entity secrets, private keys, or recovery material.
+- Provider wallet/address references may be used only through governed server-side workflows.
+- Provider observations are evidence, not canonical spendable balance.
+- Provider credentials and Entity Secrets remain server-only.
+- Wallet provisioning and economic execution remain separately gated.
+- No Circle capability may be presented as live merely because credentials or code exist.
 
 ### Balance authority
 
-`provider_observed` balance is evidence captured from Circle at an observation time. It is not the canonical spendable balance. Canonical balance must be derived from balanced, posted Neptlium ledger entries after reconciliation and reservation policy. UI and API responses must label unavailable, provider-observed, pending, and canonical states honestly.
+Canonical customer capital comes from the Neptlium ledger after the required governed posting and reconciliation lifecycle. Provider observations, pending funding intents, deposit instructions, and UI completion states are not substitutes for canonical availability.
 
-## TRANSITION
+## NEXT BOUNDARY
 
-- Route existing user-facing wallet screens through the versioned Capital Account API instead of direct or simulated writes.
-- Complete durable repository operations for deposits, withdrawals, transactions, webhook inbox processing, and idempotency before enabling them in production.
-- Reconcile Circle observations to canonical ledger entries and surface discrepancies without silently correcting history.
-- Preserve current wallet/account identifiers while converging on `wallet_accounts` as the canonical account boundary.
-- Replace legacy containment stubs only with reviewed, atomic, idempotent workflows.
+The next movement slice must preserve the same customer/API separation for Withdraw and Transfer. Existing `/v1/treasury/*` naming used by legacy personal transfer plumbing is transitional debt and must not define the customer product boundary. Personal movement APIs should converge on Capital Account semantics without changing financial authority or bypassing existing fail-closed execution gates.
 
 ## TARGET information architecture
 
-Capital Account has five primary views:
+Capital Account has five customer capabilities:
 
-1. **Overview** — canonical available balance, reserved/pending amounts, account status, and last reconciliation state.
-2. **Deposit** — eligible funding methods, verified destination/instructions, expected lifecycle, and credited activity.
-3. **Withdraw** — destination, validation, policy, authorization, reservation, provider status, and settlement lifecycle.
-4. **Transfer** — verified Neptlium-recipient resolution and internal/provider execution status.
-5. **Activity** — immutable customer-readable history spanning deposits, withdrawals, transfers, reservations, reversals, and reconciliation state.
-
-### TARGET funding providers
-
-Stripe fiat funding and Stripe Onramp are targets only. Neither is installed, configured, or live.
-
-- Stripe fiat funding will require a reviewed payment-intent/funding model, verified webhooks, idempotent crediting, settlement/reversal handling, and ledger reconciliation.
-- Stripe Onramp will be a provider-assisted acquisition path whose provider outcome remains evidence until reconciled.
-- Provider-specific terminology must stay behind Neptlium domain models.
+1. **Overview** — capital position, available/reserved/pending state, important actions, and recent activity.
+2. **Add money** — eligible funding methods, account-specific instructions, expected lifecycle, and credited activity.
+3. **Withdraw** — destination, validation, policy, authorization, reservation, provider status, settlement, and reconciliation.
+4. **Transfer** — verified recipient/destination resolution and governed internal or provider execution status.
+5. **Activity** — immutable customer-readable history spanning funding, investments, withdrawals, transfers, reservations, reversals, settlement, and reconciliation.
 
 ## Financial invariants
 
 - No displayed balance may be fabricated or silently substituted from provider data.
 - A deposit becomes canonical only through verified evidence, idempotent processing, balanced posting, and required confirmation/settlement rules.
+- Creating deposit instructions is not evidence that funds were sent or received.
 - A withdrawal cannot spend reserved, pending, restricted, or unavailable capital.
-- Every mutation has an idempotency key, actor, request ID, lifecycle state, and audit trail.
+- Every financial mutation has an idempotency key, actor, request ID, lifecycle state, and audit trail.
 - Failures produce explicit failed/reversed states or compensating entries; posted history is never edited into agreement.
 - Financial execution remains disabled wherever durable ownership, policy, ledger, provider verification, and reconciliation are incomplete.
