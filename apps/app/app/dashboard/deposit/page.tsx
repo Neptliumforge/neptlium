@@ -12,24 +12,24 @@ export default async function DepositRoute() {
   return (
     <div className="deposit-experience">
       <header className="deposit-header">
-        <Link className="deposit-back-link" href="/dashboard/capital-account">
-          <ArrowLeft size={15} aria-hidden="true" /> Capital Account
+        <Link className="deposit-back-link" href="/dashboard/capital">
+          <ArrowLeft size={15} aria-hidden="true" /> Capital
         </Link>
-        <p className="investor-eyebrow">Funding</p>
-        <h1>Deposit funds</h1>
-        <p>Choose how you want to fund your Neptlium capital account. Availability is determined by your account and the currently verified funding rails.</p>
+        <p className="investor-eyebrow">Add money</p>
+        <h1>Fund your account</h1>
+        <p>Choose an available way to add money to your personal Neptlium Capital account.</p>
       </header>
 
-      <section className="deposit-method-grid" aria-label="Deposit methods">
+      <section className="deposit-method-grid" aria-label="Funding methods">
         <Link className="deposit-method-card" href="/dashboard/deposit/crypto">
           <div className="deposit-method-icon"><Coins size={22} aria-hidden="true" /></div>
           <div>
-            <span>Crypto</span>
-            <h2>Deposit digital assets</h2>
-            <p>Select an available asset and network, create a governed funding intent, and receive network-specific deposit instructions.</p>
+            <span>Digital assets</span>
+            <h2>Fund with crypto</h2>
+            <p>Choose an available asset and network, then receive account-specific deposit instructions.</p>
           </div>
           <div className="deposit-method-footer">
-            <span>{capabilityResult ? `${enabled.length} rail${enabled.length === 1 ? '' : 's'} currently enabled` : 'Availability unavailable'}</span>
+            <span>{capabilityResult ? `${enabled.length} method${enabled.length === 1 ? '' : 's'} available` : 'Availability could not be verified'}</span>
             <strong>Continue <ArrowRight size={15} aria-hidden="true" /></strong>
           </div>
         </Link>
@@ -37,22 +37,19 @@ export default async function DepositRoute() {
         <div className="deposit-method-card is-disabled" aria-disabled="true">
           <div className="deposit-method-icon"><Banknote size={22} aria-hidden="true" /></div>
           <div>
-            <span>USD</span>
-            <h2>Deposit U.S. dollars</h2>
-            <p>USD funding will use a dedicated Stripe capital-funding flow after the approved payment contract, webhook attribution, settlement, and reconciliation path are production verified.</p>
+            <span>Bank / USD</span>
+            <h2>Fund with U.S. dollars</h2>
+            <p>Bank and USD funding will appear here after the payment, settlement and reconciliation path is verified for customer capital.</p>
           </div>
-          <div className="deposit-method-footer">
-            <span>Not yet enabled</span>
-            <strong>Stripe capital funding pending</strong>
-          </div>
+          <div className="deposit-method-footer"><span>Not yet available</span><strong>Coming after verification</strong></div>
         </div>
       </section>
 
       <section className="deposit-trust-panel" aria-label="Funding safeguards">
         <ShieldCheck size={20} aria-hidden="true" />
         <div>
-          <strong>Funding instructions are account-specific.</strong>
-          <p>Neptlium does not credit a balance because a user clicks Done. Deposits become financial state only after verified observation, posting, settlement, and reconciliation.</p>
+          <strong>Your balance changes only after funds are verified.</strong>
+          <p>Creating deposit instructions does not credit your account. Pending funding appears in Activity while Neptlium verifies the transaction and updates your financial record.</p>
         </div>
       </section>
     </div>
