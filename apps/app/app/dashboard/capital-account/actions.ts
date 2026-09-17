@@ -38,7 +38,11 @@ export async function createFundingIntentAction(
       ...(amountAtomic ? { amountAtomic } : {}),
     });
     const instructions = await getDepositInstructionsForIntent(intent.id);
+    revalidatePath('/dashboard');
+    revalidatePath('/dashboard/capital');
     revalidatePath('/dashboard/capital-account');
+    revalidatePath('/dashboard/activity');
+    revalidatePath('/dashboard/deposit');
     return { ok: true, intent, instructions };
   } catch (error) {
     if (error instanceof ApiClientError) {
@@ -47,6 +51,9 @@ export async function createFundingIntentAction(
       }
       if (error.code === 'provider_not_configured') {
         return { ok: false, error: 'Funding infrastructure for this asset is not configured.' };
+      }
+      if (error.code === 'session_expired') {
+        return { ok: false, error: 'Your session has expired. Sign in again before creating funding instructions.' };
       }
     }
     return { ok: false, error: 'The governed funding intent could not be created.' };
@@ -81,7 +88,6 @@ export async function createTransferAliasAction(
       destinationReference: normalizedReference,
     });
     revalidatePath('/dashboard/capital-account');
-    revalidatePath('/dashboard/treasury');
     return {
       ok: true,
       alias: created,
