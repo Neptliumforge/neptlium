@@ -12,15 +12,59 @@ test('Neptlium Treasury protects the authenticated dashboard with a Supabase ses
   assert.match(proxy, /refreshSupabaseSession/);
   assert.match(proxy, /\/auth\/sign-in/);
   assert.match(dashboard, /Organization authority unavailable/);
-  assert.match(dashboard, /Payment execution unavailable/);
+  assert.match(dashboard, /Execution capability/);
+  assert.match(dashboard, /No active execution/);
   assert.doesNotMatch(dashboard, /circle\.com|alchemy\.com|fetch\(|service_role|private_key/i);
 });
 
-test('Neptlium Treasury preserves organization policy and payment lifecycle boundaries', () => {
+test('Neptlium Treasury preserves institutional navigation and authority boundaries', () => {
   const dashboard = read('app/dashboard/[[...section]]/page.tsx');
-  for (const label of ['Treasury','Payments','Receivables','Counterparties','Approvals','Policies','Risk','Wallets','Reports','Activity','Integrations','Audit Log','Settings']) assert.match(dashboard, new RegExp(label));
-  for (const state of ['DRAFT','PREFLIGHT','POLICY_CHECKED','AWAITING_APPROVAL','AUTHORIZED','RESERVED','AWAITING_SIGNATURE','SIGNED','SUBMITTED','CONFIRMING','SETTLED','RECONCILED']) assert.match(dashboard, new RegExp(state));
-  assert.match(dashboard, /No authenticated browser session alone grants treasury authority/);
+  for (const label of [
+    'Overview',
+    'Treasury',
+    'Investments',
+    'Allocations',
+    'Operations',
+    'Authority',
+    'Records',
+  ])
+    assert.match(dashboard, new RegExp(label));
+  for (const action of ['Fund', 'Move', 'Allocate', 'Settle', 'Reconcile', 'Govern'])
+    assert.match(dashboard, new RegExp(action));
+  for (const layer of [
+    'Organizations',
+    'Members',
+    'Roles',
+    'Permissions',
+    'Approval policies',
+    'Mandates',
+    'Agents',
+  ])
+    assert.match(dashboard, new RegExp(layer));
+  assert.match(
+    dashboard,
+    /Authentication identifies a person; it does not grant permission to move capital/,
+  );
+  assert.match(dashboard, /AI does not create authority/);
+  assert.match(dashboard, /Unknown state is never\s+represented as zero/);
+});
+
+test('institutional operating state remains explicit and evidence-aware', () => {
+  const dashboard = read('app/dashboard/[[...section]]/page.tsx');
+  for (const metric of [
+    'Capital',
+    'Available liquidity',
+    'Committed capital',
+    'Pending settlement',
+  ])
+    assert.match(dashboard, new RegExp(metric));
+  for (const state of ['Unavailable', 'Disabled', 'Denied, approval required, or authorized'])
+    assert.match(dashboard, new RegExp(state));
+  assert.match(
+    dashboard,
+    /provider observation alone will not appear as an authorized, settled or reconciled\s+movement/i,
+  );
+  assert.doesNotMatch(dashboard, /\$[0-9]|€[0-9]|£[0-9]/);
 });
 
 test('Neptlium Treasury native access uses the shared browser client and never exposes privileged credentials', () => {
