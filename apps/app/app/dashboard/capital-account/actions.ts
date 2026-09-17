@@ -27,7 +27,7 @@ export async function createFundingIntentAction(
   capability: string,
   amountAtomic?: string,
 ): Promise<FundingIntentActionResult> {
-  if (!capability) return { ok: false, error: 'Choose a governed funding asset first.' };
+  if (!capability) return { ok: false, error: 'Choose an available funding asset first.' };
   if (amountAtomic && (!/^\d+$/.test(amountAtomic) || BigInt(amountAtomic) <= 0n)) {
     return { ok: false, error: 'Funding amount must be expressed in positive atomic units.' };
   }
@@ -38,18 +38,26 @@ export async function createFundingIntentAction(
       ...(amountAtomic ? { amountAtomic } : {}),
     });
     const instructions = await getDepositInstructionsForIntent(intent.id);
+
+    // A created intent is an account event, not settled capital. Refresh every investor surface
+    // that can truthfully expose its pending lifecycle without manufacturing a balance credit.
+    revalidatePath('/dashboard');
+    revalidatePath('/dashboard/capital');
     revalidatePath('/dashboard/capital-account');
+    revalidatePath('/dashboard/activity');
+    revalidatePath('/dashboard/deposit');
+
     return { ok: true, intent, instructions };
   } catch (error) {
     if (error instanceof ApiClientError) {
       if (error.code === 'provider_capability_unavailable') {
-        return { ok: false, error: 'This funding rail is not currently available.' };
+        return { ok: false, error: 'This funding method is not currently available.' };
       }
       if (error.code === 'provider_not_configured') {
         return { ok: false, error: 'Funding infrastructure for this asset is not configured.' };
       }
     }
-    return { ok: false, error: 'The governed funding intent could not be created.' };
+    return { ok: false, error: 'The funding request could not be created.' };
   }
 }
 
@@ -81,12 +89,11 @@ export async function createTransferAliasAction(
       destinationReference: normalizedReference,
     });
     revalidatePath('/dashboard/capital-account');
-    revalidatePath('/dashboard/treasury');
     return {
       ok: true,
       alias: created,
       message:
-        'Destination saved for governed verification. Saving does not make it verified or active.',
+        'Destination saved for verification. Saving it does not make the destination verified or active.',
     };
   } catch (error) {
     if (error instanceof ApiClientError && error.code === 'validation_failed') {
@@ -95,6 +102,6 @@ export async function createTransferAliasAction(
         error: 'The destination could not be accepted. Review the label, type, and reference.',
       };
     }
-    return { ok: false, error: 'The governed destination could not be saved.' };
+    return { ok: false, error: 'The destination could not be saved.' };
   }
 }
