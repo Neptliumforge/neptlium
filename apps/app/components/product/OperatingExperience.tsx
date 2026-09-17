@@ -582,40 +582,99 @@ export function CapitalExperience() {
 
 export function PortfolioExperience() {
   const { snapshot } = useProductBootstrap();
+  const portfolio = snapshot.portfolio.state === 'READY' ? snapshot.portfolio.data : undefined;
+  const portfolioAvailable = portfolio !== undefined;
+  const positionState = portfolio?.positions.state ?? 'UNAVAILABLE';
+  const performanceState = portfolio?.performance.state ?? 'UNAVAILABLE';
+  const valueState = portfolio?.value.state ?? 'UNAVAILABLE';
   return (
     <div className="op-stack">
       <PageHeader
         eyebrow="Portfolio"
         title="Portfolio"
-        description="Reconciled investments, valuation and position evidence."
+        description="What you own, what it is worth and how it is performing—only when supported by your account records."
+        actions={
+          <>
+            <Link className="op-button op-button-primary" href="/dashboard/invest">
+              Explore investments <ArrowRight size={14} />
+            </Link>
+            <Link className="op-button" href="/dashboard/activity">
+              View activity
+            </Link>
+          </>
+        }
       />
-      <section className="op-hero">
+      <nav className="op-section-nav" aria-label="Portfolio sections">
+        {['Overview', 'Positions', 'Allocation', 'Performance', 'Income', 'Documents'].map(
+          (label) => (
+            <a key={label} href={`#${label.toLowerCase()}`}>
+              {label}
+            </a>
+          ),
+        )}
+      </nav>
+      <section className="op-hero" id="overview" aria-labelledby="portfolio-overview-title">
         <div className="op-hero-primary">
-          <span>Portfolio value</span>
+          <span id="portfolio-overview-title">Portfolio value</span>
           <strong>—</strong>
-          <p>Canonical valuation unavailable.</p>
-          <small>{relativeFreshness(snapshot.asOf)} · Reconciliation required</small>
+          <p>
+            {valueState === 'UNAVAILABLE'
+              ? 'Portfolio valuation is not available yet.'
+              : 'A portfolio value exists, but this client does not yet receive a displayable amount.'}
+          </p>
+          <small>{relativeFreshness(snapshot.asOf)} · Account records required</small>
         </div>
         <div className="op-metric-grid">
           <div className="op-metric">
-            <span>Today</span>
+            <span>Available capital</span>
             <strong>—</strong>
             <ProductStateBadge state="UNAVAILABLE" />
           </div>
           <div className="op-metric">
             <span>Total return</span>
             <strong>—</strong>
-            <ProductStateBadge state="UNAVAILABLE" />
+            <ProductStateBadge state={performanceState === 'VALUE' ? 'AVAILABLE' : 'UNAVAILABLE'} />
           </div>
           <div className="op-metric">
-            <span>Reconciliation</span>
+            <span>Positions</span>
             <strong>—</strong>
-            <ProductStateBadge state="UNAVAILABLE" />
+            <ProductStateBadge state={positionState === 'VALUE' ? 'AVAILABLE' : 'UNAVAILABLE'} />
           </div>
         </div>
       </section>
-      <section className="op-panel op-chart-panel">
-        <SectionHeading label="History" title="Portfolio value" />
+      <section className="op-panel" id="positions" aria-labelledby="portfolio-positions-title">
+        <SectionHeading label="Positions" title="What you own" />
+        <div className="op-empty-row">
+          <strong id="portfolio-positions-title">
+            {positionState === 'EMPTY'
+              ? 'No investment positions are recorded'
+              : 'Investment positions are not available'}
+          </strong>
+          <span>
+            Quantity, price, cost basis and return stay absent until the portfolio projection
+            provides authoritative investment-position records. Capital balances are not presented
+            as investments.
+          </span>
+        </div>
+      </section>
+      <section className="op-grid-2" id="allocation" aria-labelledby="portfolio-allocation-title">
+        <article className="op-panel">
+          <SectionHeading label="Allocation" title="Portfolio composition" />
+          <EmptyCanvas
+            title="Position allocation unavailable"
+            detail="Asset weights require canonical investment positions and valuation. Unknown allocation is not rendered as zero."
+          />
+        </article>
+        <article className="op-panel">
+          <SectionHeading label="Concentration" title="Exposure" />
+          <EmptyCanvas
+            title="Exposure is not established"
+            detail="Sector, geography and asset-class concentration appear only when supported by classified portfolio positions."
+          />
+        </article>
+      </section>
+      <section className="op-panel op-chart-panel" id="performance">
+        <SectionHeading label="Performance" title="Portfolio value over time" />
         <EmptyCanvas
           title="Reconciled valuation history is not available"
           detail="No decorative or interpolated performance curve is rendered. History appears only from an authoritative valuation series."
@@ -623,23 +682,43 @@ export function PortfolioExperience() {
       </section>
       <section className="op-grid-2">
         <article className="op-panel">
-          <SectionHeading label="Allocation" title="Portfolio composition" />
-          <EmptyCanvas
-            title="Position allocation unavailable"
-            detail="Asset weights require canonical positions and valuation. Unknown allocation is not rendered as zero."
-          />
+          <div id="income">
+            <SectionHeading label="Income" title="Distributions and income" />
+            <div className="op-empty-row">
+              <strong>No income records are available</strong>
+              <span>
+                Dividends, interest and distributions appear only when linked to an authoritative
+                portfolio position and account record.
+              </span>
+            </div>
+          </div>
         </article>
         <article className="op-panel">
-          <SectionHeading label="Positions" title="Holdings" />
-          <div className="op-empty-row">
-            <strong>No canonical positions are available</strong>
-            <span>
-              Quantity, price, cost basis and return stay absent until provided by the portfolio
-              projection.
-            </span>
+          <div id="documents">
+            <SectionHeading
+              label="Documents"
+              title="Portfolio records"
+              action={
+                <Link href="/dashboard/documents">
+                  View documents <ArrowRight size={14} />
+                </Link>
+              }
+            />
+            <div className="op-empty-row">
+              <strong>Statements and account files</strong>
+              <span>
+                Documents are kept in the account record and are never inferred from a position or
+                public-market source.
+              </span>
+            </div>
           </div>
         </article>
       </section>
+      <p className="op-footnote">
+        {portfolioAvailable
+          ? 'Portfolio state loaded from the Neptlium API. Unavailable fields remain undisclosed.'
+          : 'Portfolio state could not be loaded. No balance, position, performance or income value has been inferred.'}
+      </p>
     </div>
   );
 }
@@ -777,24 +856,47 @@ export function InvestExperience() {
       <PageHeader
         eyebrow="Invest"
         title="Discover investments"
-        description="Explore investment opportunities available through your Neptlium account."
+        description="Evaluate opportunities supported by your account without mistaking research coverage for investable inventory."
+        actions={
+          <Link className="op-button" href="/dashboard/portfolio">
+            View portfolio <ArrowRight size={14} />
+          </Link>
+        }
       />
       <section className="op-panel op-chart-panel">
-        <SectionHeading label="Available opportunities" title="Nothing available to display yet" />
+        <SectionHeading label="Opportunities" title="No investments are currently available" />
         <EmptyCanvas
           title="Investment discovery is not available yet"
           detail="Opportunities will appear here only when their terms, documents, risks and account eligibility are available. Neptlium does not present planned categories as current inventory."
         />
       </section>
+      <section className="op-panel">
+        <SectionHeading label="Product standard" title="What every opportunity must establish" />
+        <div className="op-readiness-grid">
+          {[
+            ['Strategy', 'What the investment is designed to do.'],
+            ['Terms', 'Minimums, duration, liquidity and fees.'],
+            ['Documents', 'The records required to evaluate the product.'],
+            ['Risks', 'Material risks presented before any allocation action.'],
+            ['Eligibility', 'Whether this account may access the opportunity.'],
+          ].map(([title, detail]) => (
+            <div key={title}>
+              <ShieldCheck size={16} aria-hidden="true" />
+              <strong>{title}</strong>
+              <span>{detail}</span>
+            </div>
+          ))}
+        </div>
+      </section>
       <section className="op-grid-2">
         <article className="op-panel">
-          <SectionHeading label="Portfolio" title="Already invested?" />
+          <SectionHeading label="Intelligence" title="Research before you act" />
           <p className="text-sm leading-6 text-text-secondary">
-            View investments supported by your account records, including position and performance
-            information when available.
+            Company intelligence is research context, not an offer, recommendation or portfolio
+            position.
           </p>
-          <Link className="op-inline-link" href="/dashboard/portfolio">
-            View portfolio <ArrowRight size={14} />
+          <Link className="op-inline-link" href="/dashboard/companies">
+            Explore company research <ArrowRight size={14} />
           </Link>
         </article>
         <article className="op-panel">

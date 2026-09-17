@@ -83,6 +83,8 @@ Presents canonical customer capital and its available, reserved, and pending sta
 
 Presents reconciled investment valuation and positions when the canonical portfolio projection supports them. Missing valuation, performance history, allocation, or positions remain explicitly unavailable; the UI never substitutes decorative charts or fabricated zeros.
 
+The individual Portfolio information architecture is **Overview → Positions → Allocation → Performance → Income → Documents**. These sections may coexist on one responsive route until the available record volume justifies dedicated child routes. Capital balances are not automatically investment positions, public research coverage is not ownership, and a recorded position is not a valuation without the required pricing and reconciliation evidence.
+
 ### Allocation
 
 Presents the governed lifecycle as distinct MODEL → REVIEW → APPROVE → RESERVE → EXECUTE → RECONCILE responsibilities. Modeled or approved state never implies execution or reconciliation.
@@ -94,6 +96,8 @@ Represents authenticated investment entities and customer exposure only when aut
 ### Invest
 
 Provides the individual discovery entry point. It exposes only opportunities, terms, documents, risks and eligibility supported by current product data. Planned categories are never presented as current inventory.
+
+An investment opportunity cannot appear as available until its strategy, terms, documents, material risks and account eligibility can be presented truthfully. Company Intelligence may support evaluation, but it is research context rather than an offer, recommendation, allocation instruction or proof of portfolio ownership.
 
 ### Records and Settings
 
