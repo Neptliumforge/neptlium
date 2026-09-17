@@ -49,65 +49,61 @@ The authenticated product is deliberately restrained and information-first. Prod
 The dashboard layout owns one shared authenticated bootstrap projection. Overview, Portfolio, Invest, Activity and supporting account surfaces consume that shared snapshot so navigation is immediate and one unavailable projection does not blank unrelated account state. The snapshot refreshes in the background while the customer remains active.
 
 Desktop hierarchy:
-
 - Overview
 - Portfolio
 - Invest
 - Activity
 - More
-- Account
-  - Help & Support
-  - Settings
+- Account: Help & Support, Settings
 
 Mobile primary navigation:
-
 - Overview
 - Portfolio
 - Invest
 - Activity
 - More
 
-`More` exposes personal Capital actions, Allocation, Companies, Documents, Notifications and Settings. Treasury is not part of individual navigation; its separate organization onboarding may be offered contextually. The mobile product does not duplicate the desktop sidebar as a drawer.
+`More` exposes personal Capital actions, Allocation, Companies, Documents, Notifications and Settings. Treasury is not part of individual navigation; its separate organization onboarding may be offered contextually.
 
 ## Surface responsibilities
 
 ### Overview
-
-Answers the immediate questions: "What is my capital position? What can I invest? What changed?" It prioritizes portfolio value when available, available capital, performance, investments and recent activity. Deposit, Invest, Transfer and Withdraw remain explicit actions. Funding or movement routes remain capability-driven and fall back to review states when availability is unknown.
+Answers: "What is my capital position? What can I invest? What changed?" It prioritizes portfolio value when available, available capital, performance, investments and recent activity. Deposit, Invest, Transfer and Withdraw remain explicit actions. Funding or movement routes remain capability-driven and fall back to review states when availability is unknown.
 
 ### Capital
-
 Presents canonical customer capital and its available, reserved, and pending states. Asset values remain separated when there is no authoritative cross-asset conversion basis.
 
 ### Portfolio
-
 Presents reconciled investment valuation and positions when the canonical portfolio projection supports them. Missing valuation, performance history, allocation, or positions remain explicitly unavailable; the UI never substitutes decorative charts or fabricated zeros.
 
-The individual Portfolio information architecture is **Overview → Positions → Allocation → Performance → Income → Documents**. These sections may coexist on one responsive route until the available record volume justifies dedicated child routes. Capital balances are not automatically investment positions, public research coverage is not ownership, and a recorded position is not a valuation without the required pricing and reconciliation evidence.
+The individual Portfolio information architecture is **Overview → Positions → Allocation → Performance → Income → Documents**. Capital balances are not automatically investment positions, public research coverage is not ownership, and a recorded position is not a valuation without required pricing and reconciliation evidence.
 
 ### Allocation
-
 Presents the governed lifecycle as distinct MODEL → REVIEW → APPROVE → RESERVE → EXECUTE → RECONCILE responsibilities. Modeled or approved state never implies execution or reconciliation.
 
-### Companies
-
-Represents authenticated investment entities and customer exposure only when authoritative account context exists. Public company research remains separate so research coverage cannot be mistaken for a portfolio relationship.
-
 ### Invest
-
-Provides the individual discovery entry point. It exposes only opportunities, terms, documents, risks and eligibility supported by current product data. Planned categories are never presented as current inventory.
-
-An investment opportunity cannot appear as available until its strategy, terms, documents, material risks and account eligibility can be presented truthfully. Company Intelligence may support evaluation, but it is research context rather than an offer, recommendation, allocation instruction or proof of portfolio ownership.
+Provides the individual discovery entry point and exposes only opportunities, terms, documents, risks and eligibility supported by current product data.
 
 ### Records and Settings
-
-Activity, Documents, Notifications, and Settings preserve API authority while sharing the authenticated bootstrap. Mutation actions such as downloads, notification acknowledgement, and authentication controls retain their governed server/action boundaries.
+Activity, Documents, Notifications, and Settings preserve API authority while sharing the authenticated bootstrap. Mutation actions retain governed server/action boundaries.
 
 ## Deposit architecture
 
-Deposit is a first-class workflow. The server contracts are defined in [`16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md`](./16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md).
+Deposit is a first-class workflow. Server contracts remain defined in [`16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md`](./16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md).
 
 The product must never expose a crypto address, fiat funding method, asset/network combination, or Stripe flow unless the API reports a verified capability for the current user and environment.
+
+### Funding-to-activity vertical
+
+The canonical individual journey is:
+
+`Overview/Capital → Add money → choose an enabled method → create funding intent → receive account-specific instructions → Activity → verified financial state`
+
+Creating instructions is not a deposit, settlement, reconciliation or balance credit. A successfully created intent is permitted to appear as pending account activity, while canonical capital changes only after the existing server-side evidence, posting, settlement and reconciliation requirements are satisfied.
+
+After a funding intent is created, the application revalidates Overview, Capital, Activity and funding surfaces so the investor can follow the lifecycle without relying on stale browser state. Failure to verify funding capabilities fails closed and no address is issued.
+
+Customer-facing funding copy should describe the action and outcome in investor language. Provider topology and internal lifecycle terminology are exposed only where required to prevent a misleading financial state.
 
 ## Governing rule
 
