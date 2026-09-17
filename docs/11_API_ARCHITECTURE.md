@@ -4,13 +4,15 @@
 
 ## CURRENT runtime and routes
 
-The dependency-light Node.js/TypeScript service supports public health/status routes plus governed account, capital-account, wallet, customer, admin, and webhook routes. Route presence does not prove production capability.
+The dependency-light Node.js/TypeScript service supports public health/status/version/capability routes plus governed account, capital-account, wallet, customer, admin, and webhook routes. Route presence does not prove production capability.
 
 Several provider and financial operations remain capability-gated or deliberately unimplemented. Unsupported paths must fail closed rather than manufacture availability.
 
 ## Auth boundary
 
 Public health/status/version routes do not establish user authority.
+
+`GET /v1/platform/capabilities` is the public, machine-readable product-boundary contract. It distinguishes `available`, `beta`, `planned`, and `unavailable` states; records the authority sequence; and explicitly keeps AI outside authority. It is intentionally separate from runtime/provider readiness. Provider configuration cannot promote a product capability.
 
 Customer and operator bearer tokens are Supabase Auth access tokens. `apps/api` verifies the authenticated Supabase subject, resolves the active `SUPABASE_AUTH` mapping to a stable Neptlium principal, and performs Neptlium-owned authorization from that principal.
 
@@ -85,3 +87,4 @@ The current Stripe boundary is evidence ingress for reviewed use cases. Stripe c
 - No route reports canonical settlement from a provider response alone.
 - Secrets and raw sensitive provider payloads never appear in client responses or logs.
 - Authentication identifies the principal; authorization and financial authority remain separate server-owned concerns.
+- API responses are non-cacheable by default and include baseline anti-sniffing, frame-denial, referrer, and browser-feature restrictions. A future cacheable public response requires explicit review rather than inheriting permissive caching.

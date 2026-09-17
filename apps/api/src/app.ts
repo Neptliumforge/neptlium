@@ -21,6 +21,7 @@ import { handleFinancialRoute } from './financial-routes.js';
 import { publicFundingDefinitions } from './asset-registry.js';
 import { createPrincipalAuthenticator } from './authentication.js';
 import { SupabaseIdentityPrincipalResolver } from './identity-principal.js';
+import { platformCapabilities } from './platform-capabilities.js';
 
 export interface Dependencies {
   config?: Config;
@@ -57,9 +58,11 @@ type Context = {
 };
 const jsonHeaders = {
   'content-type': 'application/json; charset=utf-8',
+  'cache-control': 'no-store',
   'x-content-type-options': 'nosniff',
   'x-frame-options': 'DENY',
   'referrer-policy': 'no-referrer',
+  'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=()',
 };
 
 type ResourceState<T = never> =
@@ -181,14 +184,11 @@ export async function buildApp(deps: Dependencies = {}) {
           governed_financial_storage: governedFinancialStorageReady ? 'ready' : 'not_ready',
           providers: {
             alchemy:
-              config.alchemyConfigured &&
-              Boolean(config.ALCHEMY_WEBHOOK_SIGNING_KEY)
+              config.alchemyConfigured && Boolean(config.ALCHEMY_WEBHOOK_SIGNING_KEY)
                 ? 'configured_observation_only'
                 : 'not_configured',
             circle: capitalProvider.readiness(),
-            stripe: config.stripeConfigured
-              ? 'configured_webhook_evidence_only'
-              : 'not_configured',
+            stripe: config.stripeConfigured ? 'configured_webhook_evidence_only' : 'not_configured',
           },
         },
       };
@@ -197,6 +197,8 @@ export async function buildApp(deps: Dependencies = {}) {
       return {
         data: { service: 'neptlium-api', api_version: 'v1', build_id: config.API_BUILD_ID },
       };
+    if (method === 'GET' && path === '/v1/platform/capabilities')
+      return { data: platformCapabilities };
     if (method === 'GET' && path === '/v1/status') {
       const [generalReady, financialReady] = await Promise.all([
         repository.ready(),
@@ -489,10 +491,7 @@ export async function buildApp(deps: Dependencies = {}) {
         'Per-customer provider-wallet routes are superseded by funding_intent → deposit_route → treasury_destination',
       );
     }
-    if (
-      method === 'POST' &&
-      (path === '/v1/webhooks/alchemy' || path === '/v1/webhooks/circle')
-    ) {
+    if (method === 'POST' && (path === '/v1/webhooks/alchemy' || path === '/v1/webhooks/circle')) {
       const provider = path.endsWith('alchemy') ? 'alchemy' : 'circle';
       if (provider === 'circle')
         throw new ApiError(
