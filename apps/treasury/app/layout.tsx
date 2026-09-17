@@ -5,7 +5,8 @@ import './onboarding.css';
 
 export const metadata: Metadata = {
   title: 'Neptlium Treasury',
-  description: 'Organizational capital, payments, stablecoins, approvals, policies and treasury context in one governed environment.',
+  description:
+    'Operate organization capital, liquidity, allocations, authority and records with control.',
 };
 
 export default function RootLayout({ children }: { readonly children: React.ReactNode }) {

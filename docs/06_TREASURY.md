@@ -4,8 +4,11 @@ Treasury is the read and intelligence layer over canonical ledger, reservations,
 
 ## CURRENT
 
-- `apps/app` exposes a Treasury route and a read-only view with Available liquidity, Reserve, and Committed placeholders. It correctly renders unavailable values when data is absent.
-- The application treasury module is skeletal and returns no fabricated accounts or transactions.
+- `apps/treasury` is the separate organization product at `treasury.neptlium.com`; personal Capital remains in `apps/app`.
+- The institutional navigation is **Overview → Treasury → Investments → Allocations → Operations → Authority → Records**.
+- Overview presents the required operating categories—Capital, Available liquidity, Committed capital, Pending settlement, approvals, settlements, reconciliation exceptions and movements—but renders explicit unavailable states while organization-scoped projections do not exist.
+- Treasury is organized around **Fund → Move → Allocate → Settle → Reconcile → Govern**. These are operating responsibilities, not claims that every action is currently enabled.
+- Authority is a first-class surface spanning Organizations, Members, Roles, Permissions, Approval policies, Mandates and Agents. Current production does not expose a complete Treasury-scoped authority projection, durable mandates or agent execution authority.
 - `apps/api/src/treasury.ts` defines withdrawal-policy evaluation: supported asset/network, positive and maximum amount, destination allowlist, single/dual approval thresholds, distinct approvers, rejection handling, and self-approval prohibition.
 - Migration groundwork includes `treasury_policies`, `treasury_destination_allowlist`, append-only `withdrawal_approvals`, wallet/ledger records, and reconciliation records. These private operational tables are revoked from browser roles.
 - The API has no complete customer Treasury route or durable treasury repository. Memory contracts are not production authority.
@@ -59,3 +62,11 @@ Names and thresholds are policy-owned and versioned; `unknown` must never be coe
 - Reconciliation compares external evidence with canonical state.
 
 Treasury never calls a provider solely to make a dashboard number appear complete, never marks transactions settled, and never bypasses approval or reservation policy.
+
+## Authority contract
+
+Authentication identifies a person. Organization authority must separately resolve the organization, active membership, role, permissions, policy and any required approvals. A personal role does not grant an organization Treasury role.
+
+The required control path is **Mandate → Authority check → Denied / Approval required / Authorized → Execution → Reconciliation → Record**. Each transition requires durable server-owned evidence. Authorization does not imply execution; execution does not imply settlement; settlement does not imply reconciliation.
+
+AI does not create authority. Any future agent acts only inside an existing durable mandate, passes the same authority checks as a human action, and produces reconciliation evidence and an auditable record. Until mandate enforcement and execution controls are complete, the Treasury product presents agents as unavailable and exposes no agent execution path.
