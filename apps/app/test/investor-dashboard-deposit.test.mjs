@@ -15,27 +15,33 @@ test('dashboard renders shared API-backed state instead of illustrative financia
   assert.match(bootstrap, /getCanonicalBalances/);
   assert.match(experience, /Recent activity/);
   assert.match(experience, /Your capital/);
-  assert.doesNotMatch(
-    experience,
-    /Public markets|Private companies|Company position updated|36%|28%/,
-  );
+  assert.doesNotMatch(experience, /Public markets|Private companies|Company position updated|36%|28%/);
 });
 
-test('deposit route is a dedicated funding-method experience', () => {
+test('deposit route is a dedicated personal funding experience', () => {
   const deposit = read('app/dashboard/deposit/page.tsx');
   assert.match(deposit, /\/dashboard\/deposit\/crypto/);
-  assert.match(deposit, /Deposit digital assets/);
-  assert.match(deposit, /Stripe capital funding pending/);
+  assert.match(deposit, /Fund your account/);
+  assert.match(deposit, /Bank and card funding are not available/);
+  assert.match(deposit, /balance changes only after funds are confirmed/);
   assert.doesNotMatch(deposit, /redirect\('/);
+  assert.doesNotMatch(deposit, /Stripe capital funding pending/);
 });
 
-test('crypto deposit creates instructions through the governed funding action', () => {
+test('crypto deposit creates instructions through the governed funding action and links to activity', () => {
   const flow = read('app/dashboard/deposit/crypto/CryptoDepositFlow.tsx');
   assert.match(flow, /createFundingIntentAction/);
   assert.match(flow, /deposit_address/);
-  assert.match(
-    flow,
-    /Balance credit occurs only after Neptlium verifies observation, posting, settlement, and reconciliation/,
-  );
+  assert.match(flow, /\/dashboard\/activity/);
+  assert.match(flow, /Creating instructions records a funding request; it does not mean funds were received/);
+  assert.match(flow, /Do not send funds until an address is displayed here/);
   assert.doesNotMatch(flow, /https?:\/\/.*qr/i);
+});
+
+test('funding intent invalidates overview, Capital and Activity projections', () => {
+  const actions = read('app/dashboard/capital-account/actions.ts');
+  assert.match(actions, /revalidatePath\('\/dashboard'\)/);
+  assert.match(actions, /revalidatePath\('\/dashboard\/capital'\)/);
+  assert.match(actions, /revalidatePath\('\/dashboard\/activity'\)/);
+  assert.match(actions, /session_expired/);
 });
