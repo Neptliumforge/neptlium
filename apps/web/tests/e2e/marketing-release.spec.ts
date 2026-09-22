@@ -2,8 +2,6 @@ import { expect, test } from '@playwright/test';
 
 const releaseRoutes = [
   '/',
-  '/personal',
-  '/business',
   '/platform',
   '/investments',
   '/capital',
@@ -89,11 +87,11 @@ test.describe('Neptlium unified marketing release', () => {
     );
     await page.goto('/', { waitUntil: 'networkidle' });
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });
-    for (const label of ['Personal', 'Business', 'Platform', 'Insights', 'Security', 'Company']) {
+    for (const label of ['Individuals', 'Institutions', 'Investments', 'Company']) {
       await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
     }
-    await nav.getByRole('link', { name: 'Business', exact: true }).click();
-    await expect(page).toHaveURL(/\/business\/?$/);
+    await nav.getByRole('link', { name: 'Institutions', exact: true }).click();
+    await expect(page).toHaveURL(/\/institutional\/?$/);
   });
 
   test('desktop account chooser keeps Personal and Business destinations separate', async ({
@@ -165,18 +163,25 @@ test.describe('Neptlium unified marketing release', () => {
       'href',
       '/institutional',
     );
-    await expect(page.getByRole('link', { name: /Explore Personal/i }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /Explore Capital/i }).first()).toHaveAttribute(
       'href',
-      '/personal',
+      '/capital',
     );
-    await expect(page.getByRole('link', { name: /Explore Business/i }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /Explore Treasury/i }).first()).toHaveAttribute(
       'href',
-      '/business',
+      '/treasury',
     );
     await expect(page.getByRole('link', { name: /Explore Insights/i })).toHaveAttribute(
       'href',
       '/insights',
     );
+  });
+
+  test('legacy product identities redirect to canonical Capital and Treasury', async ({ page }) => {
+    await page.goto('/personal');
+    await expect(page).toHaveURL(/\/capital\/?$/);
+    await page.goto('/business');
+    await expect(page).toHaveURL(/\/treasury\/?$/);
   });
 
   test('about remains the intentional company alias', async ({ page }) => {
