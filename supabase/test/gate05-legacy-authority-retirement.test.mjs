@@ -10,8 +10,8 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 
 const allocate = read('supabase/functions/allocate-portfolio/index.ts');
 const yieldFn = read('supabase/functions/calculate-yield/index.ts');
-const migration = read('supabase/migrations/20260913061000_gate05_retire_legacy_financial_authority.sql');
-const grants = read('supabase/migrations/20260913062500_gate05_legacy_table_readonly_grants.sql');
+const migration = read('supabase/migrations/20260913052329_gate05_retire_legacy_financial_authority.sql');
+const grants = read('supabase/migrations/20260913052717_gate05_legacy_table_readonly_grants.sql');
 
 test('legacy portfolio allocator remains an inert 410 tombstone', () => {
   assert.match(allocate, /ALLOCATE_PORTFOLIO_RETIRED/);
