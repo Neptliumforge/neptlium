@@ -35,7 +35,7 @@ test('distributed limiter preserves explicit throttling', async () => {
 
 test('distributed limiter migration is RLS-protected and service-role-only', () => {
   const migration = readFileSync(
-    resolve(import.meta.dirname, '../../../supabase/migrations/20260813090000_distributed_api_rate_limiting.sql'),
+    resolve(import.meta.dirname, '../../../supabase/migrations/20260815115118_distributed_api_rate_limiting.sql'),
     'utf8',
   );
   assert.match(migration, /alter table public\.api_rate_limits enable row level security/i);

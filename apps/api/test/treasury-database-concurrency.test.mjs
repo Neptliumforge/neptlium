@@ -5,7 +5,7 @@ import { PGlite } from '@electric-sql/pglite';
 
 const migration = await readFile(
   new URL(
-    '../../../supabase/migrations/20260818120000_self_custody_treasury_destination_foundation.sql',
+    '../../../supabase/archive/superseded/20260818120000_self_custody_treasury_destination_foundation.sql',
     import.meta.url,
   ),
   'utf8',
