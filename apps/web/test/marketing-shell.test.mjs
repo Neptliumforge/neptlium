@@ -32,7 +32,7 @@ test('homepage states the canonical capital proposition without fabricated finan
 test('homepage exposes the four canonical product families and contextual intelligence', () => {
   for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
     assert.match(page, new RegExp(`label: '${family}'`));
-  for (const href of ['/capital', '/business', '/institutional', '/infrastructure'])
+  for (const href of ['/capital', '/treasury', '/institutional', '/infrastructure'])
     assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
   assert.match(page, /Explore \{family\.label\}/);
   assert.match(page, /Explore Intelligence/);
