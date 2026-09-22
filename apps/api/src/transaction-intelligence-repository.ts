@@ -175,7 +175,7 @@ export class SupabaseTransactionIntelligenceRepository implements TransactionInt
     }
   }
 
-  async ingestObservation(input: Parameters<TransactionIntelligenceRepository['ingestObservation']>[0]) {
+  async ingestObservation(input: Parameters<TransactionIntelligenceRepository['ingestObservation']>[0]): Promise<{ value: TransactionObservationRecord; replayed: boolean }> {
     const existing = await this.rows<ObservationRow>(
       `transaction_observation_inbox?owner_id=eq.${encodeURIComponent(input.ownerId)}&source=eq.${encodeURIComponent(input.source)}&source_event_id=eq.${encodeURIComponent(input.sourceEventId)}&select=*&limit=1`,
       'Transaction observation lookup is unavailable',
@@ -210,7 +210,7 @@ export class SupabaseTransactionIntelligenceRepository implements TransactionInt
     return { value: observation(((await response.json()) as ObservationRow[])[0]!), replayed: false };
   }
 
-  async persistClassification(input: Parameters<TransactionIntelligenceRepository['persistClassification']>[0]) {
+  async persistClassification(input: Parameters<TransactionIntelligenceRepository['persistClassification']>[0]): Promise<{ value: TransactionSemanticEventRecord; replayed: boolean }> {
     const existing = await this.rows<EventRow>(
       `transaction_semantic_events?observation_id=eq.${encodeURIComponent(input.observationId)}&select=*&limit=1`,
       'Transaction classification lookup is unavailable',
