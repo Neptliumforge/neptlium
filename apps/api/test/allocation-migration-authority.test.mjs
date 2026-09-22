@@ -6,7 +6,7 @@ import { dirname, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, '../../..');
-const foundation = readFileSync(resolve(repoRoot, 'supabase/migrations/20260811073000_allocation_engine_foundation.sql'), 'utf8');
+const foundation = readFileSync(resolve(repoRoot, 'supabase/migrations/20260811161533_allocation_engine_foundation.sql'), 'utf8');
 const authority = readFileSync(resolve(repoRoot, 'supabase/migrations/20260811073500_allocation_api_authority_grants.sql'), 'utf8');
 
 test('Allocation persistence enables RLS on every governed table', () => {
