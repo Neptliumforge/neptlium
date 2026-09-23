@@ -15,6 +15,7 @@ const bootstrap = read('lib/product/bootstrap.ts');
 const provider = read('components/product/ProductBootstrapProvider.tsx');
 const experience = read('components/product/OperatingExperience.tsx');
 const css = read('app/authenticated-product.css');
+const tokens = read('../../packages/ui/src/styles/tokens.css');
 
 test('authenticated shell loads a shared account bootstrap once at layout authority', () => {
   assert.match(layout, /getAuthenticatedProductBootstrap/);
@@ -69,8 +70,9 @@ test('high-value actions are capability gated', () => {
 });
 
 test('authenticated product keeps the carbon and mineral-teal system', () => {
-  assert.match(css, /--color-canvas:\s*#050505/);
-  assert.match(css, /--color-text-primary:\s*#f7f7f3/);
-  assert.match(css, /--color-accent-primary:\s*#35d5c1/);
+  assert.match(tokens, /--n-canvas:\s*#080c10/);
+  assert.match(tokens, /--n-warm-white:\s*#f0f0e8/);
+  assert.match(tokens, /--n-teal-primary:\s*#4a9992/);
+  assert.match(css, /var\(--color-accent-primary\)/);
   assert.doesNotMatch(css, /backdrop-filter:.*blur\(2[0-9]/i);
 });
