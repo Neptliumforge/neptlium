@@ -113,3 +113,15 @@ export function Delta({ value, className }: { readonly value?: number|null; read
   const label=value==null?'Unavailable':`${value>0?'+':''}${value.toLocaleString('en-US',{maximumFractionDigits:2})}`;
   return <span className={cn('tabular-nums', value==null?'text-text-muted':value>0?'text-success':value<0?'text-danger':'text-text-secondary',className)}><span className="sr-only">{value==null?'Value unavailable':value>0?'Positive change: ':value<0?'Negative change: ':'No change: '}</span>{label}</span>;
 }
+
+export function TransactionRow({ title, meta, amount, status }: { readonly title: string; readonly meta: string; readonly amount: ReactNode; readonly status: ReactNode }) {
+  return <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border-default py-3 sm:grid-cols-[minmax(0,1fr)_auto_auto]"><div className="min-w-0"><strong className="block truncate text-body-sm font-medium text-text-primary">{title}</strong><span className="text-caption text-text-muted">{meta}</span></div><div className="text-right text-body-sm tabular-nums text-text-primary">{amount}</div><div className="col-span-2 sm:col-span-1">{status}</div></div>;
+}
+export const PositionRow = TransactionRow;
+export function AllocationBar({ label, value }: { readonly label: string; readonly value: number }) {
+  const safe=Math.max(0,Math.min(1,value));
+  return <div><div className="mb-2 flex justify-between gap-3 text-body-sm"><span className="text-text-secondary">{label}</span><Percentage value={safe} /></div><div className="h-1.5 bg-surface-3" aria-label={`${label} allocation ${Math.round(safe*100)} percent`} role="img"><span className="block h-full bg-brand" style={{width:`${safe*100}%`}} /></div></div>;
+}
+export function PortfolioSummary({ title='Portfolio', value, supporting }: { readonly title?: string; readonly value: ReactNode; readonly supporting?: ReactNode }) {
+  return <section className="border-y border-border-default py-5"><span className="text-label uppercase tracking-[.08em] text-text-muted">{title}</span><div className="mt-2 text-financial-l font-medium tabular-nums text-text-primary">{value}</div>{supporting&&<div className="mt-2 text-body-sm text-text-secondary">{supporting}</div>}</section>;
+}
