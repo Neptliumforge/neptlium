@@ -276,3 +276,60 @@ html[data-theme='dark'] { color-scheme: dark; }
     --motion-duration-slow: 1ms;
   }
 }
+
+
+/* Neptlium Capital Rails — canonical spatial/authority visual grammar.
+ * Geometry derives directly from the three canonical Neptlium mark strokes.
+ * Luminous emphasis is reserved for active movement/evidence, never ambient decoration.
+ */
+:root {
+  --rail-shadow: var(--n-teal-deep);
+  --rail-structural: var(--n-teal-mid);
+  --rail-secondary: var(--n-teal-mineral);
+  --rail-active: var(--n-teal-primary);
+  --rail-evidence: var(--n-teal-bright);
+  --rail-luminous: var(--n-teal-luminous);
+  --rail-node: var(--n-teal-mineral);
+  --rail-authority: var(--n-teal-primary);
+  --rail-reconciling: var(--color-status-reconciling);
+  --rail-opacity-distant: .16;
+  --rail-opacity-structural: .52;
+  --rail-opacity-active: .9;
+  --rail-duration: 1600ms;
+}
+
+html[data-theme='light'] {
+  --rail-shadow: #d6e3df;
+  --rail-structural: #39736d;
+  --rail-secondary: #2f665f;
+  --rail-active: #1f6666;
+  --rail-evidence: #175c57;
+  --rail-node: #39736d;
+}
+
+.n-capital-rails { position: relative; margin: 0; color: var(--rail-structural); }
+.n-capital-rails > svg { display: block; width: 100%; height: auto; overflow: visible; }
+.n-capital-rails__shadow { color: var(--rail-shadow); opacity: var(--rail-opacity-distant); }
+.n-capital-rails__structure { color: var(--rail-secondary); opacity: var(--rail-opacity-structural); }
+.n-capital-rails__signal { color: var(--rail-evidence); opacity: 0; stroke-dasharray: .12 .88; stroke-dashoffset: 1; }
+.n-capital-rails__node { transform-box: fill-box; transform-origin: center; }
+.n-capital-rails.is-active .n-capital-rails__signal { opacity: var(--rail-opacity-active); animation: n-rail-progress var(--rail-duration) var(--motion-ease-in-out) infinite; }
+.n-capital-rails.is-active .n-capital-rails__node { animation: n-rail-node 2400ms var(--motion-ease-in-out) infinite; }
+.n-capital-rails__legend { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); margin-top: var(--space-3); color: var(--color-text-muted); font-size: var(--text-caption); }
+.n-capital-rails__legend span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.n-capital-rails__legend i { width: .4rem; height: .4rem; border-radius: 50%; background: var(--rail-legend-tone); }
+
+.n-capital-rail-stage { position: relative; display: grid; grid-template-columns: 2rem 1rem minmax(0,1fr); gap: var(--space-3); align-items: start; min-height: 4.25rem; color: var(--color-text-secondary); }
+.n-capital-rail-stage:not(:last-child)::after { content: ''; position: absolute; left: 2.46rem; top: 1.15rem; bottom: -.15rem; width: 1px; background: linear-gradient(var(--rail-secondary), var(--rail-shadow)); opacity: .55; }
+.n-capital-rail-stage__index { color: var(--color-text-muted); font: var(--text-caption)/1.5 var(--font-mono); }
+.n-capital-rail-stage__node { position: relative; z-index: 1; width: .62rem; height: .62rem; margin-top: .18rem; border: 1px solid var(--rail-stage-tone); border-radius: 50%; background: color-mix(in oklab, var(--rail-stage-tone) 26%, var(--color-surface-1)); box-shadow: 0 0 0 3px var(--color-surface-1); }
+.n-capital-rail-stage strong { display: block; color: var(--color-text-primary); font-size: var(--text-body-sm); font-weight: 600; }
+.n-capital-rail-stage div > span { display: block; margin-top: .2rem; color: var(--color-text-muted); font-size: var(--text-caption); line-height: 1.45; }
+
+@keyframes n-rail-progress { 0% { stroke-dashoffset: 1; } 55%,100% { stroke-dashoffset: 0; } }
+@keyframes n-rail-node { 0%,100% { opacity: .72; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.08); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .n-capital-rails.is-active .n-capital-rails__signal { animation: none; opacity: .7; stroke-dasharray: none; }
+  .n-capital-rails.is-active .n-capital-rails__node { animation: none; }
+}
