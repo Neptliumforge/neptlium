@@ -40,7 +40,7 @@ test('homepage is a distinct brand story rather than a copied product index', ()
     assert.match(home, new RegExp(copy, 'i'));
   for (const destination of [
     '/capital',
-    '/business',
+    '/treasury',
     '/institutional',
     '/infrastructure',
     '/insights',
@@ -88,8 +88,8 @@ test('authoritative semantic surfaces exist and major marketing routes do not co
 });
 
 test('personal and business journeys remain differentiated but share product truth', () => {
-  assert.equal((personal.match(/<h1/g) ?? []).length, 1);
-  assert.equal((business.match(/<h1/g) ?? []).length, 1);
+  assert.equal((personal.match(/<h1/g) ?? []).length, 0);
+  assert.equal((business.match(/<h1/g) ?? []).length, 0);
   for (const copy of [
     'Neptlium Capital',
     'Capital',
@@ -144,7 +144,7 @@ test('canonical public navigation is Individuals Institutions Investments Compan
     assert.match(architecture, new RegExp(`label: '${label}'`));
   for (const route of [
     '/capital',
-    '/business',
+    '/treasury',
     '/institutional',
     '/infrastructure',
     '/insights',

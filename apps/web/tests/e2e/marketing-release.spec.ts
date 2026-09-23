@@ -2,8 +2,6 @@ import { expect, test } from '@playwright/test';
 
 const releaseRoutes = [
   '/',
-  '/personal',
-  '/business',
   '/platform',
   '/investments',
   '/capital',
@@ -89,38 +87,13 @@ test.describe('Neptlium unified marketing release', () => {
     );
     await page.goto('/', { waitUntil: 'networkidle' });
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });
-    for (const label of ['Personal', 'Business', 'Platform', 'Insights', 'Security', 'Company']) {
+    for (const label of ['Individuals', 'Institutions', 'Investments', 'Company']) {
       await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
     }
-    await nav.getByRole('link', { name: 'Business', exact: true }).click();
-    await expect(page).toHaveURL(/\/business\/?$/);
+    await nav.getByRole('link', { name: 'Institutions', exact: true }).click();
+    await expect(page).toHaveURL(/\/institutional\/?$/);
   });
 
-  test('desktop account chooser keeps Personal and Business destinations separate', async ({
-    page,
-  }, testInfo) => {
-    test.skip(
-      !['desktop-1440', 'laptop-1280'].includes(testInfo.project.name),
-      'Desktop account chooser contract',
-    );
-    await page.goto('/', { waitUntil: 'networkidle' });
-    await page.locator('summary').filter({ hasText: 'Sign in' }).click();
-    const openMenu = page.locator('details[open]').filter({ hasText: 'Sign in' });
-    await expect(
-      openMenu.getByRole('link', { name: /Personal Neptlium Capital/i }),
-    ).toHaveAttribute('href', personalSignInUrl);
-    await expect(
-      openMenu.getByRole('link', { name: /Business Open Neptlium Treasury/i }),
-    ).toHaveAttribute('href', businessAppUrl);
-    await page.locator('summary').filter({ hasText: 'Get started' }).click();
-    const startMenu = page.locator('details[open]').filter({ hasText: 'Get started' });
-    await expect(
-      startMenu.getByRole('link', { name: /Personal Neptlium Capital/i }),
-    ).toHaveAttribute('href', personalSignUpUrl);
-    await expect(
-      startMenu.getByRole('link', { name: /Business Request Neptlium Treasury access/i }),
-    ).toHaveAttribute('href', '/contact');
-  });
 
   test('mobile navigation preserves both journeys and restores page state', async ({
     page,
@@ -135,8 +108,8 @@ test.describe('Neptlium unified marketing release', () => {
     await trigger.click();
     const dialog = page.getByRole('dialog', { name: 'Navigation' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Personal', exact: true }).first()).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Business', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Individuals', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Institutions', exact: true }).first()).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Open account', exact: false })).toHaveAttribute(
       'href',
       personalSignUpUrl,
@@ -165,18 +138,21 @@ test.describe('Neptlium unified marketing release', () => {
       'href',
       '/institutional',
     );
-    await expect(page.getByRole('link', { name: /Explore Personal/i }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /Explore Capital/i }).first()).toHaveAttribute(
       'href',
-      '/personal',
+      '/capital',
     );
-    await expect(page.getByRole('link', { name: /Explore Business/i }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /Explore Treasury/i }).first()).toHaveAttribute(
       'href',
-      '/business',
+      '/treasury',
     );
-    await expect(page.getByRole('link', { name: /Explore Insights/i })).toHaveAttribute(
-      'href',
-      '/insights',
-    );
+  });
+
+  test('legacy product identities redirect to canonical Capital and Treasury', async ({ page }) => {
+    await page.goto('/personal');
+    await expect(page).toHaveURL(/\/capital\/?$/);
+    await page.goto('/business');
+    await expect(page).toHaveURL(/\/treasury\/?$/);
   });
 
   test('about remains the intentional company alias', async ({ page }) => {

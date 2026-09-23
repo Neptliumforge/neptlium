@@ -52,7 +52,7 @@ test('homepage architecture introduces financial world, product families, moveme
   }
   for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
     assert.match(page, new RegExp(`label: '${family}'`));
-  for (const href of ['/capital', '/business', '/institutional', '/infrastructure', '/insights'])
+  for (const href of ['/capital', '/treasury', '/institutional', '/infrastructure', '/insights'])
     assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
   assert.match(page, /Explore \{family\.label\}/);
   assert.match(page, /Explore Intelligence/);

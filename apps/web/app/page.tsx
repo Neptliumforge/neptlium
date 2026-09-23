@@ -143,7 +143,7 @@ const families = [
     label: 'Treasury',
     title: 'Operating money, coordinated.',
     copy: 'Manage organizational liquidity, payments, stablecoins, approvals and financial controls.',
-    href: '/business',
+    href: '/treasury',
     tone: 'business',
   },
   {

@@ -25,7 +25,7 @@ export default function PersonalPage() {
       <div className={`${styles.shell} ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
           <p className={styles.kicker}>Neptlium Personal</p>
-          <h1 id="personal-title">See your capital clearly.</h1>
+          <h2 id="personal-title">See your capital clearly.</h2>
           <p className={styles.heroLead}>Understand where capital sits, how it is arranged, what changed, and what deserves a closer look — without turning your financial life into a trading screen.</p>
           <div className={styles.actions}>
             <a className={styles.primaryAction} href={SITE.personalSignUpUrl}>Get started <ArrowRight aria-hidden="true" /></a>

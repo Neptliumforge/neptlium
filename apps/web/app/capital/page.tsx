@@ -4,6 +4,7 @@ import { createPageMetadata } from '@/lib/seo';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
 import styles from '../product-pages.module.css';
 import headerStyles from '../product-light-header.module.css';
+import PersonalLegacyContent from '../personal/page';
 
 export const metadata = createPageMetadata({
   title: 'Capital — Neptlium',
@@ -15,7 +16,7 @@ const AccountRow = ({ name, state }: { name: string; state: string }) => (
   <div className={styles.accountRow}><strong>{name}</strong><span>{state}</span></div>
 );
 
-export default function CapitalPage() {
+function CapitalCorePage() {
   return <div className={styles.page}>
     <section className={`${styles.hero} ${styles.white} ${headerStyles.light}`} aria-labelledby="capital-page-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
@@ -116,4 +117,9 @@ export default function CapitalPage() {
     </section>
     <div className={`${styles.disclosure} ${styles.carbon}`}><div className={styles.shell}><p>{DISCLOSURES.general}</p></div></div>
   </div>;
+}
+
+
+export default function CapitalPage() {
+  return <><CapitalCorePage /><PersonalLegacyContent /></>;
 }

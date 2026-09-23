@@ -39,7 +39,7 @@ export const CAPITAL_LINKS = [
 export const TREASURY_LINKS = [
   {
     label: 'Treasury',
-    href: '/business',
+    href: '/treasury',
     description: 'Neptlium Treasury for organizational capital and financial operations.',
   },
   {
@@ -92,7 +92,7 @@ export const PRODUCTS = [
   },
   {
     label: 'Neptlium Treasury',
-    href: '/business',
+    href: '/treasury',
     description: 'Business treasury, payments, stablecoins, approvals and policies.',
   },
   {
@@ -180,7 +180,7 @@ export const PRIMARY_COMPANY = COMPANY;
 export const NAVIGATION = [
   {
     label: 'Individuals',
-    href: '/personal',
+    href: '/capital',
     description: 'Personal investing, portfolio and capital.',
     links: CAPITAL_LINKS,
   },
@@ -206,8 +206,6 @@ export const NAVIGATION = [
 
 export const INDEXABLE_ROUTES = [
   '/',
-  '/personal',
-  '/business',
   '/capital',
   '/institutional',
   '/infrastructure',
@@ -233,8 +231,8 @@ export const INDEXABLE_ROUTES = [
 
 export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/': 'canonical-indexable',
-  '/personal': 'canonical-indexable',
-  '/business': 'canonical-indexable',
+  '/personal': 'legacy-redirect',
+  '/business': 'legacy-redirect',
   '/capital': 'canonical-indexable',
   '/institutional': 'canonical-indexable',
   '/infrastructure': 'canonical-indexable',

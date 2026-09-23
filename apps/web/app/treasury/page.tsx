@@ -1,5 +1,6 @@
 import { TreasuryPage } from '@/components/business-product-pages';
 import { createPageMetadata } from '@/lib/seo';
+import BusinessLegacyContent from '../business/page';
 
 export const metadata = createPageMetadata({
   title: 'Treasury',
@@ -8,5 +9,5 @@ export const metadata = createPageMetadata({
 });
 
 export default function Page() {
-  return <TreasuryPage />;
+  return <><TreasuryPage /><BusinessLegacyContent /></>;
 }
