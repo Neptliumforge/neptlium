@@ -6,7 +6,7 @@ const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.ur
 const page = read('app/page.tsx');
 const visualCss = read('app/neptlium-visual-direction.css');
 const marketingCss = read('app/marketing-platform.module.css');
-const mobileCss = read('app/mobile-navigation-fix.css');
+const mobileCss = read('app/globals.css');
 const layout = read('app/layout.tsx');
 const header = read('components/site-header.tsx');
 const mobile = read('components/mobile-navigation.tsx');
@@ -28,7 +28,7 @@ test('production public Web keeps a single canonical hero and truthful product-f
 
 test('production visual system remains consolidated without retired global override layers', () => {
   assert.match(layout, /neptlium-visual-direction\.css/);
-  assert.match(layout, /experience-v1\.css/);
+  assert.doesNotMatch(layout, /experience-v1\.css/);
   assert.match(page, /home-elite\.module\.css/);
   assert.doesNotMatch(layout, /production-hardening\.css/);
   for (const retired of [
