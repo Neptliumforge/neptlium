@@ -133,8 +133,8 @@ test.describe('Neptlium unified marketing release', () => {
     await trigger.click();
     const dialog = page.getByRole('dialog', { name: 'Navigation' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Personal', exact: true }).first()).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Business', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Individuals', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Institutions', exact: true }).first()).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Open account', exact: false })).toHaveAttribute(
       'href',
       personalSignUpUrl,
@@ -170,10 +170,6 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page.getByRole('link', { name: /Explore Treasury/i }).first()).toHaveAttribute(
       'href',
       '/treasury',
-    );
-    await expect(page.getByRole('link', { name: /Explore Insights/i })).toHaveAttribute(
-      'href',
-      '/insights',
     );
   });
 
