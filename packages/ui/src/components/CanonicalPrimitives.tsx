@@ -1,6 +1,7 @@
 import type {
   AnchorHTMLAttributes,
   HTMLAttributes,
+  ButtonHTMLAttributes,
   InputHTMLAttributes,
   ReactNode,
   SelectHTMLAttributes,
@@ -36,8 +37,8 @@ export function Panel({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 export function TextLink({ className, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) {
   return <a className={cn('text-text-secondary underline-offset-4 hover:text-text-primary hover:underline focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)]', className)} {...props} />;
 }
-export function IconButton({ className, children, ...props }: InputHTMLAttributes<HTMLButtonElement> & { readonly children?: ReactNode }) {
-  return <button type="button" className={cn('inline-flex size-10 items-center justify-center rounded-sm border border-border-default bg-transparent text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] disabled:opacity-50', className)} {...(props as HTMLAttributes<HTMLButtonElement>)}>{children}</button>;
+export function IconButton({ className, children, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { readonly children?: ReactNode }) {
+  return <button type="button" className={cn('inline-flex size-10 items-center justify-center rounded-sm border border-border-default bg-transparent text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] disabled:opacity-50', className)} {...props}>{children}</button>;
 }
 
 export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
