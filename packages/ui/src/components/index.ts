@@ -15,3 +15,5 @@ export * from './Identity';
 
 export * from './FinancialState';
 export * from './CapitalRails';
+
+export * from './CanonicalPrimitives';
