@@ -30,7 +30,7 @@ function SignatureHeroObject() {
         <div className={styles.railObjectCopy}>
           <span>Capital rails</span>
           <strong>Movement remains distinct from authority.</strong>
-          <small>Illustrative system language — no customer data or execution state.</small>
+          <small>Illustrative infrastructure — no customer data. No execution state is implied.</small>
         </div>
       </div>
     </div>
