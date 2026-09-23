@@ -243,7 +243,8 @@ html[data-theme='light'] {
   --color-border-default: rgb(16 20 19 / 14%);
   --color-border-strong: rgb(16 20 19 / 24%);
   --color-border-hover: rgb(31 102 102 / 38%);
-  --color-topnav: rgb(244 245 242 / 94%);
+  /* Marketing navigation intentionally remains in the canonical dark capital environment even when product theme is light. */
+  --color-topnav: rgb(8 12 16 / 94%);
   --color-sidebar: #eef0ec;
   --color-sidebar-surface-secondary: #e7eae5;
   --color-sidebar-surface-raised: #dde3de;
