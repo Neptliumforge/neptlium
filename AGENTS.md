@@ -144,6 +144,15 @@ A build or execution is not complete merely because local validation passes. Com
 - This standing Git authorization does **not** authorize production deploys, database migrations, environment/provider mutations, production data changes, financial execution, or capability-flag enablement; those retain their separate authorization and safety gates.
 - Environment identity is not authorization. Git operations may be performed from any authorized environment, including connected GitHub tooling, Termux, Codespaces, CI, or another approved client.
 
+## Canonical design authority
+
+- `docs/03_DESIGN_SYSTEM.md` and `packages/ui/src/styles/tokens.css` are the design-system authorities.
+- Do not invent application-local brand colors, typography scales, spacing systems, radii, shadows, motion curves, financial status semantics or duplicate shared primitives when a canonical equivalent exists.
+- New shared visual/interaction primitives belong in `@neptlium/ui`; product-specific composition remains inside the owning application.
+- Dark, Light and System are supported appearance modes. System follows browser/OS preference and explicit user preference must persist.
+- Financial UI must preserve provider-evidence versus canonical-ledger boundaries and must not visually upgrade pending/provider-observed state into available/reconciled state.
+- Design work never authorizes provider activation, financial execution, migration changes or secret changes.
+
 ## Scope discipline
 
 Classify ownership before editing. Keep Web work in `apps/web`, App work in `apps/app`, Admin work in `apps/admin`, and API/domain work in `apps/api` unless evidence establishes a genuine cross-boundary requirement. Record adjacent improvements as follow-up work instead of silently expanding scope.
