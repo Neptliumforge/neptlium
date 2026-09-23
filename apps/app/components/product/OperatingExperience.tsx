@@ -253,8 +253,8 @@ export function OverviewExperience() {
     <div className="op-stack">
       <PageHeader
         eyebrow="Overview"
-        title={`Welcome back, ${firstName(snapshot.account.fullName ?? snapshot.account.displayName)}.`}
-        description="Your capital, portfolio and recent activity in one clear view."
+        title="Your capital at a glance"
+        description={`Welcome back, ${firstName(snapshot.account.fullName ?? snapshot.account.displayName)}. Review available capital, portfolio state and recent governed activity.`}
         actions={<PrimaryActions />}
       />
       <section className="op-hero">
@@ -591,8 +591,8 @@ export function PortfolioExperience() {
     <div className="op-stack">
       <PageHeader
         eyebrow="Portfolio"
-        title="Portfolio"
-        description="What you own, what it is worth and how it is performing—only when supported by your account records."
+        title="Your portfolio"
+        description="Positions, allocation and performance supported by your account records."
         actions={
           <>
             <Link className="op-button op-button-primary" href="/dashboard/invest">
@@ -839,8 +839,8 @@ export function ActivityExperience() {
     <div className="op-stack">
       <PageHeader
         eyebrow="Activity"
-        title="Activity"
-        description="Deposits, transfers, withdrawals and investment activity recorded for your account."
+        title="Account activity"
+        description="A chronological record of governed capital events and state changes."
       />
       <section className="op-panel">
         <SectionHeading label="Account activity" title="Recent activity" />
