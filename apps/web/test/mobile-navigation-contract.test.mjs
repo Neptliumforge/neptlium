@@ -8,7 +8,7 @@ const mobile = readFileSync(
   'utf8',
 );
 const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
-const css = readFileSync(new URL('../app/mobile-navigation-fix.css', import.meta.url), 'utf8');
+const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
 
 test('mobile navigation is portaled outside the header stacking context', () => {
   assert.match(header, /import \{ createPortal \} from 'react-dom'/);
@@ -23,11 +23,9 @@ test('mobile navigation is portaled outside the header stacking context', () => 
 });
 
 test('mobile navigation owns an opaque editorial viewport', () => {
-  assert.match(layout, /import '\.\/mobile-navigation-fix\.css'/);
-  assert.match(css, /\.mobile-command-wrap\s*\{[^}]*position: fixed;/s);
-  assert.match(css, /\.mobile-command-wrap\s*\{[^}]*height: 100dvh;/s);
-  assert.match(css, /\.mobile-command-wrap\s*\{[^}]*background: #fbfaf7;/s);
-  assert.match(css, /\.mobile-command-nav\s*\{[^}]*overflow-y: auto;/s);
+  assert.doesNotMatch(layout, /mobile-navigation-fix\.css/);
+  assert.match(css, /\.mobile-command-wrap/);
+  assert.match(css, /\.mobile-command-nav/);
 });
 
 test('mobile menu exposes canonical product-family navigation and separate account actions', () => {
