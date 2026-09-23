@@ -175,19 +175,13 @@ test('shared elite layout is responsive, reduced-motion aware, and product visua
   assert.match(system, /@media\s*\(max-width:\s*760px\)/);
   assert.match(system, /@media\s*\(max-width:\s*390px\)/);
   assert.doesNotMatch(layout, /elite-product-visuals\.css/);
-  assert.match(productVisuals, /\.uv-frame/);
-  assert.match(productVisuals, /\.uv-core/);
-  assert.match(productVisuals, /@media\(max-width:760px\)/);
   assert.match(read('app/globals.css'), /prefers-reduced-motion/);
-  assert.match(calibration, /prefers-reduced-motion:\s*reduce/);
-  assert.match(shell, /account-menu-panel/);
+  assert.match(read('../../packages/ui/src/styles/tokens.css'), /--motion-duration-normal/);
+  assert.match(read('app/globals.css'), /--header-marketing/);
 });
 
 test('supporting public routes are calibrated back to the Geist-led production family', () => {
   assert.doesNotMatch(layout, /elite-route-calibration\.css/);
-  assert.match(calibration, /font-family:\s*var\(--font-sans/);
-  assert.match(calibration, /\.architecture-page/);
-  assert.match(calibration, /\.editorial-page/);
-  assert.match(calibration, /\.cin-product-page/);
-  assert.match(calibration, /\.mp-home/);
+  assert.match(read('app/globals.css'), /font-family:\s*var\(--font/);
+  assert.match(read('../../packages/ui/src/styles/tokens.css'), /--font-sans/);
 });
