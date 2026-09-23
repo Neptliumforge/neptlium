@@ -55,7 +55,7 @@ test('homepage is a distinct brand story rather than a copied product index', ()
     /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i,
   );
   assert.doesNotMatch(home, /currently supported|not configured|capability unavailable/i);
-  assert.match(homeElite, /font-size:clamp\(64px,6\.4vw,88px\)/);
+  assert.match(homeElite, /font-size:var\(--text-display-xl\)/);
   assert.match(homeElite, /@media\(max-width:760px\)/);
   assert.match(homeElite, /@media\(max-width:390px\)/);
   assert.match(homeElite, /prefers-reduced-motion:reduce/);
