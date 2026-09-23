@@ -8,8 +8,6 @@
 @layer base {
   html {
     color-scheme: dark;
-    --font-sans: var(--font-sans);
-    --font-numeric: var(--font-numeric);
   }
 
   body {
