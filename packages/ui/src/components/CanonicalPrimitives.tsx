@@ -6,30 +6,17 @@ import type {
   ReactNode,
   SelectHTMLAttributes,
   TableHTMLAttributes,
-  TextareaHTMLAttributes,
 } from 'react';
 import { cn } from './utils/cn';
 
 export function Container({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('mx-auto w-full max-w-[var(--container-content)] px-[var(--page-gutter)]', className)} {...props} />;
 }
-export function Stack({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex flex-col gap-[var(--space-4)]', className)} {...props} />;
-}
 export function Cluster({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('flex flex-wrap items-center gap-[var(--space-3)]', className)} {...props} />;
 }
 export function Grid({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('grid gap-[var(--space-5)]', className)} {...props} />;
-}
-export function Section({ className, ...props }: HTMLAttributes<HTMLElement>) {
-  return <section className={cn('py-[var(--space-8)] sm:py-[var(--space-10)]', className)} {...props} />;
-}
-export function Divider({ className, ...props }: HTMLAttributes<HTMLHRElement>) {
-  return <hr className={cn('border-0 border-t border-border-default', className)} {...props} />;
-}
-export function Surface({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('border border-border-default bg-surface-1', className)} {...props} />;
 }
 export function Panel({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('border border-border-default bg-surface-1 p-[var(--space-5)] shadow-sm', className)} {...props} />;
@@ -41,9 +28,6 @@ export function IconButton({ className, children, ...props }: ButtonHTMLAttribut
   return <button type="button" className={cn('inline-flex size-10 items-center justify-center rounded-sm border border-border-default bg-transparent text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus-ring)] disabled:opacity-50', className)} {...props}>{children}</button>;
 }
 
-export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea className={cn('min-h-28 w-full rounded-sm border border-border-default bg-surface-inset px-3 py-2 text-body text-text-primary outline-none placeholder:text-text-muted focus:border-border-focus focus:shadow-[var(--shadow-focus-ring)] disabled:opacity-50', className)} {...props} />;
-}
 export function Switch({ checked, className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <label className={cn('inline-flex min-h-11 cursor-pointer items-center gap-3 text-body-sm text-text-secondary', className)}><input type="checkbox" role="switch" checked={checked} className="peer sr-only" {...props} /><span aria-hidden="true" className="relative h-6 w-11 rounded-full border border-border-default bg-surface-3 transition peer-checked:border-brand peer-checked:bg-brand after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-text-primary after:transition-transform peer-checked:after:translate-x-5" /></label>;
 }
