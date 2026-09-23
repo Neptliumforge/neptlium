@@ -8,7 +8,7 @@ const layout = readFileSync(join(root, 'app/layout.tsx'), 'utf8');
 const css = readFileSync(join(root, 'app/neptlium-visual-direction.css'), 'utf8');
 
 test('marketing root loads the canonical visual-direction and experience layers', () => {
-  assert.match(layout, /<html lang="en">/);
+  assert.match(layout, /<html lang="en" suppressHydrationWarning>/);
   assert.match(layout, /colorScheme:\s*'light dark'/);
   assert.match(layout, /import '\.\/neptlium-visual-direction\.css';/);
   assert.match(layout, /import '\.\/experience-v1\.css';/);
