@@ -12,9 +12,9 @@ test('authenticated application enforces neutral operating authority', () => {
   const icon = read('public/icon.svg');
   const uiPackage = read('../../packages/ui/package.json');
   assert.match(global, /@import '@neptlium\/ui\/styles\/brand\.css'/);
-  assert.match(global, /--color-accent-primary: var\(--n-carbon\)/);
-  assert.match(global, /--color-canvas: var\(--n-canvas\)/);
-  assert.match(global, /--color-sidebar: #f5f3ee/);
+  assert.match(global, /@import '@neptlium\/ui\/styles\/tokens\.css'/);
+  assert.doesNotMatch(global, /--color-canvas:\s*#[0-9a-f]/i);
+  assert.doesNotMatch(global, /--color-sidebar:\s*#[0-9a-f]/i);
   assert.doesNotMatch(global, /#258BE5|#319EED/);
   assert.match(uiPackage, /"\.\/styles\/brand\.css"/);
   assert.match(icon, /#101214/);

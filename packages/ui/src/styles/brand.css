@@ -1,57 +1,47 @@
-/* Neptlium unified brand semantics — authoritative shared identity layer.
- * Marketing establishes authority and meaning. Product establishes control and operation.
- */
+/* Neptlium identity aliases. Runtime color authority lives in tokens.css. */
 :root {
-  /* Dark foundation */
   --n-brand-absolute-black: #000000;
-  --n-brand-obsidian: #05060b;
-  --n-brand-blue-black: #050b15;
-  --n-brand-ink-black: #0a111f;
-  --n-brand-midnight-surface: #0c1324;
-  --n-brand-deep-navy: #0d162a;
-  --n-brand-structural-navy: #151f3d;
+  --n-brand-canvas: #080c10;
+  --n-brand-canvas-deep: #041014;
+  --n-brand-surface: #0c1014;
+  --n-brand-surface-raised: #0c1c20;
+  --n-brand-ink: #f0f0e8;
+  --n-brand-ink-strong: #f8f8f8;
+  --n-brand-ink-secondary: #b8b8b8;
+  --n-brand-ink-muted: #a0a0a0;
+  --n-brand-border: rgb(240 240 232 / 14%);
+  --n-brand-border-standard: rgb(240 240 232 / 20%);
+  --n-brand-border-strong: rgb(240 240 232 / 28%);
+  --n-brand-teal-deep: #0c3434;
+  --n-brand-teal-mid: #1f6666;
+  --n-brand-teal-mineral: #387068;
+  --n-brand-teal: #4a9992;
+  --n-brand-teal-bright: #59b7ae;
+  --n-brand-teal-luminous: #00cec5;
+  --n-font-display: Georgia, "Times New Roman", serif;
+  --n-font-product: var(--font-geist, Inter), "Helvetica Neue", Arial, system-ui, sans-serif;
 
-  /* Precision Blue — direction, never environment */
-  --n-brand-blue: #258be5;
-  --n-brand-blue-bright: #319eed;
-  --n-brand-azure: #16a8e8;
-  --n-brand-cyan: #12c6e3;
-
-  /* Light foundation */
-  --n-brand-canvas: #ffffff;
-  --n-brand-canvas-soft: #f8f9fc;
-  --n-brand-surface-cool: #f3f5f8;
-  --n-brand-surface-blue-soft: #eef2f7;
-
-  /* Light text */
-  --n-brand-ink: #05060b;
-  --n-brand-ink-strong: #0a111f;
-  --n-brand-ink-secondary: #273247;
-  --n-brand-ink-muted: #596579;
-  --n-brand-ink-quiet: #778296;
-
-  /* Dark text */
-  --n-brand-text-on-dark: #f8f9fc;
-  --n-brand-text-on-dark-secondary: #e7eaf0;
-  --n-brand-text-on-dark-supporting: #b7bbc6;
-  --n-brand-text-on-dark-muted: #9297a4;
-
-  /* Borders */
-  --n-brand-border: #e5e9f0;
-  --n-brand-border-standard: #d8dee8;
-  --n-brand-border-strong: #c8d1df;
-  --n-brand-border-blue: color-mix(in srgb, var(--n-brand-blue) 28%, var(--n-brand-border));
-
-  /* Typography families. Font assets are supplied independently; fallbacks remain safe. */
-  --n-font-display: 'Universal Sans', 'Helvetica Neue', Arial, sans-serif;
-  --n-font-product: Geist, 'Helvetica Neue', Arial, system-ui, sans-serif;
-
-  /* Compatibility aliases for older brand consumers while migration completes. */
-  --n-brand-midnight: var(--n-brand-blue-black);
-  --n-brand-cobalt-deep: var(--n-brand-deep-navy);
-  --n-brand-cobalt-core: var(--n-brand-structural-navy);
-  --n-brand-ice: #d9f7fb;
-
-  /* Expressive marketing-only optical accent. Never use for product controls. */
-  --n-brand-gradient-signature: linear-gradient(112deg, var(--n-brand-blue-black) 0%, var(--n-brand-deep-navy) 36%, var(--n-brand-blue) 72%, var(--n-brand-cyan) 100%);
+  /* Temporary source-compatibility aliases. New code must not use blue identity aliases. */
+  --n-brand-obsidian: var(--n-brand-canvas);
+  --n-brand-blue-black: var(--n-brand-canvas-deep);
+  --n-brand-ink-black: #101413;
+  --n-brand-midnight-surface: var(--n-brand-surface);
+  --n-brand-deep-navy: var(--n-brand-surface-raised);
+  --n-brand-structural-navy: #142024;
+  --n-brand-blue: var(--n-brand-teal);
+  --n-brand-blue-bright: var(--n-brand-teal-bright);
+  --n-brand-azure: var(--n-brand-teal-bright);
+  --n-brand-cyan: var(--n-brand-teal-luminous);
+  --n-brand-canvas-soft: #f0f2ee;
+  --n-brand-surface-cool: #e8ece7;
+  --n-brand-surface-blue-soft: #eef2ee;
+  --n-brand-text-on-dark: #f0f0e8;
+  --n-brand-text-on-dark-secondary: #b8b8b8;
+  --n-brand-text-on-dark-supporting: #a0a0a0;
+  --n-brand-text-on-dark-muted: #777d7b;
+  --n-brand-midnight: var(--n-brand-canvas-deep);
+  --n-brand-cobalt-deep: var(--n-brand-teal-deep);
+  --n-brand-cobalt-core: var(--n-brand-teal-mid);
+  --n-brand-ice: #d9efec;
+  --n-brand-gradient-signature: linear-gradient(112deg, #041014 0%, #0c3434 58%, #4a9992 100%);
 }

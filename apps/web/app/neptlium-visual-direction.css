@@ -1,32 +1,32 @@
 :root {
-  --web-ivory: #f5f3ee;
-  --web-ivory-high: #fbfaf7;
-  --web-ivory-low: #eeece6;
-  --web-carbon: #101214;
-  --web-carbon-soft: #181b1d;
-  --web-carbon-muted: #23272a;
-  --web-teal: #0f8f86;
-  --web-teal-interaction: #20afa3;
-  --web-graphite: #343a3f;
-  --web-stone: #d8d5ce;
-  --web-mist: #eceae5;
-  --web-rule-dark: rgb(245 243 238 / 14%);
-  --web-rule-light: rgb(16 18 20 / 14%);
-  --web-shell: 78rem;
-  --web-reading: 42rem;
-  --web-gutter: clamp(1rem, 3vw, 2.5rem);
-  --web-space-xs: 0.5rem;
-  --web-space-sm: 0.75rem;
-  --web-space-md: 1rem;
-  --web-space-lg: 1.5rem;
-  --web-space-xl: 2rem;
-  --web-space-2xl: 3rem;
-  --web-space-3xl: 4rem;
-  --web-space-4xl: 6rem;
-  --web-space-5xl: 8rem;
-  --web-ease: cubic-bezier(0.2, 0, 0, 1);
+  /* Compatibility aliases only; canonical values live in @neptlium/ui tokens. */
+  --web-ivory: var(--color-text-primary);
+  --web-ivory-high: var(--n-high-white);
+  --web-ivory-low: var(--color-text-secondary);
+  --web-carbon: var(--color-canvas);
+  --web-carbon-soft: var(--color-surface-1);
+  --web-carbon-muted: var(--color-surface-2);
+  --web-teal: var(--color-brand);
+  --web-teal-interaction: var(--color-brand-emphasis);
+  --web-graphite: var(--n-graphite-3);
+  --web-stone: var(--color-border-strong);
+  --web-mist: var(--color-surface-2);
+  --web-rule-dark: var(--color-border-default);
+  --web-rule-light: var(--color-border-default);
+  --web-shell: var(--container-wide);
+  --web-reading: var(--container-reading);
+  --web-gutter: var(--page-gutter);
+  --web-space-xs: var(--space-2);
+  --web-space-sm: var(--space-3);
+  --web-space-md: var(--space-4);
+  --web-space-lg: var(--space-5);
+  --web-space-xl: var(--space-6);
+  --web-space-2xl: var(--space-7);
+  --web-space-3xl: var(--space-8);
+  --web-space-4xl: var(--space-10);
+  --web-space-5xl: var(--space-11);
+  --web-ease: var(--motion-ease-out);
 }
-
 html,
 body {
   overflow-x: clip;

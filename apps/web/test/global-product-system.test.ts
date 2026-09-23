@@ -12,10 +12,10 @@ test('public site consumes shared tokens and one canonical Web visual authority'
     webFile('app/layout.tsx'),
   ]);
   assert.equal(globals.includes('packages/ui/src/styles/tokens.css'), true);
-  assert.equal(brand.includes('--n-brand-blue: #258be5'), true);
-  assert.match(visualDirection, /--web-ivory:\s*#f5f3ee/);
-  assert.match(visualDirection, /--web-carbon:\s*#101214/);
-  assert.match(visualDirection, /--web-teal:\s*#0f8f86/);
+  assert.equal(brand.includes('--n-brand-teal: #4a9992'), true);
+  assert.match(visualDirection, /--web-ivory:\s*var\(--color-text-primary\)/);
+  assert.match(visualDirection, /--web-carbon:\s*var\(--color-canvas\)/);
+  assert.match(visualDirection, /--web-teal:\s*var\(--color-brand\)/);
   assert.equal(visualDirection.includes('#2764ff'), false);
   assert.equal(visualDirection.includes('#147dff'), false);
   assert.equal(visualDirection.includes('radial-gradient'), false);
@@ -32,7 +32,7 @@ test('public brand delegates geometry to the shared production mark', async () =
   assert.equal(brand.includes('<svg'), false);
   assert.equal(brand.includes('<path'), false);
   assert.equal(brand.includes('next/image'), false);
-  assert.equal(icon.includes('#0F8F86'), true);
+  assert.equal(icon.includes('#4A9992'), true);
   assert.equal(icon.includes('#0141F3'), false);
   assert.equal(icon.includes('#2764FF'), false);
   assert.equal(icon.includes('linearGradient'), false);
