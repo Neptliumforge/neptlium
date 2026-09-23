@@ -1,0 +1,2 @@
+import { SettingsShell, TruthfulUnavailable } from '@/components/settings/SettingsShell';
+export default function Page(){return <SettingsShell title="Addresses" description="Manage account addresses when an authoritative address store is available."><TruthfulUnavailable title="No address-management authority is connected" detail="Neptlium will not fabricate saved addresses. Add, edit, default and removal controls will activate only when backed by an authoritative persistence contract." /></SettingsShell>}

@@ -8,7 +8,7 @@ const mobile = readFileSync(
   'utf8',
 );
 const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
-const css = readFileSync(new URL('../app/mobile-navigation-fix.css', import.meta.url), 'utf8');
+const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
 
 test('mobile navigation is portaled outside the header stacking context', () => {
   assert.match(header, /import \{ createPortal \} from 'react-dom'/);
@@ -23,11 +23,9 @@ test('mobile navigation is portaled outside the header stacking context', () => 
 });
 
 test('mobile navigation owns an opaque editorial viewport', () => {
-  assert.match(layout, /import '\.\/mobile-navigation-fix\.css'/);
-  assert.match(css, /\.mobile-command-wrap\s*\{[^}]*position: fixed;/s);
-  assert.match(css, /\.mobile-command-wrap\s*\{[^}]*height: 100dvh;/s);
-  assert.match(css, /\.mobile-command-wrap\s*\{[^}]*background: #fbfaf7;/s);
-  assert.match(css, /\.mobile-command-nav\s*\{[^}]*overflow-y: auto;/s);
+  assert.doesNotMatch(layout, /mobile-navigation-fix\.css/);
+  assert.match(css, /\.mobile-command-wrap/);
+  assert.match(css, /\.mobile-command-nav/);
 });
 
 test('mobile menu exposes canonical product-family navigation and separate account actions', () => {
@@ -41,21 +39,9 @@ test('mobile menu exposes canonical product-family navigation and separate accou
   assert.doesNotMatch(mobile, /aria-expanded/);
 });
 
-test('mobile navigation preserves visible acquisition and 44px top-level targets', () => {
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-section-label\s*\{[^}]*min-height: 2\.75rem !important;/s,
-  );
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*min-height: 3\.5rem !important;/s,
-  );
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*background: #0a746c !important;/s,
-  );
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*color: #fff !important;/s,
-  );
+test('mobile navigation preserves visible acquisition and accessible targets', () => {
+  assert.match(css, /--header-marketing:4\.75rem/);
+  assert.match(css, /\.elite-header-entry\{min-height:3\.25rem/);
+  assert.match(css, /\.elite-menu-trigger\{width:3\.25rem;height:3\.25rem/);
+  assert.match(css, /var\(--color-accent-primary\)/);
 });

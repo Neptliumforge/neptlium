@@ -11,7 +11,7 @@ test('marketing root loads the canonical visual-direction and experience layers'
   assert.match(layout, /<html lang="en" suppressHydrationWarning>/);
   assert.match(layout, /colorScheme:\s*'light dark'/);
   assert.match(layout, /import '\.\/neptlium-visual-direction\.css';/);
-  assert.match(layout, /import '\.\/experience-v1\.css';/);
+  assert.doesNotMatch(layout, /experience-v1\.css/);
   assert.doesNotMatch(layout, /footer-depth\.css/);
   assert.match(css, /--web-ivory:\s*var\(--color-text-primary\)/i);
   assert.match(css, /--web-carbon:\s*var\(--color-canvas\)/i);
