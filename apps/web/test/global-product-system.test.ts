@@ -13,9 +13,9 @@ test('public site consumes shared tokens and one canonical Web visual authority'
   ]);
   assert.equal(globals.includes('packages/ui/src/styles/tokens.css'), true);
   assert.equal(brand.includes('--n-brand-teal: #4a9992'), true);
-  assert.match(visualDirection, /--web-ivory:\s*#f5f3ee/);
-  assert.match(visualDirection, /--web-carbon:\s*#101214/);
-  assert.match(visualDirection, /--web-teal:\s*#0f8f86/);
+  assert.match(visualDirection, /--web-ivory:\s*var\(--color-text-primary\)/);
+  assert.match(visualDirection, /--web-carbon:\s*var\(--color-canvas\)/);
+  assert.match(visualDirection, /--web-teal:\s*var\(--color-brand\)/);
   assert.equal(visualDirection.includes('#2764ff'), false);
   assert.equal(visualDirection.includes('#147dff'), false);
   assert.equal(visualDirection.includes('radial-gradient'), false);
