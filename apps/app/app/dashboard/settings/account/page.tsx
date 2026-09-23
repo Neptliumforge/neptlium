@@ -1,0 +1,2 @@
+import { SettingsShell, TruthfulUnavailable } from '@/components/settings/SettingsShell';
+export default function Page(){return <SettingsShell title="Account" description="Account metadata and preferences, kept separate from financial authority."><TruthfulUnavailable title="Account preferences are not yet editable here" detail="Current account metadata remains authoritative in the existing account projection. No unsupported preference is presented as saved." /></SettingsShell>}
