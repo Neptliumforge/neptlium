@@ -14,4 +14,4 @@ export * from './Financial';
 export * from './Identity';
 
 export * from './FinancialState';
-export * from './components/CapitalRails';
+export * from './CapitalRails';
