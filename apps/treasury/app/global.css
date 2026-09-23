@@ -1,18 +1,18 @@
 @import '@neptlium/ui/styles/brand.css';
+@import '@neptlium/ui/styles/tokens.css';
 
 :root {
-  color-scheme: dark;
-  --app-black: #050606;
-  --app-black-raised: #090b0a;
-  --app-panel: #0e1110;
-  --app-panel-2: #121614;
-  --app-text: #f4f5f1;
-  --app-muted: #9aa19d;
-  --app-tertiary: #717975;
-  --app-line: rgb(255 255 255 / 9%);
-  --app-teal: #35d5c1;
-  --app-teal-muted: #7baea7;
-  --app-warning: #d2ad72;
+  --app-black: var(--canvas-treasury);
+  --app-black-raised: var(--color-surface-inset);
+  --app-panel: var(--color-surface-1);
+  --app-panel-2: var(--color-surface-2);
+  --app-text: var(--color-text-primary);
+  --app-muted: var(--color-text-secondary);
+  --app-tertiary: var(--color-text-muted);
+  --app-line: var(--color-border-default);
+  --app-teal: var(--color-brand-emphasis);
+  --app-teal-muted: var(--color-brand);
+  --app-warning: var(--color-warning);
 }
 * {
   box-sizing: border-box;
@@ -25,7 +25,7 @@ body {
   min-height: 100vh;
   background: var(--app-black);
   color: var(--app-text);
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 a {
   color: inherit;
@@ -506,7 +506,7 @@ button:focus-visible {
   border: 1px solid var(--app-line);
   border-radius: 6px;
   padding: 0 12px;
-  background: #0b0b0b;
+  background: var(--color-surface-inset);
   color: var(--app-text);
   outline: none;
 }
@@ -518,7 +518,7 @@ button:focus-visible {
   border: 0;
   border-radius: 6px;
   background: var(--app-teal);
-  color: #06110f;
+  color: var(--color-accent-primary-foreground);
   font-weight: 700;
   cursor: pointer;
 }
@@ -528,7 +528,7 @@ button:focus-visible {
 }
 .treasury-auth-form [role='alert'] {
   margin: 0;
-  color: #ef8f8f;
+  color: var(--color-danger);
   font-size: 13px;
 }
 @media (max-width: 1100px) {
@@ -576,7 +576,7 @@ button:focus-visible {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     border-top: 1px solid var(--app-line);
-    background: #080a09;
+    background: var(--color-surface-inset);
     padding-bottom: env(safe-area-inset-bottom);
   }
   .treasury-mobile a {
