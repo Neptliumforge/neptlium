@@ -74,7 +74,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 };
-const themeBoot = \`(() => {
+const themeBoot = `(() => {
   try {
     const stored = localStorage.getItem('neptlium-theme');
     const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
@@ -83,7 +83,7 @@ const themeBoot = \`(() => {
     document.documentElement.dataset.themePreference = preference;
     document.documentElement.style.colorScheme = resolved;
   } catch (_) {}
-})();\`;
+})();`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
