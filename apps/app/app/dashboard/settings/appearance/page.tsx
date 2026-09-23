@@ -1,0 +1,2 @@
+import { SettingsShell, TruthfulUnavailable } from '@/components/settings/SettingsShell';
+export default function Page(){return <SettingsShell title="Appearance" description="Light, dark and system appearance follow the canonical Neptlium theme authority."><TruthfulUnavailable title="Use the account menu to change appearance" detail="Your Light, Dark or System preference is persisted locally and System follows your browser or operating-system preference." /></SettingsShell>}
