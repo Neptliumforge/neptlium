@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { CapitalRails as CapitalRailsVisual } from '@neptlium/ui';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 import styles from './home-elite.module.css';
@@ -10,40 +11,28 @@ export const metadata = createPageMetadata({
   path: '/',
 });
 
-function CapitalRails() {
+function SignatureHeroObject() {
   return (
-    <div className={styles.heroStage} aria-label="Illustrative Neptlium capital rails">
+    <div className={styles.heroStage} aria-label="Neptlium Capital Rails — authority and evidence">
       <div className={styles.stageGlow} aria-hidden="true" />
-      <div className={`${styles.stageLayer} ${styles.stageBack}`} aria-hidden="true" />
-      <div className={`${styles.stageLayer} ${styles.stageMid}`} aria-hidden="true" />
-      <div className={`${styles.stageLayer} ${styles.stageFront}`}>
-        <div className={styles.stageHeader}>
+      <div className={styles.signatureRailField}>
+        <CapitalRailsVisual
+          variant="movement"
+          nodes={[
+            { label: 'Capital', state: 'neutral' },
+            { label: 'Position', state: 'neutral' },
+            { label: 'Authority', state: 'authorized' },
+            { label: 'Evidence', state: 'evidence' },
+            { label: 'Reconciliation', state: 'reconciling' },
+          ]}
+          label="Capital moves through authority, evidence and reconciliation"
+        />
+        <div className={styles.railObjectCopy}>
           <span>Capital rails</span>
-          <i className={styles.stageSignal} aria-hidden="true" />
-        </div>
-        <div className={styles.stageField}>
-          <div className={styles.stagePrimary}>
-            <span>Neptlium</span>
-            <strong>One coherent capital system.</strong>
-            <div className={styles.trace} aria-hidden="true" />
-          </div>
-          <div className={styles.stageSecondary}>
-            <div>
-              <span>Position</span>
-              <strong>Evidence</strong>
-            </div>
-            <div>
-              <span>Movement</span>
-              <strong>Authority</strong>
-            </div>
-            <div>
-              <span>Record</span>
-              <strong>Reconciled</strong>
-            </div>
-          </div>
+          <strong>Movement remains distinct from authority.</strong>
+          <small>Illustrative infrastructure — no customer data. No execution state is implied.</small>
         </div>
       </div>
-      <span className={styles.stageCaption}>Illustrative infrastructure — no customer data</span>
     </div>
   );
 }
@@ -184,7 +173,7 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <CapitalRails />
+          <SignatureHeroObject />
         </div>
       </section>
 

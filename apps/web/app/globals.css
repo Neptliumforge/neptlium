@@ -1813,3 +1813,25 @@ button {
 .mobile-account-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3);margin-top:var(--space-5)}.mobile-account-grid section{display:grid;align-content:start;gap:var(--space-2);padding:var(--space-4);border:1px solid var(--color-border-hairline);background:var(--color-surface-1);font-size:var(--text-body-sm)}.mobile-account-grid section>span,.mobile-social-block>span{color:var(--color-text-muted);font-size:var(--text-caption);font-weight:650;text-transform:uppercase;letter-spacing:.1em}.mobile-enter-action{min-height:3.5rem;display:flex;align-items:center;justify-content:space-between;padding-inline:var(--space-4);border-radius:var(--radius-pill);background:var(--color-accent-primary);color:var(--color-accent-primary-foreground);font-weight:650}.mobile-enter-secondary{background:var(--color-surface-3);color:var(--color-text-primary)}
 .mobile-social-block{margin-top:var(--space-6);padding-top:var(--space-4);border-top:1px solid var(--color-border-hairline)}.mobile-social-block>div{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-3);font-size:var(--text-body-sm)}
 @media(max-width:560px){.mobile-account-grid{grid-template-columns:1fr}}
+
+
+/* Capital Rails route signature — one system, different route compositions. */
+.n-rail-route-hero { position: relative; isolation: isolate; overflow: hidden; }
+.n-rail-route-hero > :not(.n-rail-route-hero__field) { position: relative; z-index: 1; }
+.n-rail-route-hero__field {
+  position: absolute;
+  z-index: 0;
+  width: min(54rem, 72vw);
+  right: -12rem;
+  top: 50%;
+  margin: 0;
+  opacity: .16;
+  transform: translateY(-50%) rotate(-8deg);
+  pointer-events: none;
+}
+.route-detail-page .n-rail-route-hero__field { opacity: .12; }
+.cin-product-page .n-rail-route-hero__field { opacity: .2; }
+.editorial-page .n-rail-route-hero__field { right: -18rem; opacity: .14; }
+@media (max-width: 700px) {
+  .n-rail-route-hero__field { width: 42rem; right: -22rem; opacity: .12; }
+}

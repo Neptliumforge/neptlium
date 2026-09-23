@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { CapitalRails } from '@neptlium/ui';
 import type { CanonicalBalance } from '@/lib/api/financial';
 import { FinancialValue } from './ProductState';
 
@@ -94,6 +95,21 @@ export function CapitalPosition({
           ) : null}
         </div>
       </div>
+
+      {!empty && !loadError ? (
+        <div className="mt-6 max-w-md opacity-70">
+          <CapitalRails
+            variant="position"
+            active={false}
+            decorative
+            nodes={[
+              { label: 'Available', state: 'complete' },
+              { label: 'Reserved', state: 'neutral' },
+              { label: 'Pending', state: 'neutral' },
+            ]}
+          />
+        </div>
+      ) : null}
 
       {!empty ? (
         <dl className="mt-6 grid grid-cols-3 gap-x-5 gap-y-4 border-t border-border-hairline pt-5 sm:max-w-2xl">

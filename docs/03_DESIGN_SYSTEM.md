@@ -90,3 +90,45 @@ Before frontend work:
 6. If a missing primitive is genuinely shared, add it to `@neptlium/ui`, document it and migrate consumers.
 7. Provider configuration/execution is outside design authority.
 Legacy CSS may remain temporarily where deleting it would create unsafe migration risk, but it MUST consume canonical semantics and MUST NOT define a competing active system. Any exception must be documented and removed in a focused migration.
+
+## 15. Neptlium Capital Rails
+
+Capital Rails are the proprietary spatial and authority grammar derived from the three canonical strokes of NeptliumMark. They are part of this design system, not a marketing artwork layer.
+
+### Geometry
+- Preserve the mark's three independent curved strokes: upper movement, middle coordination/convergence, lower position/return.
+- Rails may translate, crop, branch through nodes and change depth, but must remain recognizably related to those stroke proportions and curvature.
+- Avoid literal pipes, generic blockchain networks, circuitry, particles, neon grids or arbitrary bezier decoration.
+- Most rail geometry is distant/structural. Active movement is exceptional.
+
+### Primitive vocabulary
+CapitalRails is the shared SVG primitive. Supported variants are movement, position, allocation, evidence, treasury, infrastructure and security. CapitalRailStage is the operational lifecycle primitive. Nodes may be neutral, active, evidence, authorized, reconciling, complete, restricted or failed.
+
+Color mapping is semantic:
+- shadow/distant rail → deep mineral teal;
+- structural rail → mid/mineral teal;
+- active movement/authority → primary teal;
+- evidence → bright teal;
+- luminous teal → rare exceptional signal only;
+- failure/restriction/reconciliation → existing canonical status tokens.
+
+### Motion
+Rail progression communicates direction or an active state transition only. Node activation communicates focus/state. Motion uses transform/opacity/stroke-dashoffset and canonical timing. No scroll-jacking or blocking animation. prefers-reduced-motion removes progression animation while preserving structure and labels.
+
+### Marketing use
+Marketing may use expressive cropped rail fields, spatial depth and one signature hero object. Different routes use different variants rather than identical artwork. Background rails remain subordinate to copy. The closing experience may visually converge toward the Neptlium mark.
+
+### Authenticated use
+Capital Rails become quiet and operational. Use them for canonical position relationships, supported transaction progression, evidence/reconciliation and loading/progress relationships. Never use animation or an active node to imply execution that domain state has not established.
+
+### Treasury use
+Treasury may use the strongest operational rail expression to explain capital sources/destinations, authority, approvals, evidence and reconciliation. Unknown organization state must remain unknown; a rail must not manufacture a balance, permission, settlement or capability.
+
+### Authority mapping
+A movement lifecycle may distinguish Intent → Policy/Preflight → Review → Authorization → Submission → Provider Processing → Evidence → Ledger Posting → Reconciliation → Available only when those stages exist in the real domain. Provider confirmation never receives the Available treatment until canonical ledger/reconciliation authority establishes it.
+
+### Performance and accessibility
+Prefer SVG/CSS/browser-native animation. Do not add an animation dependency solely for rails. Keep decorative rail SVGs aria-hidden; semantic rails require a concise accessible label/legend. Financial meaning never depends on color or motion. Mobile crops complexity before shrinking text or controls.
+
+### Extension rule
+Future developers MUST extend CapitalRails, its canonical rail tokens and documented variants before creating new rail artwork. Page-local rail palettes, independent node semantics, duplicated mark-derived SVG geometry and generic fintech network art are prohibited.

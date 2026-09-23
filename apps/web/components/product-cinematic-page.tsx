@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { SITE } from '@/lib/content/site';
+import { CapitalRails } from '@neptlium/ui';
 
 export type ProductCinematicProps = {
   eyebrow: string;
@@ -19,7 +20,7 @@ export type ProductCinematicProps = {
 export function ProductCinematicPage(props: ProductCinematicProps) {
   return (
     <div className={`cin-product-page cin-tone-${props.tone}`}>
-      <section className="product-cinema-hero">
+      <section className="product-cinema-hero n-rail-route-hero">\n        <CapitalRails variant="position" decorative className="n-rail-route-hero__field" />
         <div className="product-cinema-copy">
           <p className="product-name">{props.eyebrow}</p>
           <h1>{props.title}</h1>

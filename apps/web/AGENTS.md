@@ -4,18 +4,24 @@
 
 `apps/web` owns `neptlium.com`, the public marketing, investor-information, business-product, editorial, SEO and acquisition surface. It owns no authenticated customer session, privileged financial operation, canonical financial state, custody, execution or settlement authority.
 
-Marketing design authority is `docs/marketing-design-system.md`. It defines one Neptlium company with two product journeys: **Personal / Neptlium Capital** and **Business / Neptlium Treasury**. It overrides former PR #68, ivory-first and Personal-only marketing assumptions. It does not override authenticated App/Admin design, the product constitution, financial truth, security boundaries, API authority, ledger logic, migrations, Gate 04/05 evidence or provider architecture.
+Canonical design authority is `docs/03_DESIGN_SYSTEM.md` with runtime tokens in `packages/ui/src/styles/tokens.css`. Public Web uses the same Neptlium identity as Capital and Treasury while retaining an editorial marketing density. Capital Rails are the canonical mark-derived spatial/authority grammar; extend shared primitives rather than creating page-local fintech artwork.
 
 Before Web work, follow root `AGENTS.md`, `docs/00_PRODUCT_CONSTITUTION.md`, `docs/marketing-design-system.md`, current Web source/tests/configuration and relevant open PRs. Do not change App, Admin, API, migrations, providers, remote environments or shared packages unless a verified dependency requires it and task scope explicitly authorizes it.
 
 ## Canonical public architecture
 
-1. Personal → `/personal`
-2. Business → `/business`
-3. Platform → `/platform`
-4. Insights → `/insights`
-5. Security → `/security`
-6. Company → `/company`
+1. Capital → `/capital` (canonical Individual product)
+2. Treasury → `/treasury` (canonical Business product)
+3. Portfolio → `/portfolio`
+4. Allocation → `/allocation`
+5. Investments → `/investments`
+6. Institutional → `/institutional`
+7. Intelligence / Insights → current repository routes
+8. Infrastructure → `/infrastructure`
+9. Security → `/security`
+10. Company → `/company`
+
+Legacy `/personal` converges to `/capital`; legacy `/business` converges to `/treasury`. Never reintroduce them as competing canonical product identities.
 
 Canonical product-story routes include `/investments`, `/capital`, `/portfolio`, `/allocation` and `/treasury`.
 
@@ -33,19 +39,9 @@ Investment and business capabilities must be qualified as live, limited, informa
 
 ## Marketing visual character
 
-One black-first design system applies to Personal and Business:
+One canonical semantic token system applies across public Web, Capital and Treasury. Web MUST consume the approved canvas, surface, warm-white, graphite and mineral-teal roles from packages/ui/src/styles/tokens.css; raw page-local brand palettes are prohibited. Dark is primary; Light and System are supported. Capital Rails use the canonical rail tokens and the existing Neptlium mark geometry.
 
-- Black `#050505`
-- Raised black `#0D0D0D`
-- Surface `#141414`
-- White `#F7F7F2`
-- Muted gray accessible refinement around `#999994`
-- Mineral Teal `#35D5C1`
-- Soft Teal `#8CE8DC`
-- Ivory `#F3F0E8`
-- Ink `#101010`
-
-Differentiate journeys through product content, information density and workflows, not a separate color brand or design system.
+Differentiate journeys through product content, information density, rail variant and workflows, not separate color brands or competing design systems.
 
 Avoid crypto-exchange styling, fake trading terminals, decorative token imagery, excessive gradients, glassmorphism, fabricated dashboards, unsupported partner marks and card-per-concept layouts.
 
@@ -73,13 +69,7 @@ Release viewports: `360, 390, 768, 1280, 1440`.
 
 ## CSS ownership
 
-Current marketing authority:
-
-- `app/marketing-system.css`
-- `app/unified-shell.css`
-- `app/unified-marketing.module.css`
-
-Legacy global layers exist only for routes not yet migrated and should be retired rather than expanded.
+Current design authority is shared tokens/primitives plus the consolidated Web global grammar in `app/globals.css` and route-owned CSS modules. Do not restore retired global refinement layers. Shared Capital Rails geometry belongs in `@neptlium/ui`; Web owns only route composition/cropping.
 
 ## Required validation
 

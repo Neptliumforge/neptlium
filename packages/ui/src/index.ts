@@ -3,3 +3,4 @@ export * from "./layouts";
 export * from "./theme";
 export * from "./shell";
 export * from './providers';
+export * from './components/CapitalRails';

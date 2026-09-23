@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { SITE } from '@/lib/content/site';
+import { CapitalRails } from '@neptlium/ui';
 
 export function DetailPage({
   eyebrow,
@@ -17,7 +18,7 @@ export function DetailPage({
 }) {
   return (
     <div className="route-detail-page">
-      <section className="route-detail-hero">
+      <section className="route-detail-hero n-rail-route-hero">\n        <CapitalRails variant="infrastructure" decorative className="n-rail-route-hero__field" />
         <div className="container-page">
           {eyebrow && <p className="eyebrow">{eyebrow}</p>}
           <h1>{title}</h1>

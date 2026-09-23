@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { NeptliumMark } from '@neptlium/ui';
+import { CapitalRails, NeptliumMark } from '@neptlium/ui';
 import { SignOutButton } from '@/app/auth/sign-out-button';
 
 const navigation = [
@@ -203,6 +203,19 @@ function Overview() {
           view. Values remain unavailable until Neptlium can establish them from authoritative
           organization records.
         </p>
+      </div>
+      <div className="treasury-rails-context">
+        <CapitalRails
+          variant="treasury"
+          nodes={[
+            { label: 'Capital', state: 'neutral' },
+            { label: 'Authority', state: 'restricted' },
+            { label: 'Evidence', state: 'neutral' },
+            { label: 'Reconciliation', state: 'neutral' },
+          ]}
+          active={false}
+          label="Treasury capital rails — organization authority is not established"
+        />
       </div>
       <div className="treasury-grid">
         {operatingMetrics.map(([label, detail]) => (

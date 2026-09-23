@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from './utils/cn';
+import { CapitalRailStage, type CapitalRailNodeState } from './CapitalRails';
 
 export type FinancialState =
   | 'available'
@@ -83,18 +84,25 @@ export function AuthorityProgress({
 }) {
   const stages = Object.keys(stageLabels) as AuthorityStage[];
   return (
-    <ol className={cn('grid gap-px border border-border-default bg-border-default md:grid-cols-5', className)} aria-label="Money movement authority progress">
-      {stages.map((stage) => {
+    <ol className={cn('n-authority-rail', className)} aria-label="Money movement authority progress">
+      {stages.map((stage, index) => {
         const isCurrent = stage === current;
         const isComplete = completed.includes(stage);
+        const railState: CapitalRailNodeState = isComplete
+          ? 'complete'
+          : isCurrent
+            ? stage === 'evidence'
+              ? 'evidence'
+              : stage === 'reconciliation'
+                ? 'reconciling'
+                : stage === 'authorization'
+                  ? 'authorized'
+                  : 'active'
+            : 'neutral';
         return (
-          <li key={stage} aria-current={isCurrent ? 'step' : undefined} className="min-h-20 bg-surface-1 p-3">
-            <span className="text-caption text-text-muted">{String(stages.indexOf(stage) + 1).padStart(2, '0')}</span>
-            <strong className="mt-3 block text-body-sm font-medium text-text-primary">{stageLabels[stage]}</strong>
-            <span className="mt-1 block text-caption text-text-muted">
-              {isComplete ? 'Established' : isCurrent ? 'Current stage' : 'Not yet established'}
-            </span>
-          </li>
+          <CapitalRailStage key={stage} index={index} label={stageLabels[stage]} state={railState}>
+            {isComplete ? 'Established' : isCurrent ? 'Current stage' : 'Not yet established'}
+          </CapitalRailStage>
         );
       })}
     </ol>
