@@ -82,3 +82,11 @@ button[class*='primary'], a[class*='primary'], [class*='bg-primary'] { backgroun
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Canonical settings information architecture */
+.settings-layout{display:grid;grid-template-columns:minmax(10rem,13rem) minmax(0,1fr);gap:var(--space-6);align-items:start}
+.settings-navigation{position:sticky;top:calc(var(--header-product) + var(--space-4));display:grid;border-block:1px solid var(--color-border-hairline)}
+.settings-navigation a{min-height:2.75rem;display:flex;align-items:center;padding-inline:var(--space-2);border-bottom:1px solid var(--color-border-hairline);color:var(--color-text-secondary);font-size:var(--text-body-sm);font-weight:550}
+.settings-navigation a:last-child{border-bottom:0}.settings-navigation a:hover,.settings-navigation a:focus-visible{color:var(--color-text-primary);background:var(--color-surface-2)}
+.settings-content{min-width:0}.settings-content>.op-stack>.op-page-header{display:none}
+@media(max-width:767px){.settings-layout{grid-template-columns:1fr;gap:var(--space-4)}.settings-navigation{position:static;display:flex;overflow-x:auto;border:1px solid var(--color-border-hairline);scrollbar-width:none}.settings-navigation a{flex:0 0 auto;border-bottom:0;border-right:1px solid var(--color-border-hairline);padding-inline:var(--space-4)}}
