@@ -1,347 +1,141 @@
-# Neptlium Design System
+# Neptlium Canonical Design System
 
 **Status:** Authoritative  
-**Scope:** `neptlium.com`, `app.neptlium.com`, `admin.neptlium.com`, developer/API surfaces, research/intelligence surfaces, and shared brand expression  
-**Category:** Capital Operating Platform
+**Runtime token authority:** `packages/ui/src/styles/tokens.css`  
+**Shared component authority:** `packages/ui/src/components/**`  
+**Category:** NEPTLIUM — Capital Operating Platform
 
-This is the central design authority for Neptlium. It governs durable visual, interaction, information, state, accessibility, motion, and surface principles. It does not convert strategy, modeled architecture, provider configuration, or planned capability into current product capability. Historical design material under `docs/archive/**` is non-authoritative unless explicitly reinstated.
+> Every movement has authority. Every position has evidence.
 
-## 1. Design thesis
+This document governs Marketing, Capital, Treasury, authenticated product, intelligence, records, settings and future provider-powered workflows. It never changes financial authority: the canonical ledger remains truth, provider state remains evidence, transaction intelligence remains observational and policy/preflight remains fail-closed.
 
-Neptlium makes complex capital systems understandable, governable, and actionable. Its design communicates institutional authority, financial truth, operational control, computational intelligence, structural depth, technical precision, and calm confidence.
+## 1. Product character
 
-The governing principles are **precision, restraint, depth, and certainty**.
+Neptlium is advanced, precise, calm, premium, financial, institutional, responsive, evidence-aware and human-controlled. Avoid generic fintech dashboards, exchange aesthetics, neon crypto styling, pervasive glassmorphism/gradients, random card grids, oversized rounded rectangles, SaaS-template composition and gamification.
 
-Public expression is deliberately simpler than the system beneath it: few words, large ideas, substantial negative space, decisive hierarchy and restrained motion. Individual language is personal and action-oriented. Institutional language is operational and authoritative. Engineering vocabulary such as canonical ledger, idempotency and provider references does not leak into ordinary investor UX.
+Marketing and authenticated products share one identity but intentionally differ in density. Marketing is editorial and spacious. Capital and Treasury are operational, evidence-aware and denser.
 
-Sophistication must come from hierarchy, evidence, information quality, interaction clarity, and implementation coherence—not spectacle. The interface must never be more confident than the underlying domain.
+## 2. Token authority
 
-The operating progression is:
+Applications MUST consume semantic variables from `@neptlium/ui/styles/tokens.css`. Pages and feature components MUST NOT establish competing palettes, spacing scales, radii, shadows, typography scales or financial-state colors.
 
-**Know → Understand → Decide → Authorize → Execute → Verify**
+The approved dark foundation is:
+- Absolute `#000000` — cinematic/deep transitions only.
+- Canvas `#080C10`; deep canvas `#041014`.
+- Surface `#0C1014`; raised surface `#0C1C20`.
+- Graphite `#141414 #202020 #2C2C30 #404040 #585858`.
+- Text `#F0F0E8 #F8F8F8 #FFFFFF #A0A0A0 #B8B8B8`.
+- Mineral Teal `#0C3434 #1F6666 #387068 #4A9992 #59B7AE`.
+- Luminous `#00CEC5` is exceptional, not ambient decoration.
 
-These stages remain distinct. Recommendation is not authorization. Authorization is not execution. Execution is not settlement. Settlement is not reconciliation.
+Semantic tokens include background/surface/foreground, brand, border/divider, success/warning/danger/info, financial positive/negative/neutral and lifecycle states. Color is never the only status cue.
 
-## 2. Surface responsibilities
+Subtle dark canvas signatures are defined centrally for Home, Capital, Portfolio, Allocation, Investments, Intelligence, Treasury, Institutional, Infrastructure, Security, Insights and Company. They are not independent page themes.
 
-### Marketing
+## 3. Themes
 
-Marketing establishes category, meaning, authority, relevance, verified capability, and a path into the product. It is editorial and architectural, not an authenticated financial dashboard.
+Dark is the primary Neptlium experience. Light and System are first-class. System follows `prefers-color-scheme`; the explicit preference persists under `neptlium-theme`. Light uses a deliberately derived neutral/mineral palette and is not an inversion.
 
-### Application
+All themes must preserve status meaning, focus visibility, financial legibility, tables, forms, overlays and charts.
 
-Application establishes customer intelligence, control, and operation. It presents authoritative customer state, evidence, analysis, governed workflows, and available actions. Browser representation is not authorization.
+## 4. Typography
 
-### Admin
+Two roles govern typography:
+1. Editorial display — major public propositions and selected high-level product moments.
+2. Product sans — navigation, controls, forms, labels, tables, operational content and numerical data.
 
-Admin establishes operator comprehension, evidence, exceptions, queues, approvals, risk visibility, lifecycle state, reconciliation, and auditability. Administrative action never visually proves external completion before authoritative confirmation.
+Use repository/project-available licensed families and safe fallbacks. Do not claim proprietary third-party fonts.
 
-### Developer / API
+Canonical roles: Display XL/L/M, H1/H2/H3, Body XL/L/Body/Small, Label/Eyebrow/Caption, Financial XL/L/M/S and Mono/Data. Financial/data values use tabular numerals where alignment matters. Authenticated surfaces must not inherit poster-scale marketing type.
 
-Developer surfaces establish programmability, integration clarity, predictable primitives, authentication, permissions, versioning, errors, examples, and fast time-to-first-success.
+## 5. Geometry
 
-### Research / Intelligence
+Canonical spacing, containers, radii, shadows, motion, z-index and responsive gutters live in the token authority. Use the 4/8-derived rhythm. Marketing may breathe; operational surfaces may be denser. Elevation is exceptional. Prefer planes, rules, rows, tables and whitespace over nested cards.
 
-Research establishes intellectual authority while distinguishing fact, data, model output, scenario, estimate, interpretation, methodology, and opinion.
+Marketing header target is 88px desktop and approximately 72–80px mobile. Authenticated shell uses its own compact operational header/navigation geometry.
 
-### API / Domain
+## 6. Component grammar
 
-The domain establishes authentication, authorization, ownership, durable state, provider isolation, ledger consequence, audit, reconciliation, and authoritative lifecycle transitions. Presentation cannot override domain state.
+Shared primitives belong in `@neptlium/ui`. Reuse before creating. Canonical families include:
+- action: Button, IconButton, Link;
+- identity: Logo/BrandMark, Avatar;
+- layout: Container, Stack, Cluster, Grid, Section, Divider, Surface/Panel/Card;
+- forms: Input, Textarea, Select, Checkbox, Radio, Switch, Field, FieldMessage;
+- overlays: Dialog, Sheet, Popover, Dropdown, Tooltip;
+- navigation: Tabs, Breadcrumb, Pagination, authenticated navigation/account menu;
+- feedback: Badge, Status, Alert, Notice, Empty/Loading/Skeleton/Error/Restricted states;
+- data: Table/DataTable, Amount/CurrencyValue/Percentage/Delta/Balance;
+- finance: TransactionRow/Status, EvidenceStatus, PortfolioSummary, PositionRow, AllocationBar, AuthorityProgress;
+- marketing: header, hero, display headline, CTA, closing CTA and footer.
 
-## 3. Identity architecture
+A second competing primitive requires a documented reason.
 
-Neptlium has one canonical mark geometry and one identity system.
+## 7. Financial authority presentation
 
-The mark is structural, flat, precise, compact, monochrome-capable, and recognizable at small sizes. The repository-authoritative geometry must be reused directly; do not redraw it from prompts, screenshots, or generated artwork.
+UI state MUST preserve:
+`UNKNOWN != ZERO`
+`PROVIDER OBSERVATION != CANONICAL LEDGER`
+`APPROVED != SUBMITTED`
+`SUBMITTED != SETTLED`
+`SETTLED != RECONCILED`
+`VISIBLE != AUTHORITATIVE`
 
-The primary lockup is the **Neptlium wordmark followed by the canonical mark**. Marketing may use the mark in Mineral Teal as a precision signal. Authenticated and operator surfaces are monochrome-first and normally inherit black/white foreground.
+Supported presentation states include Available, Pending, Processing, Settled, Reconciling, Failed, Restricted, Unknown and Unavailable.
 
-### Permitted identity modes
+Money-movement UX is modeled as:
+**Intent → amount/asset → source/destination → policy/preflight → review → authorization → submission → provider processing → evidence → ledger posting → reconciliation → available/settled**.
 
-- **Institutional:** Ivory field, Carbon wordmark and mark.
-- **Authority:** Carbon field, Ivory wordmark and mark.
-- **Precision:** neutral composition with a restrained Mineral Teal mark or system signal.
-- **Product:** white/black/neutral composition; semantic color only for actual state.
+The component system may represent every stage even while execution is disabled. Disabled capability must render unavailable/restricted state; it must never fabricate successful execution.
 
-### Prohibited identity treatments
+## 8. Public grammar
 
-Do not stretch, rotate, bevel, emboss, outline, glow, extrude, add gradients, create glossy 3D treatments, create decorative shadows, place the mark in invented crests/coins/tokens, animate it decoratively, or create competing mark geometries.
+Public expression: **Capital, intelligently managed.**
 
-Application icons and favicons derive from the same canonical geometry. Product icons should use flat monochrome treatments; glossy teal/cyan consumer-app artwork is not canonical product identity.
+Canonical route propositions:
+- Capital — Your capital. Your portfolio. One clear view.
+- Treasury — Operate capital with control.
+- Investments — Invest beyond the ordinary.
+- Intelligence — Intelligence for every capital decision.
+- Institutional — Infrastructure for modern capital.
+- Infrastructure — Build on Neptlium.
 
-## 4. Color system
+Composition is header → generous opening space → proposition → concise support → appropriate CTA → intentional whitespace → evidence/product composition → structured sections → closing proposition. Pages need not share identical heroes.
 
-### Marketing identity palette
+`/personal` remains legacy convergence to `/capital`; `/business` remains legacy convergence to `/treasury`.
 
-| Name             | Value     | Role                                                    |
-| ---------------- | --------- | ------------------------------------------------------- |
-| Warm Ivory       | `#F5F3EE` | Primary editorial and Marketing canvas                  |
-| Carbon           | `#101214` | Authority surface and primary dark tone                 |
-| Mineral Teal     | `#0F8F86` | Marketing precision signal and selective primary action |
-| Interaction Teal | `#20AFA3` | Marketing hover/focus emphasis                          |
-| Graphite         | `#343A3F` | Secondary dark neutral                                  |
-| Stone            | `#D8D5CE` | Structural divider                                      |
-| Soft Mist        | `#ECEAE5` | Secondary light surface                                 |
-| Signal Amber     | `#C88B28` | Warning/attention only                                  |
+## 9. Authenticated Capital
 
-**Ivory creates editorial space. Carbon creates authority. Teal signals precision. State communicates truth.**
+Capital is an operational environment, not a marketing page or trading terminal. Canonical hierarchy follows Overview, Capital, Portfolio, Investments, Activity/Records, More/Workspace and Settings as supported by repository routes. Funding, withdrawal, transfer, wallet and allocation experiences must display real domain state and safe disabled states.
 
-Marketing should remain predominantly neutral. Teal is an instrument, not background paint.
+Treasury remains a separate organization product and authority boundary.
 
-### Application and Admin
+## 10. Treasury
 
-Application and Admin are fundamentally **WHITE + BLACK + NEUTRAL**.
+Treasury is a controlled business capital environment. Its UX may expose only repository-supported liquidity, balances, accounts, movement, approvals, records, evidence, reconciliation, controls, operators and policy. Future execution stays gated until backend/provider authority is explicitly activated.
 
-Their default visual system derives from white, near-white, Carbon/black, near-black, graphite, gray, neutral dividers, neutral hover/selected states, and semantic exceptions.
+## 11. Intelligence
 
-Do not use Mineral Teal, blue, green, amber, or red as broad brand decoration in authenticated/operator UI. Semantic color exists only when it materially communicates state.
+Intelligence is decision-support. Distinguish observation, analysis, recommendation, evidence, authorized action and canonical financial state. Transaction intelligence remains non-canonical. Never use visual confidence to imply financial authority.
 
-Product components should consume semantic neutral roles such as canvas, surface, inset, foreground-primary, foreground-secondary, foreground-muted, border-subtle, border-standard, border-strong, hover, selected, disabled, focus, overlay, and inverse rather than uncontrolled raw gray values.
+## 12. Responsive and accessibility
 
-## 5. Semantic color and financial truth
+Validate representative widths: 320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440 and 1600+. Mobile is recomposed rather than shrunk desktop. Tables require deliberate overflow/record-view behavior. Touch targets remain accessible.
 
-Success, warning, danger, informational, disabled, focus, selected, loading, stale, unknown, unavailable, pending, restricted, and error require distinct treatment. Color alone is insufficient; pair it with text, labels, icons, shape, stroke, or other semantics.
+WCAG 2.2 AA is the minimum target: semantic HTML, landmarks, coherent headings, keyboard operation, visible focus, labels, focus-managed overlays, sufficient contrast, reduced motion, meaningful errors and non-color status cues.
 
-`UNKNOWN != ZERO`.
+## 13. Motion
 
-| State          | Meaning                                                                       |
-| -------------- | ----------------------------------------------------------------------------- |
-| Known          | Required authoritative evidence supports the value                            |
-| Confirmed zero | Evidence confirms zero in the stated scope                                    |
-| Unknown        | Evidence cannot establish the value                                           |
-| Unavailable    | Capability/value cannot currently be supplied                                 |
-| Loading        | A bounded operation is in progress and implies no value                       |
-| Stale          | Prior information exists but freshness requirements fail                      |
-| Error          | Retrieval or processing failed                                                |
-| Pending        | Lifecycle progression has begun without reaching the next authoritative state |
-| Modeled        | Computed scenario or estimate, not observed authoritative state               |
-| Restricted     | State may exist but permission/policy prevents access or action               |
+Use motion only for cause/effect, hierarchy, continuity and state. Shared durations/easing come from tokens. Respect `prefers-reduced-motion`. Never animate a financial state in a way that implies execution, settlement or reconciliation not established by domain authority.
 
-Never render `$0`, `$0.00`, `0%`, `0 units`, or an ambiguous dash unless the meaning is established. Provider-observed is not automatically canonical. Modeled is not observed. AI interpretation is not authoritative evidence.
+## 14. Contribution rules
 
-## 6. Lifecycle semantics
+Before frontend work:
+1. Read this document and nearest `AGENTS.md`.
+2. Reuse canonical tokens and primitives.
+3. Preserve product and financial authority boundaries.
+4. Test dark/light/system, responsive behavior, keyboard/focus and non-color state semantics.
+5. Do not add raw brand colors or a new type/spacing/radius system in page-local CSS.
+6. If a missing primitive is genuinely shared, add it to `@neptlium/ui`, document it and migrate consumers.
+7. Provider configuration/execution is outside design authority.
 
-Preserve configured, eligible, available, planned, modeled, recommended, requested, approved, authorized, submitted, processing, settled, reconciled, failed, reversed, cancelled, and restricted where applicable.
-
-Configured does not prove available. Planned does not prove implemented. Modeled does not prove observed. Recommended does not prove approved. Authorized does not prove submitted. Submitted does not prove settled. Settled does not prove reconciled.
-
-## 7. Typography
-
-Typography establishes hierarchy before containers or decoration.
-
-Marketing may combine restrained editorial display/serif authority with precise sans-serif body and utility typography. Public Web remains medium-scale: authority comes from composition and measure rather than poster-sized type.
-
-Application/Admin use quiet operational typography, concise body copy, stable navigation, tabular numerals, explicit units, and readable density. Geist/current operational typography remains the baseline where implemented.
-
-Conceptual roles: Display, H1, H2, H3, H4, Lead, Body, Small, Caption, Label, Navigation, Button, Numeric/Data, Code.
-
-Do not manufacture hierarchy through excessive uppercase microcopy.
-
-## 8. Spacing, grid, and hierarchy
-
-Prefer existing repository tokens and a 4/8-derived rhythm. Conceptual progression: `4, 8, 12, 16, 24, 32, 48, 64, 80, 96, 128, 160`.
-
-Build hierarchy in this order:
-
-1. Typography
-2. Whitespace
-3. Alignment
-4. Contrast
-5. Scale
-6. Surface
-7. Border
-8. Elevation
-
-Use controlled maximum widths and responsive gutters. Marketing favors left alignment, editorial asymmetry, negative space, selective full bleed, and structural rules. Application favors stable controls and readable working widths. Admin favors evidence density and scanning.
-
-Do not default to card grids. Prefer rows, planes, tables, rules, whitespace, timelines, and progressive disclosure when they explain relationships more clearly.
-
-## 9. Shape and elevation
-
-Neptlium is not soft, bubbly, or consumer-fintech oriented. Use radii sparingly and consistently. Avoid giant pill controls, rounded-card proliferation, nested containers, decorative shadows, glassmorphism, and floating panels without structural purpose.
-
-Elevation is a last resort.
-
-## 10. Marketing composition
-
-Canonical direction: **warm architectural light + Carbon authority + Mineral Teal precision**.
-
-Marketing may use large editorial statements, original structural diagrams, data-derived abstraction, selective authority-dark sections, meaningful negative space, and subtle structural lines.
-
-The homepage should establish what Neptlium is, why it matters, verified capability, trust, and next action. It should progress through **Capital → Structure → Intelligence → Action**, not default to a generic hero/cards/features/CTA template.
-
-Avoid token walls, candlesticks as decoration, order books, crypto imagery, glowing spheres, fabricated dashboards, unsupported provider imagery, generic AI particles, stock-photo finance, and speculative wealth imagery.
-
-### Capital rails
-
-Neptlium Capital Rails is the canonical public infrastructure motif: thin architectural paths, controlled nodes, intersections and subtle movement on a near-black field with restrained Mineral Teal illumination. It represents banking rails, markets, ledger infrastructure, settlement, blockchain connectivity and capital movement without depicting coins, tokens, candlesticks or science-fiction spectacle. Motion must clarify direction through infrastructure, respect reduced-motion preferences and remain inexpensive on mobile GPUs.
-
-## 11. Application composition
-
-Application is a precision capital operating environment, not Marketing reduced into cards and not a retail trading terminal.
-
-Primary expression is **white + black + neutral grayscale**. Information itself is the visual centerpiece. Favor strong typography, white space, precise dividers, tabular data, explicit state, low-noise navigation, controlled density, and clear action hierarchy.
-
-Canonical individual navigation is Overview, Portfolio, Invest, Activity and More. Personal Capital actions remain explicit as Deposit, Invest, Transfer and Withdraw. Treasury is a separate organization product and never occupies the individual investor's primary navigation.
-
-## 12. Admin composition
-
-Admin is a high-trust operational evidence system. It is also **white + black + neutral grayscale** by default and may be denser than Application.
-
-Prioritize timestamps, identifiers, evidence, queues, statuses, lifecycle progression, reconciliation, exception visibility, and operator action. Semantic danger/warning colors should command attention because ordinary state is restrained.
-
-## 13. Intelligence and AI
-
-Intelligence should feel like evidence becoming understanding. A useful sequence is **Signal → Context → Evidence → Interpretation → Consequence → Possible Action**.
-
-Distinguish observed, derived, modeled, recommended, authorized, and executed information. Where consequential, expose source, timestamp, confidence, methodology, assumptions, affected entities, freshness, and limitations.
-
-AI should feel integrated into the operating system, not attached as a novelty chatbot. Avoid sparkle-icon abuse, magical gradients, fake typing, anthropomorphic certainty, and chat where structured interaction is clearer.
-
-Never collapse Recommendation → Authorization → Execution. AI-generated text never masquerades as canonical financial state.
-
-## 14. Graph and data visualization
-
-Charts and relationship views answer real questions. Use them to clarify trend, comparison, distribution, exposure, dependency, ownership, concentration, chronology, provenance, or risk propagation.
-
-Application/Admin charts remain primarily monochrome/neutral with semantic color only where meaningful. Distinguish observed, canonical, modeled, estimated, projected, incomplete, stale, unavailable, and uncertain data. Never animate modeled results as though capital is moving or interpolate missing financial data without identifying the interpolation.
-
-## 15. Controls and forms
-
-Primary actions represent one dominant action. Marketing may use Mineral Teal. Application/Admin primary actions should normally be black on light surfaces or white on dark surfaces, with restrained neutral secondary actions.
-
-All controls define default, hover, focus-visible, active, disabled, and loading states. Disabled/loading controls must not appear actionable.
-
-Every field has a persistent label. Help text explains format or consequence. Errors explain the problem and recovery. Placeholder text is never the only label.
-
-Consequential workflows preserve **Input → Review → Authorization → Submission → Outcome**.
-
-## 16. Tables and data
-
-Use tabular numerals, explicit units, currency/asset/network context where relevant, valuation timestamps, freshness, and provenance. Comparable numeric columns should align appropriately.
-
-Tables define density, sorting, filtering, selection, pagination, keyboard behavior, overflow, mobile transformation, loading, empty state, and actions. Never sacrifice meaning merely to fit more columns.
-
-## 17. Navigation
-
-Marketing desktop uses real hub destinations and concise accessible disclosures. Current canonical groups are Platform, Products, Solutions, Resources, and Company where repository architecture supports them.
-
-Mobile navigation is deliberately recomposed for touch with large targets, semantic disclosure state, focus management, Escape behavior, scroll locking where appropriate, focus restoration, and route-close behavior.
-
-Application navigation follows customer operating workflows. Admin navigation follows queues, exceptions, approvals, reconciliation, evidence, operations, and investigation. Do not mix Marketing IA into authenticated shells.
-
-## 18. Overlays and feedback
-
-Dialogs, confirmation dialogs, drawers, sheets, popovers, tooltips, menus, banners, and toasts each have distinct responsibilities. Blocking surfaces define focus entry/containment/restoration, Escape behavior, dismissal, scroll behavior, accessible naming, and mobile adaptation.
-
-Do not use modals to avoid designing a page. Complex consequential workflows often deserve dedicated review surfaces.
-
-Transient toasts are only for information that may safely disappear. Consequential financial outcomes require persistent representation. Never show generic success for an operation that is merely queued/submitted.
-
-## 19. Motion and transitions
-
-Motion communicates cause/effect, hierarchy, continuity, disclosure, spatial relationship, feedback, or real system state.
-
-Conceptual timing bands:
-
-- Immediate: `80–140ms`
-- Fast: `120–200ms`
-- Standard: `160–280ms`
-- Deliberate: `280–500ms`
-
-Longer motion requires specific justification. Define shared easing tokens rather than random easings.
-
-Hover should feel immediate and precise. Button press may use subtle compression/contrast without cartoon scaling. Menus/popovers use short fade plus small spatial transition. Drawers move from their physical origin. Route transitions exist only when they improve orientation.
-
-Never animate financial state in a way that implies execution, settlement, reconciliation, performance, success, or provider confirmation unless that state is established. `prefers-reduced-motion` is first-class.
-
-## 20. Loading, empty, unavailable, and error
-
-Distinguish initial loading, incremental loading, background refresh, action pending, deterministic progress, indeterminate progress, stale-while-refreshing, blocked, and unavailable states.
-
-Preserve known stale information when safer than replacing it with blank skeletons; label freshness. Skeletons approximate actual content structure.
-
-Empty means the authoritative scope is known and contains no records. Unknown means evidence cannot establish state. Unavailable means capability/data cannot currently be supplied. Restricted means permission/policy prevents access/action. Error means an attempt failed.
-
-Errors should explain what failed, what is known, what remains unchanged, whether retry is safe, and whether investigation/support is required. Do not reduce every failure to “Something went wrong.”
-
-## 21. Responsive design
-
-Mobile is not compressed desktop. Validate representative widths `320, 360, 375, 390, 412, 430, 768, 1024, 1280, 1440, 1600+` and transitions between them.
-
-Dense components recompose rather than merely shrink. Tables may scroll, prioritize columns, expand rows, or become record views. Dialogs may become sheets/full-screen workflows. Do not hide consequential information to fit mobile.
-
-## 22. Accessibility
-
-WCAG 2.2 AA is the minimum target. Preserve semantic HTML, landmarks, one clear H1, coherent heading order, keyboard operation, visible focus, correct disclosure/dialog semantics, persistent form labels, sufficient contrast, large touch targets, reduced motion, meaningful errors, table semantics, chart alternatives, and non-color state cues.
-
-Prefer native semantics before ARIA. Every icon-only interactive control requires an accessible name.
-
-## 23. Content design
-
-Copy is concise, precise, evidence-aware, institutional, calm, and explicit around uncertainty. Avoid generic SaaS/crypto language, inflated AI claims, “revolutionary,” “seamless,” “effortless,” “instant,” “secure,” or “guaranteed” without evidence.
-
-Use exact lifecycle verbs: Review, Approve, Authorize, Submit, Confirm, Retry, Reverse, Cancel. Do not say “Complete” when the system means “Submitted.”
-
-## 24. Component architecture
-
-Prefer: **Foundation tokens → Accessible primitives → Shared components → Surface components → Domain components → Page composition**.
-
-Do not place financial business logic inside generic visual primitives. Do not force Marketing components into Application merely to maximize reuse. Shared behavior does not require identical composition.
-
-Core patterns should define purpose, variants, states, keyboard/accessibility behavior, responsive behavior, motion, loading/error behavior, and surface-specific differences.
-
-## 25. Performance
-
-Design accounts for font loading, images, animation cost, JavaScript, visualization libraries, hydration, route bundles, layout shift, and interaction latency. Do not add visual sophistication that materially damages responsiveness.
-
-## 26. Security-aware UX
-
-UI availability never implies authorization. Disabled UI is not a security control. Browser visibility does not define financial authority. Clearly represent insufficient permission, additional authorization, session expiry, unavailable capability, and actions that cannot safely complete.
-
-## 27. Brand prohibitions
-
-Prohibit excessive blue/teal, decorative gradients, neon, glassmorphism, crypto/token imagery, bank crests, competing mark geometries, cards everywhere, generic SaaS heroes, glowing AI imagery, random network particles, fabricated dashboards/data/logos/testimonials, unsupported partnerships/regulatory claims, and visual language implying guaranteed/speculative performance.
-
-## 28. Validation
-
-Design correctness requires source/implementation comparison, responsive validation, accessibility/keyboard validation, actual typecheck/lint/test/build execution where available, browser rendering/console inspection where tooling exists, production comparison when relevant, and open-PR overlap review.
-
-Report checks as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. Never infer build, rendering, accessibility, financial correctness, or production success from source inspection alone.
-
-## 29. Governing laws
-
-> Marketing establishes authority and meaning.  
-> Application establishes intelligence, control, and operation.  
-> Admin establishes operator comprehension, evidence, risk visibility, and auditability.  
-> Developer surfaces establish programmability and integration clarity.  
-> Research establishes intellectual authority without manufacturing certainty.  
-> API and domain establish authorization, durability, ownership, and financial truth.
-
-> Observation is not interpretation.  
-> Interpretation is not recommendation.  
-> Recommendation is not authorization.  
-> Authorization is not execution.  
-> Execution is not settlement.  
-> Settlement is not reconciliation.
-
-> Unknown is not zero.  
-> Modeled is not observed.  
-> Provider-observed is not automatically canonical.  
-> Configured is not available.  
-> Planned is not implemented.
-
-> Typography creates hierarchy.  
-> Whitespace creates structure.  
-> Carbon creates authority.  
-> Ivory creates editorial space.  
-> Teal signals precision.  
-> Evidence creates trust.
-
-## 30. Final standard
-
-Neptlium should not look like software attempting to appear institutional. It should feel like institutional infrastructure expressed with exceptional product design.
-
-Every significant surface should let a user determine with minimum unnecessary effort: **What is true? What changed? Why does it matter? What evidence supports it? What is inferred? What can I do? What authorization is required? What happens next? What happened after the action? Is the result authoritative and reconciled?**
-
-> **Make complexity legible. Make intelligence useful. Make interaction precise. Make action governed. Make state truthful. Make evidence visible. Remove everything that does not help.**
+Legacy CSS may remain temporarily where deleting it would create unsafe migration risk, but it MUST consume canonical semantics and MUST NOT define a competing active system. Any exception must be documented and removed in a focused migration.
