@@ -13,16 +13,16 @@ test('marketing root loads the canonical visual-direction and experience layers'
   assert.match(layout, /import '\.\/neptlium-visual-direction\.css';/);
   assert.match(layout, /import '\.\/experience-v1\.css';/);
   assert.doesNotMatch(layout, /footer-depth\.css/);
-  assert.match(css, /--web-ivory:\s*#f5f3ee/i);
-  assert.match(css, /--web-carbon:\s*#101214/i);
-  assert.match(css, /--web-teal:\s*#0f8f86/i);
+  assert.match(css, /--web-ivory:\s*var\(--color-text-primary\)/i);
+  assert.match(css, /--web-carbon:\s*var\(--color-canvas\)/i);
+  assert.match(css, /--web-teal:\s*var\(--color-brand\)/i);
 });
 
 test('marketing uses teal as a precision instrument', () => {
-  assert.match(css, /--web-teal-interaction:\s*#20afa3/i);
-  assert.match(css, /--web-graphite:\s*#343a3f/i);
-  assert.match(css, /--web-stone:\s*#d8d5ce/i);
-  assert.match(css, /--web-mist:\s*#eceae5/i);
+  assert.match(css, /--web-teal-interaction:\s*var\(--color-brand-emphasis\)/i);
+  assert.match(css, /--web-graphite:\s*var\(--n-graphite-3\)/i);
+  assert.match(css, /--web-stone:\s*var\(--color-border-strong\)/i);
+  assert.match(css, /--web-mist:\s*var\(--color-surface-2\)/i);
   assert.doesNotMatch(css, /#258be5|#0141f3|#2764ff|#147dff/i);
 });
 
