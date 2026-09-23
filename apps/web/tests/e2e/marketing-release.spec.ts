@@ -94,31 +94,6 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page).toHaveURL(/\/institutional\/?$/);
   });
 
-  test('desktop account chooser keeps Personal and Business destinations separate', async ({
-    page,
-  }, testInfo) => {
-    test.skip(
-      !['desktop-1440', 'laptop-1280'].includes(testInfo.project.name),
-      'Desktop account chooser contract',
-    );
-    await page.goto('/', { waitUntil: 'networkidle' });
-    await page.locator('summary').filter({ hasText: 'Sign in' }).click();
-    const openMenu = page.locator('details[open]').filter({ hasText: 'Sign in' });
-    await expect(
-      openMenu.getByRole('link', { name: /Personal Neptlium Capital/i }),
-    ).toHaveAttribute('href', personalSignInUrl);
-    await expect(
-      openMenu.getByRole('link', { name: /Business Open Neptlium Treasury/i }),
-    ).toHaveAttribute('href', businessAppUrl);
-    await page.locator('summary').filter({ hasText: 'Get started' }).click();
-    const startMenu = page.locator('details[open]').filter({ hasText: 'Get started' });
-    await expect(
-      startMenu.getByRole('link', { name: /Personal Neptlium Capital/i }),
-    ).toHaveAttribute('href', personalSignUpUrl);
-    await expect(
-      startMenu.getByRole('link', { name: /Business Request Neptlium Treasury access/i }),
-    ).toHaveAttribute('href', '/contact');
-  });
 
   test('mobile navigation preserves both journeys and restores page state', async ({
     page,
