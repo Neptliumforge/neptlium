@@ -13,10 +13,15 @@ interface ProfileMenuProps {
   readonly verified: boolean;
 }
 const destinations = [
-  ['Profile', 'profile'],
-  ['Account settings', 'account'],
-  ['Security and access', 'security'],
-  ['Identity verification', 'verification'],
+  ['Profile', '/dashboard/settings/profile'],
+  ['Account settings', '/dashboard/settings/account'],
+  ['Security and access', '/dashboard/settings/security'],
+  ['Identity verification', '/dashboard/settings/verification'],
+  ['Addresses', '/dashboard/settings/addresses'],
+  ['Payment methods', '/dashboard/settings/payment-methods'],
+  ['Appearance', '/dashboard/settings/appearance'],
+  ['Notifications', '/dashboard/settings/notifications'],
+  ['Support', '/dashboard/settings/support'],
 ] as const;
 
 function applyTheme(theme: Theme) {
@@ -157,10 +162,10 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
             <p className="mt-1 text-xs text-text-muted">Personal Capital account</p>
           </div>
           <nav aria-label="Account settings" className="py-2">
-            {destinations.map(([label, hash]) => (
+            {destinations.map(([label, href]) => (
               <Link
-                key={hash}
-                href={`/dashboard/settings#${hash}`}
+                key={href}
+                href={href}
                 onClick={() => setOpen(false)}
                 className="flex min-h-11 items-center rounded-md px-2 text-sm text-text-secondary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
               >
