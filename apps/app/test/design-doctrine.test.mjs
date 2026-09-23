@@ -12,19 +12,16 @@ const experience = readFileSync(join(root, 'components/product/OperatingExperien
 
 test('authenticated product consumes shared brand semantics with restrained institutional authority', () => {
   assert.match(css, /@neptlium\/ui\/styles\/brand\.css/);
-  assert.match(css, /--color-accent-primary:\s*var\(--n-carbon\)/);
-  assert.match(css, /--color-border-focus:\s*#101214/);
-  assert.match(css, /--color-canvas:\s*var\(--n-canvas\)/);
-  assert.match(css, /--color-sidebar:\s*#f5f3ee/);
-  assert.match(css, /--color-sidebar:\s*#101214/);
-  assert.match(css, /--n-mineral-teal:\s*#0f8f86/);
-  assert.match(css, /--shadow-focus-ring:/);
+  assert.match(css, /@neptlium\/ui\/styles\/tokens\.css/);
+  assert.match(css, /var\(--color-brand\)/);
+  assert.doesNotMatch(css, /--color-canvas:\s*#[0-9a-f]/i);
+  assert.doesNotMatch(css, /--color-sidebar:\s*#[0-9a-f]/i);
   assert.doesNotMatch(css, /#258BE5|#319EED/i);
   assert.doesNotMatch(css, /radial-gradient|linear-gradient/i);
 });
 
 test('authenticated product remains operationally quiet and numerically precise', () => {
-  assert.match(css, /font-family:\s*var\(--n-font-product\)/);
+  assert.match(css, /font-family:\s*var\(--font-sans\)/);
   assert.match(css, /font-variant-numeric:\s*tabular-nums/);
   assert.match(css, /background-image:\s*none\s*!important/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
