@@ -90,16 +90,21 @@ export function CapitalRails({
         <g className="n-capital-rails__signal" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round">
           <path d={markPaths[1]} transform={transforms[1]} pathLength="1" />
         </g>
-        {nodes.slice(0, positions.length).map((node, index) => (
-          <circle
-            key={`${node.label}-${index}`}
-            cx={positions[index][0]}
-            cy={positions[index][1]}
-            r={node.state === 'active' ? 1.8 : 1.35}
-            fill={nodeTone[node.state ?? 'neutral']}
-            className="n-capital-rails__node"
-          />
-        ))}
+        {nodes.slice(0, positions.length).map((node, index) => {
+          const position = positions[index];
+          if (!position) return null;
+          const [cx, cy] = position;
+          return (
+            <circle
+              key={`${node.label}-${index}`}
+              cx={cx}
+              cy={cy}
+              r={node.state === 'active' ? 1.8 : 1.35}
+              fill={nodeTone[node.state ?? 'neutral']}
+              className="n-capital-rails__node"
+            />
+          );
+        })}
       </svg>
       {!decorative && nodes.length > 0 ? (
         <figcaption className="n-capital-rails__legend">
