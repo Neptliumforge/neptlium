@@ -2,7 +2,7 @@
 @import '@neptlium/ui/styles/tokens.css';
 
 :root {
-  --app-black: var(--canvas-treasury);
+  --app-black: var(--color-canvas);
   --app-black-raised: var(--color-surface-inset);
   --app-panel: var(--color-surface-1);
   --app-panel-2: var(--color-surface-2);
