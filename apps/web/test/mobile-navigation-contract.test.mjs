@@ -39,21 +39,9 @@ test('mobile menu exposes canonical product-family navigation and separate accou
   assert.doesNotMatch(mobile, /aria-expanded/);
 });
 
-test('mobile navigation preserves visible acquisition and 44px top-level targets', () => {
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-section-label\s*\{[^}]*min-height: 2\.75rem !important;/s,
-  );
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*min-height: 3\.5rem !important;/s,
-  );
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*background: #0a746c !important;/s,
-  );
-  assert.match(
-    css,
-    /\.mobile-command-sheet \.mobile-enter-action\s*\{[^}]*color: #fff !important;/s,
-  );
+test('mobile navigation preserves visible acquisition and accessible targets', () => {
+  assert.match(css, /--header-marketing:4\.75rem/);
+  assert.match(css, /\.elite-header-entry\{min-height:3\.25rem/);
+  assert.match(css, /\.elite-menu-trigger\{width:3\.25rem;height:3\.25rem/);
+  assert.match(css, /var\(--color-accent-primary\)/);
 });
