@@ -628,3 +628,7 @@ button:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+.treasury-rails-context{position:relative;min-height:11rem;margin-top:var(--space-6);padding:var(--space-5);overflow:hidden;border-block:1px solid var(--color-border-hairline);background:linear-gradient(110deg,var(--color-background-deep),var(--color-surface-1))}
+.treasury-rails-context .n-capital-rails{width:min(34rem,68vw);margin-left:auto;opacity:.74}.treasury-rails-context .n-capital-rails__legend{justify-content:flex-end}
+@media(max-width:600px){.treasury-rails-context{min-height:9rem;padding:var(--space-4)}.treasury-rails-context .n-capital-rails{width:26rem;margin-left:15%;}.treasury-rails-context .n-capital-rails__legend{display:none}}
