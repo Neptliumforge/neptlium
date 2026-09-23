@@ -67,10 +67,24 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light dark',
-  themeColor: '#050505',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f4f5f2' },
+    { media: '(prefers-color-scheme: dark)', color: '#080c10' },
+  ],
   width: 'device-width',
   initialScale: 1,
 };
+const themeBoot = \`(() => {
+  try {
+    const stored = localStorage.getItem('neptlium-theme');
+    const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+    const resolved = preference === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : preference;
+    document.documentElement.dataset.theme = resolved;
+    document.documentElement.dataset.themePreference = preference;
+    document.documentElement.style.colorScheme = resolved;
+  } catch (_) {}
+})();\`;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -84,7 +98,8 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: themeBoot }} /></head>
       <body>
         <script
           type="application/ld+json"
