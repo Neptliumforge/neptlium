@@ -222,7 +222,7 @@ button {
 }
 .mega-menu {
   position: fixed;
-  top: 4rem;
+  top: var(--header-marketing);
   left: 50%;
   display: grid;
   grid-template-columns: 1fr;
