@@ -83,8 +83,8 @@ test('authenticated shell is quiet and brand-linked rather than tenant-console s
     layout,
     /Current operating context|Canonical and governed where available|Capital state/,
   );
-  assert.match(styles, /--color-sidebar: #f5f3ee/);
-  assert.match(styles, /--n-mineral-teal: #0f8f86/);
+  assert.match(styles, /@neptlium\/ui\/styles\/tokens\.css/);
+  assert.match(styles, /var\(--color-brand\)/);
 });
 
 test('product-state messages use explicit source copy rather than regex rewriting', () => {
