@@ -7,9 +7,13 @@ Canonical repository: `Neptliumforge/neptlium`.
 | Boundary | Domain | Responsibility |
 | --- | --- | --- |
 | `apps/web` | `neptlium.com` | Public institutional marketing, brand, editorial, SEO, and information. |
-| `apps/app` | `app.neptlium.com` | Authenticated customer operating application. |
+| `apps/app` | `app.neptlium.com` | Authenticated individual Capital operating application. |
+| `apps/treasury` | Treasury surface | Organizational Treasury operating experience. |
+| `apps/pay` | Pay surface | Payment and collection experience; presentation is not financial authority. |
 | `apps/admin` | `admin.neptlium.com` | Internal operator comprehension, risk visibility, control, and auditability. |
 | `apps/api` | `api.neptlium.com` | Domain truth, authentication enforcement, authorization, durability, provider isolation, ledger, and reconciliation. |
+| `apps/docs` | Docs surface | Developer and platform documentation application. |
+| `apps/status` | Status surface | Platform availability experience. |
 
 Shared packages may be changed only when genuine shared authority requires it. Do not move subsystem-specific behavior into shared packages for convenience.
 
@@ -60,7 +64,7 @@ Never design or report repository behavior from historical chat context, screens
 
 ## Documentation authority
 
-- Numbered documents `docs/00_*` through `docs/15_*` are current authority when present.
+- `docs/README.md` is the current documentation router. Numbered documents remain current authority only where the router or current source establishes them as such; chronology alone does not establish authority.
 - `docs/03_DESIGN_SYSTEM.md` is the central Neptlium design authority.
 - A nested `AGENTS.md` specializes local implementation but cannot weaken repository-wide security, financial, migration, validation, or Git rules.
 - Source, tests, configuration, and authorized runtime evidence determine what is actually implemented or live.
@@ -155,4 +159,4 @@ A build or execution is not complete merely because local validation passes. Com
 
 ## Scope discipline
 
-Classify ownership before editing. Keep Web work in `apps/web`, App work in `apps/app`, Admin work in `apps/admin`, and API/domain work in `apps/api` unless evidence establishes a genuine cross-boundary requirement. Record adjacent improvements as follow-up work instead of silently expanding scope.
+Classify ownership before editing. Keep work in the owning application (`apps/web`, `apps/app`, `apps/treasury`, `apps/pay`, `apps/admin`, `apps/api`, `apps/docs`, or `apps/status`) unless evidence establishes a genuine cross-boundary requirement. DO NOT CREATE A SECOND AUTHORITY TO AVOID UNDERSTANDING THE FIRST. Record adjacent improvements as follow-up work instead of silently expanding scope.
