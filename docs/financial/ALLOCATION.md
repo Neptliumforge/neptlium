@@ -219,6 +219,6 @@ The mobile layout converts financial tables to structured rows rather than squee
 - absent valuation never creates a fabricated portfolio value;
 - Allocation customer code contains no provider SDK authority.
 
-REAL CAPITAL EXECUTION: **CLOSED**  
-PRODUCTION ALLOCATION MIGRATION: **NOT APPLIED**  
+REAL CAPITAL EXECUTION: **CLOSED**
+PRODUCTION ALLOCATION MIGRATION: **NOT APPLIED**
 AUTONOMOUS REBALANCING: **DISABLED**
