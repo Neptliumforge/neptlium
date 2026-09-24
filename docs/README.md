@@ -8,7 +8,7 @@ This is the knowledge router. **Current authority is subject-based.** Files unde
 - **Architecture:** [Platform architecture](architecture/ARCHITECTURE.md), [API](architecture/API.md), [ADRs](architecture/ADR/README.md)
 - **Financial:** [Capital Account](financial/CAPITAL_ACCOUNT.md), [Funding](financial/FUNDING.md), [Transfers](financial/TRANSFERS.md), [Ledger and reconciliation](financial/LEDGER_AND_RECONCILIATION.md), [Allocation](financial/ALLOCATION.md)
 - **Platform:** [Identity](platform/IDENTITY.md), [Providers](platform/PROVIDERS.md), [Security](platform/SECURITY.md), [Security findings](platform/SECURITY_FINDINGS.md), [Authentication emails](platform/AUTH_EMAILS.md)
-- **Experience:** [Design system](experience/DESIGN_SYSTEM.md), [Product experience](experience/PRODUCT_EXPERIENCE.md)
+- **Experience:** [Design system](experience/DESIGN_SYSTEM.md), [Asset authority](experience/ASSETS.md), [Product experience](experience/PRODUCT_EXPERIENCE.md)
 - **Engineering:** [Development](engineering/DEVELOPMENT.md), [CI](engineering/CI.md), [Environment](engineering/ENVIRONMENT.md), [GitHub governance](engineering/GITHUB_GOVERNANCE.md), [Branch hygiene](engineering/BRANCH_HYGIENE.md)
 - **Operations:** [Deployment](operations/DEPLOYMENT.md), [Deployment architecture](operations/DEPLOYMENT_ARCHITECTURE.md), [Vercel](operations/VERCEL.md), [Admin operations](operations/ADMIN.md)
 - **Classification evidence:** [Documentation classification](DOCUMENT_CLASSIFICATION.md)
