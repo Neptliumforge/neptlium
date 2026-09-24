@@ -10,9 +10,9 @@ export interface NeptliumMarkProps {
 }
 
 const toneColor: Record<NeptliumMarkTone, string> = {
-  teal: "#0F8F86",
-  ink: "#101214",
-  paper: "#F5F3EE",
+  teal: "var(--color-brand)",
+  ink: "var(--color-text-inverse)",
+  paper: "var(--color-text-primary)",
   current: "currentColor",
 };
 
