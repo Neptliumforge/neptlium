@@ -28,14 +28,13 @@ test('mobile navigation owns an opaque editorial viewport', () => {
   assert.match(css, /\.mobile-command-nav/);
 });
 
-test('mobile menu exposes canonical product-family navigation and separate account actions', () => {
+test('mobile menu exposes canonical product discovery and direct account actions', () => {
   assert.match(mobile, /NAVIGATION\.map/);
   assert.match(mobile, /className="mobile-nav-grid"/);
   assert.match(mobile, /href=\{SITE\.personalSignInUrl\}>Sign in/);
-  assert.match(mobile, /href=\{SITE\.personalSignUpUrl\}>Open account/);
-  assert.match(mobile, /href=\{SITE\.businessAppUrl\}>Open Neptlium Treasury/);
-  assert.match(mobile, /Treasury access/);
+  assert.match(mobile, /href=\{SITE\.personalSignUpUrl\}>Get started/);
   assert.match(mobile, /Socials/);
+  assert.doesNotMatch(mobile, /Open Neptlium Treasury/);
   assert.doesNotMatch(mobile, /aria-expanded/);
 });
 
