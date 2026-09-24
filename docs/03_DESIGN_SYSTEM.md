@@ -152,3 +152,5 @@ Marketing claims must remain within repository truth. Use implemented/available 
 
 ### Host authority
 The canonical public metadata authority is `https://neptlium.com`. Sitemap, robots, OpenGraph, structured data and route metadata use that origin. Deployment/domain redirects must converge alternate hosts to the same canonical origin before production certification.
+
+<!-- Validation baseline: canonical design system final production gate. -->
