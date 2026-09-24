@@ -4,7 +4,7 @@ import test from 'node:test';
 
 const rails = fs.readFileSync('../../packages/ui/src/components/CapitalRails.tsx', 'utf8');
 const tokens = fs.readFileSync('../../packages/ui/src/styles/tokens.css', 'utf8');
-const design = fs.readFileSync('../../docs/03_DESIGN_SYSTEM.md', 'utf8');
+const design = fs.readFileSync('../../docs/experience/DESIGN_SYSTEM.md', 'utf8');
 const home = fs.readFileSync('./app/page.tsx', 'utf8');
 
 test('Capital Rails geometry derives from the canonical Neptlium mark strokes', () => {

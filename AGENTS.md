@@ -52,7 +52,7 @@ Before describing or changing a subsystem:
 1. Fetch and inspect current `origin/main`.
 2. Read this root `AGENTS.md`.
 3. Read the nearest applicable nested `AGENTS.md`.
-4. Read current authoritative numbered documentation.
+4. Read current subject authority through `docs/README.md`.
 5. Inspect the actual current implementation.
 6. Inspect tests, types, configuration, migrations, and build/deployment entrypoints relevant to the task.
 7. Inspect the relevant live production surface when the task concerns production behavior and access permits it.
@@ -64,8 +64,8 @@ Never design or report repository behavior from historical chat context, screens
 
 ## Documentation authority
 
-- `docs/README.md` is the current documentation router. Numbered documents remain current authority only where the router or current source establishes them as such; chronology alone does not establish authority.
-- `docs/03_DESIGN_SYSTEM.md` is the central Neptlium design authority.
+- `docs/README.md` is the current documentation router. Subject documents linked by `docs/README.md` are current authority; chronology and compatibility paths do not establish authority.
+- `docs/experience/DESIGN_SYSTEM.md` is the central Neptlium design authority.
 - A nested `AGENTS.md` specializes local implementation but cannot weaken repository-wide security, financial, migration, validation, or Git rules.
 - Source, tests, configuration, and authorized runtime evidence determine what is actually implemented or live.
 - Documentation must distinguish **CURRENT**, **TRANSITION**, and **TARGET** where engineering/product architecture state is being documented. This classification is not a required public-Marketing content model.
@@ -76,7 +76,7 @@ Never design or report repository behavior from historical chat context, screens
 
 - Never use an archived document as current authority.
 - Never infer present behavior or product availability from archived documentation.
-- Do not update archived documents to express current architecture; update the appropriate current numbered document.
+- Do not update archived documents to express current architecture; update the appropriate current subject document.
 - Preserve archive history unless an explicit archival-maintenance task authorizes changes.
 
 ## Financial and product truth
@@ -150,7 +150,7 @@ A build or execution is not complete merely because local validation passes. Com
 
 ## Canonical design authority
 
-- `docs/03_DESIGN_SYSTEM.md` and `packages/ui/src/styles/tokens.css` are the design-system authorities.
+- `docs/experience/DESIGN_SYSTEM.md` and `packages/ui/src/styles/tokens.css` are the design-system authorities.
 - Do not invent application-local brand colors, typography scales, spacing systems, radii, shadows, motion curves, financial status semantics or duplicate shared primitives when a canonical equivalent exists.
 - New shared visual/interaction primitives belong in `@neptlium/ui`; product-specific composition remains inside the owning application.
 - Dark, Light and System are supported appearance modes. System follows browser/OS preference and explicit user preference must persist.

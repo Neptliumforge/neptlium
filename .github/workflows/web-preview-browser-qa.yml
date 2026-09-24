@@ -9,7 +9,7 @@ on:
       - "apps/web/**"
       - "packages/ui/**"
       - "package.json"
-      - "docs/03_DESIGN_SYSTEM.md"
+      - "docs/experience/DESIGN_SYSTEM.md"
       - "pnpm-lock.yaml"
       - "turbo.json"
   workflow_dispatch:

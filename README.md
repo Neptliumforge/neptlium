@@ -51,7 +51,7 @@ states otherwise.
 
 ## Development
 
-pnpm install
+pnpm install --frozen-lockfile
 pnpm dev
 pnpm lint
 pnpm typecheck

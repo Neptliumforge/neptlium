@@ -42,4 +42,4 @@ pnpm --filter @neptlium/app test
 pnpm --filter @neptlium/app build
 ```
 
-Architecture: [`docs/02_AUTHENTICATED_APPLICATION.md`](../../docs/02_AUTHENTICATED_APPLICATION.md), [`docs/04_IDENTITY_AND_ACCESS.md`](../../docs/04_IDENTITY_AND_ACCESS.md), and [`docs/16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md`](../../docs/16_DEPOSIT_AND_ACCOUNT_FUNDING_ARCHITECTURE.md).
+Architecture: [`docs/product/CAPITAL.md`](../../docs/product/CAPITAL.md), [`docs/platform/IDENTITY.md`](../../docs/platform/IDENTITY.md), and [`docs/financial/FUNDING.md`](../../docs/financial/FUNDING.md).

@@ -4,9 +4,9 @@
 
 `apps/web` owns `neptlium.com`, the public marketing, investor-information, business-product, editorial, SEO and acquisition surface. It owns no authenticated customer session, privileged financial operation, canonical financial state, custody, execution or settlement authority.
 
-Canonical design authority is `docs/03_DESIGN_SYSTEM.md` with runtime tokens in `packages/ui/src/styles/tokens.css`. Public Web uses the same Neptlium identity as Capital and Treasury while retaining an editorial marketing density. Capital Rails are the canonical mark-derived spatial/authority grammar; extend shared primitives rather than creating page-local fintech artwork.
+Canonical design authority is `docs/experience/DESIGN_SYSTEM.md` with runtime tokens in `packages/ui/src/styles/tokens.css`. Public Web uses the same Neptlium identity as Capital and Treasury while retaining an editorial marketing density. Capital Rails are the canonical mark-derived spatial/authority grammar; extend shared primitives rather than creating page-local fintech artwork.
 
-Before Web work, follow root `AGENTS.md`, `docs/00_PRODUCT_CONSTITUTION.md`, canonical `docs/03_DESIGN_SYSTEM.md`, current Web source/tests/configuration and relevant open PRs. `docs/marketing-design-system.md` is compatibility-only and cannot override the canonical design authority. Do not change App, Admin, API, migrations, providers, remote environments or shared packages unless a verified dependency requires it and task scope explicitly authorizes it.
+Before Web work, follow root `AGENTS.md`, `docs/product/PRODUCT.md`, canonical `docs/experience/DESIGN_SYSTEM.md`, current Web source/tests/configuration and relevant open PRs. Do not change App, Admin, API, migrations, providers, remote environments or shared packages unless a verified dependency requires it and task scope explicitly authorizes it.
 
 ## Canonical public architecture
 
