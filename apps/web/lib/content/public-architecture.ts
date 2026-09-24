@@ -177,30 +177,39 @@ export const COMPANY = [
 
 export const PRIMARY_COMPANY = COMPANY;
 
+export const PRODUCT_LINKS = [
+  { label: 'Capital', href: '/capital', description: 'Understand capital, availability and governed movement.' },
+  { label: 'Portfolio', href: '/portfolio', description: 'Understand positions, ownership and portfolio context.' },
+  { label: 'Investments', href: '/investments', description: 'Understand how eligible capital can be put to work.' },
+  { label: 'Treasury', href: '/treasury', description: 'Operate organizational capital with control.' },
+  { label: 'Intelligence', href: '/intelligence', description: 'Decision support grounded in evidence and context.' },
+  { label: 'Infrastructure', href: '/infrastructure', description: 'Build on governed Neptlium primitives.' },
+] as const satisfies readonly NavigationLink[];
+
 export const NAVIGATION = [
   {
-    label: 'Individuals',
+    label: 'Products',
     href: '/capital',
-    description: 'Personal investing, portfolio and capital.',
-    links: CAPITAL_LINKS,
+    description: 'The six capabilities of the Neptlium Capital Operating Platform.',
+    links: PRODUCT_LINKS,
   },
   {
-    label: 'Institutions',
+    label: 'Solutions',
+    href: '/solutions',
+    description: 'Capital visibility, treasury coordination, allocation and governance.',
+    links: SOLUTIONS,
+  },
+  {
+    label: 'Institutional',
     href: '/institutional',
-    description: 'Treasury and capital systems for organizations.',
-    links: [...INSTITUTIONAL_LINKS, ...TREASURY_LINKS],
+    description: 'Capital systems for complex organizations.',
+    links: INSTITUTIONAL_LINKS,
   },
   {
-    label: 'Investments',
-    href: '/investments',
-    description: 'Investment structure, opportunity and context.',
-    links: [CAPITAL_LINKS[1], CAPITAL_LINKS[2], CAPITAL_LINKS[3]],
-  },
-  {
-    label: 'Company',
-    href: '/company',
-    description: 'Neptlium within the Neptliumforge parent-company architecture.',
-    links: COMPANY,
+    label: 'Insights',
+    href: '/insights',
+    description: 'Capital, treasury, investing and infrastructure perspectives.',
+    links: INSIGHTS,
   },
 ] as const;
 

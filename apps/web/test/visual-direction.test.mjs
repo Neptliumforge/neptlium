@@ -139,35 +139,27 @@ test('insights uses a truthful editorial standard without invented publications'
   assert.doesNotMatch(insights, /award-winning|featured in|as seen in|customer story/i);
 });
 
-test('canonical public navigation is Individuals Institutions Investments Company', () => {
-  for (const label of ['Individuals', 'Institutions', 'Investments', 'Company'])
+test('canonical public navigation uses progressive product discovery', () => {
+  for (const label of ['Products', 'Solutions', 'Institutional', 'Insights'])
     assert.match(architecture, new RegExp(`label: '${label}'`));
-  for (const route of [
-    '/capital',
-    '/treasury',
-    '/institutional',
-    '/infrastructure',
-    '/insights',
-    '/company',
-  ])
-    assert.match(architecture, new RegExp(route.replaceAll('/', '\\/')));
+  for (const route of ['/capital','/portfolio','/investments','/treasury','/intelligence','/infrastructure'])
+    assert.match(architecture, new RegExp(route.replaceAll('/', '\\\/')));
   assert.match(header, /Get started/);
-  assert.match(site, /personalAppUrl/);
-  assert.match(mobile, /Neptlium Treasury/);
   assert.match(header, /data-surface=/);
   assert.match(header, /window\.scrollY > 18/);
   assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
   assert.match(mobile, /event\.key === 'Escape'/);
 });
 
-test('product destinations remain separated by audience while the public footer stays minimal', () => {
+test('product destinations remain truthful while the footer is a complete directory', () => {
   assert.match(site, /personalAppUrl:\s*'https:\/\/app\.neptlium\.com'/);
   assert.match(site, /businessAppUrl:\s*'https:\/\/treasury\.neptlium\.com'/);
   assert.match(site, /payUrl:\s*'https:\/\/pay\.neptlium\.com'/);
   assert.match(site, /docsUrl:\s*'https:\/\/docs\.neptlium\.com'/);
-  assert.match(footer, /Capital systems for people, businesses and institutions/);
-  assert.match(footer, /View system status/);
-  assert.doesNotMatch(footer, /Neptlium Capital|Neptlium Treasury/);
+  assert.match(footer, /Capital, intelligently managed/);
+  assert.match(footer, /System status/);
+  assert.match(footer, /\['Portfolio', '\/portfolio'\]/);
+  assert.match(footer, /\['Infrastructure', '\/infrastructure'\]/);
 });
 
 test('shared elite layout is responsive, reduced-motion aware, and product visuals bind globally', () => {

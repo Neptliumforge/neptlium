@@ -2,34 +2,50 @@ import Link from 'next/link';
 import { Brand } from './brand';
 import { SITE } from '@/lib/content/site';
 
-const legalLinks = [
-  { label: 'Security', href: '/security' },
-  { label: 'Privacy', href: '/privacy' },
-  { label: 'Terms', href: '/terms' },
-  { label: 'Risk disclosure', href: '/risk-disclosure' },
-  { label: 'Accessibility', href: '/accessibility' },
-  { label: 'Cookies', href: '/cookie-policy' },
+const groups = [
+  { label: 'Product', links: [
+    ['Capital', '/capital'], ['Portfolio', '/portfolio'], ['Investments', '/investments'],
+    ['Treasury', '/treasury'], ['Intelligence', '/intelligence'],
+  ] },
+  { label: 'Platform', links: [
+    ['Institutional', '/institutional'], ['Infrastructure', '/infrastructure'], ['Security', '/security'],
+  ] },
+  { label: 'Resources', links: [
+    ['Insights', '/insights'], ['Learn', '/learn'], ['Support', '/contact'],
+  ] },
+  { label: 'Company', links: [
+    ['Company', '/company'], ['Contact', '/contact'],
+  ] },
 ] as const;
 
-const socialLinks = [
-  { label: 'X', href: 'https://x.com/Neptlium' },
-  { label: 'Bluesky', href: 'https://bsky.app/profile/neptlium.bsky.social' },
-  { label: 'YouTube', href: 'https://youtube.com/@neptlium?si=fJ7q0r18UCoxjJth' },
+const legalLinks = [
+  ['Privacy', '/privacy'], ['Terms', '/terms'], ['Risk disclosure', '/risk-disclosure'],
+  ['Accessibility', '/accessibility'], ['Cookies', '/cookie-policy'],
 ] as const;
 
 export function SiteFooter() {
   return <footer className="neptlium-minimal-footer" aria-label="Neptlium footer">
     <div className="neptlium-minimal-footer__shell">
-      <div className="neptlium-minimal-footer__top">
+      <div className="neptlium-footer-directory">
         <div className="neptlium-minimal-footer__identity">
           <Brand tone="teal" />
-          <p>Capital systems for people, businesses and institutions.</p>
-          <div className="neptlium-minimal-footer__social" aria-label="Neptlium social channels">{socialLinks.map((link) => <a href={link.href} key={link.href} rel="noreferrer">{link.label}</a>)}</div>
+          <p>Capital, intelligently managed.</p>
+          <span>One capital operating platform for individuals and organizations.</span>
         </div>
-        <div className="neptlium-minimal-footer__status"><span>Neptlium system</span><a href={SITE.statusUrl}>View system status →</a></div>
+        {groups.map((group) => <nav key={group.label} aria-label={group.label}>
+          <strong>{group.label}</strong>
+          {group.links.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
+        </nav>)}
+        <nav aria-label="Account">
+          <strong>Account</strong>
+          <a href={SITE.personalSignInUrl}>Sign in</a>
+          <a href={SITE.personalSignUpUrl}>Sign up</a>
+          <a href={SITE.businessAppUrl}>Treasury access</a>
+        </nav>
       </div>
       <div className="neptlium-minimal-footer__base">
-        <nav className="neptlium-minimal-footer__legal" aria-label="Legal and trust">{legalLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</nav>
+        <nav className="neptlium-minimal-footer__legal" aria-label="Legal">{legalLinks.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav>
+        <a href={SITE.statusUrl}>System status</a>
         <span className="neptlium-minimal-footer__copyright">© {new Date().getFullYear()} Neptlium</span>
       </div>
     </div>

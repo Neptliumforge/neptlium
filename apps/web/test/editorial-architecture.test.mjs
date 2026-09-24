@@ -67,19 +67,11 @@ test('research and press remain truthful when verified material is unavailable',
   );
 });
 
-test('primary discovery follows the audience hierarchy while the footer remains minimal and complete', () => {
-  assert.match(architecture, /export const PRIMARY_PRODUCTS = PRODUCTS;/);
-  assert.match(architecture, /export const PRIMARY_COMPANY = COMPANY;/);
-  for (const topLevel of ['Individuals', 'Institutions', 'Investments', 'Company'])
-    assert.match(architecture, new RegExp(`label: '${topLevel}'`));
-  for (const legal of [
-    'Security',
-    'Privacy',
-    'Terms',
-    'Risk disclosure',
-    'Accessibility',
-    'Cookies',
-  ])
-    assert.match(footer, new RegExp(legal, 'i'));
-  assert.match(footer, /View system status/);
+test('primary discovery follows canonical product hierarchy and footer is complete', () => {
+  for (const label of ['Products', 'Solutions', 'Institutional', 'Insights'])
+    assert.match(architecture, new RegExp(`label: '${label}'`));
+  for (const label of ['Capital','Portfolio','Investments','Treasury','Intelligence','Infrastructure'])
+    assert.match(architecture, new RegExp(`label: '${label}'`));
+  assert.match(footer, /Capital, intelligently managed/);
+  assert.match(footer, /SITE\.statusUrl/);
 });

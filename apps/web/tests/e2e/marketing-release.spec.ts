@@ -87,10 +87,10 @@ test.describe('Neptlium unified marketing release', () => {
     );
     await page.goto('/', { waitUntil: 'networkidle' });
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });
-    for (const label of ['Individuals', 'Institutions', 'Investments', 'Company']) {
+    for (const label of ['Products', 'Solutions', 'Institutional', 'Insights']) {
       await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
     }
-    await nav.getByRole('link', { name: 'Institutions', exact: true }).click();
+    await nav.getByRole('link', { name: 'Institutional', exact: true }).click();
     await expect(page).toHaveURL(/\/institutional\/?$/);
   });
 
@@ -108,15 +108,16 @@ test.describe('Neptlium unified marketing release', () => {
     await trigger.click();
     const dialog = page.getByRole('dialog', { name: 'Navigation' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Individuals', exact: true }).first()).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Institutions', exact: true }).first()).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Open account', exact: false })).toHaveAttribute(
+    await expect(dialog.getByRole('link', { name: 'Products', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Institutional', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('link', { name: 'Get started', exact: false })).toHaveAttribute(
       'href',
       personalSignUpUrl,
     );
-    await expect(
-      dialog.getByRole('link', { name: 'Open Neptlium Treasury', exact: true }),
-    ).toHaveAttribute('href', businessAppUrl);
+    await expect(dialog.getByRole('link', { name: 'Sign in', exact: true })).toHaveAttribute(
+      'href',
+      'https://app.neptlium.com/auth/sign-in',
+    );
     await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
     await expectNoHorizontalOverflow(page);
     await page.keyboard.press('Escape');

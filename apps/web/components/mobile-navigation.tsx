@@ -47,9 +47,9 @@ export function MobileNavigation({ path, onClose, triggerRef }: { path: string; 
           <Link className="mobile-section-label" href={section.href} aria-current={path === section.href ? 'page' : undefined}><span>{section.label}</span><ArrowRight aria-hidden="true" /></Link>
           {section.links.length > 1 ? <div className="mobile-section-links">{section.links.filter((link) => link.href !== section.href).map((link) => <Link href={link.href} key={link.href}>{link.label}</Link>)}</div> : null}
         </section>)}</div>
-        <div className="mobile-account-grid" aria-label="Account destinations">
-          <section><span>Personal</span><a href={SITE.personalSignInUrl}>Sign in</a><a className="mobile-enter-action" href={SITE.personalSignUpUrl}>Open account <ArrowRight aria-hidden="true" /></a></section>
-          <section><span>Business</span><a href={SITE.businessAppUrl}>Open Neptlium Treasury</a><a className="mobile-enter-action mobile-enter-secondary" href={SITE.businessAppUrl}>Treasury access <ArrowRight aria-hidden="true" /></a></section>
+        <div className="mobile-account-actions" aria-label="Account access">
+          <a href={SITE.personalSignInUrl}>Sign in</a>
+          <a className="mobile-enter-action" href={SITE.personalSignUpUrl}>Get started <ArrowRight aria-hidden="true" /></a>
         </div>
         <section className="mobile-social-block" aria-label="Social channels"><span>Socials</span><div>{socialLinks.map((social) => <a href={social.href} key={social.href} target="_blank" rel="noopener noreferrer">{social.label}<ArrowUpRight aria-hidden="true" /></a>)}</div></section>
       </nav>

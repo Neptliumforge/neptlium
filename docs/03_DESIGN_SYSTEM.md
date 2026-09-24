@@ -132,3 +132,23 @@ Prefer SVG/CSS/browser-native animation. Do not add an animation dependency sole
 
 ### Extension rule
 Future developers MUST extend CapitalRails, its canonical rail tokens and documented variants before creating new rail artwork. Page-local rail palettes, independent node semantics, duplicated mark-derived SVG geometry and generic fintech network art are prohibited.
+
+
+## 16. Web product-language authority
+
+Public Web defines the public language of the Capital Operating Platform without becoming backend/domain authority.
+
+Primary public capability hierarchy:
+**Capital → Portfolio → Investments → Treasury → Intelligence → Infrastructure**.
+
+Supporting expressions are Institutional, Security, Insights and Company. Allocation remains a supported route and product concept inside Capital/Portfolio architecture rather than a competing top-level identity.
+
+The Web header uses progressive disclosure: product discovery exposes the six capabilities; Solutions, Institutional and Insights provide audience/context discovery; Sign in and Get started remain account actions. Mobile uses the same information architecture with progressive disclosure rather than Personal/Business account switches.
+
+The footer is an information architecture surface organized around Product, Platform, Resources, Company, Legal and Account destinations. Only real repository destinations may be listed.
+
+### Public claims
+Marketing claims must remain within repository truth. Use implemented/available language only when the capability exists at the relevant boundary. Use limited/developing/conceptual language when appropriate. Never present configured providers, synthetic intelligence, illustrative product states or future execution architecture as live capability.
+
+### Host authority
+The canonical public metadata authority is `https://neptlium.com`. Sitemap, robots, OpenGraph, structured data and route metadata use that origin. Deployment/domain redirects must converge alternate hosts to the same canonical origin before production certification.
