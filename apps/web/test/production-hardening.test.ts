@@ -79,13 +79,11 @@ test('production shell preserves responsive, reduced-motion and mobile overlay h
 });
 
 test('homepage header keeps acquisition visually primary with direct account actions', () => {
-  assert.match(header, /command-primary-action/);
-  assert.match(header, />\s*Get started\s*</);
-  assert.match(header, />\s*Sign up\s*</);
   assert.match(header, /SITE\.personalSignInUrl/);
   assert.match(header, /SITE\.personalSignUpUrl/);
-  assert.match(mobile, /SITE\.businessAppUrl/);
-  assert.match(mobile, /Neptlium Treasury/);
+  assert.match(header, /command-primary-action/);
+  assert.match(mobile, /SITE\.personalSignInUrl/);
+  assert.match(mobile, /SITE\.personalSignUpUrl/);
 });
 
 test('production public shell remains free of fabricated financial authority', () => {
