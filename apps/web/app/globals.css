@@ -1835,3 +1835,37 @@ button {
 @media (max-width: 700px) {
   .n-rail-route-hero__field { width: 42rem; right: -22rem; opacity: .12; }
 }
+
+
+/* Phase 1 — canonical product discovery and footer directory */
+.command-nav-group { position: relative; height: 100%; display: flex; align-items: center; }
+.command-nav-group > a { display: inline-flex; align-items: center; gap: .35rem; }
+.command-nav-group > a svg { width: .85rem; height: .85rem; opacity: .65; transition: transform var(--motion-duration-fast) var(--motion-ease-out); }
+.command-nav-menu { position: absolute; top: calc(100% - 8px); left: 50%; width: min(32rem, 80vw); padding-top: .75rem; opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, .5rem); transition: opacity var(--motion-duration-fast) var(--motion-ease-out), transform var(--motion-duration-fast) var(--motion-ease-out); }
+.command-nav-menu > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .25rem; padding: .65rem; background: color-mix(in srgb, var(--color-surface-raised) 96%, transparent); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.command-nav-menu a { display: grid; gap: .25rem; padding: .8rem; border-radius: var(--radius-md); }
+.command-nav-menu a:hover, .command-nav-menu a:focus-visible { background: var(--color-surface-interactive); }
+.command-nav-menu span { color: var(--color-text-primary); font-weight: 600; }
+.command-nav-menu small { color: var(--color-text-muted); line-height: 1.35; font-size: .76rem; font-weight: 400; }
+.command-nav-group:hover .command-nav-menu, .command-nav-group:focus-within .command-nav-menu { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0); }
+.command-nav-group:hover > a svg, .command-nav-group:focus-within > a svg { transform: rotate(180deg); }
+
+.mobile-account-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; padding-top: 1rem; border-top: 1px solid var(--color-border-default); }
+.mobile-account-actions > a { min-height: 3.25rem; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--color-border-default); border-radius: var(--radius-full); }
+.mobile-account-actions .mobile-enter-action { background: var(--color-brand); color: var(--color-accent-primary-foreground); border-color: transparent; gap: .5rem; }
+
+.neptlium-footer-directory { display: grid; grid-template-columns: minmax(15rem, 1.7fr) repeat(5, minmax(7rem, 1fr)); gap: clamp(2rem, 4vw, 4.5rem); padding: clamp(4rem, 7vw, 7rem) 0; border-bottom: 1px solid var(--color-border-default); }
+.neptlium-footer-directory nav { display: flex; flex-direction: column; align-items: flex-start; gap: .72rem; }
+.neptlium-footer-directory nav strong { margin-bottom: .45rem; color: var(--color-text-muted); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
+.neptlium-footer-directory nav a { color: var(--color-text-secondary); font-size: .9rem; }
+.neptlium-footer-directory nav a:hover, .neptlium-footer-directory nav a:focus-visible { color: var(--color-text-primary); }
+.neptlium-minimal-footer__identity > span { display: block; max-width: 22rem; color: var(--color-text-muted); font-size: .85rem; line-height: 1.55; }
+
+@media (max-width: 900px) {
+  .neptlium-footer-directory { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .neptlium-minimal-footer__identity { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .mobile-account-actions { grid-template-columns: 1fr; }
+  .neptlium-footer-directory { grid-template-columns: 1fr 1fr; gap: 2rem 1.25rem; }
+}
