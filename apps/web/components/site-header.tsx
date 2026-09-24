@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu } from 'lucide-react';
+import { ChevronDown, Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
@@ -49,15 +49,29 @@ export function SiteHeader() {
           <Brand tone="teal" />
           <nav className="desktop-command-nav" aria-label="Primary navigation">
             {NAVIGATION.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={
-                  path === item.href || path.startsWith(`${item.href}/`) ? 'page' : undefined
-                }
-              >
-                {item.label}
-              </Link>
+              <div className="command-nav-group" key={item.label}>
+                <Link
+                  href={item.href}
+                  aria-current={
+                    path === item.href || path.startsWith(`${item.href}/`) ? 'page' : undefined
+                  }
+                >
+                  {item.label}
+                  {item.links.length > 1 ? <ChevronDown aria-hidden="true" /> : null}
+                </Link>
+                {item.links.length > 1 ? (
+                  <div className="command-nav-menu">
+                    <div>
+                      {item.links.map((link) => (
+                        <Link href={link.href} key={link.href}>
+                          <span>{link.label}</span>
+                          <small>{link.description}</small>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
             ))}
           </nav>
           <div className="command-actions">
