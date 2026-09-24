@@ -158,8 +158,8 @@ test('product destinations remain truthful while the footer is a complete direct
   assert.match(site, /docsUrl:\s*'https:\/\/docs\.neptlium\.com'/);
   assert.match(footer, /Capital, intelligently managed/);
   assert.match(footer, /System status/);
-  assert.match(footer, />Portfolio</);
-  assert.match(footer, />Infrastructure</);
+  assert.match(footer, /\['Portfolio', '\/portfolio'\]/);
+  assert.match(footer, /\['Infrastructure', '\/infrastructure'\]/);
 });
 
 test('shared elite layout is responsive, reduced-motion aware, and product visuals bind globally', () => {
