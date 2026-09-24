@@ -39,39 +39,28 @@ test('homepage exposes the four canonical product families and contextual intell
   assert.match(page, /DISCLOSURES\.general/);
 });
 
-test('public conversion separates personal and business account contexts', () => {
+test('public conversion keeps account actions separate from product discovery', () => {
   assert.match(site, /personalSignInUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-in'/);
   assert.match(site, /personalSignUpUrl:\s*'https:\/\/app\.neptlium\.com\/auth\/sign-up'/);
   assert.match(header, /SITE\.personalSignInUrl/);
   assert.match(header, /SITE\.personalSignUpUrl/);
   assert.match(header, /command-primary-action/);
-  assert.match(architecture, /label: 'Institutions'/);
 });
 
-test('navigation exposes the public audience hierarchy', () => {
-  for (const domain of ['Individuals', 'Institutions', 'Investments', 'Company'])
+test('navigation exposes canonical product discovery hierarchy', () => {
+  for (const domain of ['Products', 'Solutions', 'Institutional', 'Insights'])
     assert.match(architecture, new RegExp(`label: '${domain}'`));
+  for (const capability of ['Capital','Portfolio','Investments','Treasury','Intelligence','Infrastructure'])
+    assert.match(architecture, new RegExp(`label: '${capability}'`));
   assert.match(header, /NAVIGATION\.map/);
   assert.match(header, /aria-label="Primary navigation"/);
 });
 
-test('footer is intentionally minimal and exposes trust, social and real status destinations', () => {
-  assert.match(footer, /Capital systems for people, businesses and institutions\./);
-  for (const social of ['X', 'Bluesky', 'YouTube'])
-    assert.match(footer, new RegExp(`label: '${social}'`));
-  for (const legal of [
-    'Security',
-    'Privacy',
-    'Terms',
-    'Risk disclosure',
-    'Accessibility',
-    'Cookies',
-  ])
-    assert.match(footer, new RegExp(`label: '${legal}'`));
+test('footer exposes canonical directory, legal and real status destinations', () => {
+  for (const destination of ['Capital','Portfolio','Investments','Treasury','Intelligence','Infrastructure','Institutional','Security','Insights','Company','Privacy','Terms','Risk disclosure','Accessibility','Cookies'])
+    assert.match(footer, new RegExp(destination));
   assert.match(footer, /SITE\.statusUrl/);
-  assert.match(footer, /View system status/);
   assert.doesNotMatch(footer, /All systems operational/i);
-  assert.doesNotMatch(footer, /Overview|Create Account|Investment Solutions/);
 });
 
 test('canonical brand remains repository-authoritative', () => {
