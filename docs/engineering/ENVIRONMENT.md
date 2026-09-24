@@ -15,7 +15,9 @@ Environment variables are configuration inputs, not capability or authority.
 | `SUPABASE_PUBLISHABLE_KEY` | Supabase | API | Server configuration | runtime | declared compatibility/migration variable; verify consumer before removal |
 | `SUPABASE_SERVICE_ROLE_KEY` | platform | API | **Server-only secret** | runtime | privileged persistence boundary |
 
-The API example also declares provider/capability configuration for Circle, Alchemy, Stripe, origins, logging, and mainnet/capability gates. Those values remain server-only where secret or privileged. Presence never proves a live capability.
+The API example additionally declares: `NODE_ENV`, `API_HOST`, `API_PORT`, `API_LOG_LEVEL`, `API_BUILD_ID`, `API_ALLOWED_ORIGINS`, `APP_ORIGIN`, `API_ORIGIN`, `ENABLE_MAINNET`, `ALCHEMY_API_KEY`, `ALCHEMY_ENVIRONMENT`, `ALCHEMY_RPC_URL`, `ALCHEMY_WEBHOOK_SIGNING_KEY`, `ALCHEMY_PRODUCTION_CAPABILITY_VERIFIED`, `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`, `CIRCLE_ENVIRONMENT`, `CIRCLE_WALLET_SET_ID`, `CIRCLE_LIVE_CAPABILITY_VERIFIED`, `CIRCLE_LIVE_EXECUTION_ENABLED`, `ENABLE_WALLET_PROVISIONING`, `ENABLE_CRYPTO_DEPOSITS`, `ENABLE_CRYPTO_WITHDRAWALS`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `WEBHOOK_TOLERANCE_SECONDS`.
+
+Provider keys, entity secrets and webhook signing material are server-only secrets. Environment/capability booleans are server-only gates. Origins, ports, logging and build identifiers are server runtime/build configuration. Presence never proves a live capability.
 
 ## Supabase naming
 
