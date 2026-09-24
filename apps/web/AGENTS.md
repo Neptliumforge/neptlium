@@ -6,20 +6,19 @@
 
 Canonical design authority is `docs/03_DESIGN_SYSTEM.md` with runtime tokens in `packages/ui/src/styles/tokens.css`. Public Web uses the same Neptlium identity as Capital and Treasury while retaining an editorial marketing density. Capital Rails are the canonical mark-derived spatial/authority grammar; extend shared primitives rather than creating page-local fintech artwork.
 
-Before Web work, follow root `AGENTS.md`, `docs/00_PRODUCT_CONSTITUTION.md`, `docs/marketing-design-system.md`, current Web source/tests/configuration and relevant open PRs. Do not change App, Admin, API, migrations, providers, remote environments or shared packages unless a verified dependency requires it and task scope explicitly authorizes it.
+Before Web work, follow root `AGENTS.md`, `docs/00_PRODUCT_CONSTITUTION.md`, canonical `docs/03_DESIGN_SYSTEM.md`, current Web source/tests/configuration and relevant open PRs. `docs/marketing-design-system.md` is compatibility-only and cannot override the canonical design authority. Do not change App, Admin, API, migrations, providers, remote environments or shared packages unless a verified dependency requires it and task scope explicitly authorizes it.
 
 ## Canonical public architecture
 
-1. Capital → `/capital` (canonical Individual product)
-2. Treasury → `/treasury` (canonical Business product)
-3. Portfolio → `/portfolio`
-4. Allocation → `/allocation`
-5. Investments → `/investments`
-6. Institutional → `/institutional`
-7. Intelligence / Insights → current repository routes
-8. Infrastructure → `/infrastructure`
-9. Security → `/security`
-10. Company → `/company`
+Primary capability hierarchy:
+1. Capital → `/capital`
+2. Portfolio → `/portfolio`
+3. Investments → `/investments`
+4. Treasury → `/treasury`
+5. Intelligence → `/intelligence`
+6. Infrastructure → `/infrastructure`
+
+Supporting expressions: Institutional, Security, Insights and Company. Allocation remains a valid supporting product route without becoming a seventh primary capability.
 
 Legacy `/personal` converges to `/capital`; legacy `/business` converges to `/treasury`. Never reintroduce them as competing canonical product identities.
 
