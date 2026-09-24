@@ -6,7 +6,7 @@ Public marketing and information website for `neptlium.com`.
 
 ## Marketing authority
 
-The authoritative marketing specification is [`docs/marketing-design-system.md`](../../docs/marketing-design-system.md). It supersedes prior PR #68 and Personal-first Stage 01 marketing assumptions.
+The authoritative marketing specification is [`docs/experience/DESIGN_SYSTEM.md`](../../docs/experience/DESIGN_SYSTEM.md). It supersedes prior PR #68 and Personal-first Stage 01 marketing assumptions.
 
 Canonical top-level navigation:
 
