@@ -11,7 +11,7 @@ const historical = new Set([
   'supabase/migrations/20260825082059_self_custody_treasury_principal_cutover.sql',
   'supabase/migrations/20260912223000_' + retired + '_only_identity_cutover.sql',
   'supabase/migrations/20260913123000_supabase_auth_only_cutover.sql',
-  'docs/financial-authority-remediation/GATE_05_LEGACY_MUTATION_PATHS.md',
+  'docs/archive/remediation/GATE_05_LEGACY_MUTATION_PATHS.md',
 ]);
 const self = 'scripts/retired-auth-contract.mjs';
 const providerName = retired[0].toUpperCase() + retired.slice(1);
