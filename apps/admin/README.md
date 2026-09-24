@@ -20,7 +20,8 @@ See `.env.example`. The Admin application requires the browser-safe Supabase pro
 pnpm --filter @neptlium/admin dev
 pnpm --filter @neptlium/admin typecheck
 pnpm --filter @neptlium/admin lint
+pnpm --filter @neptlium/admin test
 pnpm --filter @neptlium/admin build
 ```
 
-Architecture: [`docs/12_ADMIN_OPERATIONS.md`](../../docs/12_ADMIN_OPERATIONS.md) and [`docs/04_IDENTITY_AND_ACCESS.md`](../../docs/04_IDENTITY_AND_ACCESS.md).
+Architecture: [`docs/operations/ADMIN.md`](../../docs/operations/ADMIN.md) and [`docs/platform/IDENTITY.md`](../../docs/platform/IDENTITY.md).
