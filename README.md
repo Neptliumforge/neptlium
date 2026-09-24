@@ -1,72 +1,90 @@
 # Neptlium
 
-Production monorepo for the Neptlium Capital Operating Platform.
+**Capital Operating Platform**
 
-**Canonical repository:** `Neptliumforge/neptlium`
+Capital, intelligently managed.
 
-## Applications
+Neptlium provides the operating layer for managing capital,
+positions, movement, evidence and financial operations across
+individual and organizational contexts.
 
-| Workspace | Domain | Responsibility |
-| --- | --- | --- |
-| `apps/web` | `neptlium.com` | Public institutional marketing and information. Editorial/visual authority is independent from engineering build state; no privileged financial authority. |
-| `apps/app` | `app.neptlium.com` | Authenticated customer interaction surface. Browser/session checks are not canonical financial authority. |
-| `apps/admin` | `admin.neptlium.com` | Internal operational interface. Privileged financial operations must flow through `apps/api`. |
-| `apps/api` | `api.neptlium.com` | Privileged API, provider-isolation, ledger, authorization, and reconciliation boundary. |
+> Every movement has authority. Every position has evidence.
 
-Shared repository foundations live in `packages/`, `supabase/`, `docs/`, and `.github/`.
+## Platform
 
-## Public Web boundary
+| Surface | Responsibility |
+| --- | --- |
+| Web | Public product experience |
+| Capital | Individual capital operating experience |
+| Treasury | Organizational capital operations |
+| Admin | Internal operations and controls |
+| API | Platform and financial-domain APIs |
+| Pay | Payment presentation |
+| Docs | Developer documentation |
+| Status | Platform availability |
 
-`apps/web` is the institutional brand, category, editorial, SEO, and public information surface. It should express the Neptlium product model and worldview without narrating internal repository progress, build completion, migration state, provider configuration, environment readiness, feature flags, or release engineering status.
+## Architecture
 
-Marketing may develop its own high-end visual and editorial language and does not need to mirror implementation chronology. That independence does not authorize false factual claims: customers, AUM, balances, performance, partnerships, licences, regulatory status, custody, provider relationships, live execution, settlement, and product availability require evidence before they are represented as facts.
+Neptlium is a pnpm/Turborepo monorepo.
 
-Public search authority belongs to `https://neptlium.com`. `https://www.neptlium.com` should converge on the canonical apex origin. App, Admin, API, auth, drafts, and operational surfaces should not compete as public search destinations.
+apps/
+packages/
+supabase/
+docs/
+scripts/
+
+The Neptlium ledger is canonical financial truth.
+
+Provider state is evidence.
+
+Intelligence is observational unless a domain contract explicitly
+states otherwise.
+
+## Core invariants
+
+- Ledger authority belongs to Neptlium.
+- Provider confirmation does not establish available capital.
+- Policy and preflight fail closed.
+- Intelligence cannot mutate financial truth.
+- Provider execution requires explicit capability activation.
+- Financial mutations are auditable and idempotent.
 
 ## Development
 
-```sh
-pnpm install --frozen-lockfile
-pnpm typecheck
+pnpm install
+pnpm dev
 pnpm lint
+pnpm typecheck
 pnpm test
 pnpm build
-pnpm format:check
-```
 
-The repository declares `pnpm@11.9.0`. Workspace membership and pnpm-specific policy, including explicit dependency build authorization, are owned by `pnpm-workspace.yaml`. Project `.npmrc` is reserved for pnpm 11 registry/auth configuration and currently contains no credential or registry override.
+## Documentation
 
-Repository environment examples keep sensitive/provider values as empty placeholders and may include safe non-secret runtime defaults or public origins where the application contract requires them. Configuration presence does not prove that a deployment is configured, a provider capability is verified, or a financial rail is live.
+Start with:
 
-## Authority
+- Product
+- Architecture
+- Financial invariants
+- Design system
+- Provider architecture
+- Security
+- Deployment
 
-Read `AGENTS.md` before changing the repository. Nested `AGENTS.md` files specialize application-local work without overriding repository-wide financial, security, migration, or Git rules. For public Web work, `apps/web/AGENTS.md` is the implementation contract beneath root authority.
+See `docs/README.md`.
 
-Current numbered documentation authority:
+## Deployment
 
-- `docs/00_PRODUCT_CONSTITUTION.md`
-- `docs/01_PLATFORM_ARCHITECTURE.md`
-- `docs/02_AUTHENTICATED_APPLICATION.md`
-- `docs/03_DESIGN_SYSTEM.md` — single unified design authority
-- `docs/04_IDENTITY_AND_ACCESS.md`
-- `docs/05_CAPITAL_ACCOUNT.md`
-- `docs/06_TREASURY.md`
-- `docs/07_ALLOCATION_ENGINE.md`
-- `docs/08_TRANSFER_ARCHITECTURE.md`
-- `docs/09_LEDGER_AND_RECONCILIATION.md`
-- `docs/10_PROVIDER_ARCHITECTURE.md`
-- `docs/11_API_ARCHITECTURE.md`
-- `docs/12_ADMIN_OPERATIONS.md`
-- `docs/13_SECURITY.md`
-- `docs/14_DEPLOYMENT.md`
-- `docs/15_PRODUCTION_READINESS_AUDIT.md` — point-in-time readiness record; read its audited SHA/date before relying on conclusions
+Production applications are deployed independently.
 
-`docs/archive/` is historical and non-authoritative. Historical documents may explain lineage but never override current numbered authority, current implementation, tests, or `AGENTS.md`.
+See `docs/operations/DEPLOYMENT.md`.
 
-## Financial correctness
+## Security
 
-Provider observations are evidence, not canonical ledger truth. Unknown is not zero. Authorization, reservation, submission, settlement, posting, reconciliation, and availability remain distinct states inside operational/product systems.
+Never commit credentials, provider secrets, service-role keys,
+wallet secrets or production tokens.
 
-Those engineering/domain distinctions govern App/Admin/API correctness; ordinary Marketing copy should not expose implementation-state machinery merely because it exists internally.
+See `SECURITY.md`.
 
-Never infer live provider capability, deployment state, migration application, or financial execution from source code or configuration presence alone.
+---
+
+© Neptlium
