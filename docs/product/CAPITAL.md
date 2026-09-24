@@ -1,6 +1,6 @@
 # Neptlium Authenticated Application
 
-**Application:** `apps/app`  
+**Application:** `apps/app`
 **Domain:** `app.neptlium.com`
 
 ## Purpose
