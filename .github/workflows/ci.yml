@@ -70,6 +70,11 @@ jobs:
       - run: pnpm --filter @neptlium/admin lint
       - run: pnpm --filter @neptlium/admin test
       - run: pnpm --filter @neptlium/admin build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-public-placeholder
+          NEXT_PUBLIC_SITE_URL: https://admin.neptlium.com
+          NEPTLIUM_API_URL: https://api.neptlium.com
 
   validate-web:
     runs-on: ubuntu-latest
