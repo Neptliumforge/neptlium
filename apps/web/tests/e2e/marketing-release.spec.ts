@@ -87,7 +87,7 @@ test.describe('Neptlium unified marketing release', () => {
     );
     await page.goto('/', { waitUntil: 'networkidle' });
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });
-    for (const label of ['Individuals', 'Institutions', 'Investments', 'Company']) {
+    for (const label of ['Products', 'Solutions', 'Institutional', 'Insights']) {
       await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
     }
     await nav.getByRole('link', { name: 'Institutions', exact: true }).click();
