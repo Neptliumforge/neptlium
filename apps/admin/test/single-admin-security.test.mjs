@@ -16,7 +16,7 @@ const session = read("lib/auth/session.ts");
 const roleActions = read("app/(admin)/dashboard/users/[id]/actions.ts");
 const picker = read("components/admin/UserRolePicker.tsx");
 const migration = readFileSync(
-  resolve(repoRoot, "supabase/migrations/20260812080000_single_general_platform_admin.sql"),
+  resolve(repoRoot, "supabase/migrations/20260812115731_single_general_platform_admin.sql"),
   "utf8",
 );
 
