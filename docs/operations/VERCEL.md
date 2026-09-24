@@ -2,29 +2,33 @@
 
 Verified against the connected Neptliumforge Vercel team on 2026-09-24.
 
-| Repository app | Vercel project |
-| --- | --- |
-| `apps/web` | `neptlium-web` |
-| `apps/app` | `neptlium-app` |
-| `apps/treasury` | `neptlium-treasury` |
-| `apps/pay` | `neptlium-pay` |
-| `apps/admin` | `neptlium-admin` |
-| `apps/api` | `neptlium-api` |
-| `apps/docs` | `neptlium-docs` |
-| `apps/status` | `neptlium-status` |
+| App | Vercel project | Repository build authority | Canonical domain contract | Latest observed ready production SHA |
+| --- | --- | --- | --- | --- |
+| `apps/web` | `neptlium-web` | `pnpm --filter @neptlium/web build` | `neptlium.com` | `d6cf53d` |
+| `apps/app` | `neptlium-app` | Next.js project build | `app.neptlium.com` | `d6cf53d` in the inspected deployment window |
+| `apps/treasury` | `neptlium-treasury` | `pnpm --filter @neptlium/treasury build` | `treasury.neptlium.com` | `d6cf53d` |
+| `apps/pay` | `neptlium-pay` | `pnpm --filter @neptlium/pay build` | `pay.neptlium.com` | `d6cf53d` |
+| `apps/admin` | `neptlium-admin` | Next.js project build | `admin.neptlium.com` | not established in the inspected 20-deployment window |
+| `apps/api` | `neptlium-api` | Vercel Node builds + repository `vercel-build` | `api.neptlium.com` | not established in the inspected 20-deployment window |
+| `apps/docs` | `neptlium-docs` | `pnpm --filter @neptlium/docs build` | `docs.neptlium.com` | `d6cf53d` |
+| `apps/status` | `neptlium-status` | `pnpm --filter @neptlium/status build` | `status.neptlium.com` | `d6cf53d` |
 
-The team also contains a separate `forge` project; it is not classified here as a Neptlium application.
+The team also contains a separate `forge` project; it is not a canonical Neptlium application.
 
 ## Git and production behavior
 
-The eight Neptlium projects are connected to `Neptliumforge/neptlium`. Recent deployment records show `main` production attempts carrying the originating Git SHA. Application `vercel.json` files use ignore commands to avoid unnecessary builds where configured.
+All eight canonical projects report Git-linked deployment/status activity for `Neptliumforge/neptlium`. At post-#108 main `70d8f0f6`, GitHub's eight Vercel commit-status contexts were successful. The underlying documentation-only production attempts were ignored/cancelled where project ignore rules determined the app was unaffected; a successful commit status therefore must not be represented as a new runtime deployment.
 
-At the start of repository convergence, the latest documentation-only `main` commit (`1b8411c3c68b1de452e9801f9e34800034dd3718`) produced cancelled production attempts across observed projects rather than a new ready production release. The preceding verified ready production records observed during the audit were tied to earlier runtime commits. Treat this as deployment evidence, not application-domain authority.
+Repository `vercel.json` files define affected-build/ignore behavior. Web, Treasury, Pay, Docs and Status declare explicit workspace build commands. App and Admin rely on the project/framework build convention. API defines explicit Vercel Node entrypoints and routes.
 
-## Domains and settings
+## Root directory, install command, production branch and domains
 
-Canonical custom domains, root directories, install/build commands, environment scopes, and production-branch settings must be read from current Vercel project configuration before changing them. Do not infer custom domains from project names and do not store secret values in this document.
+The connected project-list/deployment interface confirms project identity and deployment SHA/status, but the project-detail operation is currently connector-limited and does not expose a reliable read of root directory, install command, production-branch setting, or custom-domain assignment in this session. Repository structure and canonical domain documentation are recorded above, but those settings must be verified in Vercel before any configuration mutation. Do not invent or silently change them.
+
+## Environment scopes
+
+Environment variable **names and ownership** are documented in `../engineering/ENVIRONMENT.md`. Values remain in Vercel/provider secret stores and must not be copied into repository documentation.
 
 ## Verification
 
-For an affected production deployment record: project, domain, Git SHA, deployment ID/status, and post-deploy health. A successful Vercel deployment does not establish provider activation, settlement, reconciliation, or canonical financial state.
+For an affected production deployment record project, custom domain, Git SHA, deployment ID/status, and post-deploy health. A successful Vercel deployment does not establish provider activation, settlement, reconciliation, or canonical financial state.
