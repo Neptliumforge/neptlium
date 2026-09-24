@@ -1,6 +1,6 @@
 # Neptlium Product Constitution
 
-**Status:** Authoritative  
+**Status:** Authoritative
 **Scope:** Product identity, boundaries, principles, and long-term platform direction
 
 ## Product
