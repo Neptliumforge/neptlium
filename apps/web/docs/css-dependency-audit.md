@@ -47,7 +47,11 @@ The inventory contains 21 distinct CSS files.
 4. `production-hardening.test.ts` currently asserts some exact source structure. A valid future consolidation must update tests to enforce semantic behavior and one authority rather than preserving obsolete file names.
 5. CSS Modules may contain `:global` rules; module filename alone does not guarantee local scope.
 
-## Reproducible static inventory\n\nRun `node apps/web/scripts/css-dependency-report.mjs --json > web-css-dependencies.json` from the repository root. The read-only script scans Web and shared UI source files, records CSS import edges, candidate class/token consumers, root rules, global escapes and media-query counts. The JSON report is an input to manual verification, not a deletion certificate. This report has been committed as a tool; execution against a checked-out branch and browser baseline are still pending.\n\n## Safe migration order
+## Reproducible static inventory
+
+Run `node apps/web/scripts/css-dependency-report.mjs --json > web-css-dependencies.json` from the repository root. The read-only script scans Web and shared UI source files, records CSS import edges, candidate class/token consumers, root rules, global escapes and media-query counts. The JSON report is an input to manual verification, not a deletion certificate. This report has been committed as a tool; execution against a checked-out branch and browser baseline are still pending.
+
+## Safe migration order
 
 1. Finish a complete TS/TSX/CSS import graph including dynamic imports and CSS `@import` references; include shared package style exports.
 2. For each active stylesheet, map selector definitions to JSX class usage, `:global` escapes, root variables, media queries, and test dependencies.
@@ -65,3 +69,9 @@ This document establishes a verified first-pass map, not an exhaustive selector-
 Source-level conflict: `globals.css` defines `.site-header` at approximately line 155 and `.site-header.capital-command-bar` near line 1798. `neptlium-visual-direction.css`, loaded after globals by root layout, also defines `.site-header.capital-command-bar` and `.capital-command-bar .nav-shell` around lines 230–245. This is an active cascade overlap, not a retired stylesheet. The header component emits `data-scrolled` and `data-surface`, but does not emit `data-home`; the visual-direction stylesheet retains `[data-home='true']` branches. Those branches are currently unreachable from this component unless another runtime mechanism adds that attribute. The site-chrome module also contains `data-home` selectors; verify its consumers before changing it.
 
 Migration plan: preserve the emitted `data-scrolled` and `data-surface` contract; consolidate the common header geometry in one Web global owner; retain legitimate dark/light surface states and breakpoint behavior. Delete unreachable `data-home` selectors only after checking all attribute writers, active route variants and visual snapshots. Do not migrate a module's `:global` escape without checking whether the module is imported. No visual-equivalence claim is made by this source audit.
+
+## Gate evidence — 2026-09-28
+
+At commit `1025bc664c3801d8ea7fea66e0654ad9af3be99d`, GitHub Actions CI, Neptlium Product Family Validation, Supabase Auth Source Contract and Web Production Browser QA all concluded success. Browser QA run `36495044378` published `neptlium-web-css-visual-baseline` (artifact `11003400575`, 22,413,079 bytes) and `neptlium-web-playwright-report` (artifact `11002941725`). These are captured evidence, not approved pixel snapshots. Review and retain baseline artifacts before broad CSS edits.
+
+The next implementation target is the overlapping global header selector family documented above. First enumerate all `data-home`, `data-surface`, `data-scrolled` writers and selectors, then migrate one family with browser comparison. No deletion is authorized solely from a zero-import result.
