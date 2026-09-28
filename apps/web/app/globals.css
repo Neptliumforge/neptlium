@@ -1869,3 +1869,31 @@ button {
   .mobile-account-actions { grid-template-columns: 1fr; }
   .neptlium-footer-directory { grid-template-columns: 1fr 1fr; gap: 2rem 1.25rem; }
 }
+
+/* Homepage brand continuity: preserve the canonical SVG mark, change only its surrounding surface. */
+.site-header.capital-command-bar[data-home='true'] {
+  background: #080c10;
+  color: #fff;
+  border-bottom-color: rgb(255 255 255 / 9%);
+}
+.site-header.capital-command-bar[data-home='true'] .brand { color: #fff; }
+.site-header.capital-command-bar[data-home='true'] .desktop-command-nav a,
+.site-header.capital-command-bar[data-home='true'] .command-actions > a:not(.command-primary-action) { color: rgb(255 255 255 / 82%); }
+.site-header.capital-command-bar[data-home='true'] .desktop-command-nav a:hover,
+.site-header.capital-command-bar[data-home='true'] .command-actions > a:hover { color: #fff; }
+.site-header.capital-command-bar[data-home='true'] .command-primary-action,
+.site-header.capital-command-bar[data-home='true'] .elite-header-entry {
+  background: #fff !important;
+  color: #080c10 !important;
+}
+.site-header.capital-command-bar[data-home='true'] .elite-menu-trigger {
+  background: #151b1e;
+  color: #fff;
+  border-color: rgb(255 255 255 / 20%);
+}
+/* Shared decision point: distinct actions and deliberate wrapping. */
+.elite-conversion-dual { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.elite-conversion-dual > a { display: flex; min-width: 0; min-height: 3.5rem; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; text-decoration: none; }
+.elite-conversion-dual > a span { min-width: 0; }
+.elite-conversion-dual > a svg { width: 1rem; height: 1rem; flex: none; }
+@media (max-width: 760px) { .elite-conversion-dual { grid-template-columns: 1fr; } }
