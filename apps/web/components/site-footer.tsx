@@ -39,7 +39,7 @@ export function SiteFooter() {
         <nav aria-label="Account">
           <strong>Account</strong>
           <a href={SITE.personalSignInUrl}>Sign in</a>
-          <a href={SITE.personalSignUpUrl}>Sign up</a>
+          <a href={SITE.personalSignUpUrl}>Get started</a>
           <a href={SITE.businessAppUrl}>Treasury access</a>
         </nav>
       </div>
