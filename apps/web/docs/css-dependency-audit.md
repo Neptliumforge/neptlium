@@ -59,3 +59,9 @@ The inventory contains 21 distinct CSS files.
 ## Explicit limitation
 
 This document establishes a verified first-pass map, not an exhaustive selector-to-JSX graph. No stylesheet is certified unused or safe to delete on this evidence alone.
+
+## First verified selector-family migration target: global header
+
+Source-level conflict: `globals.css` defines `.site-header` at approximately line 155 and `.site-header.capital-command-bar` near line 1798. `neptlium-visual-direction.css`, loaded after globals by root layout, also defines `.site-header.capital-command-bar` and `.capital-command-bar .nav-shell` around lines 230–245. This is an active cascade overlap, not a retired stylesheet. The header component emits `data-scrolled` and `data-surface`, but does not emit `data-home`; the visual-direction stylesheet retains `[data-home='true']` branches. Those branches are currently unreachable from this component unless another runtime mechanism adds that attribute. The site-chrome module also contains `data-home` selectors; verify its consumers before changing it.
+
+Migration plan: preserve the emitted `data-scrolled` and `data-surface` contract; consolidate the common header geometry in one Web global owner; retain legitimate dark/light surface states and breakpoint behavior. Delete unreachable `data-home` selectors only after checking all attribute writers, active route variants and visual snapshots. Do not migrate a module's `:global` escape without checking whether the module is imported. No visual-equivalence claim is made by this source audit.
