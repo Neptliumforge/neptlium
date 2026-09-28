@@ -176,3 +176,13 @@ test('supporting public routes are calibrated back to the Geist-led production f
   assert.match(read('app/globals.css'), /font-family:\s*var\(--font/);
   assert.match(read('../../packages/ui/src/styles/tokens.css'), /--font-sans/);
 });
+
+
+test('marketing typography inherits Treasury sans authority without changing the brand asset', () => {
+  assert.match(shell, /--font: var\(--font-sans\)/);
+  assert.match(shell, /body \{ font-family: var\(--font-sans\); \}/);
+  assert.match(shell, /--web-type-heading-track: -0\.047em/);
+  assert.match(shell, /font-variant-numeric: tabular-nums/);
+  assert.match(header, /<Brand tone="teal" \/>/);
+  assert.match(header, /Sign up/);
+});
