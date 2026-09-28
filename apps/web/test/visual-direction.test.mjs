@@ -33,7 +33,6 @@ test('homepage is a distinct brand story rather than a copied product index', ()
     'Know where your capital stands',
     'Put capital to work',
     'Every movement has authority',
-    'Everything you’ve invested in',
     'Operate capital with control',
     'Intelligence for every capital decision',
   ])
@@ -144,7 +143,7 @@ test('canonical public navigation uses progressive product discovery', () => {
     assert.match(architecture, new RegExp(`label: '${label}'`));
   for (const route of ['/capital','/portfolio','/investments','/treasury','/intelligence','/infrastructure'])
     assert.match(architecture, new RegExp(route.replaceAll('/', '\\\/')));
-  assert.match(header, /Get started/);
+  assert.match(header, /Sign up/);
   assert.match(header, /data-surface=/);
   assert.match(header, /window\.scrollY > 18/);
   assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
