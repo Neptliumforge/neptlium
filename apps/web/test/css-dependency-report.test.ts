@@ -39,3 +39,9 @@ test('CSS inventory has no broken relative stylesheet edges', () => {
   const unresolved = report.imports.filter((edge: { unresolved: boolean }) => edge.unresolved);
   assert.deepEqual(unresolved, []);
 });
+
+
+test('test fixture strings do not create runtime CSS import edges', () => {
+  assert.ok(!report.imports.some((edge: { source: string }) =>
+    edge.source.startsWith('apps/web/test/') || edge.source.startsWith('apps/web/tests/')));
+});
