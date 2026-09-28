@@ -82,7 +82,7 @@ export function SiteHeader() {
           </div>
           <div className="elite-header-actions">
             <a className="elite-header-entry" href={SITE.personalSignUpUrl}>
-              Sign up
+              Get started
             </a>
             <button
               ref={trigger}
