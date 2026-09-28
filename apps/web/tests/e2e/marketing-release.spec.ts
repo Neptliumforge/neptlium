@@ -177,7 +177,8 @@ test.describe('CSS consolidation visual baseline', () => {
       await page.goto(route, { waitUntil: 'networkidle' });
       await expect(page.locator('h1')).toHaveCount(1);
       await expectNoHorizontalOverflow(page);
-      await page.screenshot({ path: `test-results/baseline-${route === '/' ? 'home' : route.slice(1)}-${testInfo.project.name}.png`, fullPage: true, animations: 'disabled' });\n      /* Snapshot approval is a separate review gate; capture alone must not silently approve changed pixels. */\n      /* await expect(page).toHaveScreenshot(
+      await page.screenshot({ path: `test-results/baseline-${route === '/' ? 'home' : route.slice(1)}-${testInfo.project.name}.png`, fullPage: true, animations: 'disabled' });
+      /* Snapshot approval is a separate review gate; capture alone must not silently approve changed pixels. */\n      /* await expect(page).toHaveScreenshot(
         `web-${route === '/' ? 'home' : route.slice(1)}-${testInfo.project.name}.png`,
         { fullPage: true, animations: 'disabled' },
       ); */
