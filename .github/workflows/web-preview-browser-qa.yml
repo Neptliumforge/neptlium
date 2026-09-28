@@ -73,6 +73,14 @@ jobs:
           name: neptlium-web-playwright-report
           path: apps/web/playwright-report/
           retention-days: 14
+      - name: Upload canonical CSS visual baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-web-css-visual-baseline
+          path: apps/web/test-results/**/css-baseline-*.png
+          if-no-files-found: warn
+          retention-days: 14
       - name: Upload browser failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
