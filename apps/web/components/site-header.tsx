@@ -45,6 +45,7 @@ export function SiteHeader() {
     <>
       <header
         className="site-header capital-command-bar"
+        data-home={path === '/' ? 'true' : 'false'}
         data-scrolled={scrolled ? 'true' : 'false'}
         data-surface={scrolled ? 'carbon' : topSurface}
       >
@@ -80,12 +81,12 @@ export function SiteHeader() {
           <div className="command-actions">
             <a href={SITE.personalSignInUrl}>Sign in</a>
             <a className="command-primary-action" href={SITE.personalSignUpUrl}>
-              Get started
+              Sign up
             </a>
           </div>
           <div className="elite-header-actions">
             <a className="elite-header-entry" href={SITE.personalSignUpUrl}>
-              Get started
+              Sign up
             </a>
             <button
               ref={trigger}
