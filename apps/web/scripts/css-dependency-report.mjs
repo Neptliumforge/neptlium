@@ -23,6 +23,9 @@ const sources = new Map(files.map((path) => [path, readFileSync(path, 'utf8')]))
 const name = (path) => relative(root, path).split(sep).join('/');
 const imports = [];
 for (const [source, content] of sources) {
+  // Test files may contain import-shaped strings used as assertions or fixtures.
+  // They are not runtime stylesheet consumers; keep them out of the import graph.
+  if (source.includes('/test/') || source.includes('/tests/')) continue;
   const patterns = [
     /\bimport\s+(?:[^;]*?\s+from\s+)?['"]([^'"]+\.css)['"]/gs,
     /\bimport\s*\(\s*['"]([^'"]+\.css)['"]\s*\)/g,
