@@ -5,7 +5,7 @@ import { SITE } from '@/lib/content/site';
 const groups = [
   { label: 'Product', links: [
     ['Capital', '/capital'], ['Portfolio', '/portfolio'], ['Investments', '/investments'],
-    ['Treasury', '/treasury'], ['Intelligence', '/intelligence'],
+    ['Treasury', '/treasury'], ['Intelligence', '/intelligence'], ['Pay', SITE.payUrl],
   ] },
   { label: 'Platform', links: [
     ['Institutional', '/institutional'], ['Infrastructure', '/infrastructure'], ['Security', '/security'],
