@@ -186,3 +186,11 @@ test('marketing typography inherits Treasury sans authority without changing the
   assert.match(header, /<Brand tone="teal" \/>/);
   assert.match(header, /Sign up/);
 });
+
+
+test('public typography inherits Treasury-aligned sans-serif without a competing serif display', () => {
+  const visual = read('app/neptlium-visual-direction.css');
+  assert.match(shell, /--font-display:\s*var\(--font-sans\)/);
+  assert.match(visual, /--web-font-display:\s*var\(--font-sans\)/);
+  assert.doesNotMatch(visual, /font-family:\s*var\(--font-display,\s*Iowan Old Style/);
+});
