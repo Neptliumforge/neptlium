@@ -25,13 +25,16 @@ export function SiteHeader() {
     const readTopSurface = () => {
       const firstSurface = document.querySelector<HTMLElement>('[data-npt-surface]');
       const surface = firstSurface?.dataset.nptSurface as MarketingSurface | undefined;
-      if (surface) setTopSurface(surface);
+      setTopSurface(surface ?? 'carbon');
     };
     const frame = window.requestAnimationFrame(readTopSurface);
     return () => window.cancelAnimationFrame(frame);
   }, [path]);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 18);
+    const onScroll = () => {
+      const next = window.scrollY > 18;
+      setScrolled((previous) => (previous === next ? previous : next));
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
