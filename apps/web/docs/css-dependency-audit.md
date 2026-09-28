@@ -31,14 +31,13 @@ The root layout imports `@neptlium/ui/styles/nts.css`, `./globals.css`, and `./n
 | app/unified-marketing.module.css | 729 | Business/Company consumers verified |
 | app/personal/personal.module.css | 1209 | Route module; consumer and global escapes require tracing |
 | app/products/product-depth.module.css | 323 | Product-route module; consumers to verify |
-| app/marketing-platform.module.css | 125 | Also tested by production-hardening contract |
 | app/insights/insights.module.css | 2 | Consumer to verify |
 | app/investments/investments.module.css | 5 | Consumer to verify |
 | app/security/security.module.css | 2 | Consumer to verify |
 | components/business-product-pages.module.css | 1 | Shared business-product component consumer verified |
 | components/site-chrome.module.css | 360 | Shared chrome consumer to verify |
 
-The duplicate listing of marketing-platform above is one inventory row repeated for emphasis, not an additional file. The actual count is 21.
+The inventory contains 21 distinct CSS files.
 
 ## Authority conflicts requiring analysis
 
