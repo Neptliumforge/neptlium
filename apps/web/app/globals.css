@@ -10,7 +10,9 @@
   --text: var(--color-text-primary);
   --muted: var(--color-text-muted);
   --accent: var(--color-accent-primary);
+  /* Treasury-aligned product typography, inherited across public routes. */
   --font: var(--font-sans);
+  --font-display: var(--font-sans);
   --mono: var(--font-mono);
   --type-display: var(--text-display-xl);
   --type-page-title: var(--text-display-l);
