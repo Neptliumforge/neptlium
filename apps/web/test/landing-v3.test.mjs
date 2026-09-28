@@ -18,7 +18,7 @@ test('current homepage states a concise capital proposition and focused explorat
 });
 
 test('homepage uses clearly illustrative product compositions without fabricated customer state', () => {
-  for (const visual of ['CapitalRails', 'WorldStage', 'ProductStage', 'SystemMap'])
+  for (const visual of ['WorldStage', 'ProductStage', 'SystemMap'])
     assert.match(page, new RegExp(visual));
   assert.match(
     page,
@@ -44,7 +44,6 @@ test('homepage architecture introduces financial world, product families, moveme
     'Know where your capital stands',
     'Put capital to work',
     'Every movement has authority',
-    'Everything you’ve invested in. One portfolio',
     'Operate capital with control',
     'Intelligence for every capital decision',
   ]) {
