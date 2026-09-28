@@ -47,7 +47,7 @@ The inventory contains 21 distinct CSS files.
 4. `production-hardening.test.ts` currently asserts some exact source structure. A valid future consolidation must update tests to enforce semantic behavior and one authority rather than preserving obsolete file names.
 5. CSS Modules may contain `:global` rules; module filename alone does not guarantee local scope.
 
-## Safe migration order
+## Reproducible static inventory\n\nRun `node apps/web/scripts/css-dependency-report.mjs --json > web-css-dependencies.json` from the repository root. The read-only script scans Web and shared UI source files, records CSS import edges, candidate class/token consumers, root rules, global escapes and media-query counts. The JSON report is an input to manual verification, not a deletion certificate. This report has been committed as a tool; execution against a checked-out branch and browser baseline are still pending.\n\n## Safe migration order
 
 1. Finish a complete TS/TSX/CSS import graph including dynamic imports and CSS `@import` references; include shared package style exports.
 2. For each active stylesheet, map selector definitions to JSX class usage, `:global` escapes, root variables, media queries, and test dependencies.
