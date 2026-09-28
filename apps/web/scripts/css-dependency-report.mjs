@@ -5,8 +5,8 @@
  * Optional: --json (machine-readable stdout).
  * Conservative by design: a missing static import is NOT proof a stylesheet is unused.
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { resolve, relative, dirname, extname, sep } from 'node:path';
+import { readFileSync, readdirSync } from 'node:fs';
+import { resolve, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const web = resolve(dirname(fileURLToPath(import.meta.url)), '..');
