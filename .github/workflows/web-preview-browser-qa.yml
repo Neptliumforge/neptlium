@@ -58,6 +58,14 @@ jobs:
       - name: Run Playwright release QA
         working-directory: apps/web
         run: pnpm exec playwright test
+      - name: Upload canonical route visual baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-web-visual-baseline
+          path: apps/web/test-results/baseline-*.png
+          if-no-files-found: warn
+          retention-days: 14
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
