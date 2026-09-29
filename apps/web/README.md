@@ -1,62 +1,36 @@
 # @neptlium/web
 
-Public marketing and information website for `neptlium.com`.
+Neptlium's public corporate, marketing, product-information, editorial, trust and acquisition website at `neptlium.com`. It does not own authenticated customer sessions, privileged financial operations, custody, execution, settlement or canonical financial state.
 
-`apps/web` represents one Neptlium company with two product journeys: **Personal / Neptlium Capital** and **Business / Neptlium Treasury**. It owns public positioning, product storytelling, editorial authority, SEO, trust architecture and acquisition. It owns no authenticated customer session, privileged financial operation, canonical financial state, custody, execution or settlement authority.
+## Architecture authority
 
-## Marketing authority
+Next.js is the sole production framework for `apps/web`. Vite-powered tooling may be introduced selectively for compatible unit, component and design-system tests, without changing public routing, rendering, metadata or deployment. Do not introduce a second production renderer or a standalone design laboratory in initial Phase 01. Authenticated applications and financial services are outside this scope.
 
-The authoritative marketing specification is [`docs/experience/DESIGN_SYSTEM.md`](../../docs/experience/DESIGN_SYSTEM.md). It supersedes prior PR #68 and Personal-first Stage 01 marketing assumptions.
+Read [the Web engineering contract](./AGENTS.md), [the canonical design system](../../docs/experience/DESIGN_SYSTEM.md), current source and tests before making changes. The runtime token authority is `packages/ui/src/styles/tokens.css`; shared components live in `packages/ui`. Existing route and content authority is `lib/content/public-architecture.ts`. Where historical documentation disagrees with verified current implementation, reconcile it rather than restoring retired patterns.
 
-Canonical top-level navigation:
+## Public information architecture
 
-- Personal → `/personal`
-- Business → `/business`
-- Platform → `/platform`
-- Insights → `/insights`
-- Security → `/security`
-- Company → `/company`
+The canonical product hierarchy is Capital (`/capital`), Portfolio (`/portfolio`), Investments (`/investments`), Treasury (`/treasury`), Intelligence (`/intelligence`) and Infrastructure (`/infrastructure`). Institutional, Security, Insights and Company are supporting public expressions. Allocation remains a valid supporting product route. The solutions index contains Capital visibility and Treasury coordination.
 
-Canonical product-story routes include `/investments`, `/capital`, `/portfolio`, `/allocation` and `/treasury`.
+Legacy `/personal` and `/business` converge to `/capital` and `/treasury` respectively; do not restore them as competing primary destinations. Check `lib/content/public-architecture.ts`, current route files and redirects for the complete inventory. Personal product authentication is at `app.neptlium.com`; Business uses `treasury.neptlium.com`. Do not route business users through the investor sign-in.
 
-## Product destinations
+## Design and financial truth
 
-- Personal / Neptlium Capital → `https://app.neptlium.com`
-- Business / Neptlium Treasury → `https://treasury.neptlium.com`
-- Payments → `https://pay.neptlium.com`
-- API → `https://api.neptlium.com`
-- Docs → `https://docs.neptlium.com`
-- Admin → `https://admin.neptlium.com`
-- Status → `https://status.neptlium.com`
+Dark is primary; Light and System remain supported. The approved canvas, surface, typography, status and teal roles come from shared semantic tokens. Capital Rails derive from the canonical mark geometry. Web owns route composition, not a second design system.
 
-Do not send business users through the investor login. Do not represent Neptlium Treasury as the entire Neptlium company.
+Do not invent customers, balances, AUM, returns, performance, transaction histories, partnerships, licenses, regulatory status, custody or execution. Clearly label illustrative states and distinguish configured from live, submitted from settled, and provider observation from canonical truth.
 
-## Financial truth
+## Test responsibilities
 
-Marketing must not fabricate customers, balances, AUM, returns, performance, transaction history, payment history, opportunity inventory, execution, settlement, custody, provider relationships, licences, regulatory status or partnerships.
-
-`UNKNOWN != ZERO`. Configured is not live. Provider evidence is not canonical state. Modeled is not executed. Submitted is not settled. Settled is not reconciled.
-
-## Visual system
-
-Marketing is black-first, cinematic, product-first, editorial and financially credible. Personal and Business share one design system. Current implementation authority:
-
-- `app/marketing-system.css`
-- `app/unified-shell.css`
-- `app/unified-marketing.module.css`
-- `components/unified-product-visuals.tsx`
-- `components/site-header.tsx`
-- `components/mobile-navigation.tsx`
-- `components/site-footer.tsx`
-- `components/global-conversion-cta.tsx`
-
-## Validation
+The existing `node --test` suite is a source/contract regression suite; retain it while evaluating Vitest for compatible executable unit and component behavior. Keep Playwright for browser, navigation, responsive and accessibility regression. Do not migrate file-text contracts mechanically or claim that source inspection proves browser behavior. Any Vitest introduction must include a reproducible lockfile update and CI validation.
 
 ```sh
+pnpm --filter @neptlium/ui typecheck
+pnpm --filter @neptlium/ui lint
 pnpm --filter @neptlium/web typecheck
 pnpm --filter @neptlium/web lint
 pnpm --filter @neptlium/web test
 pnpm --filter @neptlium/web build
 ```
 
-Use GitHub-hosted Ubuntu for Playwright. Validate at 1440, 1280, 768, 390 and 360 CSS pixels.
+Use GitHub-hosted Ubuntu for Playwright and validate at 360, 390, 768, 1280 and 1440 CSS pixels. Do not merge or deploy without review and approval.
