@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint app components lib --ext .ts,.tsx",
+    "lint": "eslint app components lib unit vitest.config.ts --ext .ts,.tsx",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --test test/*.test.ts test/*.test.mjs"
+    "test": "pnpm run test:node",
+    "test:node": "node --test test/*.test.ts test/*.test.mjs",
+    "test:unit": "vitest run --config vitest.config.ts"
   },
   "dependencies": {
     "@neptlium/ui": "workspace:*",
@@ -27,7 +29,8 @@
     "@types/react-dom": "19.2.3",
     "postcss": "8.5.16",
     "tailwindcss": "4.3.2",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "vitest": "5.0.2"
   },
   "description": "Neptlium public website.",
   "type": "module"

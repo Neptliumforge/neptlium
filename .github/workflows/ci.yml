@@ -95,5 +95,8 @@ jobs:
       - run: pnpm --filter @neptlium/ui lint
       - run: pnpm --filter @neptlium/web typecheck
       - run: pnpm --filter @neptlium/web lint
-      - run: pnpm --filter @neptlium/web test
+      - name: Web Node architecture and source contracts
+        run: pnpm --filter @neptlium/web test:node
+      - name: Web Vitest executable unit tests
+        run: pnpm --filter @neptlium/web test:unit
       - run: pnpm --filter @neptlium/web build
