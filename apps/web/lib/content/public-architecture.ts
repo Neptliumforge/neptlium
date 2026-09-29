@@ -110,26 +110,8 @@ export const PRODUCTS = [
 export const PRIMARY_PRODUCTS = PRODUCTS;
 
 export const SOLUTIONS = [
-  {
-    label: 'Capital visibility',
-    href: '/solutions/capital-visibility',
-    description: 'See the capital picture across accounts, positions and liquidity.',
-  },
-  {
-    label: 'Treasury coordination',
-    href: '/solutions/treasury-coordination',
-    description: 'Keep liquidity and funding requirements visible before they become urgent.',
-  },
-  {
-    label: 'Allocation workflows',
-    href: '/solutions/allocation-workflows',
-    description: 'Turn a view into a governed decision process.',
-  },
-  {
-    label: 'Governance and control',
-    href: '/solutions/governance-control',
-    description: 'Keep evidence, review, authority and consequence explicit.',
-  },
+  { label: 'Capital visibility', href: '/solutions/capital-visibility', description: 'Understand capital across accounts, positions and liquidity.' },
+  { label: 'Treasury coordination', href: '/solutions/treasury-coordination', description: 'Connect liquidity, obligations and funding context.' },
 ] as const satisfies readonly NavigationLink[];
 
 export const INSIGHTS = [
@@ -190,7 +172,7 @@ export const NAVIGATION = [
   {
     label: 'Products',
     href: '/capital',
-    description: 'The six capabilities of the Neptlium Capital Operating Platform.',
+    description: 'Explore connected Neptlium capabilities.',
     links: PRODUCT_LINKS,
   },
   {
