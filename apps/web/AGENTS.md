@@ -78,8 +78,11 @@ pnpm --filter @neptlium/ui typecheck
 pnpm --filter @neptlium/ui lint
 pnpm --filter @neptlium/web typecheck
 pnpm --filter @neptlium/web lint
-pnpm --filter @neptlium/web test
+pnpm --filter @neptlium/web test:node
+pnpm --filter @neptlium/web test:unit
 pnpm --filter @neptlium/web build
 ```
+
+Retain the Node architecture/source contracts in `test/`. Vitest owns executable unit behavior in `unit/` through `vitest.config.ts`; it must not collect the Node or Playwright suites. The `test` script remains an alias for the Node suite. Both test commands are required in CI and Product Family Validation.
 
 Use GitHub-hosted Ubuntu for Playwright. Source inspection is never a browser, accessibility, performance or production PASS.

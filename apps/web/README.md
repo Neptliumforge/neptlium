@@ -22,14 +22,22 @@ Do not invent customers, balances, AUM, returns, performance, transaction histor
 
 ## Test responsibilities
 
-The existing `node --test` suite is a source/contract regression suite; retain it while evaluating Vitest for compatible executable unit and component behavior. Keep Playwright for browser, navigation, responsive and accessibility regression. Do not migrate file-text contracts mechanically or claim that source inspection proves browser behavior. Any Vitest introduction must include a reproducible lockfile update and CI validation.
+The existing `node --test` suite retains architecture and source contracts under `test/*.test.ts` and `test/*.test.mjs`. `test` remains an alias for this suite through `test:node`.
+
+Vitest runs only `unit/**/*.test.ts` through the dedicated `vitest.config.ts`, in the Node environment with the Web `@/` alias. It exercises SEO metadata and `cn()` class composition, including the behavior tests selected in PR #117. It does not collect the Node contracts or Playwright specs. Vite is a test dependency only; Next.js still owns production rendering and builds.
+
+CI and Product Family Validation execute `test:node` and `test:unit` as separate steps. Both are required. Playwright continues to own browser, navigation, responsive and accessibility regression. Do not migrate file-text contracts mechanically or claim that unit tests prove browser behavior. Use the pinned pnpm 11.9.0 and commit its generated lockfile with dependency changes.
+
+Vitest 5.0.2 uses the lockfile-resolved Vite 8.3.1 peer. Use Node 22.12+ within Node 22, or Node 24, matching the CI runtime families.
 
 ```sh
+pnpm install --frozen-lockfile
 pnpm --filter @neptlium/ui typecheck
 pnpm --filter @neptlium/ui lint
 pnpm --filter @neptlium/web typecheck
 pnpm --filter @neptlium/web lint
-pnpm --filter @neptlium/web test
+pnpm --filter @neptlium/web test:node
+pnpm --filter @neptlium/web test:unit
 pnpm --filter @neptlium/web build
 ```
 

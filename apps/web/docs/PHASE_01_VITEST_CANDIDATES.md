@@ -1,26 +1,27 @@
-# Phase 01 — executable-test selection gate
+# Phase 01 — selective Vitest activation
 
-Baseline: `e86a32866116bc40f41b5f737a84d32817ebdbdc`.
+Unit 02 baseline after approved PR #117: `eb46a6fcc20dfc4915ff1308eacd82539253d541`.
 
 ## Existing suites remain authoritative
 
-- Keep `apps/web/test/*.test.ts` and `*.test.mjs` under `node --test`. These are predominantly source-text and architecture contracts, not behavioral component tests.
+- Keep all architecture and source contracts in `apps/web/test/*.test.ts` and `*.test.mjs` under `node --test`.
 - Keep Playwright for production browser, responsive, navigation and accessibility checks.
 - Keep Next.js as the only Web production renderer. No standalone Vite application or Vite production config.
 
-## Initial Vitest candidates
+## Activated executable coverage
 
 1. `apps/web/lib/utils.ts`: executable `cn()` class composition and Tailwind conflict resolution; no Next runtime dependency.
 2. `apps/web/lib/seo.ts`: executable `createPageMetadata()` canonical, index/noindex, Open Graph and Twitter behavior. Uses an explicit relative import of `content/site.ts` so the helper also runs directly under Node; assertions must exercise returned metadata, not source text.
-3. Shared UI pure helpers and components only after checking their client/server boundaries and React rendering requirements.
 
-Current executable coverage lives in `test/seo-behavior.test.ts` under the existing Node runner. The Web TypeScript configuration retains `noEmit` and enables `allowImportingTsExtensions` so typechecking accepts the explicit `.ts` imports required by Node. Migrate these behavior tests to the dedicated Vitest suite when the dependency gate below is satisfied; retain the Node architecture/source-contract tests.
+Shared UI helpers and components remain future candidates, subject to their client/server boundaries and React rendering requirements. They are not part of this unit.
+
+The three behavior tests previously in `test/seo-behavior.test.ts` are migrated into `unit/seo.test.ts` and `unit/utils.test.ts`, with additional root/nested URL and conditional/responsive class-composition cases. The remaining Node contract files are unchanged. The Web TypeScript configuration retains `noEmit` and `allowImportingTsExtensions` from PR #117.
 
 ## Dependency gate
 
-Before introducing `vitest` or changing scripts, generate `pnpm-lock.yaml` using the repository-pinned pnpm version, run `pnpm install --frozen-lockfile`, and verify the new tests alongside the existing Node and Playwright suites. Do not hand-edit the lockfile or claim installation success from manifest changes alone.
+Vitest is a Web development dependency pinned to an exact version. Generate `pnpm-lock.yaml` using the repository-pinned pnpm 11.9.0, run `pnpm install --frozen-lockfile`, and verify the new tests alongside the existing Node and Playwright suites. Do not hand-edit the lockfile or claim installation success from manifest changes alone.
 
-Proposed scripts: retain `test` for the existing Node suite; add a distinct `test:unit` command for Vitest. CI must invoke both. Scope initial tests to a dedicated `unit/**/*.test.ts` glob so Vitest does not duplicate the Node contract suite.
+`test` remains an alias for `test:node`, the existing Node suite. `test:unit` runs Vitest with an explicit `vitest.config.ts`. CI and Product Family Validation invoke both as separate steps. The configuration scopes collection to `unit/**/*.test.ts`, uses the Node environment, resolves the existing Web `@/` alias, and fails if no unit tests are found. Lint includes the unit tests and Vitest configuration; Web typecheck includes them through the existing TypeScript glob.
 
 ## Release gate
 
