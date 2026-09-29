@@ -33,7 +33,9 @@ test('mobile menu exposes canonical product discovery and direct account actions
   assert.match(mobile, /className="mobile-nav-grid"/);
   assert.match(mobile, /href=\{SITE\.personalSignInUrl\}>Sign in/);
   assert.match(mobile, /href=\{SITE\.personalSignUpUrl\}>Get started/);
-  assert.match(mobile, /Socials/);
+  assert.match(mobile, /mobile-nav-back/);
+  assert.match(mobile, /setActiveSection/);
+  assert.doesNotMatch(mobile, /Socials/);
   assert.doesNotMatch(mobile, /Open Neptlium Treasury/);
   assert.doesNotMatch(mobile, /aria-expanded/);
 });
