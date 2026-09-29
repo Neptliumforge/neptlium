@@ -1988,3 +1988,18 @@ body { font-family: var(--font-sans); }
 .mobile-account-actions>a{border-color:#424749}
 .mobile-command-sheet a:focus-visible,.mobile-command-sheet button:focus-visible{outline:2px solid #71c8b7;outline-offset:4px}
 @media(prefers-reduced-motion:reduce){.mobile-command-sheet *{scroll-behavior:auto}}
+
+.footer-mobile-directory{display:none}
+@media(max-width:760px){
+.neptlium-footer-directory{display:grid;grid-template-columns:minmax(0,1fr);gap:1.5rem}
+.neptlium-footer-directory .footer-desktop-group{display:none}
+.footer-mobile-directory{display:block}
+.footer-mobile-directory details{border-top:1px solid var(--color-border-default)}
+.footer-mobile-directory details:last-child{border-bottom:1px solid var(--color-border-default)}
+.footer-mobile-directory summary{display:list-item;cursor:pointer;padding:1.1rem 0;font-weight:600}
+.footer-mobile-directory nav{display:grid;gap:.85rem;padding:.25rem 0 1.25rem}
+.footer-mobile-directory nav a{color:var(--color-text-secondary);min-height:2rem}
+.footer-account-group{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem}
+.footer-account-group strong{width:100%}
+.footer-mobile-directory summary:focus-visible{outline:2px solid var(--color-brand);outline-offset:4px}
+}
