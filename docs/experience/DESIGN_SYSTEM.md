@@ -12,8 +12,9 @@ Marketing and authenticated products share one identity but intentionally differ
 Applications MUST consume semantic variables from `@neptlium/ui/styles/tokens.css`. Pages and feature components MUST NOT establish competing palettes, spacing scales, radii, shadows, typography scales or financial-state colors.
 The approved dark foundation is:
 - Absolute `#000000` — cinematic/deep transitions only.
-- Canvas `#080C10`; deep canvas `#041014`.
-- Surface `#0C1014`; raised surface `#0C1C20`.
+- Owner-approved canonical dark canvas `#0B0C0E` (RGB 11, 12, 14); deep canvas resolves to the same base wherever a dark canvas is intended.
+- Supporting elevated surface `#111214` (RGB 17, 18, 20), used for appropriate panels, cards and inputs. These values supersede the historical `#080C10`, `#041014`, `#0C1014` and `#0C1C20` guidance for those roles.
+- Runtime authority: `packages/ui/src/styles/tokens.css`; preserve deliberately light sections, semantic status colors, approved teal accents and unrelated historical records.
 - Graphite `#141414 #202020 #2C2C30 #404040 #585858`.
 - Text `#F0F0E8 #F8F8F8 #FFFFFF #A0A0A0 #B8B8B8`.
 - Mineral Teal `#0C3434 #1F6666 #387068 #4A9992 #59B7AE`.
