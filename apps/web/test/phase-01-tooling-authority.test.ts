@@ -8,8 +8,8 @@ const read = (path: string) => readFileSync(resolve(root, path), 'utf8');
 
 test('public web retains Next.js production authority during selective Vite enablement', () => {
   const web = JSON.parse(read('apps/web/package.json'));
-  assert.match(web.scripts.dev, /^next dev(?:\\s|$)/);
-  assert.match(web.scripts.build, /^next build(?:\\s|$)/);
+  assert.match(web.scripts.dev, /^next dev(?:\s|$)/);
+  assert.match(web.scripts.build, /^next build(?:\s|$)/);
   assert.equal(typeof web.dependencies.next, 'string');
   assert.equal(existsSync(resolve(root, 'apps/web/app/layout.tsx')), true);
   assert.equal(existsSync(resolve(root, 'apps/web/vite.config.ts')), false);
@@ -22,5 +22,5 @@ test('public web documentation points to current design and route authority', ()
   assert.match(readme, /packages\/ui\/src\/styles\/tokens\.css/);
   assert.match(readme, /lib\/content\/public-architecture\.ts/);
   assert.match(readme, /Vitest/);
-  assert.doesNotMatch(readme, /Canonical top-level navigation:[\\s\\S]*?Personal →/);
+  assert.doesNotMatch(readme, /Canonical top-level navigation:[\s\S]*?Personal →/);
 });
