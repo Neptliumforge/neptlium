@@ -127,7 +127,7 @@ const families = [
 export default function HomePage() {
   return (
     <div className={styles.page}>
-      <section className={styles.hero} data-npt-surface="carbon" aria-labelledby="home-title">
+      <section className={styles.hero} data-npt-surface="carbon" data-web-surface="brand" aria-labelledby="home-title">
         <div className={`${styles.shell} ${styles.heroGrid}`}>
           <div className={styles.heroCopy}>
             <h1 id="home-title" data-npt-nts="hero">
@@ -153,7 +153,7 @@ export default function HomePage() {
       <section
         id="financial-world"
         className={`${styles.section} ${styles.cloud}`}
-        data-npt-surface="cloud"
+        data-npt-surface="cloud" data-web-surface="product"
         aria-labelledby="world-title"
       >
         <div className={styles.shell}>
@@ -172,7 +172,7 @@ export default function HomePage() {
 
       <section
         className={`${styles.crossroads} ${styles.light}`}
-        data-npt-surface="white"
+        data-npt-surface="white" data-web-surface="editorial"
         aria-labelledby="crossroads-title"
       >
         <div className={`${styles.shell} ${styles.crossroadsIntro}`}>
@@ -206,7 +206,7 @@ export default function HomePage() {
 
       <section
         className={`${styles.section} ${styles.mineral}`}
-        data-npt-surface="mineral"
+        data-npt-surface="mineral" data-web-surface="operational"
         aria-labelledby="movement-title"
       >
         <div className={styles.shell}>
@@ -243,7 +243,7 @@ export default function HomePage() {
 
       <section
         className={`${styles.section} ${styles.carbon}`}
-        data-npt-surface="carbon"
+        data-npt-surface="carbon" data-web-surface="brand"
         aria-labelledby="system-title"
       >
         <div className={styles.shell}>
@@ -262,7 +262,7 @@ export default function HomePage() {
 
       <section
         className={`${styles.section} ${styles.ivory}`}
-        data-npt-surface="ivory"
+        data-npt-surface="ivory" data-web-surface="editorial"
         aria-labelledby="intelligence-title"
       >
         <div className={styles.shell}>
@@ -305,7 +305,7 @@ export default function HomePage() {
 
       <section
         className={styles.disclosure}
-        data-npt-surface="ivory"
+        data-npt-surface="ivory" data-web-surface="editorial"
         aria-label="General disclosure"
       >
         <div className={styles.shell}>
