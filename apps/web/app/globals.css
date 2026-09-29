@@ -1914,3 +1914,45 @@ body { font-family: var(--font-sans); }
 :where(.eyebrow, .web-eyebrow, .np-label) { font-family: var(--font-sans); letter-spacing: var(--web-type-label-track); text-transform: uppercase; }
 :where(.page-title, .section-title) { font-family: var(--font-sans); }
 :where(.np-metric, [data-metric]) { font-family: var(--font-numeric); font-variant-numeric: tabular-nums; }
+
+
+/* Canonical public page-surface contract: a consistent shell, intentional product variation.
+   Use on semantic sections; do not override authenticated app or brand-mark styling. */
+:root {
+  --web-surface-brand: var(--color-canvas);
+  --web-surface-product: var(--color-surface-1);
+  --web-surface-editorial: var(--color-background-light, #f4f5f2);
+  --web-surface-operational: var(--color-surface-2);
+  --web-surface-emphasis: var(--color-brand-emphasis);
+  --web-page-gutter: var(--page-gutter);
+  --web-section-space: clamp(4rem, 8vw, 9rem);
+}
+[data-web-surface='brand'] { background: var(--web-surface-brand); color: var(--color-text-primary); }
+[data-web-surface='product'] { background: var(--web-surface-product); color: var(--color-text-primary); }
+[data-web-surface='operational'] { background: var(--web-surface-operational); color: var(--color-text-primary); }
+[data-web-surface='editorial'] { background: var(--web-surface-editorial); color: #101714; }
+[data-web-surface='emphasis'] { background: var(--web-surface-emphasis); color: #07110b; }
+[data-web-surface] :where(h1,h2,h3) {
+  font-family: var(--font-sans);
+  text-wrap: balance;
+}
+[data-web-surface] :where(p,li) { text-wrap: pretty; }
+[data-web-surface] :where([data-financial-value],.np-metric) {
+  font-variant-numeric: tabular-nums;
+}
+.mobile-section-label[aria-current='page'],
+.mobile-section-links a[aria-current='page'] {
+  color: var(--color-brand-emphasis);
+}
+.mobile-section-label:focus-visible,
+.mobile-section-links a:focus-visible {
+  outline: 2px solid var(--color-brand-emphasis);
+  outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-web-surface] *, [data-web-surface] *::before, [data-web-surface] *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
