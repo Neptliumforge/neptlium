@@ -202,17 +202,17 @@
 
   /* Subtle route signatures */
   --canvas-home: var(--n-canvas);
-  --canvas-capital: #090d10;
-  --canvas-portfolio: #09100f;
-  --canvas-allocation: #0b100f;
-  --canvas-investments: #0d0f0e;
-  --canvas-intelligence: #071113;
-  --canvas-treasury: #07100f;
-  --canvas-institutional: #0b0d0e;
-  --canvas-infrastructure: #060c10;
-  --canvas-security: #090b0d;
-  --canvas-insights: #0e0e0d;
-  --canvas-company: #0c0d0d;
+  --canvas-capital: var(--n-canvas);
+  --canvas-portfolio: var(--n-canvas);
+  --canvas-allocation: var(--n-canvas);
+  --canvas-investments: var(--n-canvas);
+  --canvas-intelligence: var(--n-canvas);
+  --canvas-treasury: var(--n-canvas);
+  --canvas-institutional: var(--n-canvas);
+  --canvas-infrastructure: var(--n-canvas);
+  --canvas-security: var(--n-canvas);
+  --canvas-insights: var(--n-canvas);
+  --canvas-company: var(--n-canvas);
 }
 
 /* Light is derived semantically, not by inversion. */
@@ -244,7 +244,7 @@ html[data-theme='light'] {
   --color-border-strong: rgb(16 20 19 / 24%);
   --color-border-hover: rgb(31 102 102 / 38%);
   /* Marketing navigation intentionally remains in the canonical dark capital environment even when product theme is light. */
-  --color-topnav: rgb(8 12 16 / 94%);
+  --color-topnav: rgb(11 12 14 / 94%);
   --color-sidebar: #eef0ec;
   --color-sidebar-surface-secondary: #e7eae5;
   --color-sidebar-surface-raised: #dde3de;
