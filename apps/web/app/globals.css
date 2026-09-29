@@ -1926,6 +1926,7 @@ body { font-family: var(--font-sans); }
   --web-surface-emphasis: var(--color-brand-emphasis);
   --web-page-gutter: var(--page-gutter);
   --web-section-space: clamp(4rem, 8vw, 9rem);
+  --web-hero-space: clamp(5rem, 10vw, 10rem);
 }
 [data-web-surface='brand'] { background: var(--web-surface-brand); color: var(--color-text-primary); }
 [data-web-surface='product'] { background: var(--web-surface-product); color: var(--color-text-primary); }
@@ -1955,4 +1956,15 @@ body { font-family: var(--font-sans); }
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
   }
+}
+
+/* Retained from PR #112: opt-in hero rhythm and restrained brand grid. */
+[data-web-section] { padding-block: var(--web-section-space); }
+[data-web-section='hero'] { padding-block: var(--web-hero-space); }
+[data-web-surface='brand'] [data-web-grid] {
+  background-image: linear-gradient(to right, rgb(255 255 255 / 3%) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 3%) 1px, transparent 1px);
+  background-size: clamp(5rem, 12vw, 10rem) clamp(5rem, 12vw, 10rem);
+}
+@media (max-width: 600px) {
+  :root { --web-section-space: clamp(4rem, 10vw, 6rem); --web-hero-space: clamp(4rem, 12vw, 7rem); }
 }
