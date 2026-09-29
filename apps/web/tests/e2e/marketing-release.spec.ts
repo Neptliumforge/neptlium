@@ -137,6 +137,9 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page).toHaveURL(/\/trust\/?$/);
     await page.goto('/products/infrastructure');
     await expect(page).toHaveURL(/\/infrastructure\/?$/);
+    await page.goto('/treasury');
+    await expect(page.locator('[class*="treasuryHero"]').first()).toHaveCSS('background-color', 'rgb(11, 12, 14)');
+    await expect(page.getByRole('heading', { name: 'See treasury clearly.' })).toBeVisible();
     await page.goto('/solutions');
     await expect(page.getByRole('heading', { name: 'Two operating needs. One coherent platform.' })).toBeVisible();
     const footer = page.getByRole('contentinfo', { name: 'Neptlium footer' });
