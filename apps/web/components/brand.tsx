@@ -20,7 +20,7 @@ export function Brand({
 }) {
   return (
     <Link href="/" className="brand" aria-label="Neptlium home">
-      {!compact && <span>Neptlium</span>}
+      {!compact && <span>NEPTLIUM</span>}
       <BrandMark className="brand-mark" tone={tone} />
     </Link>
   );
