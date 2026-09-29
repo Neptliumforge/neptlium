@@ -194,3 +194,13 @@ test('public typography inherits Treasury-aligned sans-serif without a competing
   assert.match(visual, /--web-font-display:\s*var\(--font-sans\)/);
   assert.doesNotMatch(visual, /font-family:\s*var\(--font-display,\s*Iowan Old Style/);
 });
+
+
+test('public surface grammar shares canonical brand tokens and responsive spacing', () => {
+  for (const surface of ['brand', 'product', 'operational', 'editorial', 'emphasis']) {
+    assert.ok(shell.includes(`[data-web-surface='${surface}']`));
+  }
+  assert.match(shell, /--web-section-space: clamp\(/);
+  assert.match(shell, /--web-hero-space: clamp\(/);
+  assert.match(shell, /prefers-reduced-motion: reduce/);
+});
