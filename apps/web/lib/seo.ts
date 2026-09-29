@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SITE } from './content/site';
+import { SITE } from './content/site.ts';
 
 type PageMetadataInput = {
   title: string;

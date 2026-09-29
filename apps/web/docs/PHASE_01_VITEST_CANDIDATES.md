@@ -11,8 +11,10 @@ Baseline: `e86a32866116bc40f41b5f737a84d32817ebdbdc`.
 ## Initial Vitest candidates
 
 1. `apps/web/lib/utils.ts`: executable `cn()` class composition and Tailwind conflict resolution; no Next runtime dependency.
-2. `apps/web/lib/seo.ts`: executable `createPageMetadata()` canonical, index/noindex, Open Graph and Twitter behavior. Requires a deliberate alias configuration for `@/lib/content/site`, not source-text assertions.
+2. `apps/web/lib/seo.ts`: executable `createPageMetadata()` canonical, index/noindex, Open Graph and Twitter behavior. Uses an explicit relative import of `content/site.ts` so the helper also runs directly under Node; assertions must exercise returned metadata, not source text.
 3. Shared UI pure helpers and components only after checking their client/server boundaries and React rendering requirements.
+
+Current executable coverage lives in `test/seo-behavior.test.ts` under the existing Node runner. The Web TypeScript configuration retains `noEmit` and enables `allowImportingTsExtensions` so typechecking accepts the explicit `.ts` imports required by Node. Migrate these behavior tests to the dedicated Vitest suite when the dependency gate below is satisfied; retain the Node architecture/source-contract tests.
 
 ## Dependency gate
 
