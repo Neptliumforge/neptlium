@@ -1,8 +1,8 @@
 .neptlium-environment{
   --color-canvas:var(--n-canvas);
-  --color-surface-1:var(--color-surface-1);
-  --color-surface-2:#111111;
-  --color-surface-3:var(--color-surface-3);
+  --color-surface-1:var(--n-surface);
+  --color-surface-2:var(--n-surface);
+  --color-surface-3:var(--n-surface);
   --color-surface-inset:var(--color-surface-inset);
   --color-text-primary:var(--color-text-primary);
   --color-text-secondary:#9b9b96;
@@ -10,7 +10,7 @@
   --color-border-hairline:rgba(255,255,255,.08);
   --color-border-default:rgba(255,255,255,.12);
   --color-border-strong:rgba(255,255,255,.19);
-  --color-topnav:rgba(5,5,5,.96);
+  --color-topnav:rgb(11 12 14 / 96%);
   --color-sidebar:var(--color-surface-inset);
   --color-sidebar-surface-secondary:#0f0f0f;
   --color-sidebar-surface-raised:var(--color-surface-3);
