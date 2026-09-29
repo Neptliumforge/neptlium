@@ -70,7 +70,7 @@ test('high-value actions are capability gated', () => {
 });
 
 test('authenticated product keeps the carbon and mineral-teal system', () => {
-  assert.match(tokens, /--n-canvas:\s*#080c10/);
+  assert.match(tokens, /--n-canvas:\s*#0b0c0e/);
   assert.match(tokens, /--n-warm-white:\s*#f0f0e8/);
   assert.match(tokens, /--n-teal-primary:\s*#4a9992/);
   assert.match(css, /var\(--color-accent-primary\)/);
