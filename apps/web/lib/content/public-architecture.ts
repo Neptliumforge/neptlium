@@ -178,7 +178,7 @@ export const NAVIGATION = [
   {
     label: 'Solutions',
     href: '/solutions',
-    description: 'Capital visibility, treasury coordination, allocation and governance.',
+    description: 'Capital visibility and treasury coordination.',
     links: SOLUTIONS,
   },
   {
@@ -217,8 +217,6 @@ export const INDEXABLE_ROUTES = [
   '/solutions',
   '/solutions/capital-visibility',
   '/solutions/treasury-coordination',
-  '/solutions/allocation-workflows',
-  '/solutions/governance-control',
 ] as const;
 
 export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
@@ -247,9 +245,10 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/solutions': 'canonical-indexable',
   '/solutions/capital-visibility': 'canonical-indexable',
   '/solutions/treasury-coordination': 'canonical-indexable',
-  '/solutions/allocation-workflows': 'canonical-indexable',
-  '/solutions/governance-control': 'canonical-indexable',
+  '/solutions/allocation-workflows': 'legacy-redirect',
+  '/solutions/governance-control': 'legacy-redirect',
   '/products': 'public-supporting-noindex',
+  '/products/infrastructure': 'legacy-redirect',
   '/products/capital-account': 'legacy-redirect',
   '/products/treasury': 'legacy-redirect',
   '/products/allocation': 'legacy-redirect',
