@@ -4,3 +4,5 @@
 .treasury .treasuryHero .label{color:#b8c5c1}
 .treasury .treasuryHero .heroCopy>p{color:#c6cfcb}
 .treasury .treasuryHero .secondaryAction{color:#f5f6f4}
+
+.illustrationNotice{display:block;padding:10px 18px;border-bottom:1px solid #d7dcda;background:#f6f7f5;color:#35423f;font-size:12px;line-height:1.5}
