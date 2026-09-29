@@ -21,10 +21,10 @@ test('Capital Rails use canonical semantic tokens and reduced motion', () => {
   assert.match(tokens, /\.n-capital-rails/);
 });
 
-test('homepage signature object consumes shared Capital Rails', () => {
-  assert.match(home, /CapitalRails as CapitalRailsVisual/);
-  assert.match(home, /SignatureHeroObject/);
-  assert.doesNotMatch(home, /function CapitalRails\(\)/);
+test('homepage uses portfolio overview rather than Capital Rails', () => {
+  assert.match(home, /<ProductStage \/>/);
+  assert.match(home, /Portfolio overview/);
+  assert.doesNotMatch(home, /CapitalRails|SignatureHeroObject/);
 });
 
 test('design authority documents extension rules and financial authority boundaries', () => {

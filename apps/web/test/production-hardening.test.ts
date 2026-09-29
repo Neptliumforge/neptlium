@@ -18,10 +18,11 @@ test('production public Web keeps a single canonical hero and truthful product-f
   assert.match(page, /Capital, intelligently managed\./);
   for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
     assert.match(page, new RegExp(`label: '${family}'`));
-  assert.match(page, /Illustrative infrastructure — no customer data/);
+  assert.match(page, /Illustrative interface only/);
+  assert.doesNotMatch(page, /CapitalRails|SignatureHeroObject/);
   assert.match(page, /No customer balances, returns or performance data are[\s\S]*shown\./);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  for (const visual of ['CapitalRails', 'WorldStage', 'ProductStage', 'SystemMap'])
+  for (const visual of ['WorldStage', 'ProductStage', 'SystemMap'])
     assert.match(page, new RegExp(visual));
   assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|fake balance|projected return/i);
 });

@@ -25,13 +25,16 @@ export function SiteHeader() {
     const readTopSurface = () => {
       const firstSurface = document.querySelector<HTMLElement>('[data-npt-surface]');
       const surface = firstSurface?.dataset.nptSurface as MarketingSurface | undefined;
-      if (surface) setTopSurface(surface);
+      setTopSurface(surface ?? 'carbon');
     };
     const frame = window.requestAnimationFrame(readTopSurface);
     return () => window.cancelAnimationFrame(frame);
   }, [path]);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 18);
+    const onScroll = () => {
+      const next = window.scrollY > 18;
+      setScrolled((previous) => (previous === next ? previous : next));
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -42,6 +45,7 @@ export function SiteHeader() {
     <>
       <header
         className="site-header capital-command-bar"
+        data-home={path === '/' ? 'true' : 'false'}
         data-scrolled={scrolled ? 'true' : 'false'}
         data-surface={scrolled ? 'carbon' : topSurface}
       >
@@ -77,7 +81,7 @@ export function SiteHeader() {
           <div className="command-actions">
             <a href={SITE.personalSignInUrl}>Sign in</a>
             <a className="command-primary-action" href={SITE.personalSignUpUrl}>
-              Get started
+              Sign up
             </a>
           </div>
           <div className="elite-header-actions">

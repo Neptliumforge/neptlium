@@ -168,3 +168,21 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page).toHaveURL(/\/insights\/?$/);
   });
 });
+
+
+test.describe('Web CSS visual baseline', () => {
+  for (const route of ['/', '/capital', '/portfolio', '/investments', '/treasury', '/infrastructure'] as const) {
+    test(`visual baseline: ${route}`, async ({ page }, testInfo) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(route, { waitUntil: 'networkidle' });
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expectNoHorizontalOverflow(page);
+      const slug = route === '/' ? 'home' : route.slice(1);
+      await page.screenshot({
+        path: testInfo.outputPath(`css-baseline-${slug}-${testInfo.project.name}.png`),
+        fullPage: true,
+        animations: 'disabled',
+      });
+    });
+  }
+});

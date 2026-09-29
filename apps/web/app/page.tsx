@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { CapitalRails as CapitalRailsVisual } from '@neptlium/ui';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 import styles from './home-elite.module.css';
@@ -10,32 +9,6 @@ export const metadata = createPageMetadata({
   description: 'Neptlium is a capital operating platform for individuals and institutions.',
   path: '/',
 });
-
-function SignatureHeroObject() {
-  return (
-    <div className={styles.heroStage} aria-label="Neptlium Capital Rails — authority and evidence">
-      <div className={styles.stageGlow} aria-hidden="true" />
-      <div className={styles.signatureRailField}>
-        <CapitalRailsVisual
-          variant="movement"
-          nodes={[
-            { label: 'Capital', state: 'neutral' },
-            { label: 'Position', state: 'neutral' },
-            { label: 'Authority', state: 'authorized' },
-            { label: 'Evidence', state: 'evidence' },
-            { label: 'Reconciliation', state: 'reconciling' },
-          ]}
-          label="Capital moves through authority, evidence and reconciliation"
-        />
-        <div className={styles.railObjectCopy}>
-          <span>Capital rails</span>
-          <strong>Movement remains distinct from authority.</strong>
-          <small>Illustrative infrastructure — no customer data. No execution state is implied.</small>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function WorldStage() {
   return (
@@ -55,7 +28,7 @@ function WorldStage() {
 
 function ProductStage() {
   return (
-    <div className={styles.productStage} aria-label="Illustrative Neptlium product composition">
+    <div className={styles.productStage} aria-label="Illustrative Neptlium portfolio overview">
       <div className={styles.productFrame}>
         <aside className={styles.productRail} aria-label="Illustrative product navigation">
           <strong>Neptlium</strong>
@@ -69,12 +42,12 @@ function ProductStage() {
         </aside>
         <div className={styles.productCanvas}>
           <div className={styles.productBar}>
-            <span>Financial overview</span>
+            <span>Portfolio overview</span>
             <span>Illustrative interface</span>
           </div>
           <div className={styles.productContent}>
             <section className={styles.productPanel}>
-              <small>Capital picture</small>
+              <small>Portfolio context</small>
               <h3>See the shape, not just the total.</h3>
               <div className={styles.productBars} aria-hidden="true">
                 <i />
@@ -173,7 +146,7 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <SignatureHeroObject />
+          <ProductStage />
         </div>
       </section>
 
@@ -265,25 +238,6 @@ export default function HomePage() {
               <strong>Reconcile the record.</strong>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section
-        className={`${styles.section} ${styles.cloud}`}
-        data-npt-surface="cloud"
-        aria-labelledby="product-title"
-      >
-        <div className={styles.shell}>
-          <div className={styles.productIntro}>
-            <h2 id="product-title" className={styles.productTitle} data-npt-nts="h2">
-              Everything you’ve invested in. One portfolio.
-            </h2>
-            <p>
-              Portfolio brings ownership, allocation, performance context, activity and documents
-              together while showing only information supported by authoritative account data.
-            </p>
-          </div>
-          <ProductStage />
         </div>
       </section>
 

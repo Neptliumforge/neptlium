@@ -33,7 +33,6 @@ test('homepage is a distinct brand story rather than a copied product index', ()
     'Know where your capital stands',
     'Put capital to work',
     'Every movement has authority',
-    'Everything you’ve invested in',
     'Operate capital with control',
     'Intelligence for every capital decision',
   ])
@@ -144,7 +143,7 @@ test('canonical public navigation uses progressive product discovery', () => {
     assert.match(architecture, new RegExp(`label: '${label}'`));
   for (const route of ['/capital','/portfolio','/investments','/treasury','/intelligence','/infrastructure'])
     assert.match(architecture, new RegExp(route.replaceAll('/', '\\\/')));
-  assert.match(header, /Get started/);
+  assert.match(header, /Sign up/);
   assert.match(header, /data-surface=/);
   assert.match(header, /window\.scrollY > 18/);
   assert.match(mobile, /document\.body\.style\.overflow = 'hidden'/);
@@ -176,4 +175,22 @@ test('supporting public routes are calibrated back to the Geist-led production f
   assert.doesNotMatch(layout, /elite-route-calibration\.css/);
   assert.match(read('app/globals.css'), /font-family:\s*var\(--font/);
   assert.match(read('../../packages/ui/src/styles/tokens.css'), /--font-sans/);
+});
+
+
+test('marketing typography inherits Treasury sans authority without changing the brand asset', () => {
+  assert.match(shell, /--font: var\(--font-sans\)/);
+  assert.match(shell, /body \{ font-family: var\(--font-sans\); \}/);
+  assert.match(shell, /--web-type-heading-track: -0\.047em/);
+  assert.match(shell, /font-variant-numeric: tabular-nums/);
+  assert.match(header, /<Brand tone="teal" \/>/);
+  assert.match(header, /Sign up/);
+});
+
+
+test('public typography inherits Treasury-aligned sans-serif without a competing serif display', () => {
+  const visual = read('app/neptlium-visual-direction.css');
+  assert.match(shell, /--font-display:\s*var\(--font-sans\)/);
+  assert.match(visual, /--web-font-display:\s*var\(--font-sans\)/);
+  assert.doesNotMatch(visual, /font-family:\s*var\(--font-display,\s*Iowan Old Style/);
 });

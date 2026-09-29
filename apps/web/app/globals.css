@@ -10,9 +10,10 @@
   --text: var(--color-text-primary);
   --muted: var(--color-text-muted);
   --accent: var(--color-accent-primary);
-  --font:
-    var(--font-geist), Geist, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
+  /* Treasury-aligned product typography, inherited across public routes. */
+  --font: var(--font-sans);
+  --font-display: var(--font-sans);
+  --mono: var(--font-mono);
   --type-display: var(--text-display-xl);
   --type-page-title: var(--text-display-l);
   --type-section-title: var(--text-display-m);
@@ -86,14 +87,14 @@ button {
 }
 .page-title {
   font-size: var(--type-page-title);
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  font-weight: 510;
+  line-height: 1.02;
+  letter-spacing: -0.047em;
 }
 .section-title {
   font-size: var(--type-section-title);
-  font-weight: 600;
-  line-height: 1.15;
+  font-weight: 540;
+  line-height: 1.12;
   letter-spacing: -0.02em;
 }
 .caption-text {
@@ -163,7 +164,7 @@ button {
   backdrop-filter: blur(3px);
   transition: border-color var(--motion-duration-normal) var(--motion-ease-out), background-color var(--motion-duration-normal) var(--motion-ease-out);
 }
-.site-header.scrolled {
+.site-header[data-scrolled='true'] {
   border-color: rgb(240 240 232 / 7%);
   background: color-mix(in oklab, var(--n-canvas) 94%, transparent);
 }
@@ -1869,3 +1870,47 @@ button {
   .mobile-account-actions { grid-template-columns: 1fr; }
   .neptlium-footer-directory { grid-template-columns: 1fr 1fr; gap: 2rem 1.25rem; }
 }
+
+/* Homepage brand continuity: preserve the canonical SVG mark, change only its surrounding surface. */
+.site-header.capital-command-bar[data-home='true'] {
+  background: #080c10;
+  color: #fff;
+  border-bottom-color: rgb(255 255 255 / 9%);
+}
+.site-header.capital-command-bar[data-home='true'] .brand { color: #fff; }
+.site-header.capital-command-bar[data-home='true'] .desktop-command-nav a,
+.site-header.capital-command-bar[data-home='true'] .command-actions > a:not(.command-primary-action) { color: rgb(255 255 255 / 82%); }
+.site-header.capital-command-bar[data-home='true'] .desktop-command-nav a:hover,
+.site-header.capital-command-bar[data-home='true'] .command-actions > a:hover { color: #fff; }
+.site-header.capital-command-bar[data-home='true'] .command-primary-action,
+.site-header.capital-command-bar[data-home='true'] .elite-header-entry {
+  background: #fff !important;
+  color: #080c10 !important;
+}
+.site-header.capital-command-bar[data-home='true'] .elite-menu-trigger {
+  background: #151b1e;
+  color: #fff;
+  border-color: rgb(255 255 255 / 20%);
+}
+/* Shared decision point: distinct actions and deliberate wrapping. */
+.elite-conversion-dual { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.elite-conversion-dual > a { display: flex; min-width: 0; min-height: 3.5rem; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; text-decoration: none; }
+.elite-conversion-dual > a span { min-width: 0; }
+.elite-conversion-dual > a svg { width: 1rem; height: 1rem; flex: none; }
+@media (max-width: 760px) { .elite-conversion-dual { grid-template-columns: 1fr; } }
+
+/* Marketing typography authority — shared Treasury sans stack, editorial scale. */
+:root {
+  --web-type-heading-weight: 510;
+  --web-type-heading-track: -0.047em;
+  --web-type-heading-leading: 1.02;
+  --web-type-section-weight: 540;
+  --web-type-section-track: -0.02em;
+  --web-type-body-leading: 1.65;
+  --web-type-label-track: 0.14em;
+}
+body { font-family: var(--font-sans); }
+:where(button, input, select, textarea) { font-family: inherit; }
+:where(.eyebrow, .web-eyebrow, .np-label) { font-family: var(--font-sans); letter-spacing: var(--web-type-label-track); text-transform: uppercase; }
+:where(.page-title, .section-title) { font-family: var(--font-sans); }
+:where(.np-metric, [data-metric]) { font-family: var(--font-numeric); font-variant-numeric: tabular-nums; }
