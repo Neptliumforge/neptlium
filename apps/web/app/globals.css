@@ -360,7 +360,7 @@ button {
   flex-direction: column;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
-  background: radial-gradient(circle at 90% 8%, rgb(31 102 102 / 14%), transparent 28%), linear-gradient(145deg, var(--n-canvas-deep), var(--n-canvas) 62%, var(--n-absolute));
+  background: var(--n-canvas);
   color: var(--n-warm-white);
   animation: drawer 180ms ease-out;
 }
@@ -1873,7 +1873,7 @@ button {
 
 /* Homepage brand continuity: preserve the canonical SVG mark, change only its surrounding surface. */
 .site-header.capital-command-bar[data-home='true'] {
-  background: #080c10;
+  background: var(--n-canvas);
   color: #fff;
   border-bottom-color: rgb(255 255 255 / 9%);
 }
@@ -1885,10 +1885,10 @@ button {
 .site-header.capital-command-bar[data-home='true'] .command-primary-action,
 .site-header.capital-command-bar[data-home='true'] .elite-header-entry {
   background: #fff !important;
-  color: #080c10 !important;
+  color: var(--n-canvas) !important;
 }
 .site-header.capital-command-bar[data-home='true'] .elite-menu-trigger {
-  background: #151b1e;
+  background: var(--n-surface);
   color: #fff;
   border-color: rgb(255 255 255 / 20%);
 }
