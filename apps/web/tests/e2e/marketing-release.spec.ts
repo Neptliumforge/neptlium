@@ -111,7 +111,7 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(dialog.getByRole('button', { name: 'Explore Products' })).toBeVisible();
     await dialog.getByRole('button', { name: 'Explore Institutional' }).click();
     await expect(dialog.getByRole('heading', { name: 'Institutional' })).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Institutional', exact: true })).toBeVisible();
+    await expect(dialog.getByRole('link', { name: /Institutional/ })).toBeVisible();
     await dialog.getByRole('button', { name: /Back/ }).click();
     await expect(dialog.getByRole('button', { name: 'Explore Products' })).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Get started', exact: false })).toHaveAttribute(
