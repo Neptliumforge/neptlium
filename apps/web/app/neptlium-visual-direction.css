@@ -40,7 +40,7 @@ body {
 .institutional-home .authority-hero-lead { max-width: 42rem; }
 .institutional-home .hero-sign-in { color: var(--web-ivory); }
 .product-reveal { padding: clamp(1.5rem, 4vw, 3.5rem) 0 clamp(5rem, 9vw, 8rem); background: var(--web-carbon); color: var(--web-ivory); }
-.product-frame { border: 1px solid rgb(245 243 238 / 18%); background: #181b1d; box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 18%); }
+.product-frame { border: 1px solid rgb(245 243 238 / 18%); background: var(--n-surface); box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 18%); }
 .product-topline { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--web-rule-dark); color: rgb(245 243 238 / 60%); font: 600 0.68rem/1.2 var(--font-sans, sans-serif); letter-spacing: .08em; text-transform: uppercase; }
 .product-topline span:first-child { color: var(--web-ivory); }
 .product-body { display: grid; grid-template-columns: 12rem minmax(0, 1fr); min-height: 28rem; }

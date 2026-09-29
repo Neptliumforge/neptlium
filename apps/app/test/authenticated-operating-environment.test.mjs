@@ -70,9 +70,13 @@ test('high-value actions are capability gated', () => {
 });
 
 test('authenticated product keeps the carbon and mineral-teal system', () => {
-  assert.match(tokens, /--n-canvas:\s*#080c10/);
+  assert.match(tokens, /--n-canvas:\s*#0b0c0e/);
   assert.match(tokens, /--n-warm-white:\s*#f0f0e8/);
   assert.match(tokens, /--n-teal-primary:\s*#4a9992/);
   assert.match(css, /var\(--color-accent-primary\)/);
+  assert.match(css, /--color-canvas:\s*var\(--n-canvas\)/);
+  assert.match(css, /\.neptlium-environment main\{background:var\(--n-canvas\)\}/);
+  assert.match(css, /--color-surface-2:\s*var\(--n-surface\)/);
+  assert.doesNotMatch(css, /#050505/i);
   assert.doesNotMatch(css, /backdrop-filter:.*blur\(2[0-9]/i);
 });

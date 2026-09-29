@@ -9,7 +9,7 @@ const appCss = readFileSync(resolve(root, 'apps/app/app/global.css'), 'utf8');
 const treasuryCss = readFileSync(resolve(root, 'apps/treasury/app/global.css'), 'utf8');
 
 test('canonical token authority contains approved Neptlium palette and semantics', () => {
-  for (const value of ['#080c10', '#041014', '#0c1014', '#0c1c20', '#4a9992', '#59b7ae', '#00cec5']) {
+  for (const value of ['#0b0c0e', '#111214', '#4a9992', '#59b7ae', '#00cec5']) {
     assert.match(tokens.toLowerCase(), new RegExp(value));
   }
   for (const token of [
