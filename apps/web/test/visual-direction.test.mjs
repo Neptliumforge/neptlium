@@ -194,3 +194,13 @@ test('public typography inherits Treasury-aligned sans-serif without a competing
   assert.match(visual, /--web-font-display:\s*var\(--font-sans\)/);
   assert.doesNotMatch(visual, /font-family:\s*var\(--font-display,\s*Iowan Old Style/);
 });
+
+test('canonical marketing surfaces preserve page variation under one token authority', () => {
+  const homeSurfaces = [...home.matchAll(/data-web-surface="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(homeSurfaces, ['brand', 'product', 'editorial', 'operational', 'brand', 'editorial', 'editorial']);
+  for (const surface of ['brand', 'product', 'editorial', 'operational', 'emphasis']) {
+    assert.match(shell, new RegExp("data-web-surface='"+surface+"'"));
+  }
+  assert.match(mobile, /onClick=\{onClose\}/);
+  assert.match(mobile, /aria-current=\{path === link.href/);
+});

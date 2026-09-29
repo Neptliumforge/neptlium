@@ -44,8 +44,8 @@ export function MobileNavigation({ path, onClose, triggerRef }: { path: string; 
       <div className="mobile-command-head"><Brand tone="teal" /><button ref={closeRef} type="button" aria-label="Close navigation" onClick={onClose}><X aria-hidden="true" /></button></div>
       <nav className="mobile-command-nav" aria-label="Mobile navigation">
         <div className="mobile-nav-grid">{NAVIGATION.map((section) => <section key={section.label}>
-          <Link className="mobile-section-label" href={section.href} aria-current={path === section.href ? 'page' : undefined}><span>{section.label}</span><ArrowRight aria-hidden="true" /></Link>
-          {section.links.length > 1 ? <div className="mobile-section-links">{section.links.filter((link) => link.href !== section.href).map((link) => <Link href={link.href} key={link.href}>{link.label}</Link>)}</div> : null}
+          <Link className="mobile-section-label" href={section.href} onClick={onClose} aria-current={path === section.href || path.startsWith(`${section.href}/`) ? 'page' : undefined}><span>{section.label}</span><ArrowRight aria-hidden="true" /></Link>
+          {section.links.length > 1 ? <div className="mobile-section-links">{section.links.filter((link) => link.href !== section.href).map((link) => <Link href={link.href} key={link.href} onClick={onClose} aria-current={path === link.href ? 'page' : undefined}>{link.label}</Link>)}</div> : null}
         </section>)}</div>
         <div className="mobile-account-actions" aria-label="Account access">
           <a href={SITE.personalSignInUrl}>Sign in</a>
