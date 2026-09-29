@@ -1,52 +1,38 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
+import { PRODUCTS } from '@/lib/content/public-architecture';
 
 export const metadata = createPageMetadata({
-  title: 'Products — Capital Operating Architecture | Neptlium',
-  description: 'Explore Neptlium Capital Account, Treasury, Allocation and Portfolio Intelligence as connected responsibilities within one capital operating environment.',
+  title: 'Products — Neptlium',
+  description: 'Explore the Neptlium Capital, Treasury, Institutional and Infrastructure product families.',
   path: '/products',
 });
 
-const products = [
-  { eyebrow: 'Capital Account', title: 'Your capital, in one place.', body: 'Give funding, availability and movement a durable operating context without confusing visibility with authority.', image: '/marketing/capital-account.webp', href: '/products/capital-account', tone: 'carbon' },
-  { eyebrow: 'Treasury', title: 'Liquidity, under control.', body: 'Read reserves, obligations, liquidity and readiness against the wider capital system around them.', image: '/marketing/treasury.webp', href: '/products/treasury', tone: 'marine' },
-  { eyebrow: 'Allocation', title: 'From insight to intention.', body: 'Model target states, constraints and review while keeping proposed structure distinct from financial consequence.', image: '/marketing/allocation.webp', href: '/products/allocation', tone: 'stone' },
-  { eyebrow: 'Portfolio Intelligence', title: 'See the companies behind the capital.', body: 'Interpret ownership, exposure, concentration and relationships as one connected capital system.', image: '/marketing/company-intelligence.webp', href: '/products/portfolio-intelligence', tone: 'navy' },
-] as const;
-
 export default function ProductsPage() {
   return (
-    <div className="cin-home">
-      <section className="cin-product-thesis" aria-labelledby="products-title">
-        <p className="cin-kicker">Products</p>
-        <h1 id="products-title">Four responsibilities. One operating environment.</h1>
-      </section>
-
-      <section className="cin-products" aria-label="Neptlium product family">
-        <div className="cin-product-scenes">
-          {products.map((product, index) => (
-            <article className={`cin-product-scene cin-scene-${product.tone}`} key={product.eyebrow}>
-              <div className="cin-product-scene-copy">
-                <span>0{index + 1}</span>
-                <p className="cin-kicker">{product.eyebrow}</p>
-                <h2>{product.title}</h2>
-                <p>{product.body}</p>
-                <Link href={product.href}>Explore {product.eyebrow}<ArrowRight aria-hidden="true" /></Link>
-              </div>
-              <figure>
-                <img src={product.image} alt={`Illustrative Neptlium ${product.eyebrow} interface concept`} />
-                <figcaption>Illustrative interface concept. Values shown are fictional examples.</figcaption>
-              </figure>
+    <main className="family-page" data-npt-surface="ivory">
+      <div className="family-shell">
+        <section className="family-hero" aria-labelledby="products-title">
+          <div>
+            <p className="family-label">Products</p>
+            <h1 className="np-hero" id="products-title">One platform. Distinct operating environments.</h1>
+          </div>
+          <div className="family-hero-copy">
+            <p>Explore Neptlium's product families. Portfolio, Investments, Allocation and Intelligence are connected capabilities, not separate product companies.</p>
+          </div>
+        </section>
+        <section className="family-grid" aria-label="Neptlium product families">
+          {PRODUCTS.map((product) => (
+            <article className="family-card" key={product.href}>
+              <span>Product family</span>
+              <h2>{product.label}</h2>
+              <p>{product.description}</p>
+              <Link href={product.href}>Explore {product.label}<ArrowRight aria-hidden="true" /></Link>
             </article>
           ))}
-        </div>
-      </section>
-
-      <section className="cin-intelligence">
-        <div><p className="cin-kicker">Connected responsibility</p><h2>Context should survive every handoff.</h2></div>
-        <p>Account context can inform treasury, treasury can constrain allocation, and portfolio intelligence can interpret the result while each surface preserves its own evidence, lifecycle and authority boundaries.</p>
-      </section>
-    </div>
+        </section>
+      </div>
+    </main>
   );
 }

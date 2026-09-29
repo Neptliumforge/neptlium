@@ -110,26 +110,8 @@ export const PRODUCTS = [
 export const PRIMARY_PRODUCTS = PRODUCTS;
 
 export const SOLUTIONS = [
-  {
-    label: 'Capital visibility',
-    href: '/solutions/capital-visibility',
-    description: 'See the capital picture across accounts, positions and liquidity.',
-  },
-  {
-    label: 'Treasury coordination',
-    href: '/solutions/treasury-coordination',
-    description: 'Keep liquidity and funding requirements visible before they become urgent.',
-  },
-  {
-    label: 'Allocation workflows',
-    href: '/solutions/allocation-workflows',
-    description: 'Turn a view into a governed decision process.',
-  },
-  {
-    label: 'Governance and control',
-    href: '/solutions/governance-control',
-    description: 'Keep evidence, review, authority and consequence explicit.',
-  },
+  { label: 'Capital visibility', href: '/solutions/capital-visibility', description: 'Understand capital across accounts, positions and liquidity.' },
+  { label: 'Treasury coordination', href: '/solutions/treasury-coordination', description: 'Connect liquidity, obligations and funding context.' },
 ] as const satisfies readonly NavigationLink[];
 
 export const INSIGHTS = [
@@ -190,13 +172,13 @@ export const NAVIGATION = [
   {
     label: 'Products',
     href: '/capital',
-    description: 'The six capabilities of the Neptlium Capital Operating Platform.',
+    description: 'Explore connected Neptlium capabilities.',
     links: PRODUCT_LINKS,
   },
   {
     label: 'Solutions',
     href: '/solutions',
-    description: 'Capital visibility, treasury coordination, allocation and governance.',
+    description: 'Capital visibility and treasury coordination.',
     links: SOLUTIONS,
   },
   {
@@ -235,8 +217,6 @@ export const INDEXABLE_ROUTES = [
   '/solutions',
   '/solutions/capital-visibility',
   '/solutions/treasury-coordination',
-  '/solutions/allocation-workflows',
-  '/solutions/governance-control',
 ] as const;
 
 export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
@@ -265,9 +245,10 @@ export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
   '/solutions': 'canonical-indexable',
   '/solutions/capital-visibility': 'canonical-indexable',
   '/solutions/treasury-coordination': 'canonical-indexable',
-  '/solutions/allocation-workflows': 'canonical-indexable',
-  '/solutions/governance-control': 'canonical-indexable',
+  '/solutions/allocation-workflows': 'legacy-redirect',
+  '/solutions/governance-control': 'legacy-redirect',
   '/products': 'public-supporting-noindex',
+  '/products/infrastructure': 'legacy-redirect',
   '/products/capital-account': 'legacy-redirect',
   '/products/treasury': 'legacy-redirect',
   '/products/allocation': 'legacy-redirect',

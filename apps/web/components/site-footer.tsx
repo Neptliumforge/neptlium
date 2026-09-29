@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Brand } from './brand';
+import { SOLUTIONS } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 
 const groups = [
@@ -7,6 +8,7 @@ const groups = [
     ['Capital', '/capital'], ['Portfolio', '/portfolio'], ['Investments', '/investments'],
     ['Treasury', '/treasury'], ['Intelligence', '/intelligence'], ['Pay', SITE.payUrl],
   ] },
+  { label: 'Solutions', links: SOLUTIONS.map(({ label, href }) => [label, href] as const) },
   { label: 'Platform', links: [
     ['Institutional', '/institutional'], ['Infrastructure', '/infrastructure'], ['Security', '/security'],
   ] },
@@ -32,11 +34,12 @@ export function SiteFooter() {
           <p>Capital, intelligently managed.</p>
           <span>One capital operating platform for individuals and organizations.</span>
         </div>
-        {groups.map((group) => <nav key={group.label} aria-label={group.label}>
+        {groups.map((group) => <nav className="footer-desktop-group" key={group.label} aria-label={group.label}>
           <strong>{group.label}</strong>
           {group.links.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
         </nav>)}
-        <nav aria-label="Account">
+        <div className="footer-mobile-directory" aria-label="Footer directory">{groups.map((group) => <details key={group.label}><summary>{group.label}</summary><nav aria-label={group.label}>{group.links.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav></details>)}</div>
+        <nav className="footer-account-group" aria-label="Account">
           <strong>Account</strong>
           <a href={SITE.personalSignInUrl}>Sign in</a>
           <a href={SITE.personalSignUpUrl}>Get started</a>

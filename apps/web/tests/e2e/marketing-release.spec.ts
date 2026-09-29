@@ -108,8 +108,12 @@ test.describe('Neptlium unified marketing release', () => {
     await trigger.click();
     const dialog = page.getByRole('dialog', { name: 'Navigation' });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Products', exact: true }).first()).toBeVisible();
-    await expect(dialog.getByRole('link', { name: 'Institutional', exact: true }).first()).toBeVisible();
+    await expect(dialog.getByRole('button', { name: 'Explore Products' })).toBeVisible();
+    await dialog.getByRole('button', { name: 'Explore Institutional' }).click();
+    await expect(dialog.getByRole('heading', { name: 'Institutional' })).toBeVisible();
+    await expect(dialog.getByRole('link', { name: /Institutional/ })).toBeVisible();
+    await dialog.getByRole('button', { name: /Back/ }).click();
+    await expect(dialog.getByRole('button', { name: 'Explore Products' })).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Get started', exact: false })).toHaveAttribute(
       'href',
       personalSignUpUrl,
@@ -124,6 +128,28 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
+  });
+
+  test('solutions redirects and footer directory preserve public access', async ({ page }, testInfo) => {
+    await page.goto('/solutions/allocation-workflows');
+    await expect(page).toHaveURL(/\/allocation\/?$/);
+    await page.goto('/solutions/governance-control');
+    await expect(page).toHaveURL(/\/trust\/?$/);
+    await page.goto('/products/infrastructure');
+    await expect(page).toHaveURL(/\/infrastructure\/?$/);
+    await page.goto('/treasury');
+    await expect(page.locator('[class*="treasuryHero"]').first()).toHaveCSS('background-color', 'rgb(11, 12, 14)');
+    await expect(page.getByRole('heading', { name: 'See treasury clearly.' })).toBeVisible();
+    await page.goto('/solutions');
+    await expect(page.getByRole('heading', { name: 'Two operating needs. One coherent platform.' })).toBeVisible();
+    const footer = page.getByRole('contentinfo', { name: 'Neptlium footer' });
+    await expect(footer.getByRole('link', { name: 'Risk disclosure' })).toBeVisible();
+    await expect(footer.getByRole('link', { name: 'Accessibility' })).toBeVisible();
+    if (['mobile-390', 'mobile-360'].includes(testInfo.project.name)) {
+      await footer.locator('details').filter({ has: page.locator('summary', { hasText: 'Solutions' }) }).locator('summary').click();
+      await expect(footer.getByRole('navigation', { name: 'Solutions' }).last().getByRole('link', { name: 'Capital visibility' })).toBeVisible();
+    }
+    await expectNoHorizontalOverflow(page);
   });
 
   test('homepage brand and journey CTAs remain canonical', async ({ page }) => {

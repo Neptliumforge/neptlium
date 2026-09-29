@@ -190,6 +190,7 @@ export function TreasuryPage() {
             <PrimaryActions secondaryHref="/business" secondaryLabel="Explore Neptlium Treasury" />
           </div>
           <div className={`${styles.productStage} ${styles.treasuryStage}`} aria-label="Treasury workspace illustration">
+            <span className={styles.illustrationNotice}>Illustrative interface concept — not live account data.</span>
             <div className={styles.treasuryHeader}><span>Treasury overview</span><span className={styles.quietBadge}>Organizational view</span></div>
             <div className={styles.treasuryBody}>
               <aside className={styles.accountTree}>
