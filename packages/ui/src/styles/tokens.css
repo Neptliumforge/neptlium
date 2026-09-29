@@ -6,10 +6,10 @@
 @theme {
   /* Core canvas */
   --n-absolute: #000000;
-  --n-canvas: #080c10;
-  --n-canvas-deep: #041014;
-  --n-surface: #0c1014;
-  --n-surface-raised: #0c1c20;
+  --n-canvas: #0b0c0e;
+  --n-canvas-deep: var(--n-canvas);
+  --n-surface: #111214;
+  --n-surface-raised: #111214;
   --n-graphite-1: #141414;
   --n-graphite-2: #202020;
   --n-graphite-3: #2c2c30;
@@ -36,7 +36,7 @@
   --color-background: var(--n-canvas);
   --color-background-deep: var(--n-canvas-deep);
   --color-surface-1: var(--n-surface);
-  --color-surface-2: #10161a;
+  --color-surface-2: var(--n-surface-raised);
   --color-surface-3: var(--n-surface-raised);
   --color-surface-primary: var(--color-surface-1);
   --color-surface-secondary: var(--color-surface-2);
@@ -53,7 +53,7 @@
   --color-text-secondary: var(--n-subdued);
   --color-text-muted: var(--n-secondary);
   --color-text-disabled: #686c6c;
-  --color-text-inverse: #080c10;
+  --color-text-inverse: var(--n-canvas);
   --color-text-warm: var(--color-text-primary);
 
   --color-accent-primary: var(--n-teal-primary);
@@ -116,7 +116,7 @@
   --color-sidebar-border-hairline: var(--color-border-hairline);
   --color-sidebar-border-default: var(--color-border-default);
   --color-sidebar-border-strong: var(--color-border-strong);
-  --color-topnav: rgb(8 12 16 / 94%);
+  --color-topnav: rgb(11 12 14 / 94%);
 
   /* Typography */
   --font-sans: var(--font-geist, var(--font-inter-sans, Inter)), "Helvetica Neue", Arial, system-ui, sans-serif;
@@ -201,7 +201,7 @@
   --z-dialog: 100;
 
   /* Subtle route signatures */
-  --canvas-home: #080c10;
+  --canvas-home: var(--n-canvas);
   --canvas-capital: #090d10;
   --canvas-portfolio: #09100f;
   --canvas-allocation: #0b100f;
@@ -230,7 +230,7 @@ html[data-theme='light'] {
   --color-surface-inset: #e4e8e3;
   --color-surface-floating: #ffffff;
   --color-surface-interactive: #eef2ee;
-  --color-surface-overlay: rgb(8 12 16 / 46%);
+  --color-surface-overlay: rgb(11 12 14 / 46%);
   --color-card: var(--color-surface-1);
   --color-panel: var(--color-surface-1);
   --color-dialog: #ffffff;
