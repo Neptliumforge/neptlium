@@ -1968,3 +1968,23 @@ body { font-family: var(--font-sans); }
 @media (max-width: 600px) {
   :root { --web-section-space: clamp(4rem, 10vw, 6rem); --web-hero-space: clamp(4rem, 12vw, 7rem); }
 }
+
+/* Phase 0.02: focused, accessible mobile command navigation. */
+.mobile-command-sheet{background:#0B0C0E;color:#f5f6f4}
+.mobile-command-head{border-bottom:1px solid #303337}
+.mobile-command-head button{color:inherit;border-color:#44484b;background:#111214}
+.mobile-command-nav{display:flex;flex-direction:column;padding-top:clamp(1.5rem,5vh,3rem)}
+.mobile-nav-grid{flex:1;align-content:start}
+.mobile-nav-grid section{border-color:#303337;padding-block:.55rem}
+.mobile-section-label{width:100%;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;min-height:4.5rem;font-size:clamp(1.85rem,8vw,2.75rem)}
+.mobile-section-label svg{width:1.3rem;color:#a6b0ae}
+.mobile-nav-detail{flex:1;min-height:0}
+.mobile-nav-back{display:inline-flex;align-items:center;gap:.4rem;min-height:2.75rem;padding:0;border:0;background:transparent;color:#c1cac8;font-size:.9rem;cursor:pointer}
+.mobile-nav-detail h2{margin:1.5rem 0;font-size:clamp(2rem,9vw,3rem);font-weight:540;letter-spacing:-.045em}
+.mobile-nav-detail-links{display:grid}
+.mobile-nav-detail-links a{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 0;border-top:1px solid #303337;font-size:1.1rem}
+.mobile-nav-detail-links small{display:block;margin-top:.3rem;color:#a9b3b0;font-size:.78rem;line-height:1.5}
+.mobile-account-actions{margin-top:auto;background:#0B0C0E;border-color:#303337}
+.mobile-account-actions>a{border-color:#424749}
+.mobile-command-sheet a:focus-visible,.mobile-command-sheet button:focus-visible{outline:2px solid #71c8b7;outline-offset:4px}
+@media(prefers-reduced-motion:reduce){.mobile-command-sheet *{scroll-behavior:auto}}
