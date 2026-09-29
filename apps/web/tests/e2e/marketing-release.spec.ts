@@ -130,6 +130,25 @@ test.describe('Neptlium unified marketing release', () => {
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
   });
 
+  test('solutions redirects and footer directory preserve public access', async ({ page }, testInfo) => {
+    await page.goto('/solutions/allocation-workflows');
+    await expect(page).toHaveURL(/\/allocation\/?$/);
+    await page.goto('/solutions/governance-control');
+    await expect(page).toHaveURL(/\/trust\/?$/);
+    await page.goto('/products/infrastructure');
+    await expect(page).toHaveURL(/\/infrastructure\/?$/);
+    await page.goto('/solutions');
+    await expect(page.getByRole('heading', { name: 'Two operating needs. One coherent platform.' })).toBeVisible();
+    const footer = page.getByRole('contentinfo', { name: 'Neptlium footer' });
+    await expect(footer.getByRole('link', { name: 'Risk disclosure' })).toBeVisible();
+    await expect(footer.getByRole('link', { name: 'Accessibility' })).toBeVisible();
+    if (['mobile-390', 'mobile-360'].includes(testInfo.project.name)) {
+      await footer.locator('details').filter({ has: page.locator('summary', { hasText: 'Solutions' }) }).locator('summary').click();
+      await expect(footer.getByRole('navigation', { name: 'Solutions' }).last().getByRole('link', { name: 'Capital visibility' })).toBeVisible();
+    }
+    await expectNoHorizontalOverflow(page);
+  });
+
   test('homepage brand and journey CTAs remain canonical', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
     await expect(
