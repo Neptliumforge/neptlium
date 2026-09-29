@@ -1,19 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight, X } from 'lucide-react';
-import { useEffect, useRef, type RefObject } from 'react';
+import { ArrowRight, ArrowUpRight, ChevronLeft, X } from 'lucide-react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Brand } from './brand';
 import { NAVIGATION } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 
-const socialLinks = [
-  { label: 'X', href: 'https://x.com/Neptlium' },
-  { label: 'YouTube', href: 'https://youtube.com/@neptlium?si=fJ7q0r18UCoxjJth' },
-  { label: 'Bluesky', href: 'https://bsky.app/profile/neptlium.bsky.social' },
-] as const;
-
 export function MobileNavigation({ path, onClose, triggerRef }: { path: string; onClose: () => void; triggerRef: RefObject<HTMLButtonElement | null>; }) {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -43,15 +38,30 @@ export function MobileNavigation({ path, onClose, triggerRef }: { path: string; 
     <div id="mobile-command-sheet" className="mobile-command-sheet" ref={panelRef}>
       <div className="mobile-command-head"><Brand tone="teal" /><button ref={closeRef} type="button" aria-label="Close navigation" onClick={onClose}><X aria-hidden="true" /></button></div>
       <nav className="mobile-command-nav" aria-label="Mobile navigation">
-        <div className="mobile-nav-grid">{NAVIGATION.map((section) => <section key={section.label}>
-          <Link className="mobile-section-label" href={section.href} onClick={onClose} aria-current={path === section.href || path.startsWith(`${section.href}/`) ? 'page' : undefined}><span>{section.label}</span><ArrowRight aria-hidden="true" /></Link>
-          {section.links.length > 1 ? <div className="mobile-section-links">{section.links.filter((link) => link.href !== section.href).map((link) => <Link href={link.href} key={link.href} onClick={onClose} aria-current={path === link.href ? 'page' : undefined}>{link.label}</Link>)}</div> : null}
-        </section>)}</div>
+        {activeSection ? (
+          <div className="mobile-nav-detail">
+            <button className="mobile-nav-back" type="button" onClick={() => setActiveSection(null)}><ChevronLeft aria-hidden="true" /> Back</button>
+            <h2>{activeSection}</h2>
+            <div className="mobile-nav-detail-links">
+              {NAVIGATION.find((section) => section.label === activeSection)?.links.map((link) => (
+                <Link href={link.href} key={link.href} onClick={onClose} aria-current={path === link.href ? 'page' : undefined}>
+                  <span>{link.label}<small>{link.description}</small></span><ArrowUpRight aria-hidden="true" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="mobile-nav-grid">{NAVIGATION.map((section) => <section key={section.label}>
+            <button className="mobile-section-label" type="button" onClick={() => setActiveSection(section.label)} aria-label={`Explore ${section.label}`}>
+              <span>{section.label}</span><ArrowRight aria-hidden="true" />
+            </button>
+          </section>)}</div>
+        )}
         <div className="mobile-account-actions" aria-label="Account access">
           <a href={SITE.personalSignInUrl}>Sign in</a>
           <a className="mobile-enter-action" href={SITE.personalSignUpUrl}>Get started <ArrowRight aria-hidden="true" /></a>
         </div>
-        <section className="mobile-social-block" aria-label="Social channels"><span>Socials</span><div>{socialLinks.map((social) => <a href={social.href} key={social.href} target="_blank" rel="noopener noreferrer">{social.label}<ArrowUpRight aria-hidden="true" /></a>)}</div></section>
+
       </nav>
     </div>
   </div>;
