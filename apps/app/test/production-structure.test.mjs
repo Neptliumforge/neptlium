@@ -165,15 +165,14 @@ test('Portfolio remains evidence-aware and contains no execution authority', () 
   assert.doesNotMatch(experience, />Buy<|>Sell<|>Trade<|Execute allocation/);
 });
 
-test('Allocation preserves MODEL REVIEW APPROVE RESERVE EXECUTE RECONCILE distinctions', () => {
+test('Allocation keeps internal readiness and progression out of ordinary investor presentation', () => {
   const experience = read('components/product/OperatingExperience.tsx');
-  for (const stage of ['MODEL', 'REVIEW', 'APPROVE', 'RESERVE', 'EXECUTE', 'RECONCILE'])
-    assert.match(experience, new RegExp(`'${stage}'`));
-  assert.match(
-    experience,
-    /Capital decisions remain separate from approval, reservation, execution and\s+reconciliation/,
-  );
-  assert.match(experience, /Observed allocation unavailable/);
+  const start = experience.indexOf('export function AllocationExperience()');
+  const end = experience.indexOf('export function ActivityExperience()', start);
+  const allocation = experience.slice(start, end);
+  assert.match(allocation, /Allocation information is not currently available for this account/);
+  assert.match(allocation, /Observed allocation unavailable/);
+  assert.doesNotMatch(allocation, /Not configured|Governed progression/);
 });
 
 test('legacy detailed capital workspace remains governed and provider-neutral', () => {
