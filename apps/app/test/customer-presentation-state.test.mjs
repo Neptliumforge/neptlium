@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
+import { customerStateFromLifecycle } from '../components/product/customer-state.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -58,4 +59,43 @@ test('authentication errors do not expose raw provider messages', () => {
   assert.doesNotMatch(authForm, /setError\(signUpError\.message\)/);
   assert.match(authForm, /We could not create your account\. Review your details and try again\./);
   assert.match(authForm, /console\.error\('Supabase sign-up failed', \{ code: signUpError\.code \}\)/);
+});
+
+
+test('lifecycle presentation preserves terminal, pending, completed and failure semantics', () => {
+  for (const state of ['CANCELLED', 'CANCELED']) {
+    assert.deepEqual(customerStateFromLifecycle(state), { state: 'UNAVAILABLE', label: 'Cancelled' });
+  }
+
+  assert.deepEqual(customerStateFromLifecycle('UNRECOGNIZED_STATE'), {
+    state: 'UNAVAILABLE',
+    label: 'Unavailable',
+  });
+
+  for (const state of ['PENDING', 'INSTRUCTIONS_ISSUED', 'AWAITING_TRANSFER', 'CONFIRMING', 'EXECUTING']) {
+    assert.equal(customerStateFromLifecycle(state).state, 'PENDING');
+    assert.equal(customerStateFromLifecycle(state).label, 'Processing');
+  }
+
+  for (const state of ['SETTLED', 'RECONCILED']) {
+    assert.equal(customerStateFromLifecycle(state).state, 'AVAILABLE');
+    assert.equal(customerStateFromLifecycle(state).label, 'Completed');
+  }
+
+  for (const state of ['FAILED', 'RETURNED', 'REVERSED', 'DISCREPANCY']) {
+    assert.equal(customerStateFromLifecycle(state).state, 'FAILED');
+    assert.equal(customerStateFromLifecycle(state).label, 'Failed');
+  }
+});
+
+test('ordinary Allocation presentation hides internal readiness and lifecycle progression', () => {
+  const experience = read('components/product/OperatingExperience.tsx');
+  const allocationStart = experience.indexOf('export function AllocationExperience()');
+  const activityStart = experience.indexOf('export function ActivityExperience()', allocationStart);
+  const allocation = experience.slice(allocationStart, activityStart);
+
+  assert.match(allocation, /Allocation information is not currently available for this account/);
+  assert.doesNotMatch(allocation, /Not configured/);
+  assert.doesNotMatch(allocation, /Governed progression/);
+  assert.doesNotMatch(allocation, /\['MODEL', 'REVIEW', 'APPROVE', 'RESERVE', 'EXECUTE', 'RECONCILE'\]/);
 });
