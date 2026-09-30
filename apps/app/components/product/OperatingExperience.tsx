@@ -47,9 +47,9 @@ function lifecycleState(state: string): ProductStateName {
   if (normalized === 'SETTLED' || normalized === 'PROVIDER_SETTLED') return 'SETTLED';
   if (normalized === 'RESERVED') return 'RESERVED';
   if (normalized.includes('APPROVAL') || normalized === 'AUTHORIZED') return 'REQUIRES_APPROVAL';
-  if (['FAILED', 'RETURNED', 'REVERSED', 'DISCREPANCY'].includes(normalized)) return 'ERROR';
+  if (['FAILED', 'RETURNED', 'REVERSED', 'REJECTED', 'EXPIRED', 'DISCREPANCY'].includes(normalized)) return 'ERROR';
   if (['CANCELLED', 'CANCELED'].includes(normalized)) return 'UNAVAILABLE';
-  if (['PENDING', 'PROCESSING', 'EXECUTING', 'RECONCILING'].includes(normalized)) return 'PENDING';
+  if (['PENDING', 'PROCESSING', 'INSTRUCTIONS_ISSUED', 'AWAITING_TRANSFER', 'OBSERVED', 'CONFIRMING', 'REVIEW', 'EXECUTION_PENDING', 'EXECUTING', 'PARTIALLY_EXECUTED', 'RECONCILING'].includes(normalized)) return 'PENDING';
   return 'UNAVAILABLE';
 }
 
