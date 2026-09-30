@@ -23,11 +23,11 @@ export function customerStateFromCapability(state: string): CustomerStateView {
 
 export function customerStateFromLifecycle(state: string): CustomerStateView {
   const value = state.toUpperCase();
-  if (['FAILED', 'RETURNED', 'REVERSED', 'DISCREPANCY'].includes(value)) return { state: 'FAILED', label: 'Failed' };
+  if (['FAILED', 'RETURNED', 'REVERSED', 'REJECTED', 'EXPIRED', 'DISCREPANCY'].includes(value)) return { state: 'FAILED', label: 'Failed' };
   if (['RECONCILED', 'SETTLED', 'AVAILABLE'].includes(value)) return { state: 'AVAILABLE', label: value === 'AVAILABLE' ? 'Available' : 'Completed' };
   if (['RESTRICTED', 'INELIGIBLE'].includes(value)) return { state: 'RESTRICTED', label: 'Restricted' };
   if (['CANCELLED', 'CANCELED'].includes(value)) return { state: 'UNAVAILABLE', label: 'Cancelled' };
-  if (['PENDING', 'PROCESSING', 'RESERVED', 'AUTHORIZED', 'EXECUTING', 'RECONCILING', 'PROVIDER_SETTLED'].includes(value)) {
+  if (['PENDING', 'PROCESSING', 'INSTRUCTIONS_ISSUED', 'AWAITING_TRANSFER', 'OBSERVED', 'CONFIRMING', 'REVIEW', 'RESERVED', 'AUTHORIZED', 'EXECUTION_PENDING', 'EXECUTING', 'PARTIALLY_EXECUTED', 'RECONCILING', 'PROVIDER_SETTLED'].includes(value)) {
     return { state: 'PENDING', label: 'Processing' };
   }
   return { state: 'UNAVAILABLE', label: 'Unavailable' };
