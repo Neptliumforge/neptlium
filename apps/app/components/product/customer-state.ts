@@ -26,7 +26,11 @@ export function customerStateFromLifecycle(state: string): CustomerStateView {
   if (['FAILED', 'RETURNED', 'REVERSED', 'DISCREPANCY'].includes(value)) return { state: 'FAILED', label: 'Failed' };
   if (['RECONCILED', 'SETTLED', 'AVAILABLE'].includes(value)) return { state: 'AVAILABLE', label: value === 'AVAILABLE' ? 'Available' : 'Completed' };
   if (['RESTRICTED', 'INELIGIBLE'].includes(value)) return { state: 'RESTRICTED', label: 'Restricted' };
-  return { state: 'PENDING', label: 'Processing' };
+  if (['CANCELLED', 'CANCELED'].includes(value)) return { state: 'UNAVAILABLE', label: 'Cancelled' };
+  if (['PENDING', 'PROCESSING', 'RESERVED', 'AUTHORIZED', 'EXECUTING', 'RECONCILING', 'PROVIDER_SETTLED'].includes(value)) {
+    return { state: 'PENDING', label: 'Processing' };
+  }
+  return { state: 'UNAVAILABLE', label: 'Unavailable' };
 }
 
 export function customerCollectionState<T>(
