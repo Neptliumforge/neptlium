@@ -48,7 +48,9 @@ function lifecycleState(state: string): ProductStateName {
   if (normalized === 'RESERVED') return 'RESERVED';
   if (normalized.includes('APPROVAL') || normalized === 'AUTHORIZED') return 'REQUIRES_APPROVAL';
   if (['FAILED', 'RETURNED', 'REVERSED', 'DISCREPANCY'].includes(normalized)) return 'ERROR';
-  return 'PENDING';
+  if (['CANCELLED', 'CANCELED'].includes(normalized)) return 'UNAVAILABLE';
+  if (['PENDING', 'PROCESSING', 'EXECUTING', 'RECONCILING'].includes(normalized)) return 'PENDING';
+  return 'UNAVAILABLE';
 }
 
 function PageHeader({
@@ -719,64 +721,30 @@ export function PortfolioExperience() {
 export function AllocationExperience() {
   const { snapshot } = useProductBootstrap();
   const allocation = snapshot.allocation.state === 'READY' ? snapshot.allocation.data : undefined;
-  const steps = [
-    allocation?.modeled,
-    allocation?.authorized,
-    allocation?.authorized,
-    allocation?.executed,
-    allocation?.executed,
-    allocation?.reconciled,
-  ];
-  const labels = ['MODEL', 'REVIEW', 'APPROVE', 'RESERVE', 'EXECUTE', 'RECONCILE'];
-  const current =
-    allocation?.reconciled.state === 'VALUE'
-      ? 'Reconciled'
-      : allocation?.executed.state === 'VALUE'
-        ? 'Executing'
-        : allocation?.authorized.state === 'VALUE'
-          ? 'Approved'
-          : allocation?.modeled.state === 'VALUE'
-            ? 'Proposed'
-            : allocation
-              ? 'Not configured'
-              : 'Unavailable';
-  const badge: ProductStateName =
-    current === 'Reconciled'
-      ? 'RECONCILED'
-      : current === 'Executing'
-        ? 'PENDING'
-        : current === 'Approved'
-          ? 'REQUIRES_APPROVAL'
-          : current === 'Proposed'
-            ? 'PENDING'
-            : current === 'Unavailable'
-              ? 'UNAVAILABLE'
-              : 'NOT_CONFIGURED';
+  const allocationAvailable = Boolean(
+    allocation &&
+      [
+        allocation.modeled,
+        allocation.authorized,
+        allocation.executed,
+        allocation.reconciled,
+      ].some((projection) => projection.state === 'VALUE'),
+  );
+
   return (
     <div className="op-stack">
       <PageHeader
         eyebrow="Allocation"
         title="Allocation"
-        description="Capital decisions remain separate from approval, reservation, execution and reconciliation."
+        description="Review allocation information supported by your account records."
       />
       <section className="op-state-hero">
-        <span>Current state</span>
-        <strong>{current}</strong>
-        <ProductStateBadge state={badge} />
-      </section>
-      <section className="op-panel">
-        <SectionHeading label="Lifecycle" title="Governed progression" />
-        <div className="op-lifecycle">
-          {labels.map((label, index) => {
-            const complete = steps[index]?.state === 'VALUE';
-            return (
-              <div className={complete ? 'is-complete' : ''} key={label}>
-                <i>{complete ? <Check size={13} /> : index + 1}</i>
-                <span>{label}</span>
-              </div>
-            );
-          })}
-        </div>
+        <span>Allocation information</span>
+        <strong>{allocationAvailable ? 'Available' : 'Unavailable'}</strong>
+        <ProductStateBadge state={allocationAvailable ? 'AVAILABLE' : 'UNAVAILABLE'} />
+        {!allocationAvailable ? (
+          <p>Allocation information is not currently available for this account.</p>
+        ) : null}
       </section>
       <section className="op-grid-2">
         <article className="op-panel">
@@ -789,12 +757,8 @@ export function AllocationExperience() {
         <article className="op-panel">
           <SectionHeading label="Target" title="Authorized allocation" />
           <EmptyCanvas
-            title={
-              current === 'Not configured'
-                ? 'No allocation configured'
-                : 'Target projection unavailable'
-            }
-            detail="Target weights appear only when the governed allocation model exposes an authoritative typed projection."
+            title="Target allocation unavailable"
+            detail="Target weights appear only when an authoritative allocation is available for this account."
           />
         </article>
       </section>
