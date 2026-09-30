@@ -46,15 +46,17 @@ If evidence is unavailable, the UI renders a truthful unavailable/unknown state 
 
 The authenticated product is deliberately restrained and information-first. Product UI does not use decorative financial curves, neon crypto styling, or marketing-scale typography to imply financial truth.
 
-The dashboard layout owns one shared authenticated bootstrap projection. Overview, Portfolio, Invest, Activity and supporting account surfaces consume that shared snapshot so navigation is immediate and one unavailable projection does not blank unrelated account state. The snapshot refreshes in the background while the customer remains active.
+The dashboard layout owns one shared authenticated bootstrap projection. Overview, Portfolio, Invest, Capital, Activity and supporting account surfaces consume that shared snapshot so navigation is immediate and one unavailable projection does not blank unrelated account state. The snapshot refreshes in the background while the customer remains active.
+
+Ordinary investor UI maps internal lifecycle and capability detail into customer presentation states: EMPTY, AVAILABLE, PENDING, RESTRICTED, UNAVAILABLE and FAILED, with LOADING while data is being fetched. Authoritative empty is distinct from unavailable, and unavailable state is never rendered as a confirmed zero. Raw provider and domain states remain available to diagnostics and operational surfaces.
 
 Desktop hierarchy:
 
 - Overview
 - Portfolio
 - Invest
+- Capital
 - Activity
-- More
 - Account
   - Help & Support
   - Settings
@@ -73,7 +75,7 @@ Mobile primary navigation:
 
 ### Overview
 
-Answers the immediate questions: "What is my capital position? What can I invest? What changed?" It prioritizes portfolio value when available, available capital, performance, investments and recent activity. Deposit, Invest, Transfer and Withdraw remain explicit actions. Funding or movement routes remain capability-driven and fall back to review states when availability is unknown.
+Answers the immediate questions: "What is my capital position? What can I invest? What changed?" It prioritizes portfolio value when available, available capital, performance, investments and recent activity. Add funds, Invest, Transfer and Withdraw remain explicit actions. Add funds always enters the Capital funding flow, which determines available methods from authoritative capability state. Transfer and withdrawal remain capability-driven and do not imply availability when state is unknown.
 
 ### Capital
 

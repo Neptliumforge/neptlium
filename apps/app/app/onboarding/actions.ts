@@ -34,18 +34,19 @@ export async function getOnboardingDraft(): Promise<OnboardingDraft> {
   }
 }
 
-export async function saveOnboardingDraft(draft: OnboardingDraft): Promise<void> {
+export async function saveOnboardingDraft(draft: OnboardingDraft): Promise<ProvisioningResult> {
   await requireUser();
   const parsed = onboardingPayloadSchema.partial().safeParse(draft.data);
-  if (!parsed.success || draft.stepIndex < 0 || draft.stepIndex > 7) return;
+  if (!parsed.success || draft.stepIndex < 0 || draft.stepIndex > 7) return unavailable('Your progress could not be saved.');
 
   try {
     await saveOnboardingDraftApi({
       data: parsed.data as Record<string, unknown>,
       stepIndex: draft.stepIndex,
     });
+    return { ok: true };
   } catch {
-    // Draft persistence is best-effort. Final onboarding remains fail-closed.
+    return unavailable('Your progress could not be saved. Check your connection and try again.');
   }
 }
 

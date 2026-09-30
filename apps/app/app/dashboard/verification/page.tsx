@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, FileLock2, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
 
 export default function VerificationPage() {
   return (
@@ -28,36 +28,13 @@ export default function VerificationPage() {
         </div>
       </section>
       <section className="op-panel">
-        <div className="op-section-heading">
-          <div>
-            <span>Documents</span>
-            <h2>Secure document submission</h2>
-          </div>
-        </div>
         <div className="op-state-focus">
-          <FileLock2 size={20} />
+          <ShieldCheck size={20} />
           <div>
-            <strong>Private upload service required</strong>
-            <p>
-              Government-ID submission will activate only through encrypted private storage,
-              server-side validation, controlled access and auditable verification state.
-            </p>
+            <strong>Verification is not currently available</strong>
+            <p>When identity verification is available for your account, you will be able to continue here.</p>
           </div>
         </div>
-        <div className="mt-5">
-          <button
-            type="button"
-            className="op-button op-button-primary"
-            disabled
-            title="Secure identity document service is not connected"
-          >
-            Upload identity document
-          </button>
-        </div>
-        <p className="op-footnote">
-          Accepted document types and limits will be supplied by the governed verification service.
-          No public storage bucket or browser-authored verification record is permitted.
-        </p>
       </section>
     </div>
   );

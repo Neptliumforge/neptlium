@@ -43,7 +43,8 @@ export function SupabaseAuthForm({ mode }: { readonly mode: 'sign-in' | 'sign-up
         options: { emailRedirectTo: callback.toString() },
       });
       if (signUpError) {
-        setError(signUpError.message);
+        console.error('Supabase sign-up failed', { code: signUpError.code });
+        setError('We could not create your account. Review your details and try again.');
         return;
       }
       if (data.session) {

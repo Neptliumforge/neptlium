@@ -30,24 +30,12 @@ export default function SupportPage() {
           <div>
             <strong>How can we help?</strong>
             <p>
-              Start a secure conversation about your account, funding, investments, transfers or
-              verification.
+              Find guidance for your account, funding, investments, transfers or verification.
             </p>
           </div>
         </div>
-        <div className="mt-5">
-          <button
-            className="op-button op-button-primary"
-            type="button"
-            disabled
-            title="Secure support messaging will activate when the governed support API is connected"
-          >
-            Start a conversation
-          </button>
-        </div>
         <p className="op-footnote">
-          Messaging remains unavailable until the governed support case and message service is
-          connected. No browser-only support record is presented as durable.
+          In-app messaging is not currently available. Browse the help topics below for account guidance.
         </p>
       </section>
       <section className="op-panel">

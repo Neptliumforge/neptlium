@@ -22,6 +22,7 @@ import {
 import { useProductBootstrap } from './ProductBootstrapProvider';
 import { FinancialValue, ProductStateBadge, type ProductStateName } from './ProductState';
 import type { CanonicalBalance, FundingCapability } from '@/lib/api/financial';
+import { customerCollectionState, customerStateFromCapability, customerStateFromLifecycle } from './customer-state';
 
 function firstName(name: string | null | undefined) {
   return name?.trim().split(/\s+/)[0] || 'there';
@@ -161,17 +162,16 @@ function PrimaryActions() {
     snapshot.transferCapabilities.state === 'READY'
       ? enabled(snapshot.transferCapabilities.data)
       : [];
-  const canFund = funding.length > 0;
   const canMove = transfers.length > 0;
 
   return (
     <>
       <Link
         className="op-button op-button-primary"
-        href={canFund ? '/dashboard/deposit' : '/dashboard/capital'}
+        href="/dashboard/deposit"
       >
         <ArrowDownToLine size={15} />
-        {canFund ? 'Deposit' : 'Review funding'}
+        Add funds
       </Link>
       <Link className="op-button" href="/dashboard/invest">
         <TrendingUp size={15} />
@@ -195,7 +195,7 @@ function ActivityRows({ limit }: { readonly limit?: number }) {
     return (
       <div className="op-empty-row">
         <strong>Activity unavailable</strong>
-        <span>The account event projection could not be loaded.</span>
+        <span>We could not load your activity right now. Try again later.</span>
       </div>
     );
   const rows = limit ? snapshot.activity.data.data.slice(0, limit) : snapshot.activity.data.data;
@@ -212,13 +212,13 @@ function ActivityRows({ limit }: { readonly limit?: number }) {
         <div className="op-activity-row" key={item.id}>
           <span className="op-activity-mark" aria-hidden="true" />
           <div className="op-activity-copy">
-            <strong>{item.type.replaceAll('_', ' ')}</strong>
+            <strong>{item.type.replaceAll('_', ' ').toLowerCase()}</strong>
             <span>{item.reference ?? [item.asset, item.network].filter(Boolean).join(' · ')}</span>
           </div>
           <div className="op-activity-amount">
             <strong>{item.amount ? `${item.amount} ${item.asset}` : '—'}</strong>
             <ProductStateBadge state={lifecycleState(item.status)}>
-              {item.status.replaceAll('_', ' ')}
+              {customerStateFromLifecycle(item.status).label}
             </ProductStateBadge>
           </div>
           <time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time>
@@ -235,6 +235,7 @@ function balanceContext(balances: readonly CanonicalBalance[]) {
 export function OverviewExperience() {
   const { snapshot } = useProductBootstrap();
   const balances = snapshot.balances.state === 'READY' ? snapshot.balances.data : [];
+  const balanceState = customerCollectionState(snapshot.balances);
   const balance = balanceContext(balances);
   const portfolio = snapshot.portfolio.state === 'READY' ? snapshot.portfolio.data : undefined;
   const notifications = snapshot.notifications.state === 'READY' ? snapshot.notifications.data : [];
@@ -260,8 +261,10 @@ export function OverviewExperience() {
       <section className="op-hero">
         <div className="op-hero-primary">
           <span>Your capital</span>
-          {balances.length === 0 ? (
+          {balanceState === 'UNAVAILABLE' ? (
             <strong>—</strong>
+          ) : balanceState === 'EMPTY' ? (
+            <strong>No balance yet</strong>
           ) : balance ? (
             <BalanceFigure balance={balance} />
           ) : (
@@ -272,7 +275,9 @@ export function OverviewExperience() {
               ? `${balance.asset}${balance.network ? ` · ${balance.network}` : ''}`
               : balances.length
                 ? 'Shown separately because no verified combined valuation is available.'
-                : 'Your capital balance is not available yet.'}
+                : balanceState === 'EMPTY'
+                  ? 'No recorded balance is available for this account yet.'
+                  : 'Your capital balance is temporarily unavailable.'}
           </p>
           <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
@@ -361,7 +366,7 @@ export function OverviewExperience() {
                 <Clock3 size={16} />
                 <span>
                   <strong>Review {item.asset} transfer</strong>
-                  <small>{item.state.replaceAll('_', ' ')}</small>
+                  <small>{customerStateFromLifecycle(item.state).label}</small>
                 </span>
                 <ArrowRight size={15} />
               </Link>
@@ -398,6 +403,7 @@ export function OverviewExperience() {
 export function CapitalExperience() {
   const { snapshot } = useProductBootstrap();
   const balances = snapshot.balances.state === 'READY' ? snapshot.balances.data : [];
+  const balanceState = customerCollectionState(snapshot.balances);
   const balance = balanceContext(balances);
   const funding =
     snapshot.fundingCapabilities.state === 'READY' ? snapshot.fundingCapabilities.data : [];
@@ -418,15 +424,17 @@ export function CapitalExperience() {
     <div className="op-stack">
       <PageHeader
         eyebrow="Capital"
-        title="Capital actions"
-        description="Deposit, transfer and withdraw through routes currently available to your account."
+        title="Manage your money"
+        description="Add funds, review balances and manage money available to your personal account."
         actions={<PrimaryActions />}
       />
       <section className="op-hero">
         <div className="op-hero-primary">
           <span>Your capital</span>
-          {balances.length === 0 ? (
+          {balanceState === 'UNAVAILABLE' ? (
             <strong>—</strong>
+          ) : balanceState === 'EMPTY' ? (
+            <strong>No balance yet</strong>
           ) : balance ? (
             <BalanceFigure balance={balance} />
           ) : (
@@ -437,7 +445,9 @@ export function CapitalExperience() {
               ? `${balance.asset}${balance.network ? ` · ${balance.network}` : ''}`
               : balances.length
                 ? 'Values remain separated by asset.'
-                : 'Your capital balance is not available yet.'}
+                : balanceState === 'EMPTY'
+                  ? 'No recorded balance is available for this account yet.'
+                  : 'Your capital balance is temporarily unavailable.'}
           </p>
           <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
@@ -487,11 +497,11 @@ export function CapitalExperience() {
         <article className="op-panel">
           <SectionHeading
             label="Funding"
-            title="Live routes"
+            title="Add funds"
             action={
               liveFunding.length ? (
                 <Link href="/dashboard/deposit">
-                  Deposit <ArrowRight size={14} />
+                  Add funds <ArrowRight size={14} />
                 </Link>
               ) : null
             }
@@ -499,11 +509,8 @@ export function CapitalExperience() {
           <div className="op-row-list">
             {snapshot.fundingCapabilities.state !== 'READY' ? (
               <div className="op-empty-row">
-                <strong>Funding capability unavailable</strong>
-                <span>
-                  Funding routes could not be loaded. No rail is presented as disabled or available
-                  without authoritative capability state.
-                </span>
+                <strong>Funding methods unavailable</strong>
+                <span>We could not confirm which funding methods are available right now.</span>
               </div>
             ) : funding.length ? (
               funding.map((item) => (
@@ -513,28 +520,22 @@ export function CapitalExperience() {
                     <small>{item.network}</small>
                   </span>
                   <ProductStateBadge
-                    state={
-                      item.state === 'ENABLED'
-                        ? 'READY'
-                        : item.state === 'NOT_CONFIGURED'
-                          ? 'NOT_CONFIGURED'
-                          : 'CAPABILITY_DISABLED'
-                    }
+                    state={customerStateFromCapability(item.state).state === 'AVAILABLE' ? 'AVAILABLE' : customerStateFromCapability(item.state).state === 'RESTRICTED' ? 'RESTRICTED' : 'UNAVAILABLE'}
                   >
-                    {item.state.replaceAll('_', ' ')}
+                    {customerStateFromCapability(item.state).label}
                   </ProductStateBadge>
                 </div>
               ))
             ) : (
               <div className="op-empty-row">
-                <strong>No funding routes reported</strong>
-                <span>The authoritative capability response contains no funding routes.</span>
+                <strong>No funding methods available</strong>
+                <span>There are no funding methods available for this account right now.</span>
               </div>
             )}
           </div>
         </article>
         <article className="op-panel">
-          <SectionHeading label="Funding" title="Latest intents" />
+          <SectionHeading label="Funding" title="Recent funding" />
           <div className="op-row-list">
             {activity.length ? (
               activity.slice(0, 5).map((item) => (
@@ -546,14 +547,14 @@ export function CapitalExperience() {
                     <small>{new Date(item.updated_at).toLocaleString()}</small>
                   </span>
                   <ProductStateBadge state={lifecycleState(item.state)}>
-                    {item.state.replaceAll('_', ' ')}
+                    {customerStateFromLifecycle(item.state).label}
                   </ProductStateBadge>
                 </div>
               ))
             ) : (
               <div className="op-empty-row">
-                <strong>No funding intents</strong>
-                <span>Funding intent history will appear once created.</span>
+                <strong>No funding activity yet</strong>
+                <span>Your funding activity will appear here.</span>
               </div>
             )}
           </div>
@@ -564,17 +565,9 @@ export function CapitalExperience() {
         <ActivityRows />
       </section>
       <p className="op-footnote">
-        {transferCapabilitiesAvailable ? (
-          <>
-            Outbound actions remain hidden unless live capability exists. Enabled outbound routes:{' '}
-            {liveTransfers.length}.
-          </>
-        ) : (
-          <>
-            Outbound capability unavailable. Transfer actions remain hidden until authoritative
-            capability state is available.
-          </>
-        )}
+        {transferCapabilitiesAvailable && liveTransfers.length
+          ? 'Transfer and withdrawal options are available from this Capital account.'
+          : 'Transfer and withdrawal are not currently available for this account.'}
       </p>
     </div>
   );

@@ -21,7 +21,7 @@ test('dashboard renders shared API-backed state instead of illustrative financia
 test('deposit route is a dedicated personal funding experience', () => {
   const deposit = read('app/dashboard/deposit/page.tsx');
   assert.match(deposit, /\/dashboard\/deposit\/crypto/);
-  assert.match(deposit, /Fund your account/);
+  assert.match(deposit, /Add funds/);
   assert.match(deposit, /Bank and card funding are not available/);
   assert.match(deposit, /balance changes only after funds are confirmed/);
   assert.doesNotMatch(deposit, /redirect\('/);

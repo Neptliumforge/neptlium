@@ -42,10 +42,10 @@ test('personal Capital distinguishes empty capability state from retrieval failu
   assert.match(bootstrap, /funding_capability_unavailable/);
   assert.match(bootstrap, /transfer_capability_unavailable/);
   assert.match(experience, /snapshot\.fundingCapabilities\.state !== 'READY'/);
-  assert.match(experience, /Funding capability unavailable/);
+  assert.match(experience, /Funding methods unavailable/);
   assert.match(experience, /transferCapabilitiesAvailable/);
-  assert.match(experience, /Outbound capability unavailable/);
-  assert.match(experience, /authoritative capability response contains no funding routes/i);
+  assert.match(experience, /Transfer and withdrawal are not currently available/);
+  assert.match(experience, /No funding methods available/);
   assert.doesNotMatch(experience, /fundingCapabilities\.state !== 'READY' \? \[\]/);
 });
 

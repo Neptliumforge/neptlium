@@ -38,8 +38,8 @@ test('desktop and mobile navigation use the personal Capital hierarchy', () => {
     'Overview',
     'Portfolio',
     'Invest',
+    'Capital',
     'Activity',
-    'More',
     'Help & Support',
     'Settings',
   ]) {
@@ -63,10 +63,10 @@ test('portfolio and allocation surfaces fail truthfully when canonical data is u
 });
 
 test('high-value actions are capability gated', () => {
-  assert.match(experience, /const canFund = funding\.length > 0/);
   assert.match(experience, /const canMove = transfers\.length > 0/);
   assert.match(experience, /state === 'ENABLED'/);
-  assert.match(experience, /Review funding/);
+  assert.match(experience, /Add funds/);
+  assert.doesNotMatch(experience, /Review funding/);
 });
 
 test('authenticated product keeps the carbon and mineral-teal system', () => {

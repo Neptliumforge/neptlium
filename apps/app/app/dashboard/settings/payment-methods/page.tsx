@@ -1,2 +1,15 @@
 import { SettingsShell, TruthfulUnavailable } from '@/components/settings/SettingsShell';
-export default function Page(){return <SettingsShell title="Payment methods" description="Provider-backed payment instruments for supported funding workflows."><TruthfulUnavailable title="Payment methods are not enabled for Capital funding" detail="Stripe Capital funding is disabled and Mercuryo is not integrated. Neptlium never stores raw card numbers or sensitive payment credentials." /></SettingsShell>}
+
+export default function Page() {
+  return (
+    <SettingsShell
+      title="Payment methods"
+      description="Payment methods available for adding funds to your personal Capital account."
+    >
+      <TruthfulUnavailable
+        title="Payment methods unavailable"
+        detail="No payment method is currently available for this account. Available methods will appear here when supported."
+      />
+    </SettingsShell>
+  );
+}

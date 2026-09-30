@@ -50,7 +50,7 @@ export async function createFundingIntentAction(
         return { ok: false, error: 'This funding rail is not currently available.' };
       }
       if (error.code === 'provider_not_configured') {
-        return { ok: false, error: 'Funding infrastructure for this asset is not configured.' };
+        return { ok: false, error: 'This funding method is not currently available.' };
       }
       if (error.code === 'session_expired') {
         return { ok: false, error: 'Your session has expired. Sign in again before creating funding instructions.' };
