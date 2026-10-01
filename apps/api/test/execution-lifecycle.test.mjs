@@ -5,7 +5,7 @@ import {
   executionLifecycleFromSubmissionDisposition,
   executionLifecycleSemantics,
   normalizeExecutionLifecycle,
-} from '../dist/src/execution/index.js';
+} from '../dist/execution/index.js';
 
 test('normalizes known provider lifecycle without inventing reconciliation', () => {
   assert.equal(normalizeExecutionLifecycle('accepted'), 'OPEN');
