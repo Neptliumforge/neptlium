@@ -5,7 +5,7 @@ import {
   executionFoundationMode,
   executionProviderId,
   hasExecutionCapability,
-} from '../dist/src/execution/index.js';
+} from '../dist/execution/index.js';
 
 const provider = executionProviderId('future-venue');
 
