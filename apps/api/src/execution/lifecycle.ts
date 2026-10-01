@@ -14,6 +14,8 @@ export const executionOrderLifecycles = [
 
 export type ExecutionOrderLifecycle = (typeof executionOrderLifecycles)[number];
 
+export type ExecutionSubmissionDisposition = 'CONFIRMED_NOT_SUBMITTED' | 'AMBIGUOUS';
+
 export interface ExecutionLifecycleSemantics {
   readonly terminalOrderState: boolean;
   readonly automaticRetryAllowed: boolean;
@@ -45,6 +47,12 @@ export function executionLifecycleSemantics(state: ExecutionOrderLifecycle): Exe
     reconciliationRequired: state !== 'NOT_SUBMITTED' && state !== 'PROVIDER_UNAVAILABLE',
     lookupRequiredBeforeRetry: false,
   };
+}
+
+export function executionLifecycleFromSubmissionDisposition(
+  disposition: ExecutionSubmissionDisposition,
+): 'NOT_SUBMITTED' | 'SUBMISSION_UNKNOWN' {
+  return disposition === 'AMBIGUOUS' ? 'SUBMISSION_UNKNOWN' : 'NOT_SUBMITTED';
 }
 
 export function normalizeExecutionLifecycle(providerState: string): ExecutionOrderLifecycle {
