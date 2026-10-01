@@ -60,3 +60,10 @@ Every provider adapter must:
 ## Selection rule
 
 Provider selection is capability- and policy-driven, never hard-coded as financial truth in the UI. A configured provider can still be unavailable, degraded, restricted or ineligible for a specific principal, jurisdiction, asset, amount or operation.
+
+
+## Execution-provider boundary
+
+Execution venues use a separate API-owned execution domain; they do not implement or extend the custody/funding-oriented `CapitalProvider` contract. Execution provider identity is not capability. Provider orders, fills, positions, collateral, account state, stream events, and submission responses remain provider evidence until the applicable Neptlium authorization, reservation, normalization, reconciliation, and canonical financial workflows establish their effect.
+
+The current execution foundation is domain-only and fail-closed. It contains no provider adapter, network transport, credential, signer, execution router, testnet activation, or production execution capability. See [Execution](../financial/EXECUTION.md).
