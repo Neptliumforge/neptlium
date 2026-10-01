@@ -39,7 +39,7 @@ test('read capability does not imply write capability', () => {
   assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'TEST'), false);
 });
 
-test('test capability never implies live capability', () => {
+test('foundation blocks execution operations even if a caller constructs an available capability', () => {
   const capabilities = [{
     provider,
     environment: 'TEST',
@@ -50,12 +50,35 @@ test('test capability never implies live capability', () => {
     reason: 'fixture',
   }];
 
-  assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'TEST'), true);
-  assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'LIVE'), false);
+  assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'TEST'), false);
+});
+
+test('test read capability never implies live capability', () => {
+  const capabilities = [{
+    provider,
+    environment: 'TEST',
+    operation: 'MARKET_OBSERVATION',
+    product: null,
+    state: 'AVAILABLE',
+    certified: true,
+    reason: 'fixture',
+  }];
+
+  assert.equal(hasExecutionCapability(capabilities, 'MARKET_OBSERVATION', 'TEST'), true);
+  assert.equal(hasExecutionCapability(capabilities, 'MARKET_OBSERVATION', 'LIVE'), false);
 });
 
 test('foundation cannot expose live execution', () => {
-  const capabilities = executionFoundationCapabilities(provider, 'LIVE');
+  const capabilities = [{
+    provider,
+    environment: 'LIVE',
+    operation: 'SUBMIT_ORDER',
+    product: null,
+    state: 'AVAILABLE',
+    certified: true,
+    reason: 'fixture',
+  }];
+
   assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'LIVE'), false);
   assert.equal(hasExecutionCapability(capabilities, 'CANCEL_ORDER', 'LIVE'), false);
   assert.equal(hasExecutionCapability(capabilities, 'MODIFY_ORDER', 'LIVE'), false);
