@@ -56,7 +56,8 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
   }
 
   async function persist(nextStep: number, nextData: DraftData = data) {
-    await saveOnboardingDraft({ data: nextData, stepIndex: nextStep });
+    const result = await saveOnboardingDraft({ data: nextData, stepIndex: nextStep });
+    if (!result.ok) throw new Error(result.error);
     setStepIndex(nextStep);
   }
 
@@ -119,7 +120,11 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
     setProvisioning(true);
     try {
-      await saveOnboardingDraft({ data: parsed.data, stepIndex: 1 });
+      const draftResult = await saveOnboardingDraft({ data: parsed.data, stepIndex: 1 });
+      if (!draftResult.ok) {
+        setError(draftResult.error);
+        return;
+      }
       const result = await submitProvisioning(parsed.data);
       if (!result.ok) {
         setError(result.error);
@@ -178,7 +183,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
               autoComplete="country-name"
             />
             <p className="text-xs text-text-muted">Signed in as {email}</p>
-            <p className="text-xs leading-5 text-text-muted">Financial profile, investment profile, stronger security and funding stages will appear progressively only as their authoritative eligibility and persistence services are enabled.</p>
+            <p className="text-xs leading-5 text-text-muted">You can review and update your account details after setup.</p>
             <ErrorMessage error={error} />
             <Button type="submit" variant="accent" className="w-full">
               Continue

@@ -40,18 +40,18 @@ export const dashboardNavItems: readonly RoleAwareNavItem[] = [
     icon: <Search className="size-4" />,
   },
   {
+    label: 'Capital',
+    href: '/dashboard/capital',
+    minRole: 'user',
+    group: 'Capital',
+    icon: <Gauge className="size-4" />,
+  },
+  {
     label: 'Activity',
     href: '/dashboard/activity',
     minRole: 'user',
     group: 'Capital',
     icon: <List className="size-4" />,
-  },
-  {
-    label: 'More',
-    href: '/dashboard/more',
-    minRole: 'user',
-    group: 'Capital',
-    icon: <MoreHorizontal className="size-4" />,
   },
 ];
 

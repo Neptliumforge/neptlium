@@ -28,8 +28,8 @@ test('desktop authenticated navigation reflects the personal Capital hierarchy',
     ['Overview', '/dashboard', 'Capital'],
     ['Portfolio', '/dashboard/portfolio', 'Capital'],
     ['Invest', '/dashboard/invest', 'Capital'],
+    ['Capital', '/dashboard/capital', 'Capital'],
     ['Activity', '/dashboard/activity', 'Capital'],
-    ['More', '/dashboard/more', 'Capital'],
   ];
   for (const [label, href, group] of expected) {
     assert.match(
@@ -148,9 +148,9 @@ test('Overview is a shared-bootstrap capital home without fabricated valuation',
 test('Capital financial actions remain capability-driven and failure-aware', () => {
   const experience = read('components/product/OperatingExperience.tsx');
   assert.match(experience, /item\.state === 'ENABLED'/);
-  assert.match(experience, /Funding capability unavailable/);
-  assert.match(experience, /Outbound capability unavailable/);
-  assert.match(experience, /authoritative capability response contains no funding routes/i);
+  assert.match(experience, /Funding methods unavailable/);
+  assert.match(experience, /Transfer and withdrawal are not currently available/);
+  assert.match(experience, /No funding methods available/);
   assert.doesNotMatch(experience, /Request movement/);
 });
 
@@ -165,15 +165,14 @@ test('Portfolio remains evidence-aware and contains no execution authority', () 
   assert.doesNotMatch(experience, />Buy<|>Sell<|>Trade<|Execute allocation/);
 });
 
-test('Allocation preserves MODEL REVIEW APPROVE RESERVE EXECUTE RECONCILE distinctions', () => {
+test('Allocation keeps internal readiness and progression out of ordinary investor presentation', () => {
   const experience = read('components/product/OperatingExperience.tsx');
-  for (const stage of ['MODEL', 'REVIEW', 'APPROVE', 'RESERVE', 'EXECUTE', 'RECONCILE'])
-    assert.match(experience, new RegExp(`'${stage}'`));
-  assert.match(
-    experience,
-    /Capital decisions remain separate from approval, reservation, execution and\s+reconciliation/,
-  );
-  assert.match(experience, /Observed allocation unavailable/);
+  const start = experience.indexOf('export function AllocationExperience()');
+  const end = experience.indexOf('export function ActivityExperience()', start);
+  const allocation = experience.slice(start, end);
+  assert.match(allocation, /Allocation information is not currently available for this account/);
+  assert.match(allocation, /Observed allocation unavailable/);
+  assert.doesNotMatch(allocation, /Not configured|Governed progression/);
 });
 
 test('legacy detailed capital workspace remains governed and provider-neutral', () => {

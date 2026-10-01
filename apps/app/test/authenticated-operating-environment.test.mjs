@@ -38,8 +38,8 @@ test('desktop and mobile navigation use the personal Capital hierarchy', () => {
     'Overview',
     'Portfolio',
     'Invest',
+    'Capital',
     'Activity',
-    'More',
     'Help & Support',
     'Settings',
   ]) {
@@ -57,16 +57,16 @@ test('portfolio and allocation surfaces fail truthfully when canonical data is u
   assert.match(experience, /Portfolio valuation is not available yet/);
   assert.match(experience, /No decorative or interpolated performance curve is rendered/);
   assert.match(experience, /Unknown allocation is not rendered as zero/);
-  assert.match(experience, /MODEL/);
-  assert.match(experience, /RECONCILE/);
+  assert.match(experience, /Allocation information is not currently available for this account/);
+  assert.doesNotMatch(experience, /Governed progression/);
   assert.doesNotMatch(experience, /liquidity-curve/);
 });
 
 test('high-value actions are capability gated', () => {
-  assert.match(experience, /const canFund = funding\.length > 0/);
   assert.match(experience, /const canMove = transfers\.length > 0/);
   assert.match(experience, /state === 'ENABLED'/);
-  assert.match(experience, /Review funding/);
+  assert.match(experience, /Add funds/);
+  assert.doesNotMatch(experience, /Review funding/);
 });
 
 test('authenticated product keeps the carbon and mineral-teal system', () => {
