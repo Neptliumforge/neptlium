@@ -27,6 +27,12 @@ export interface ExecutionCapability {
 
 export const executionFoundationMode = 'DOMAIN_ONLY' as const;
 
+const executionWriteOperations = new Set<ExecutionOperation>([
+  'SUBMIT_ORDER',
+  'CANCEL_ORDER',
+  'MODIFY_ORDER',
+]);
+
 export function executionFoundationCapabilities(
   provider: ExecutionProviderId,
   environment: ExecutionEnvironment,
@@ -47,6 +53,8 @@ export function hasExecutionCapability(
   operation: ExecutionOperation,
   environment: ExecutionEnvironment,
 ): boolean {
+  if (executionWriteOperations.has(operation)) return false;
+
   return capabilities.some((capability) =>
     capability.operation === operation
     && capability.environment === environment
