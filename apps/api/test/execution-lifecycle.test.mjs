@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   ambiguousSubmissionError,
+  executionLifecycleFromSubmissionDisposition,
   executionLifecycleSemantics,
   normalizeExecutionLifecycle,
 } from '../dist/src/execution/index.js';
@@ -32,7 +33,10 @@ test('unknown provider state stays unknown and requires lookup before retry', ()
   assert.equal(semantics.automaticRetryAllowed, false);
 });
 
-test('ambiguous submission is structurally non-retryable and reconciliation-required', () => {
+test('ambiguous submission maps to submission-unknown and is structurally non-retryable', () => {
+  assert.equal(executionLifecycleFromSubmissionDisposition('AMBIGUOUS'), 'SUBMISSION_UNKNOWN');
+  assert.equal(executionLifecycleFromSubmissionDisposition('CONFIRMED_NOT_SUBMITTED'), 'NOT_SUBMITTED');
+
   const semantics = executionLifecycleSemantics('SUBMISSION_UNKNOWN');
   assert.equal(semantics.terminalOrderState, false);
   assert.equal(semantics.automaticRetryAllowed, false);
