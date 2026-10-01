@@ -4,7 +4,7 @@ import {
   executionEvidence,
   executionProviderId,
   isCanonicalFinancialTruth,
-} from '../dist/src/execution/index.js';
+} from '../dist/execution/index.js';
 
 const provider = executionProviderId('future-venue');
 
