@@ -103,4 +103,3 @@ Provider-neutral payment semantics are owned by `apps/api/src/payments`. The cur
 A Neptlium Payment is not a provider payment object. One Payment may have multiple bounded PaymentAttempts without changing Payment identity. `SUBMISSION_UNKNOWN` prohibits automatic retry and alternate-provider submission until provider lookup and reconciliation establish what occurred. Authorization, capture, settlement observation, reconciliation, refund, and dispute outcomes remain distinct states.
 
 Future payment providers must sit beneath Neptlium identity, authorization, policy, risk, reconciliation, and canonical-financial-truth boundaries. Existing Stripe subscription/billing ingress is unchanged and does not establish Payment Domain execution authority. See [Payments](../financial/PAYMENTS.md).
-
