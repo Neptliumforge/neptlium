@@ -107,11 +107,11 @@ test('authenticated shell consumes semantic light and dark tokens without a loca
 });
 
 test('authenticated app styles do not redefine canonical theme palette authority', () => {
-  const canonicalColorDefinition = /--color-(?:canvas|background|surface(?:-[\\w-]+)?|text-[\\w-]+|border-[\\w-]+|accent-[\\w-]+|brand(?:-[\\w-]+)?|primary(?:-[\\w-]+)?|sidebar(?:-[\\w-]+)?|topnav)\\s*:/i;
+  const canonicalColorDefinition = /--color-(?:canvas|background|surface(?:-[\w-]+)?|text-[\w-]+|border-[\w-]+|accent-[\w-]+|brand(?:-[\w-]+)?|primary(?:-[\w-]+)?|sidebar(?:-[\w-]+)?|topnav)\s*:/i;
   for (const [name, source] of Object.entries(authenticatedStyles)) {
     assert.doesNotMatch(source, canonicalColorDefinition, `${name} must consume canonical semantic color tokens rather than define them`);
   }
-  assert.doesNotMatch(dashboardCss, /--n-mineral-teal(?:-strong)?\\s*:/i);
+  assert.doesNotMatch(dashboardCss, /--n-mineral-teal(?:-strong)?\s*:/i);
   assert.doesNotMatch(recordsCss, /#35d5c1|#090909/i);
 });
 
