@@ -75,9 +75,8 @@ test('authenticated product keeps the carbon and mineral-teal system', () => {
   assert.match(tokens, /--n-warm-white:\s*#f0f0e8/);
   assert.match(tokens, /--n-teal-primary:\s*#4a9992/);
   assert.match(css, /var\(--color-accent-primary\)/);
-  assert.match(css, /--color-canvas:\s*var\(--n-canvas\)/);
-  assert.match(css, /\.neptlium-environment main\{background:var\(--n-canvas\)\}/);
-  assert.match(css, /--color-surface-2:\s*var\(--n-surface\)/);
+  assert.match(css, /\.neptlium-environment main\{background:var\(--color-canvas\)\}/);
+  assert.doesNotMatch(css, /--color-canvas:|--color-surface-2:|--color-text-secondary:#/);
   assert.doesNotMatch(css, /#050505/i);
   assert.doesNotMatch(css, /backdrop-filter:.*blur\(2[0-9]/i);
 });
