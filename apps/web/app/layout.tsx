@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { ThemeProvider, themeBootScript } from '@neptlium/ui';
 import '@neptlium/ui/styles/nts.css';
 import './globals.css';
 import './neptlium-visual-direction.css';
@@ -60,16 +61,6 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 };
-const themeBoot = `(() => {
-  try {
-    const stored = localStorage.getItem('neptlium-theme');
-    const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
-    const resolved = preference === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : preference;
-    document.documentElement.dataset.theme = resolved;
-    document.documentElement.dataset.themePreference = preference;
-    document.documentElement.style.colorScheme = resolved;
-  } catch (_) {}
-})();`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -85,17 +76,19 @@ const jsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeBoot }} /></head>
+      <head><script dangerouslySetInnerHTML={{ __html: themeBootScript }} /></head>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <SkipLink />
-        <SiteHeader />
-        <main id="main-content">{children}</main>
-        <GlobalConversionCta />
-        <SiteFooter />
+        <ThemeProvider>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+          <SkipLink />
+          <SiteHeader />
+          <main id="main-content">{children}</main>
+          <GlobalConversionCta />
+          <SiteFooter />
+        </ThemeProvider>
       </body>
     </html>
   );
