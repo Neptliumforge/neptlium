@@ -256,8 +256,8 @@ export function OverviewExperience() {
     <div className="op-stack">
       <PageHeader
         eyebrow="Overview"
-        title="Your capital at a glance"
-        description={`Welcome back, ${firstName(snapshot.account.fullName ?? snapshot.account.displayName)}. Review available capital, portfolio state and recent governed activity.`}
+        title="Overview"
+        description={`Welcome back, ${firstName(snapshot.account.fullName ?? snapshot.account.displayName)}.`}
         actions={<PrimaryActions />}
       />
       <section className="op-hero">
@@ -285,13 +285,13 @@ export function OverviewExperience() {
         </div>
         <div className="op-metric-grid">
           <Metric
-            label="Available to invest"
+            label="Available"
             balance={balance}
             field="available_atomic"
             state="AVAILABLE"
           />
-          <Metric label="On hold" balance={balance} field="reserved_atomic" state="RESERVED" />
-          <Metric label="Processing" balance={balance} field="pending_atomic" state="PENDING" />
+          <Metric label="Reserved" balance={balance} field="reserved_atomic" state="RESERVED" />
+          <Metric label="Pending" balance={balance} field="pending_atomic" state="PENDING" />
         </div>
       </section>
       <section className="op-panel op-chart-panel">
@@ -455,13 +455,13 @@ export function CapitalExperience() {
         </div>
         <div className="op-metric-grid">
           <Metric
-            label="Available to invest"
+            label="Available"
             balance={balance}
             field="available_atomic"
             state="AVAILABLE"
           />
-          <Metric label="On hold" balance={balance} field="reserved_atomic" state="RESERVED" />
-          <Metric label="Processing" balance={balance} field="pending_atomic" state="PENDING" />
+          <Metric label="Reserved" balance={balance} field="reserved_atomic" state="RESERVED" />
+          <Metric label="Pending" balance={balance} field="pending_atomic" state="PENDING" />
         </div>
       </section>
       <section className="op-panel">
