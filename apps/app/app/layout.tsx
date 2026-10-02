@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Metadata, Viewport } from 'next';
+import { ThemeProvider, themeBootScript } from '@neptlium/ui';
 import { assertProductionRuntimeConfig } from '@/lib/runtime-config';
 import '@neptlium/ui/styles/nts.css';
 import './global.css';
@@ -21,28 +22,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F7F8F6' },
-    { media: '(prefers-color-scheme: dark)', color: '#050505' },
+    { media: '(prefers-color-scheme: light)', color: '#f4f5f2' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b0c0e' },
   ],
 };
-
-const themeBoot = `(() => {
-  try {
-    const stored = localStorage.getItem('neptlium-theme');
-    const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
-    const resolved = preference === 'system'
-      ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      : preference;
-    document.documentElement.dataset.theme = resolved;
-    document.documentElement.dataset.themePreference = preference;
-    document.documentElement.style.colorScheme = resolved;
-  } catch (_) {
-    const resolved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    document.documentElement.dataset.theme = resolved;
-    document.documentElement.dataset.themePreference = 'system';
-    document.documentElement.style.colorScheme = resolved;
-  }
-})();`;
 
 export default function RootLayout({
   children,
@@ -52,9 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased"><ThemeProvider>{children}</ThemeProvider></body>
     </html>
   );
 }
