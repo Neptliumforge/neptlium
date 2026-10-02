@@ -16,6 +16,7 @@ const bootstrap = read('lib/product/bootstrap.ts');
 const provider = read('components/product/ProductBootstrapProvider.tsx');
 const experience = read('components/product/OperatingExperience.tsx');
 const css = read('app/authenticated-product.css');
+const mobileCss = read('app/authenticated-mobile.css');
 const tokens = read('../../packages/ui/src/styles/tokens.css');
 
 test('authenticated shell loads a shared account bootstrap once at layout authority', () => {
@@ -96,7 +97,10 @@ test('authenticated shell consumes semantic light and dark tokens without a loca
 });
 
 test('mobile primary navigation has durable thumb targets and five-item hierarchy', () => {
-  assert.match(css, /\.product-mobile-bottom>a\{[^}]*min-height:3\.75rem/s);
-  assert.match(css, /grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+  assert.match(mobileCss, /\.product-mobile-bottom>a\{[^}]*min-height:3\.75rem/s);
+  assert.match(mobileCss, /grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+  assert.match(mobileCss, /background:var\(--color-surface-1\)/);
+  assert.match(mobileCss, /color:var\(--color-accent-primary\)/);
+  assert.doesNotMatch(mobileCss, /rgba\(5,5,5|#35d5c1/i);
   assert.match(mobile, /aria-current=\{isActive \? 'page' : undefined\}/);
 });
