@@ -6,10 +6,6 @@
 @source "../../../packages/ui/src";
 
 @layer base {
-  html {
-    color-scheme: dark;
-  }
-
   body {
     margin: 0;
     background: var(--color-canvas);
