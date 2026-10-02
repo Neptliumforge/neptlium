@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTheme } from '@neptlium/ui';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@neptlium/lib/supabase/browser';
 import { ArrowUpRight, ChevronDown, LogOut, X } from 'lucide-react';
 
-type Theme = 'light' | 'dark' | 'system';
 interface ProfileMenuProps {
   readonly name: string;
   readonly email: string;
@@ -14,29 +14,15 @@ interface ProfileMenuProps {
 }
 const destinations = [
   ['Profile', '/dashboard/settings/profile'],
-  ['Account settings', '/dashboard/settings/account'],
-  ['Security and access', '/dashboard/settings/security'],
-  ['Identity verification', '/dashboard/settings/verification'],
-  ['Addresses', '/dashboard/settings/addresses'],
-  ['Payment methods', '/dashboard/settings/payment-methods'],
-  ['Appearance', '/dashboard/settings/appearance'],
-  ['Notifications', '/dashboard/settings/notifications'],
-  ['Support', '/dashboard/settings/support'],
+  ['Security', '/dashboard/settings/security'],
+  ['Settings', '/dashboard/settings'],
 ] as const;
-
-function applyTheme(theme: Theme) {
-  const dark =
-    theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-  document.documentElement.dataset.themePreference = theme;
-  document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-}
 
 export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
   const router = useRouter();
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const [open, setOpen] = useState(false);
-  const [theme, setTheme] = useState<Theme>('system');
+  const { preference, setPreference } = useTheme();
   const [signingOut, setSigningOut] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -47,21 +33,6 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
       .slice(0, 2)
       .map((part) => part[0]?.toUpperCase())
       .join('') || 'N';
-
-  useEffect(() => {
-    const saved = localStorage.getItem('neptlium-theme') as Theme | null;
-    const next = saved && ['light', 'dark', 'system'].includes(saved) ? saved : 'system';
-    setTheme(next);
-    applyTheme(next);
-  }, []);
-
-  useEffect(() => {
-    if (theme !== 'system') return;
-    const media = matchMedia('(prefers-color-scheme: dark)');
-    const synchronize = () => applyTheme('system');
-    media.addEventListener('change', synchronize);
-    return () => media.removeEventListener('change', synchronize);
-  }, [theme]);
 
   useEffect(() => {
     if (!open) return;
@@ -94,12 +65,6 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
       trigger.current?.focus();
     };
   }, [open]);
-
-  const chooseTheme = (next: Theme) => {
-    setTheme(next);
-    localStorage.setItem('neptlium-theme', next);
-    applyTheme(next);
-  };
 
   async function signOut() {
     setSigningOut(true);
@@ -145,7 +110,7 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Profile menu"
-          className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-xl border border-border-default bg-surface-1 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-80 sm:rounded-lg sm:p-3"
+          className="fixed inset-x-0 bottom-0 z-50 max-h-[78dvh] overflow-y-auto rounded-t-xl border border-border-default bg-surface-1 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-72 sm:rounded-lg sm:p-3"
         >
           <button
             type="button"
@@ -176,13 +141,13 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
           <fieldset id="appearance" className="border-y border-border-hairline px-2 py-3">
             <legend className="text-xs font-medium text-text-muted">Appearance</legend>
             <div className="mt-2 grid grid-cols-3 gap-1">
-              {(['light', 'dark', 'system'] as Theme[]).map((option) => (
+              {(['light', 'dark', 'system'] as const).map((option) => (
                 <button
                   key={option}
                   type="button"
-                  aria-pressed={theme === option}
-                  onClick={() => chooseTheme(option)}
-                  className={`min-h-11 rounded-md border text-xs capitalize ${theme === option ? 'border-accent-primary text-accent-primary' : 'border-border-default text-text-secondary'}`}
+                  aria-pressed={preference === option}
+                  onClick={() => setPreference(option)}
+                  className={`min-h-11 rounded-md border text-xs capitalize ${preference === option ? 'border-accent-primary text-accent-primary' : 'border-border-default text-text-secondary'}`}
                 >
                   {option}
                 </button>
