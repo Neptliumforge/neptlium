@@ -1,12 +1,12 @@
 'use client';
 
-import { Laptop, Moon, Sun } from 'lucide-react';
+import { Laptop, Moon, Sun, type LucideIcon } from 'lucide-react';
 import { useTheme, type ThemePreference } from '@neptlium/ui';
 
 export function ThemeSwitcher() {
   const { preference, setPreference } = useTheme();
 
-  const items: ReadonlyArray<readonly [ThemePreference, typeof Sun, string]> = [
+  const items: ReadonlyArray<readonly [ThemePreference, LucideIcon, string]> = [
     ['light', Sun, 'Light'],
     ['dark', Moon, 'Dark'],
     ['system', Laptop, 'System'],
