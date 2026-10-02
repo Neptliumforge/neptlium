@@ -88,3 +88,10 @@ The current Stripe boundary is evidence ingress for reviewed use cases. Stripe c
 - Secrets and raw sensitive provider payloads never appear in client responses or logs.
 - Authentication identifies the principal; authorization and financial authority remain separate server-owned concerns.
 - API responses are non-cacheable by default and include baseline anti-sniffing, frame-denial, referrer, and browser-feature restrictions. A future cacheable public response requires explicit review rather than inheriting permissive caching.
+
+
+## Execution domain boundary
+
+Provider-neutral execution semantics are owned by `apps/api/src/execution`. The current foundation defines domain types, lifecycle ambiguity, provider-evidence envelopes, explicit TEST/LIVE environment identity, and fail-closed capability semantics only. It does not expose provider routes or perform provider I/O.
+
+Execution providers must remain beneath existing Neptlium identity, authorization, policy, reservation, reconciliation, and canonical-financial-truth boundaries. In particular, ambiguous submission results require lookup/reconciliation before any retry, and a provider `FILLED` state is not Neptlium `RECONCILED`. See [Execution](../financial/EXECUTION.md).
