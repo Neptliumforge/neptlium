@@ -40,7 +40,7 @@ TEST capability != LIVE capability
 
 Development, preview and production describe Neptlium runtime/deployment context. Provider TEST/sandbox/testnet and LIVE/mainnet describe an external provider's financial environment. A production deployment MAY operate only against a reviewed TEST capability; conversely, deploying production code never authorizes LIVE provider operations.
 
-Where financially material, provider environment identity MUST be preserved in capability declarations, intents, evidence, provider references, reconciliation and audit. Environment crossing MUST fail closed.
+**TARGET invariant:** where financially material, provider environment identity MUST be preserved independently in capability declarations, intents, evidence, provider references, reconciliation and audit, and environment crossing MUST fail closed. **TRANSITION:** not every existing path satisfies this yet; for example, current Admin treasury-destination context derives provider environment from `NODE_ENV`. Until those paths are migrated in a focused runtime change, deployment environment MUST NOT be treated as proof of provider TEST/LIVE authority.
 
 ## Credential and signing authority
 
