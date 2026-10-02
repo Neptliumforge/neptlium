@@ -11,6 +11,7 @@ const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const layout = read('app/dashboard/layout.tsx');
 const nav = read('components/navigation/dashboardNav.tsx');
 const mobile = read('components/navigation/ProductMobileNavigation.tsx');
+const profileMenu = read('components/navigation/ProfileMenu.tsx');
 const bootstrap = read('lib/product/bootstrap.ts');
 const provider = read('components/product/ProductBootstrapProvider.tsx');
 const experience = read('components/product/OperatingExperience.tsx');
@@ -79,4 +80,24 @@ test('authenticated product keeps the carbon and mineral-teal system', () => {
   assert.match(css, /--color-surface-2:\s*var\(--n-surface\)/);
   assert.doesNotMatch(css, /#050505/i);
   assert.doesNotMatch(css, /backdrop-filter:.*blur\(2[0-9]/i);
+});
+
+
+test('account appearance delegates to shared theme authority', () => {
+  assert.match(profileMenu, /useTheme/);
+  assert.match(profileMenu, /preference, setPreference/);
+  assert.doesNotMatch(profileMenu, /localStorage|matchMedia|document\.documentElement|function applyTheme/);
+});
+
+test('authenticated shell consumes semantic light and dark tokens without a local dark palette', () => {
+  assert.match(css, /background:var\(--color-canvas\)/);
+  assert.doesNotMatch(css, /--color-canvas:var\(--n-canvas\)/);
+  assert.doesNotMatch(css, /--color-text-secondary:#|--color-border-hairline:rgba\(255/);
+  assert.doesNotMatch(css, /\.op-more-grid>a:hover\{background:#111\}/);
+});
+
+test('mobile primary navigation has durable thumb targets and five-item hierarchy', () => {
+  assert.match(css, /\.product-mobile-bottom>a\{[^}]*min-height:3\.75rem/s);
+  assert.match(css, /grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+  assert.match(mobile, /aria-current=\{isActive \? 'page' : undefined\}/);
 });
