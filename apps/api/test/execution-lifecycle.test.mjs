@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  ExecutionDomainError,
   ambiguousSubmissionError,
   executionLifecycleFromSubmissionDisposition,
   executionLifecycleSemantics,
@@ -36,6 +37,8 @@ test('unknown provider state stays unknown and requires lookup before retry', ()
 test('ambiguous submission maps to submission-unknown and is structurally non-retryable', () => {
   assert.equal(executionLifecycleFromSubmissionDisposition('AMBIGUOUS'), 'SUBMISSION_UNKNOWN');
   assert.equal(executionLifecycleFromSubmissionDisposition('CONFIRMED_NOT_SUBMITTED'), 'NOT_SUBMITTED');
+  assert.equal(executionLifecycleFromSubmissionDisposition('TIMEOUT'), 'SUBMISSION_UNKNOWN');
+  assert.equal(executionLifecycleFromSubmissionDisposition(undefined), 'SUBMISSION_UNKNOWN');
 
   const semantics = executionLifecycleSemantics('SUBMISSION_UNKNOWN');
   assert.equal(semantics.terminalOrderState, false);
@@ -48,7 +51,22 @@ test('ambiguous submission maps to submission-unknown and is structurally non-re
   assert.equal(error.reconciliationRequired, true);
 });
 
-test('provider unavailable and not-submitted remain distinct from ambiguous submission', () => {
-  assert.equal(executionLifecycleSemantics('PROVIDER_UNAVAILABLE').lookupRequiredBeforeRetry, false);
-  assert.equal(executionLifecycleSemantics('NOT_SUBMITTED').terminalOrderState, true);
+test('reconciliation-required error codes cannot be constructed with a false reconciliation flag', () => {
+  assert.equal(new ExecutionDomainError('EXECUTION_RECONCILIATION_REQUIRED', 'fixture').reconciliationRequired, true);
+  assert.equal(new ExecutionDomainError('EXECUTION_SUBMISSION_AMBIGUOUS', 'fixture').reconciliationRequired, true);
+  assert.equal(new ExecutionDomainError('EXECUTION_PROVIDER_STATE_UNKNOWN', 'fixture').reconciliationRequired, true);
+  assert.equal(new ExecutionDomainError('EXECUTION_INPUT_INVALID', 'fixture').reconciliationRequired, false);
+});
+
+test('provider unavailable requires lookup and reconciliation while confirmed not-submitted does not', () => {
+  const unavailable = executionLifecycleSemantics('PROVIDER_UNAVAILABLE');
+  assert.equal(unavailable.terminalOrderState, false);
+  assert.equal(unavailable.reconciliationRequired, true);
+  assert.equal(unavailable.lookupRequiredBeforeRetry, true);
+  assert.equal(unavailable.automaticRetryAllowed, false);
+
+  const notSubmitted = executionLifecycleSemantics('NOT_SUBMITTED');
+  assert.equal(notSubmitted.terminalOrderState, true);
+  assert.equal(notSubmitted.reconciliationRequired, false);
+  assert.equal(notSubmitted.lookupRequiredBeforeRetry, false);
 });
