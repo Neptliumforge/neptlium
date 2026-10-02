@@ -157,6 +157,19 @@ A build or execution is not complete merely because local validation passes. Com
 - Financial UI must preserve provider-evidence versus canonical-ledger boundaries and must not visually upgrade pending/provider-observed state into available/reconciled state.
 - Design work never authorizes provider activation, financial execution, migration changes or secret changes.
 
+## Unified provider and experience invariants
+
+- A provider is infrastructure beneath a Neptlium-owned domain; provider identity never becomes product identity, primary navigation, customer account identity or canonical financial truth.
+- Preserve domain-specific provider contracts. Do not create a universal provider interface that collapses Capital, execution, communication, chain-observation or banking semantics.
+- Provider existence/configuration/reachability/capability/certification/eligibility/authorization/execution/reconciliation/canonicality are distinct states and must fail closed when the required state is not established.
+- Keep Neptlium deployment environment separate from provider financial environment. Preview is not TEST authority; production deployment is not LIVE authority.
+- Execution signing requires an explicitly reviewed signing/custody boundary; ordinary deployment environment variables do not by themselves establish institutional signing custody.
+- Provider-native evidence and errors are normalized inside the owning domain before customer presentation. Ordinary customer UI consumes Neptlium state, not provider SDK DTOs or arbitrary provider errors.
+- Provider identity is disclosed to customers only when legally, financially or operationally material; Admin may expose richer authorized diagnostics.
+- `docs/platform/PROVIDERS.md` owns provider/capability/evidence/disclosure doctrine. `docs/engineering/ENVIRONMENT.md` owns environment and credential doctrine. `docs/experience/DESIGN_SYSTEM.md` owns experience/theme/component doctrine.
+- All product surfaces are modes of one Neptlium experience system. Different density is allowed; independent brands, provider-themed product UI and competing application design systems are not.
+- Replacing a provider must not require redesigning Neptlium identity, account model, navigation, customer-state vocabulary, canonical financial representation or visual system.
+
 ## Scope discipline
 
 Classify ownership before editing. Keep work in the owning application (`apps/web`, `apps/app`, `apps/treasury`, `apps/pay`, `apps/admin`, `apps/api`, `apps/docs`, or `apps/status`) unless evidence establishes a genuine cross-boundary requirement. DO NOT CREATE A SECOND AUTHORITY TO AVOID UNDERSTANDING THE FIRST. Record adjacent improvements as follow-up work instead of silently expanding scope.
