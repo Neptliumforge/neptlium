@@ -95,3 +95,12 @@ The current Stripe boundary is evidence ingress for reviewed use cases. Stripe c
 Provider-neutral execution semantics are owned by `apps/api/src/execution`. The current foundation defines domain types, lifecycle ambiguity, provider-evidence envelopes, explicit TEST/LIVE environment identity, and fail-closed capability semantics only. It does not expose provider routes or perform provider I/O.
 
 Execution providers must remain beneath existing Neptlium identity, authorization, policy, reservation, reconciliation, and canonical-financial-truth boundaries. In particular, ambiguous submission results require lookup/reconciliation before any retry, and a provider `FILLED` state is not Neptlium `RECONCILED`. See [Execution](../financial/EXECUTION.md).
+
+## Payment domain boundary
+
+Provider-neutral payment semantics are owned by `apps/api/src/payments`. The current P0 foundation defines Neptlium Payment and PaymentAttempt identity, layered lifecycle semantics, provider-evidence envelopes, explicit TEST/LIVE provider environment identity, and fail-closed resubmission rules only. It exposes no payment route and performs no provider I/O, persistence, ledger posting, reconciliation, or payment execution.
+
+A Neptlium Payment is not a provider payment object. One Payment may have multiple bounded PaymentAttempts without changing Payment identity. `SUBMISSION_UNKNOWN` prohibits automatic retry and alternate-provider submission until provider lookup and reconciliation establish what occurred. Authorization, capture, settlement observation, reconciliation, refund, and dispute outcomes remain distinct states.
+
+Future payment providers must sit beneath Neptlium identity, authorization, policy, risk, reconciliation, and canonical-financial-truth boundaries. Existing Stripe subscription/billing ingress is unchanged and does not establish Payment Domain execution authority. See [Payments](../financial/PAYMENTS.md).
+
