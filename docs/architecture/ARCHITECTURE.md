@@ -78,7 +78,7 @@ Providers are replaceable infrastructure beneath Neptlium-owned domains. Supabas
 
 The canonical provider, capability, evidence, financial-authority, customer-state and disclosure doctrine is [`../platform/PROVIDERS.md`](../platform/PROVIDERS.md). Domain-specific provider contracts remain separate; Neptlium does not use one universal provider interface.
 
-The platform financial direction is provider → evidence → normalization → matching/policy → governed workflow → reconciliation → canonical financial core → customer projection. Provider-native success never bypasses this chain.
+The platform financial direction is provider → evidence → normalization → matching/policy → governed workflow → ledger posting where canonical posting criteria are satisfied → reconciliation → canonical financial core/availability → customer projection. Provider-native success never bypasses this chain.
 
 ## Experience architecture
 
