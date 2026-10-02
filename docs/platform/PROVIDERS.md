@@ -159,9 +159,11 @@ Matching / Policy
     ↓
 Governed Financial Workflow
     ↓
+Ledger Posting where canonical posting criteria are satisfied
+    ↓
 Reconciliation
     ↓
-Canonical Financial Core
+Canonical Financial Core / Availability
     ↓
 Customer Projection
 ```

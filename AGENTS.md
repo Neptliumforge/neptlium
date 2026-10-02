@@ -41,7 +41,7 @@ These surfaces share one Neptlium identity. They must not be visually or operati
 
 `apps/web` is not an engineering-status surface. Ordinary public Marketing must not be forced to narrate repository progress, build completion, migration state, environment configuration, provider setup, capability flags, deployment health, App/Admin/API readiness, or implementation chronology.
 
-Marketing may independently choose its visual system, editorial structure, product narrative, category language, audience framing, information architecture, and strategic product expression. Domain truth constrains **factual claims**; it does not require Marketing to publish internal engineering state.
+Marketing may independently choose its editorial expression, structure, product narrative, category language, audience framing, information architecture, density, composition, and strategic product expression within the canonical Neptlium design authority. It may be more expressive than operational surfaces, but it does not establish an independent brand, token system, theme authority, or competing design system. Domain truth constrains **factual claims**; it does not require Marketing to publish internal engineering state.
 
 This independence never authorizes fabrication. Customers, AUM, balances, performance, returns, testimonials, partnerships, licences, regulatory status, custody, provider relationships, live execution, settlement, and live availability must not be falsely represented as facts.
 
