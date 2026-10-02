@@ -74,7 +74,19 @@ Target crypto asset/network combinations and USD funding are capability-controll
 
 ## Provider architecture
 
-Circle, Alchemy, Stripe and future providers are adapters. Supabase Auth provides identity and Supabase provides persistence. None replaces Neptlium's authorization, ownership, ledger, lifecycle, audit, or reconciliation model.
+Providers are replaceable infrastructure beneath Neptlium-owned domains. Supabase Auth provides runtime identity infrastructure; Supabase/PostgreSQL provides persistence; Stripe, Circle and Alchemy provide their reviewed payment/custody/observation roles. Planned providers are not integrated capabilities.
+
+The canonical provider, capability, evidence, financial-authority, customer-state and disclosure doctrine is [`../platform/PROVIDERS.md`](../platform/PROVIDERS.md). Domain-specific provider contracts remain separate; Neptlium does not use one universal provider interface.
+
+The platform financial direction is provider → evidence → normalization → matching/policy → governed workflow → reconciliation → canonical financial core → customer projection. Provider-native success never bypasses this chain.
+
+## Experience architecture
+
+All customer and operator surfaces are modes of one Neptlium experience system. The canonical experience authority is [`../experience/DESIGN_SYSTEM.md`](../experience/DESIGN_SYSTEM.md), runtime token authority is `packages/ui/src/styles/tokens.css`, and genuinely shared presentation primitives belong in `@neptlium/ui`.
+
+Public Web is editorial, App is authenticated/operational, Treasury is institutional/organizational, Pay is focused transactional, Admin is operator-dense, Docs is technical and Status is operational-public. Density and composition differ; identity, state semantics and design authority do not fragment by application or provider.
+
+Provider replacement must not require redesigning Neptlium navigation, account identity, customer state, theme or canonical financial representation.
 
 ## Trust boundaries
 

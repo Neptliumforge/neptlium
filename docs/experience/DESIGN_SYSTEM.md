@@ -155,3 +155,73 @@ Marketing claims must remain within repository truth. Use implemented/available 
 The canonical public metadata authority is `https://neptlium.com`. Sitemap, robots, OpenGraph, structured data and route metadata use that origin. Deployment/domain redirects must converge alternate hosts to the same canonical origin before production certification.
 
 <!-- Validation baseline: canonical design system final production gate. -->
+
+
+## 17. One experience system
+
+Neptlium has one experience system with contextual density, not separate application brands.
+
+| Mode | Primary surface | Expression |
+| --- | --- | --- |
+| Public / Editorial | `apps/web` | Spacious, explanatory, product-demonstrative |
+| Authenticated / Operational | `apps/app` | Financially hierarchical, concise, action-oriented |
+| Institutional / Organizational | `apps/treasury` | Higher-density organization capital operations |
+| Focused Transactional | `apps/pay` | Minimal, trusted transaction flow |
+| Operator | `apps/admin` | Highest information density and authorized diagnostics |
+| Technical | `apps/docs` | Developer and integration information |
+| Operational Public | `apps/status` | Service availability |
+
+These modes share Neptlium mark/wordmark, Mineral Teal and neutral semantics, typography roles, spacing rhythm, geometry, borders, button grammar, financial-value grammar, icon grammar, Capital Rails, motion principles, state semantics and terminology. Layout and density MAY differ by audience.
+
+A customer moving from `neptlium.com` to `app.neptlium.com` crosses an authentication boundary, not a brand boundary.
+
+## 18. Provider-neutral presentation
+
+Provider integrations MUST NOT introduce provider visual identity as Neptlium product identity. Hyperliquid or Aster must not redefine Invest; Circle must not redefine Capital; Stripe must not redefine Payments; a future Mercury integration must not redefine Treasury.
+
+The presentation dependency is:
+
+```text
+Neptlium UI
+    ↓
+Normalized Neptlium state
+    ↓
+Neptlium domain / capability
+    ↓
+Provider adapter
+```
+
+Shared UI MUST NOT call provider SDKs directly or render arbitrary provider-native errors. Provider-specific colors may appear inside a materially appropriate asset/network/provider identity mark or required disclosure, but MUST NOT become application theme tokens or financial-state semantics.
+
+## 19. Shared theme and component authority
+
+The existing shared theme contract is authoritative. Dark, Light and System are the supported modes; System follows browser/OS preference and explicit preference persists through the existing `neptlium-theme` contract. Applications MUST converge toward the shared implementation rather than establish independent theme systems.
+
+`@neptlium/ui` owns genuinely cross-surface presentation primitives. Convergence candidates include theme control, Status, Amount/FinancialValue/Balance, transaction/position/activity rows, Tabs, AccountMenu shell, Empty/Unavailable/Restricted/Pending/Error states, Skeleton, PortfolioSummary, CapitalSummary and allocation visualization. Application-owned routing, data loading, authorization and domain behavior remain application-owned.
+
+Shared presentation consumes normalized Neptlium state and never owns provider calls or provider financial authority.
+
+## 20. Recorded convergence debt
+
+The following verified implementation debt is recorded for focused follow-up work; it is not an independent design authority and is not corrected by this architecture lock:
+
+| Path | Debt |
+| --- | --- |
+| `apps/pay/app/global.css` | CONVERGE/REPLACE local palette with canonical semantic tokens |
+| `apps/status/app/global.css` | CONVERGE/REPLACE local palette with canonical semantic tokens |
+| `apps/docs/app/global.css` | CONVERGE/REPLACE local palette with canonical semantic tokens |
+| `apps/admin/app/global.css` | CONVERGE local light palette into canonical theme semantics |
+| `apps/admin/app/layout.tsx` | CONVERGE hard-coded appearance to shared Light/Dark/System authority |
+| `apps/web/app/layout.tsx` | REMOVE duplicated theme-boot authority through focused convergence |
+| `apps/app/app/layout.tsx` | REMOVE duplicated theme-boot authority through focused convergence |
+| `apps/treasury/app/layout.tsx` | REMOVE duplicated theme-boot authority through focused convergence |
+| `apps/app/components/navigation/ThemeSwitcher.tsx` | REPLACE local theme-control behavior with shared authority |
+| `apps/app/app/global.css` | CONVERGE dark-only color-scheme assumption with first-class Light/Dark/System |
+
+These classifications authorize no migration by themselves. Theme and experience migrations require focused implementation PRs with responsive, accessibility and financial-state validation.
+
+## 21. Capital Rails continuity
+
+Capital Rails remain one Neptlium-owned spatial/motion grammar across modes. Web may use them expressively; App uses them quietly and operationally; Treasury may use them to clarify organization capital authority; Admin may use them diagnostically. The geometry, semantic state mapping and financial-authority constraints remain those defined in section 15.
+
+Provider replacement MUST NOT require new rail geometry, provider-colored lifecycle semantics, or a provider-branded customer experience.

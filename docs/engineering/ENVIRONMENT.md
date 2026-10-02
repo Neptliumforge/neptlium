@@ -26,3 +26,47 @@ Browser applications have converged on `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. T
 ## Rules
 
 Never commit values for secrets. Never expose service-role, provider secret, webhook signing, wallet signing, or private-key material through `NEXT_PUBLIC_*`. Production, preview, and development scopes must be isolated. Feature gates and provider credentials are not interchangeable: credentials do not activate capability.
+
+
+## Deployment environment versus provider financial environment
+
+Neptlium deployment environment and provider financial environment are separate dimensions.
+
+```text
+Preview deployment != Provider TEST
+Production deployment != Provider LIVE authority
+TEST capability != LIVE capability
+```
+
+Development, preview and production describe Neptlium runtime/deployment context. Provider TEST/sandbox/testnet and LIVE/mainnet describe an external provider's financial environment. A production deployment MAY operate only against a reviewed TEST capability; conversely, deploying production code never authorizes LIVE provider operations.
+
+Where financially material, provider environment identity MUST be preserved in capability declarations, intents, evidence, provider references, reconciliation and audit. Environment crossing MUST fail closed.
+
+## Credential and signing authority
+
+Ordinary provider API credentials, entity secrets and webhook-verification material remain server-only and require least-privilege scope, controlled storage, rotation, revocation and audit appropriate to their authority.
+
+Execution signing is a separate security boundary and MUST NOT be treated as an ordinary API-key configuration problem. Before any provider LIVE execution is certified, its signing architecture requires explicit review of:
+
+- key ownership and authority;
+- isolated signing boundary;
+- operation authorization binding;
+- key scope;
+- TEST/LIVE isolation;
+- rotation and revocation;
+- audit evidence;
+- KMS/HSM or equivalent custody controls appropriate to the threat model.
+
+Deployment-platform environment variables are configuration delivery; their presence MUST NOT be described as institutional execution-signing custody without a separately reviewed signing architecture.
+
+The following are prohibited:
+
+- customer seed phrases as an integration model;
+- customer primary-wallet private keys held for provider integration;
+- signing credentials or provider secrets in browser JavaScript;
+- secrets in `NEXT_PUBLIC_*`;
+- secrets in API responses;
+- secrets in logs;
+- secrets committed to Git or public build output.
+
+Credential presence proves configuration only. It does not prove provider reachability, capability, certification, customer eligibility, authorization, execution, reconciliation or canonical financial state.
