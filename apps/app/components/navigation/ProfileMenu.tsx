@@ -14,14 +14,8 @@ interface ProfileMenuProps {
 }
 const destinations = [
   ['Profile', '/dashboard/settings/profile'],
-  ['Account settings', '/dashboard/settings/account'],
-  ['Security and access', '/dashboard/settings/security'],
-  ['Identity verification', '/dashboard/settings/verification'],
-  ['Addresses', '/dashboard/settings/addresses'],
-  ['Payment methods', '/dashboard/settings/payment-methods'],
-  ['Appearance', '/dashboard/settings/appearance'],
-  ['Notifications', '/dashboard/settings/notifications'],
-  ['Support', '/dashboard/settings/support'],
+  ['Security', '/dashboard/settings/security'],
+  ['Settings', '/dashboard/settings'],
 ] as const;
 
 export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
@@ -116,7 +110,7 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Profile menu"
-          className="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-xl border border-border-default bg-surface-1 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-80 sm:rounded-lg sm:p-3"
+          className="fixed inset-x-0 bottom-0 z-50 max-h-[78dvh] overflow-y-auto rounded-t-xl border border-border-default bg-surface-1 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-72 sm:rounded-lg sm:p-3"
         >
           <button
             type="button"
