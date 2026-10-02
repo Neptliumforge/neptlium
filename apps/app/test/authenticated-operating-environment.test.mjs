@@ -17,6 +17,16 @@ const provider = read('components/product/ProductBootstrapProvider.tsx');
 const experience = read('components/product/OperatingExperience.tsx');
 const css = read('app/authenticated-product.css');
 const mobileCss = read('app/authenticated-mobile.css');
+const dashboardCss = read('app/dashboard-v2.css');
+const recordsCss = read('app/authenticated-records.css');
+const authenticatedStyles = {
+  'global.css': read('app/global.css'),
+  'dashboard-v2.css': dashboardCss,
+  'investment-dashboard.css': read('app/investment-dashboard.css'),
+  'authenticated-product.css': css,
+  'authenticated-records.css': recordsCss,
+  'authenticated-mobile.css': mobileCss,
+};
 const tokens = read('../../packages/ui/src/styles/tokens.css');
 
 test('authenticated shell loads a shared account bootstrap once at layout authority', () => {
@@ -94,6 +104,15 @@ test('authenticated shell consumes semantic light and dark tokens without a loca
   assert.doesNotMatch(css, /--color-canvas:var\(--n-canvas\)/);
   assert.doesNotMatch(css, /--color-text-secondary:#|--color-border-hairline:rgba\(255/);
   assert.doesNotMatch(css, /\.op-more-grid>a:hover\{background:#111\}/);
+});
+
+test('authenticated app styles do not redefine canonical theme palette authority', () => {
+  const canonicalColorDefinition = /--color-(?:canvas|background|surface(?:-[\\w-]+)?|text-[\\w-]+|border-[\\w-]+|accent-[\\w-]+|brand(?:-[\\w-]+)?|primary(?:-[\\w-]+)?|sidebar(?:-[\\w-]+)?|topnav)\\s*:/i;
+  for (const [name, source] of Object.entries(authenticatedStyles)) {
+    assert.doesNotMatch(source, canonicalColorDefinition, `${name} must consume canonical semantic color tokens rather than define them`);
+  }
+  assert.doesNotMatch(dashboardCss, /--n-mineral-teal(?:-strong)?\\s*:/i);
+  assert.doesNotMatch(recordsCss, /#35d5c1|#090909/i);
 });
 
 test('mobile primary navigation has durable thumb targets and five-item hierarchy', () => {
