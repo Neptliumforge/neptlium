@@ -35,12 +35,13 @@ test('provider observations remain explicitly non-canonical', () => {
   assert.equal(isCanonicalFinancialTruth(evidence), false);
 });
 
-test('provider financial observations are named and tagged as observations', () => {
+test('provider financial observations preserve reconciliation identity without becoming canonical', () => {
   const collateral = { observationKind: 'PROVIDER_COLLATERAL', asset: 'USD', total: '100', available: '80', marginUsed: '20' };
   const position = {
     observationKind: 'PROVIDER_POSITION',
     provider,
     environment: 'TEST',
+    providerAccountReference: 'provider-account-1',
     instrumentId: 'instrument-1',
     quantity: '1',
     entryPrice: '10',
@@ -54,19 +55,22 @@ test('provider financial observations are named and tagged as observations', () 
     provider,
     environment: 'TEST',
     providerFillId: 'fill-1',
-    orderId: 'order-1',
-    providerOrderId: 'provider-order-1',
+    orderId: null,
+    providerOrderId: null,
     instrumentId: 'instrument-1',
+    side: 'BUY',
     quantity: '1',
     price: '10',
-    feeAmount: '0.01',
-    feeAsset: 'USD',
+    fee: { amount: '0.01', asset: 'USD' },
     occurredAt: '2026-10-01T00:00:00.000Z',
     evidenceId: 'evidence-1',
   };
 
   assert.equal(collateral.observationKind, 'PROVIDER_COLLATERAL');
   assert.equal(position.observationKind, 'PROVIDER_POSITION');
+  assert.equal(position.providerAccountReference, 'provider-account-1');
   assert.equal(fill.observationKind, 'PROVIDER_FILL');
+  assert.equal(fill.side, 'BUY');
+  assert.deepEqual(fill.fee, { amount: '0.01', asset: 'USD' });
   assert.notEqual(fill.observationKind, 'LEDGER_POSTING');
 });
