@@ -8,6 +8,7 @@ import {
 } from '../dist/execution/index.js';
 
 const provider = executionProviderId('future-venue');
+const otherProvider = executionProviderId('other-venue');
 
 test('execution foundation fails closed for every operation', () => {
   const capabilities = executionFoundationCapabilities(provider, 'TEST');
@@ -19,9 +20,9 @@ test('execution foundation fails closed for every operation', () => {
 
 test('provider identity alone enables no execution capability', () => {
   const capabilities = executionFoundationCapabilities(provider, 'TEST');
-  assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'TEST'), false);
-  assert.equal(hasExecutionCapability(capabilities, 'CANCEL_ORDER', 'TEST'), false);
-  assert.equal(hasExecutionCapability(capabilities, 'MODIFY_ORDER', 'TEST'), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'SUBMIT_ORDER', 'TEST', null), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'CANCEL_ORDER', 'TEST', null), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MODIFY_ORDER', 'TEST', null), false);
 });
 
 test('read capability does not imply write capability', () => {
@@ -35,8 +36,25 @@ test('read capability does not imply write capability', () => {
     reason: 'fixture',
   }];
 
-  assert.equal(hasExecutionCapability(capabilities, 'MARKET_OBSERVATION', 'TEST'), true);
-  assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'TEST'), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MARKET_OBSERVATION', 'TEST', null), true);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'SUBMIT_ORDER', 'TEST', null), false);
+});
+
+test('capability matching is provider and product scoped', () => {
+  const capabilities = [{
+    provider,
+    environment: 'TEST',
+    operation: 'MARKET_OBSERVATION',
+    product: 'SPOT',
+    state: 'AVAILABLE',
+    certified: true,
+    reason: 'fixture',
+  }];
+
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MARKET_OBSERVATION', 'TEST', 'SPOT'), true);
+  assert.equal(hasExecutionCapability(capabilities, otherProvider, 'MARKET_OBSERVATION', 'TEST', 'SPOT'), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MARKET_OBSERVATION', 'TEST', 'PERPETUAL'), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MARKET_OBSERVATION', 'TEST', null), false);
 });
 
 test('foundation blocks execution operations even if a caller constructs an available capability', () => {
@@ -50,7 +68,7 @@ test('foundation blocks execution operations even if a caller constructs an avai
     reason: 'fixture',
   }];
 
-  assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'TEST'), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'SUBMIT_ORDER', 'TEST', null), false);
 });
 
 test('test read capability never implies live capability', () => {
@@ -64,8 +82,8 @@ test('test read capability never implies live capability', () => {
     reason: 'fixture',
   }];
 
-  assert.equal(hasExecutionCapability(capabilities, 'MARKET_OBSERVATION', 'TEST'), true);
-  assert.equal(hasExecutionCapability(capabilities, 'MARKET_OBSERVATION', 'LIVE'), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MARKET_OBSERVATION', 'TEST', null), true);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MARKET_OBSERVATION', 'LIVE', null), false);
 });
 
 test('foundation cannot expose live execution', () => {
@@ -79,7 +97,7 @@ test('foundation cannot expose live execution', () => {
     reason: 'fixture',
   }];
 
-  assert.equal(hasExecutionCapability(capabilities, 'SUBMIT_ORDER', 'LIVE'), false);
-  assert.equal(hasExecutionCapability(capabilities, 'CANCEL_ORDER', 'LIVE'), false);
-  assert.equal(hasExecutionCapability(capabilities, 'MODIFY_ORDER', 'LIVE'), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'SUBMIT_ORDER', 'LIVE', null), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'CANCEL_ORDER', 'LIVE', null), false);
+  assert.equal(hasExecutionCapability(capabilities, provider, 'MODIFY_ORDER', 'LIVE', null), false);
 });

@@ -50,14 +50,18 @@ export function executionFoundationCapabilities(
 
 export function hasExecutionCapability(
   capabilities: readonly ExecutionCapability[],
+  provider: ExecutionProviderId,
   operation: ExecutionOperation,
   environment: ExecutionEnvironment,
+  product: ExecutionProduct | null,
 ): boolean {
   if (executionWriteOperations.has(operation)) return false;
 
   return capabilities.some((capability) =>
-    capability.operation === operation
+    capability.provider === provider
+    && capability.operation === operation
     && capability.environment === environment
+    && capability.product === product
     && capability.state === 'AVAILABLE'
     && capability.certified,
   );

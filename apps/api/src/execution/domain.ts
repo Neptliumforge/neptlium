@@ -76,10 +76,10 @@ export interface ExecutionFillObservation {
   readonly orderId: string | null;
   readonly providerOrderId: string | null;
   readonly instrumentId: string;
+  readonly side: ExecutionSide;
   readonly quantity: string;
   readonly price: string;
-  readonly feeAmount: string | null;
-  readonly feeAsset: string | null;
+  readonly fee: { readonly amount: string; readonly asset: string } | null;
   readonly occurredAt: string;
   readonly evidenceId: string;
 }
@@ -88,6 +88,7 @@ export interface ExecutionPositionObservation {
   readonly observationKind: 'PROVIDER_POSITION';
   readonly provider: ExecutionProviderId;
   readonly environment: ExecutionEnvironment;
+  readonly providerAccountReference: string;
   readonly instrumentId: string;
   readonly quantity: string;
   readonly entryPrice: string | null;

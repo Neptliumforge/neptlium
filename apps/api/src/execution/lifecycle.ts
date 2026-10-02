@@ -32,7 +32,12 @@ const terminalStates = new Set<ExecutionOrderLifecycle>([
 ]);
 
 export function executionLifecycleSemantics(state: ExecutionOrderLifecycle): ExecutionLifecycleSemantics {
-  if (state === 'SUBMISSION_UNKNOWN' || state === 'UNKNOWN' || state === 'DISCREPANCY') {
+  if (
+    state === 'SUBMISSION_UNKNOWN'
+    || state === 'UNKNOWN'
+    || state === 'DISCREPANCY'
+    || state === 'PROVIDER_UNAVAILABLE'
+  ) {
     return {
       terminalOrderState: false,
       automaticRetryAllowed: false,
@@ -44,7 +49,7 @@ export function executionLifecycleSemantics(state: ExecutionOrderLifecycle): Exe
   return {
     terminalOrderState: terminalStates.has(state),
     automaticRetryAllowed: false,
-    reconciliationRequired: state !== 'NOT_SUBMITTED' && state !== 'PROVIDER_UNAVAILABLE',
+    reconciliationRequired: state !== 'NOT_SUBMITTED',
     lookupRequiredBeforeRetry: false,
   };
 }
@@ -52,7 +57,8 @@ export function executionLifecycleSemantics(state: ExecutionOrderLifecycle): Exe
 export function executionLifecycleFromSubmissionDisposition(
   disposition: ExecutionSubmissionDisposition,
 ): 'NOT_SUBMITTED' | 'SUBMISSION_UNKNOWN' {
-  return disposition === 'AMBIGUOUS' ? 'SUBMISSION_UNKNOWN' : 'NOT_SUBMITTED';
+  if (disposition === 'CONFIRMED_NOT_SUBMITTED') return 'NOT_SUBMITTED';
+  return 'SUBMISSION_UNKNOWN';
 }
 
 export function normalizeExecutionLifecycle(providerState: string): ExecutionOrderLifecycle {
