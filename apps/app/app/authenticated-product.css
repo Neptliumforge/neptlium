@@ -4,6 +4,7 @@
   font-variant-numeric:tabular-nums;
 }
 .neptlium-environment main{background:var(--color-canvas)}
+.neptlium-environment>div>header{background:var(--color-surface-1)}
 .neptlium-environment ::selection{background:color-mix(in oklab,var(--color-accent-primary) 24%,transparent);color:var(--color-text-primary)}
 .neptlium-environment a,.neptlium-environment button{transition:color .16s ease,background-color .16s ease,border-color .16s ease,opacity .16s ease}
 .workspace-context{display:flex;align-items:center;gap:.75rem;min-width:0}.workspace-context>span{font-size:.82rem;font-weight:600;letter-spacing:-.01em}.workspace-context>em{font-style:normal;font-size:.68rem;color:var(--color-text-muted);padding-left:.75rem;border-left:1px solid var(--color-border-hairline)}
