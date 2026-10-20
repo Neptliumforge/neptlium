@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -12,7 +13,7 @@ export const metadata = createPageMetadata({
 
 const Mix = ({ title, values }: { title: string; values: [string, string, string][] }) => <div className={styles.allocationColumn}><h3>{title}</h3><div className={styles.allocationRows}>{values.map(([label, width, note]) => <div key={label}><i /><span>{label}</span><em>{note}</em><b style={{'--w':width} as React.CSSProperties} /></div>)}</div></div>;
 
-export default function AllocationPage() {
+function AllocationPageContent() {
   return <div className={styles.page}>
     <section className={`${styles.hero} ${styles.allocationHero}`} aria-labelledby="allocation-page-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
@@ -62,4 +63,8 @@ export default function AllocationPage() {
     <section className={`${styles.closing} ${styles.carbon}`}><div className={`${styles.shell} ${styles.closingGrid}`}><div><p className={styles.eyebrow}>Neptlium Allocation</p><h2>From insight to intention — without skipping the decision.</h2><p>Model the arrangement, understand the implications, and keep action governed.</p></div><div className={styles.actions}><Link className={`${styles.button} ${styles.buttonLight}`} href={SITE.personalSignUpUrl}>Get started <ArrowRight aria-hidden="true" /></Link></div></div></section>
     <div className={`${styles.disclosure} ${styles.carbon}`}><div className={styles.shell}><p>{DISCLOSURES.modeling} {DISCLOSURES.general}</p></div></div>
   </div>;
+}
+
+export default function AllocationPage() {
+  return <><AllocationPageContent /><PageContext route="/allocation" /></>;
 }

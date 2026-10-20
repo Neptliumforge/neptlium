@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -13,7 +14,7 @@ const capabilities = [
   ['Reporting', 'Governed records, reconciliation and institutional reporting context.'],
 ] as const;
 
-export default function InstitutionalPage() {
+function InstitutionalPageContent() {
   return <div className="family-page" data-npt-surface="ivory">
     <div className="family-shell">
       <section className="family-hero" aria-labelledby="institutional-title">
@@ -24,4 +25,8 @@ export default function InstitutionalPage() {
       <p className="family-note">Institutional capabilities shown here describe the intended product direction and are not represented as currently available execution, custody, brokerage or regulated investment services.</p>
     </div>
   </div>;
+}
+
+export default function InstitutionalPage() {
+  return <><InstitutionalPageContent /><PageContext route="/institutional" /></>;
 }

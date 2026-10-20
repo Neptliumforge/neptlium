@@ -9,7 +9,7 @@ function Arrow() {
 function PrimaryActions({ secondaryHref, secondaryLabel }: { secondaryHref: string; secondaryLabel: string }) {
   return (
     <div className={styles.actions}>
-      <a className={styles.primaryAction} href={SITE.publicAccessUrl}>
+      <a className={styles.primaryAction} href={SITE.businessAccessUrl}>
         Get Started <Arrow />
       </a>
       <Link className={styles.secondaryAction} href={secondaryHref}>
@@ -187,7 +187,7 @@ export function TreasuryPage() {
             <Label>Treasury</Label>
             <h1>See treasury clearly.</h1>
             <p>Understand where organizational funds sit, what is available for operating needs, and the movement and control context around each destination.</p>
-            <PrimaryActions secondaryHref="/business" secondaryLabel="Explore Neptlium Treasury" />
+            <PrimaryActions secondaryHref="/contact" secondaryLabel="Discuss Treasury" />
           </div>
           <div className={`${styles.productStage} ${styles.treasuryStage}`} aria-label="Treasury workspace illustration">
             <span className={styles.illustrationNotice}>Illustrative interface concept — not live account data.</span>
@@ -285,7 +285,7 @@ export function PaymentsPage() {
             <Label inverse>Payments</Label>
             <h1>Move money with context.</h1>
             <p>Shape payment intent around the recipient, purpose, policy and authority that should remain visible from creation through the operating record.</p>
-            <PrimaryActions secondaryHref="/business" secondaryLabel="Explore Neptlium Treasury" />
+            <PrimaryActions secondaryHref="/contact" secondaryLabel="Discuss Treasury" />
           </div>
           <div className={`${styles.productStage} ${styles.paymentStage}`} aria-label="Governed payment flow illustration">
             <div className={styles.paymentFormHead}><span>New payment</span><span className={styles.quietBadge}>Draft intent</span></div>

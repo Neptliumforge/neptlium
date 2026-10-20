@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
@@ -124,7 +125,7 @@ const families = [
   },
 ] as const;
 
-export default function HomePage() {
+function HomePageContent() {
   return (
     <div className={styles.page}>
       <section className={styles.hero} data-npt-surface="carbon" data-web-surface="brand" aria-labelledby="home-title">
@@ -314,4 +315,8 @@ export default function HomePage() {
       </section>
     </div>
   );
+}
+
+export default function HomePage() {
+  return <><HomePageContent /><PageContext route="/" /></>;
 }

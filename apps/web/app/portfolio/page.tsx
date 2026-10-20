@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -11,7 +12,7 @@ export const metadata = createPageMetadata({
   path: '/portfolio',
 });
 
-export default function PortfolioPage() {
+function PortfolioPageContent() {
   return <div className={styles.page}>
     <section className={`${styles.hero} ${styles.white} ${headerStyles.light}`} aria-labelledby="portfolio-page-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
@@ -70,4 +71,8 @@ export default function PortfolioPage() {
     <section className={`${styles.closing} ${styles.ivory}`}><div className={`${styles.shell} ${styles.closingGrid}`}><div><p className={styles.eyebrow}>Neptlium Portfolio</p><h2>See what your financial position actually looks like.</h2></div><div className={styles.actions}><Link className={`${styles.button} ${styles.buttonDark}`} href={SITE.personalSignUpUrl}>Get started <ArrowRight aria-hidden="true" /></Link></div></div></section>
     <div className={`${styles.disclosure} ${styles.ivory}`}><div className={styles.shell}><p>{DISCLOSURES.general}</p></div></div>
   </div>;
+}
+
+export default function PortfolioPage() {
+  return <><PortfolioPageContent /><PageContext route="/portfolio" /></>;
 }
