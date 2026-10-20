@@ -1,0 +1,85 @@
+name: Web Semantic Surface QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/web/app/globals.css'
+      - 'apps/web/tests/e2e/dark-surfaces.spec.ts'
+      - 'apps/web/tests/e2e/dark-surfaces.spec.ts-snapshots/**'
+      - '.github/workflows/web-dark-surface-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  semantic-surfaces:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CI: 'true'
+      NEPTLIUM_WEB_BASE_URL: http://127.0.0.1:3000
+      BASE_SHA: ${{ github.event.pull_request.base.sha || 'origin/main' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @neptlium/web build
+      - name: Install Chromium on GitHub Ubuntu
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Build unchanged canonical base separately
+        shell: bash
+        run: |
+          set -euo pipefail
+          git worktree add --detach /tmp/neptlium-visual-before "$BASE_SHA"
+          pnpm --dir /tmp/neptlium-visual-before install --frozen-lockfile --offline
+          pnpm --dir /tmp/neptlium-visual-before --filter @neptlium/web build
+      - name: Start before and after production builds
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir /tmp/neptlium-visual-before --filter @neptlium/web exec next start -H 127.0.0.1 -p 3001 > /tmp/neptlium-before.log 2>&1 &
+          pnpm --filter @neptlium/web exec next start -H 127.0.0.1 -p 3000 > /tmp/neptlium-after.log 2>&1 &
+          for port in 3000 3001; do
+            ready=false
+            for attempt in {1..60}; do
+              if curl -fsS "http://127.0.0.1:$port/infrastructure" > /dev/null; then ready=true; break; fi
+              sleep 1
+            done
+            if [ "$ready" != true ]; then cat /tmp/neptlium-before.log /tmp/neptlium-after.log; exit 1; fi
+          done
+      - name: Capture actual canonical-base screenshots
+        working-directory: apps/web
+        env:
+          NEPTLIUM_WEB_BASE_URL: http://127.0.0.1:3001
+          NEPTLIUM_VISUAL_PHASE: before
+        run: pnpm exec playwright test dark-surfaces.spec.ts
+      - name: Upload before evidence before the next Playwright run clears output
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-semantic-surfaces-before
+          path: apps/web/test-results/**/before-*.png
+          if-no-files-found: error
+          retention-days: 30
+      - name: Validate semantic surfaces and capture initial visual baselines
+        working-directory: apps/web
+        run: pnpm exec playwright test dark-surfaces.spec.ts --update-snapshots
+      - name: Upload rendered evidence and candidate visual baselines
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-semantic-surfaces-after
+          path: |
+            apps/web/test-results/
+            apps/web/tests/e2e/dark-surfaces.spec.ts-snapshots/
+            apps/web/playwright-report/
+          if-no-files-found: error
+          retention-days: 30
