@@ -56,6 +56,11 @@ for (const route of routes) {
       expect(await contrast(page, '.family-label', '.family-page')).toBeGreaterThanOrEqual(4.5);
       expect(await contrast(page, '.family-card > p', '.family-grid')).toBeGreaterThanOrEqual(4.5);
       expect(await contrast(page, '.family-card h2', '.family-grid')).toBeGreaterThanOrEqual(4.5);
+      await expect(page.locator('.site-header')).toHaveCSS('background-color', resolved === 'dark' ? 'rgb(17, 18, 20)' : 'rgb(251, 252, 249)');
+      expect(await contrast(page, '.site-header .brand', '.site-header')).toBeGreaterThanOrEqual(4.5);
+      if (testInfo.project.use.viewport!.width >= 980) {
+        expect(await contrast(page, '.desktop-command-nav a', '.site-header')).toBeGreaterThanOrEqual(4.5);
+      }
       const actionSelector = route === '/products' ? '.family-card > a' : '.family-action-primary';
       const action = page.locator(actionSelector).first();
       const actionBox = await action.boundingBox();

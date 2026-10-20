@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'apps/web/app/globals.css'
+      - 'apps/web/app/neptlium-visual-direction.css'
       - 'apps/web/tests/e2e/dark-surfaces.spec.ts'
       - 'apps/web/tests/e2e/dark-surfaces.spec.ts-snapshots/**'
       - '.github/workflows/web-dark-surface-qa.yml'
@@ -69,9 +70,9 @@ jobs:
           path: apps/web/test-results/**/before-*.png
           if-no-files-found: error
           retention-days: 30
-      - name: Validate semantic surfaces and capture initial visual baselines
+      - name: Validate semantic surfaces against committed visual baselines
         working-directory: apps/web
-        run: pnpm exec playwright test dark-surfaces.spec.ts --update-snapshots
+        run: pnpm exec playwright test dark-surfaces.spec.ts
       - name: Upload rendered evidence and candidate visual baselines
         if: always()
         uses: actions/upload-artifact@v4

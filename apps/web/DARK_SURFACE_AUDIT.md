@@ -29,6 +29,12 @@ is used by Infrastructure, Intelligence, Institutional and the product index.
 The global closing conversion also lacked its outer layout and hierarchy.
 This is a verified layout gap, not evidence that Neptlium needs a new palette.
 
+Before/after runner screenshots also exposed a fixed light header paired with
+theme-dependent text: Dark navigation became faint on the light background,
+and the Light wordmark inherited the wrong foreground. The existing header
+declaration now consumes the shared surface/foreground pair. Homepage-specific
+overrides, logo geometry, navigation behavior and theme resolution are unchanged.
+
 ## Authority and scope
 
 Canonical baseline: `4c3481d6b560da5210a50f2ccce9f3db5dd8148f`.
@@ -70,12 +76,13 @@ single H1, minimum action height, sampled text/action contrast, hover, pressed
 and focus behavior, System switching and preference continuity.
 
 Pixel regression snapshots cover Infrastructure and Intelligence in Light and
-Dark at 390 and 1440px. Initial baselines must be generated on GitHub Ubuntu,
-visually inspected and committed; remove the bootstrap update flag before
-freezing the review candidate. Subsequent runs compare checked-in images and
-must not regenerate them to hide failures. Before/after evidence is a separate
-artifact from those regression expectations. No browser PASS follows from
-source calculations or successful builds alone.
+Dark at 390 and 1440px. Initial baselines were generated on GitHub Ubuntu in
+run `39452514022` and visually inspected. That bootstrap ran 60 after checks
+successfully. The broad browser run initially failed only on eight missing
+snapshot expectations, as expected during bootstrap. The images are now
+committed and the update flag removed; final runs compare them rather than
+regenerating them. Before/after evidence is separate from regression images.
+No browser PASS follows from source calculations or successful builds alone.
 
 No deployment is authorized by this audit alone. Exact-head acceptance,
 documented main governance and production gates remain required. Financial,

@@ -233,8 +233,8 @@ html {
   z-index: 80;
   height: 4.5rem;
   border-bottom: 1px solid var(--web-stone);
-  background: rgb(251 250 247 / 98%);
-  color: var(--web-carbon);
+  background: var(--color-surface-1);
+  color: var(--color-text-primary);
   transition:
     height 180ms var(--web-ease),
     background-color 180ms var(--web-ease),
