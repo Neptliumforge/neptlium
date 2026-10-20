@@ -69,6 +69,26 @@ They do not justify inventing content or adding public engineering-status copy.
 | Research and press assets | No original publications, testimonials, customer metrics, awards or partnership evidence supplied. Do not create fictitious proof or download links. |
 | Production certification | Candidate CI, preview/rendered review, governed integration and separately authorized production release are distinct from authored content. |
 
+## Homepage continuity — owner direction, 2026-10-20
+
+The owner-selected mobile reference preserves the near-black opening, ivory
+capital proposition, restrained mineral teal, two audience actions and clearly
+illustrative portfolio preview. This release retains that composition while
+adding the approved route context below it. The header and cinematic opening
+use existing canonical dark canvas/text tokens as a deliberate editorial
+surface in every appearance mode; they do not change the stored preference,
+System resolution or the semantic appearance of other routes. The preview's
+labels and the scrolled header keep matching foreground/background pairs.
+Desktop navigation receives readable separation; actions retain visible focus,
+touch targets and restrained hover/pressed cues. No financial data or external
+capability is introduced.
+
+`homepage-continuity.spec.ts` checks contrast, audience destinations, responsive
+overflow, navigation dismissal/focus restoration, scrolled headers and System
+resolution. Committed Chromium snapshots cover desktop/mobile Light and Dark.
+Source checks, rendered candidate evidence and post-release verification remain
+separate evidence categories.
+
 ## Validation
 
 Use the commands in `AGENTS.md`. Unit coverage checks the editorial route
