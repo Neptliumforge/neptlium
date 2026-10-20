@@ -65,6 +65,9 @@ for (const preference of ['light', 'dark', 'system'] as const) {
     await page.evaluate(() => scrollTo(0, 0));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2)).toBe(true);
     await page.evaluate(() => document.fonts.ready);
+    // The homepage deliberately preserves its cinematic dark hero and
+    // mixed editorial surfaces in both explicit theme preferences.
+    // Identical light/dark visual baselines are therefore intentional.
     if (['desktop-1440', 'mobile-390'].includes(testInfo.project.name) && preference !== 'system') {
       await expect(page).toHaveScreenshot(`homepage-${preference}.png`, { animations: 'disabled', maxDiffPixelRatio: .005 });
     }
