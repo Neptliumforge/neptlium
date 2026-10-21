@@ -3,6 +3,7 @@ import { ApiError } from './errors.js';
 import type { Asset, DepositState, Network, WithdrawalState } from './domain.js';
 import { transition } from './domain.js';
 import type { ProviderWalletLink } from './providers.js';
+import type { ProfileUpdate } from './account-profile.js';
 
 export interface Withdrawal {
   id: string;
@@ -56,6 +57,8 @@ export type WebhookInsertResult = 'inserted' | 'duplicate';
 export interface AccountContext {
   id: string;
   email: string | null;
+  firstName: string | null;
+  lastName: string | null;
   fullName: string | null;
   displayName: string | null;
   investorType: string | null;
@@ -145,6 +148,7 @@ export interface ApiRepository {
   getAccountContext(ownerId: string): AccountContext | Promise<AccountContext>;
   getOnboardingDraft(ownerId: string): OnboardingDraftRecord | Promise<OnboardingDraftRecord>;
   saveOnboardingDraft(ownerId: string, draft: OnboardingDraftRecord): void | Promise<void>;
+  updateProfile(ownerId: string, update: ProfileUpdate): Promise<AccountContext>;
   listCustomerActivity(
     ownerId: string,
     query: CustomerActivityQuery,
@@ -204,6 +208,7 @@ export class MemoryRepository implements ApiRepository {
   readonly webhooks = new Map<string, WebhookRecord>();
   readonly providerWallets = new Map<string, ProviderWalletLink>();
   readonly onboardingDrafts = new Map<string, OnboardingDraftRecord>();
+  readonly profiles = new Map<string, Partial<AccountContext>>();
   readonly customerActivity: CustomerActivityRecord[] = [];
   readonly notifications: CustomerNotificationRecord[] = [];
   readonly documents: CustomerDocumentRecord[] = [];
@@ -221,6 +226,8 @@ export class MemoryRepository implements ApiRepository {
     return {
       id: ownerId,
       email: null,
+      firstName: null,
+      lastName: null,
       fullName: null,
       displayName: null,
       investorType: null,
@@ -228,7 +235,23 @@ export class MemoryRepository implements ApiRepository {
       complianceStatus: null,
       provisionedAt: new Date(0).toISOString(),
       role: 'user',
+      ...this.profiles.get(ownerId),
     };
+  }
+  async updateProfile(ownerId: string, update: ProfileUpdate): Promise<AccountContext> {
+    const current = this.getAccountContext(ownerId);
+    const firstName = update.firstName ?? current.firstName;
+    const lastName = update.lastName ?? current.lastName;
+    this.profiles.set(ownerId, {
+      ...this.profiles.get(ownerId),
+      firstName,
+      lastName,
+      ...(update.firstName !== undefined || update.lastName !== undefined
+        ? { fullName: [firstName, lastName].filter(Boolean).join(' ') || null }
+        : {}),
+      ...(update.displayName !== undefined ? { displayName: update.displayName } : {}),
+    });
+    return this.getAccountContext(ownerId);
   }
   getOnboardingDraft(ownerId: string): OnboardingDraftRecord {
     return structuredClone(this.onboardingDrafts.get(ownerId) ?? { data: {}, stepIndex: 0 });

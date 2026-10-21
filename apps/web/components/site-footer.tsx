@@ -21,8 +21,9 @@ const groups = [
 ] as const;
 
 const legalLinks = [
-  ['Privacy', '/privacy'], ['Terms', '/terms'], ['Risk disclosure', '/risk-disclosure'],
-  ['Accessibility', '/accessibility'], ['Cookies', '/cookie-policy'],
+  ['Legal', '/legal'], ['Terms', '/terms'], ['Privacy', '/privacy'], ['Risk disclosures', '/risk-disclosure'],
+  ['E-delivery', '/e-delivery'], ['Cookies', '/cookie-policy'], ['AML/KYC', '/aml-kyc'],
+  ['Complaints', '/complaints'], ['Accessibility', '/accessibility'],
 ] as const;
 
 export function SiteFooter() {

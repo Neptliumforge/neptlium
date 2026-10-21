@@ -1,13 +1,16 @@
-import { Suspense } from 'react';
 import { AuthShell } from '@/app/(auth)/components/AuthShell';
 import { SupabaseAuthForm } from '@/app/(auth)/components/SupabaseAuthForm';
+import { resolveReturnDestination, type ReturnSearchParams } from '@/app/(auth)/auth-utils';
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  readonly searchParams: Promise<ReturnSearchParams>;
+}) {
+  const returnTo = resolveReturnDestination(await searchParams);
   return (
     <AuthShell>
-      <Suspense fallback={null}>
-        <SupabaseAuthForm mode="sign-in" />
-      </Suspense>
+      <SupabaseAuthForm mode="sign-in" returnTo={returnTo} />
     </AuthShell>
   );
 }

@@ -24,7 +24,7 @@ test('sign-in and sign-up use the shared Supabase Auth form', () => {
   const callback = read('app/auth/callback/route.ts');
   assert.match(form, /href="\/forgot-password"/);
   assert.match(form, /safeInternalPath/);
-  assert.match(callback, /safeInternalPath/);
+  assert.match(callback, /resolveReturnDestination/);
 });
 
 test('individual entry exposes the canonical investor navigation and truthful Invest route', () => {

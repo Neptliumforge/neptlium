@@ -4,14 +4,12 @@ import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, Field, FieldError, Input, Label } from '@neptlium/ui';
-import {
-  onboardingPayloadSchema,
-  type ProvisioningPayload,
-} from '@neptlium/lib/validation';
+import { onboardingPayloadSchema, type ProvisioningPayload } from '@neptlium/lib/validation';
 import { OnboardingShell } from './components/OnboardingShell';
 import { OnboardingPanel } from './components/OnboardingPanel';
 import { getOnboardingDraft, saveOnboardingDraft, submitProvisioning } from './actions';
 import { onboardingSteps } from './wizard-steps';
+import { safeInternalPath } from '../(auth)/auth-utils';
 
 type DraftData = Partial<ProvisioningPayload>;
 
@@ -29,7 +27,13 @@ function accountDefaults(): Pick<ProvisioningPayload, 'investorType' | 'security
   };
 }
 
-export function OnboardingWizard({ email }: { readonly email: string }) {
+export function OnboardingWizard({
+  email,
+  returnTo,
+}: {
+  readonly email: string;
+  readonly returnTo: string;
+}) {
   const router = useRouter();
   const [stepIndex, setStepIndex] = useState(0);
   const [data, setData] = useState<DraftData>(accountDefaults());
@@ -131,7 +135,7 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
         return;
       }
       router.refresh();
-      router.replace('/dashboard');
+      router.replace(safeInternalPath(returnTo));
     } catch {
       setError('Account setup could not be completed. Check your connection and try again.');
     } finally {
@@ -158,7 +162,10 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
         {stepIndex === 0 && (
           <form onSubmit={advance} className="space-y-5">
-            <Heading title="Set up Neptlium Capital" copy="Start with the personal identity details supported by your account today. Organization details are not required for your personal account; organization information belongs in Neptlium Treasury, not here." />
+            <Heading
+              title="Set up Neptlium Capital"
+              copy="Start with the personal identity details supported by your account today. Organization details are not required for your personal account; organization information belongs in Neptlium Treasury, not here."
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField
                 label="Legal first name"
@@ -183,7 +190,9 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
               autoComplete="country-name"
             />
             <p className="text-xs text-text-muted">Signed in as {email}</p>
-            <p className="text-xs leading-5 text-text-muted">You can review and update your account details after setup.</p>
+            <p className="text-xs leading-5 text-text-muted">
+              You can review and update your account details after setup.
+            </p>
             <ErrorMessage error={error} />
             <Button type="submit" variant="accent" className="w-full">
               Continue
@@ -193,7 +202,10 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
 
         {stepIndex === 1 && (
           <form onSubmit={finish} className="space-y-6">
-            <Heading title="Review your Capital account" copy="Confirm the identity foundation we can provision today." />
+            <Heading
+              title="Review your Capital account"
+              copy="Confirm the identity foundation we can provision today."
+            />
             <dl className="divide-y divide-border-hairline border-y border-border-default">
               <ReviewRow
                 label="Name"
@@ -203,7 +215,8 @@ export function OnboardingWizard({ email }: { readonly email: string }) {
               <ReviewRow label="Account context" value="Neptlium Capital · Individual" />
             </dl>
             <p className="text-sm leading-6 text-text-secondary">
-              Your personal financial context remains separate from any organization you may later join in Neptlium Treasury.
+              Your personal financial context remains separate from any organization you may later
+              join in Neptlium Treasury.
             </p>
             <label className="flex cursor-pointer gap-3 text-sm leading-5 text-text-secondary">
               <input

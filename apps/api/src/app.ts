@@ -22,6 +22,20 @@ import { publicFundingDefinitions } from './asset-registry.js';
 import { createPrincipalAuthenticator } from './authentication.js';
 import { SupabaseIdentityPrincipalResolver } from './identity-principal.js';
 import { platformCapabilities } from './platform-capabilities.js';
+import {
+  DisabledIdentityVerificationProvider,
+  UnconfiguredIdentityVerificationRecords,
+  identityVerificationView,
+  legalNameLocked,
+  startIdentityVerification,
+  type IdentityVerificationDependencies,
+} from './identity-verification.js';
+import {
+  accountStandingOf,
+  changesLegalName,
+  onboardingStateOf,
+  parseProfileUpdate,
+} from './account-profile.js';
 
 export interface Dependencies {
   config?: Config;
@@ -32,6 +46,7 @@ export interface Dependencies {
   rateLimiter?: RateLimiter;
   observer?: Observer;
   capitalProvider?: CapitalProvider;
+  identityVerification?: IdentityVerificationDependencies;
 }
 export interface Injection {
   method: string;
@@ -131,6 +146,11 @@ export async function buildApp(deps: Dependencies = {}) {
       ? new SupabaseIdentityPrincipalResolver(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
       : undefined;
   const authenticate = deps.authenticate ?? createPrincipalAuthenticator(config, identityResolver);
+  // No identity verification provider or record store is reviewed yet; both fail closed.
+  const identityVerification = deps.identityVerification ?? {
+    provider: new DisabledIdentityVerificationProvider(),
+    records: new UnconfiguredIdentityVerificationRecords(),
+  };
   async function owner(context: Context) {
     const header = context.headers.authorization;
     if (!header?.startsWith('Bearer '))
@@ -232,6 +252,61 @@ export async function buildApp(deps: Dependencies = {}) {
     if (method === 'GET' && path === '/v1/account/context') {
       const user = await owner(context);
       return { data: await repository.getAccountContext(user.id) };
+    }
+    if (method === 'GET' && path === '/v1/account/status') {
+      const user = await owner(context);
+      const [account, draft, verification] = await Promise.all([
+        repository.getAccountContext(user.id),
+        Promise.resolve(repository.getOnboardingDraft(user.id)).catch(() => null),
+        identityVerificationView(identityVerification, user.id),
+      ]);
+      const onboarding = onboardingStateOf(account, draft);
+      return {
+        data: {
+          onboarding: {
+            state: onboarding,
+            completed_at: onboarding === 'COMPLETED' ? account.provisionedAt : null,
+          },
+          standing: accountStandingOf(account),
+          identity_verification: verification,
+        },
+      };
+    }
+    if (method === 'POST' && path === '/v1/account/profile') {
+      const user = await owner(context);
+      const update = parseProfileUpdate(context.body);
+      if (changesLegalName(update)) {
+        const { record } = await identityVerificationView(identityVerification, user.id);
+        const locked = legalNameLocked(record);
+        if (locked === 'UNKNOWN')
+          throw new ApiError(
+            503,
+            'identity_verification_unavailable',
+            'Legal name changes are unavailable while verification state cannot be read',
+          );
+        if (locked)
+          throw new ApiError(
+            409,
+            'legal_name_locked',
+            'Legal name cannot be changed while identity verification is pending or complete',
+          );
+      }
+      return { data: await repository.updateProfile(user.id, update) };
+    }
+    if (method === 'POST' && path === '/v1/account/identity-verification/sessions') {
+      const user = await owner(context);
+      const session = await startIdentityVerification(
+        identityVerification,
+        user.id,
+        idempotencyKey(context),
+      );
+      return {
+        status: 201,
+        data: {
+          customer_action_url: session.customerActionUrl,
+          expires_at: session.expiresAt,
+        },
+      };
     }
     if (method === 'GET' && path === '/v1/account/settings') {
       const user = await owner(context);
