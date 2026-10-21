@@ -9,6 +9,11 @@ import {
   type AdminRepository,
 } from './admin-repository.js';
 import { handleAdminRoute } from './admin-routes.js';
+import {
+  MemoryInvestCatalogRepository,
+  SupabaseInvestCatalogRepository,
+  type InvestCatalogRepository,
+} from './invest-catalog-repository.js';
 import { MemoryRateLimiter, SupabaseRateLimiter, type RateLimiter } from './security.js';
 import {
   DisabledTreasuryDestinationRepository,
@@ -41,6 +46,18 @@ function treasuryRepositoryFor(config: Config): TreasuryDestinationRepository {
       ? new SupabaseTreasuryDestinationRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
       : new DisabledTreasuryDestinationRepository();
   treasuryRepositories.set(config, repository);
+  return repository;
+}
+
+const investCatalogRepositories = new WeakMap<Config, InvestCatalogRepository>();
+function investCatalogRepositoryFor(config: Config): InvestCatalogRepository {
+  const existing = investCatalogRepositories.get(config);
+  if (existing) return existing;
+  const repository =
+    config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
+      ? new SupabaseInvestCatalogRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
+      : new MemoryInvestCatalogRepository();
+  investCatalogRepositories.set(config, repository);
   return repository;
 }
 
@@ -93,6 +110,7 @@ export async function executeAdminHttp(
     authenticate?: (token: string) => Promise<{ id: string } | null>;
     rateLimiter?: RateLimiter;
     treasuryRepository?: TreasuryDestinationRepository;
+    investCatalogRepository?: InvestCatalogRepository;
   },
 ): Promise<AdminHttpResponse> {
   const target = new URL(input.url, 'http://localhost');
@@ -148,6 +166,7 @@ export async function executeAdminHttp(
       {
         repository: injected?.repository ?? repositoryFor(config),
         treasuryRepository: injected?.treasuryRepository ?? treasuryRepositoryFor(config),
+        investCatalogRepository: injected?.investCatalogRepository ?? investCatalogRepositoryFor(config),
         principal,
         accessToken: authorization.slice(7),
         environment: config.NODE_ENV === 'production' ? 'LIVE' : 'TEST',

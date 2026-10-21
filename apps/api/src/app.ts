@@ -18,6 +18,12 @@ import {
   type FinancialRepository,
 } from './financial-repository.js';
 import { handleFinancialRoute } from './financial-routes.js';
+import { handleInvestCatalogRoute } from './invest-catalog-routes.js';
+import {
+  MemoryInvestCatalogRepository,
+  SupabaseInvestCatalogRepository,
+  type InvestCatalogRepository,
+} from './invest-catalog-repository.js';
 import { publicFundingDefinitions } from './asset-registry.js';
 import { createPrincipalAuthenticator } from './authentication.js';
 import { SupabaseIdentityPrincipalResolver } from './identity-principal.js';
@@ -41,6 +47,7 @@ export interface Dependencies {
   config?: Config;
   repository?: ApiRepository;
   financialRepository?: FinancialRepository;
+  investCatalogRepository?: InvestCatalogRepository;
   authenticate?: (token: string) => Promise<{ id: string; role?: string } | null>;
   webhookVerifiers?: Partial<Record<'alchemy', WebhookVerifier>>;
   rateLimiter?: RateLimiter;
@@ -128,6 +135,13 @@ export async function buildApp(deps: Dependencies = {}) {
       : new MemoryFinancialRepository());
   if (config.NODE_ENV === 'production' && financialRepository instanceof MemoryFinancialRepository)
     throw new Error('MemoryFinancialRepository cannot be used in production');
+  const investCatalogRepository =
+    deps.investCatalogRepository ??
+    (config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
+      ? new SupabaseInvestCatalogRepository(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
+      : new MemoryInvestCatalogRepository());
+  if (config.NODE_ENV === 'production' && investCatalogRepository instanceof MemoryInvestCatalogRepository)
+    throw new Error('MemoryInvestCatalogRepository cannot be used in production');
   const limiter = deps.rateLimiter ?? new MemoryRateLimiter();
   const observer =
     deps.observer ?? (config.NODE_ENV === 'test' ? new MemoryObserver() : new JsonObserver());
@@ -185,6 +199,12 @@ export async function buildApp(deps: Dependencies = {}) {
       ownerId: async () => (await owner(context)).id,
     });
     if (financialResult) return financialResult;
+
+    const investCatalogResult = await handleInvestCatalogRoute(context, {
+      repository: investCatalogRepository,
+      ownerId: async () => (await owner(context)).id,
+    });
+    if (investCatalogResult) return investCatalogResult;
 
     if (method === 'GET' && (path === '/health' || path === '/v1/health')) {
       const repositoryReady = await repository.ready();

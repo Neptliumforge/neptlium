@@ -79,7 +79,8 @@ test('destination preserves legitimate path/query, strips fragments, and support
     const url = path
       .slice(resolve(root, 'app').length)
       .replace(/\/page\.tsx$/, '')
-      .replace('[ticker]', 'TEST');
+      .replace('[ticker]', 'TEST')
+      .replace('[slug]', 'reserve');
     assert.equal(safeInternalPath(url), url, url);
   }
 });

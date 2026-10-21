@@ -100,7 +100,8 @@ function validateInternalPath(value: string | null | undefined, allowOnboarding:
     }
     const supported =
       dashboardPages.has(url.pathname) ||
-      /^\/dashboard\/(?:research|company-intelligence)\/company\/[^/]+$/.test(url.pathname);
+      /^\/dashboard\/(?:research|company-intelligence)\/company\/[^/]+$/.test(url.pathname) ||
+      /^\/dashboard\/invest\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(url.pathname);
     if (!supported && !(allowOnboarding && url.pathname === '/onboarding'))
       return DEFAULT_RETURN_PATH;
     for (const key of url.searchParams.keys()) {
