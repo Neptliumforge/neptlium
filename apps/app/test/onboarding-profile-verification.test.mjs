@@ -9,6 +9,7 @@ import {
   presentIdentityVerification,
 } from '../lib/account/identity-verification.ts';
 import { buildProfileUpdate } from '../lib/account/profile.ts';
+import { resolveReturnDestination } from '../app/(auth)/auth-utils.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -115,8 +116,14 @@ test('dashboard shows non-blocking setup guidance and never redirects to onboard
     assert.doesNotMatch(source, /redirect\(\s*['"]\/onboarding/, path);
   }
   assert.match(read('app/dashboard/page.tsx'), /<AccountSetupPrompt status=\{status\} \/>/);
-  // Onboarding only ever redirects forward to the dashboard: no loop is possible.
-  assert.match(read('app/onboarding/layout.tsx'), /redirect\("\/dashboard"\)/);
+  // Onboarding only ever redirects forward to a dashboard destination: no loop is possible.
+  assert.match(read('app/onboarding/layout.tsx'), /redirect\(await getOnboardingReturnPath\(\)\)/);
+  assert.match(
+    read('lib/auth/return-context.ts'),
+    /resolveReturnDestination\(entry\.searchParams, false\)/,
+  );
+  for (const next of ['/onboarding', '/onboarding?step=2'])
+    assert.equal(resolveReturnDestination(new URLSearchParams({ next }), false), '/dashboard');
 });
 
 test('dashboard access never depends on identity verification or onboarding', () => {
