@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { LegalDoc } from './content/legal.ts';
 import { SITE } from './content/site.ts';
 
 type PageMetadataInput = {
@@ -36,4 +37,14 @@ export function createPageMetadata({
       images: ['/opengraph-image'],
     },
   };
+}
+
+/** Draft legal documents stay out of search indexes until approved. */
+export function legalMetadata(doc: LegalDoc): Metadata {
+  return createPageMetadata({
+    title: doc.title,
+    description: doc.intro,
+    path: doc.path,
+    index: doc.status !== 'draft',
+  });
 }

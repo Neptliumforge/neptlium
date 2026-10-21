@@ -1,16 +1,11 @@
-import type { Metadata } from 'next'
-import { LegalDocument } from '@/components/legal-document'
-import { getLegalDoc } from '@/lib/content/legal'
+import { LegalDocument } from '@/components/legal-document';
+import { getLegalDoc } from '@/lib/content/legal';
+import { legalMetadata } from '@/lib/seo';
 
-const doc = getLegalDoc('terms')!
+const doc = getLegalDoc('terms');
 
-export const metadata: Metadata = {
-  title: doc.title,
-  description: doc.intro,
-  robots: { index: false, follow: false },
-  alternates: { canonical: '/terms' },
-}
+export const metadata = legalMetadata(doc);
 
 export default function TermsPage() {
-  return <LegalDocument doc={doc} />
+  return <LegalDocument doc={doc} />;
 }
