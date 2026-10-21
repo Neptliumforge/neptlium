@@ -9,7 +9,8 @@ const webRoot = resolve(import.meta.dirname, '..');
 describe('public page explanations', () => {
   it('covers every indexable editorial route without replacing legal authority', () => {
     for (const route of INDEXABLE_ROUTES) {
-      if (route === '/accessibility') continue;
+      // These routes own their explanations, research framework and FAQs.
+      if (route === '/accessibility' || route === '/' || route.startsWith('/investments')) continue;
       expect(PAGE_CONTEXT).toHaveProperty(route);
     }
   });
@@ -17,7 +18,12 @@ describe('public page explanations', () => {
   it('connects each explanation to a real route with a route-owned rendering', () => {
     for (const [route, content] of Object.entries(PAGE_CONTEXT)) {
       const source = readFileSync(resolve(webRoot, `app/${route.slice(1)}/page.tsx`), 'utf8');
-      expect(source).toContain(`<PageContext route="${route}" />`);
+      if (route === '/' || route === '/investments') {
+        expect(source).toContain('INVEST_FAQS');
+        expect(source).toContain('DISCLOSURES.investment');
+      } else {
+        expect(source).toContain(`<PageContext route="${route}" />`);
+      }
       expect(content.title.trim()).not.toBe('');
       expect(content.introduction.trim()).not.toBe('');
       expect(ROUTE_POLICY[route]).not.toBe('legacy-redirect');
