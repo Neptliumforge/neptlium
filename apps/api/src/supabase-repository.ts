@@ -17,6 +17,7 @@ import type {
   Withdrawal,
 } from './repositories.js';
 import type { ProviderWalletLink } from './providers.js';
+import type { ProfileUpdate } from './account-profile.js';
 
 type Fetch = typeof fetch;
 type WalletRow = { id: string };
@@ -33,6 +34,8 @@ type LinkRow = {
 type ProfileRow = {
   id: string;
   email: string | null;
+  first_name: string | null;
+  last_name: string | null;
   full_name: string | null;
   display_name: string | null;
   investor_type: string | null;
@@ -41,6 +44,8 @@ type ProfileRow = {
   provisioned_at: string | null;
 };
 type RoleRow = { role: string | null };
+const profileColumns =
+  'id,email,first_name,last_name,full_name,display_name,investor_type,organization_id,compliance_status,provisioned_at';
 type ActivityRow = {
   id: string;
   type: string;
@@ -170,7 +175,7 @@ export class SupabaseRepository implements ApiRepository {
   async getAccountContext(ownerId: string): Promise<AccountContext> {
     const [profiles, roles] = await Promise.all([
       this.jsonRows<ProfileRow>(
-        `profiles?id=eq.${encodeURIComponent(ownerId)}&select=id,email,full_name,display_name,investor_type,organization_id,compliance_status,provisioned_at&limit=1`,
+        `profiles?id=eq.${encodeURIComponent(ownerId)}&select=${profileColumns}&limit=1`,
         'Account profile is unavailable',
       ),
       this.jsonRows<RoleRow>(
@@ -181,17 +186,54 @@ export class SupabaseRepository implements ApiRepository {
     const profile = profiles[0];
     if (!profile)
       throw new ApiError(404, 'account_not_provisioned', 'Account profile is not provisioned');
+    return this.accountContext(profile, roles[0]?.role ?? 'user');
+  }
+
+  private accountContext(profile: ProfileRow, role: string): AccountContext {
     return {
       id: profile.id,
       email: profile.email,
+      firstName: profile.first_name,
+      lastName: profile.last_name,
       fullName: profile.full_name,
       displayName: profile.display_name,
       investorType: profile.investor_type,
       organizationId: profile.organization_id,
       complianceStatus: profile.compliance_status,
       provisionedAt: profile.provisioned_at,
-      role: roles[0]?.role ?? 'user',
+      role,
     };
+  }
+
+  async updateProfile(ownerId: string, update: ProfileUpdate): Promise<AccountContext> {
+    const patch: Record<string, string | null> = {};
+    if (update.firstName !== undefined) patch.first_name = update.firstName;
+    if (update.lastName !== undefined) patch.last_name = update.lastName;
+    if (update.displayName !== undefined) patch.display_name = update.displayName;
+    if (update.firstName !== undefined || update.lastName !== undefined) {
+      const current = await this.getAccountContext(ownerId);
+      const firstName = update.firstName ?? current.firstName;
+      const lastName = update.lastName ?? current.lastName;
+      patch.full_name = [firstName, lastName].filter(Boolean).join(' ') || null;
+    }
+    const response = await this.rest(
+      `profiles?id=eq.${encodeURIComponent(ownerId)}&select=${profileColumns}`,
+      {
+        method: 'PATCH',
+        headers: { prefer: 'return=representation' },
+        body: JSON.stringify(patch),
+      },
+    );
+    if (!response.ok) throw new ApiError(503, 'data_unavailable', 'Profile could not be saved');
+    const rows = (await response.json()) as ProfileRow[];
+    const profile = rows[0];
+    if (rows.length !== 1 || !profile)
+      throw new ApiError(404, 'account_not_provisioned', 'Account profile is not provisioned');
+    const roles = await this.jsonRows<RoleRow>(
+      `user_roles?user_id=eq.${encodeURIComponent(ownerId)}&select=role&limit=1`,
+      'Account role is unavailable',
+    );
+    return this.accountContext(profile, roles[0]?.role ?? 'user');
   }
 
   async getOnboardingDraft(ownerId: string): Promise<OnboardingDraftRecord> {

@@ -13,11 +13,13 @@ import { ProductBootstrapProvider } from '@/components/product/ProductBootstrapP
 import { filterNavByRole } from '@/components/security/filterNavByRole';
 import { resolveRole } from '@/components/security/resolveRole';
 import { requireProvisionedUser } from '@/lib/auth';
+import { isIdentityVerified } from '@/lib/account/identity-verification';
+import { loadAccountStatus } from '@/lib/account/status';
 import { getAuthenticatedProductBootstrap } from '@/lib/product/bootstrap';
 
 export default async function DashboardLayout({ children }: { readonly children: ReactNode }) {
   const { user, profile } = await requireProvisionedUser();
-  const role = await resolveRole(user.id);
+  const [role, status] = await Promise.all([resolveRole(user.id), loadAccountStatus()]);
   const navItems = filterNavByRole(dashboardNavItems, role);
   const secondaryItems = filterNavByRole(dashboardSecondaryNavItems, role);
   const mobilePrimaryItems = filterNavByRole(dashboardMobilePrimaryNavItems, role);
@@ -27,7 +29,7 @@ export default async function DashboardLayout({ children }: { readonly children:
     <ProfileMenu
       name={displayName}
       email={profile.email ?? user.email ?? ''}
-      verified={profile.complianceStatus === 'active'}
+      verified={isIdentityVerified(status?.identity_verification)}
     />
   );
   const bootstrap = await getAuthenticatedProductBootstrap({
