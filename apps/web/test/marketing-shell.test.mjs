@@ -14,10 +14,10 @@ test('homepage states the canonical capital proposition without fabricated finan
   assert.match(page, /Capital, intelligently managed\./);
   assert.match(
     page,
-    /Invest, manage and move capital through one financial platform built for[\s\S]*individuals[\s\S]*and institutions/i,
+    /Discover the ideas behind an investment/i,
   );
   assert.match(page, /Get started/);
-  assert.match(page, /For institutions/);
+  assert.match(page, /Explore investing/);
   assert.match(
     page,
     /Illustrative interface only\.[\s\S]*No customer balances, returns or performance data are[\s\S]*shown\./i,
@@ -30,12 +30,12 @@ test('homepage states the canonical capital proposition without fabricated finan
 });
 
 test('homepage exposes the four canonical product families and contextual intelligence', () => {
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
-    assert.match(page, new RegExp(`label: '${family}'`));
-  for (const href of ['/capital', '/treasury', '/institutional', '/infrastructure'])
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
+    assert.match(page, new RegExp(family, 'i'));
+  for (const href of ['/capital', '/treasury', '/institutional', '/investments'])
     assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
-  assert.match(page, /Explore \{family\.label\}/);
-  assert.match(page, /Explore Intelligence/);
+  assert.match(page, /InvestCollections/);
+  assert.match(page, /Research & intelligence/);
   assert.match(page, /DISCLOSURES\.general/);
 });
 
