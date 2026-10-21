@@ -2,8 +2,8 @@
 
 import { useRef, useState, useTransition } from 'react';
 import {
+  persistOperationStore,
   readOperationStore,
-  writeOperationStore,
   type FundingOperationStore,
 } from '@/lib/funding/operation';
 import type { FundingRequestResult } from '@/lib/funding/outcome';
@@ -22,35 +22,48 @@ function sessionStore(): Storage | null {
   }
 }
 
-// Deposit-instruction requests bound to a stable funding operation. Disabling
-// the submit control is only a convenience; duplicate protection comes from
-// the operation key the API replays against.
-export function useDepositInstructions() {
-  const storeRef = useRef<FundingOperationStore | null>(null);
+// Deposit-instruction requests bound to a stable funding operation for the
+// principal identified by `operationScope` (server-derived from the session).
+// Disabling the submit control is only a convenience; duplicate protection
+// comes from the durably stored operation key the API replays against.
+export function useDepositInstructions(operationScope: string) {
+  const storeRef = useRef<{ scope: string; store: FundingOperationStore } | null>(null);
+  const inFlight = useRef(false);
   const [result, setResult] = useState<FundingRequestResult | null>(null);
   const [pending, startTransition] = useTransition();
 
   const deps: FundingRequestDeps = {
-    load: () => (storeRef.current ??= readOperationStore(sessionStore())),
+    load: () => {
+      if (storeRef.current?.scope === operationScope) return storeRef.current.store;
+      const store = readOperationStore(sessionStore(), operationScope);
+      if (store) storeRef.current = { scope: operationScope, store };
+      return store;
+    },
     save: (store) => {
-      storeRef.current = store;
-      writeOperationStore(sessionStore(), store);
+      storeRef.current = { scope: operationScope, store };
+      return persistOperationStore(sessionStore(), operationScope, store);
     },
     mintKey: () => crypto.randomUUID(),
     create: (capability, key, amountAtomic) =>
-      createFundingIntentAction(capability, key, amountAtomic),
-    recover: (fundingIntentId) => getDepositInstructionsAction(fundingIntentId),
+      createFundingIntentAction(operationScope, capability, key, amountAtomic),
+    recover: (fundingIntentId) => getDepositInstructionsAction(operationScope, fundingIntentId),
   };
 
   function request(capability: string, amountAtomic: string | null = null) {
-    if (!capability) return;
+    if (!capability || inFlight.current) return;
+    inFlight.current = true;
     setResult(null);
     startTransition(async () => {
-      setResult(await requestDepositInstructions(deps, capability, amountAtomic));
+      try {
+        setResult(await requestDepositInstructions(deps, capability, amountAtomic));
+      } finally {
+        inFlight.current = false;
+      }
     });
   }
 
   function startNew(capability: string, amountAtomic: string | null = null) {
+    if (inFlight.current) return;
     startNewDepositRequest(deps, capability, amountAtomic);
     setResult(null);
   }

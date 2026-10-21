@@ -6,9 +6,12 @@
 // minted only when the customer explicitly starts a new deposit request, or the
 // API reports the key was already bound to a different request.
 //
-// The record lives in per-tab sessionStorage purely so a reload after a lost
-// response still replays. It is not authority: the API scopes replay to the
-// authenticated owner and owns the canonical intent.
+// The record lives in per-tab sessionStorage so a reload, or a same-tab
+// sign-in after session expiry, still replays. Records are partitioned by an
+// opaque, server-derived operation scope for the authenticated principal, so
+// one account never reuses another account's keys or intent IDs. The record is
+// not authority: the API scopes replay to the authenticated owner and owns the
+// canonical intent.
 
 export interface FundingOperation {
   readonly capability: string;
@@ -19,9 +22,19 @@ export interface FundingOperation {
 
 export type FundingOperationStore = Readonly<Record<string, FundingOperation>>;
 
-export const FUNDING_OPERATION_STORAGE_KEY = 'neptlium.funding-operations.v1';
+const FUNDING_OPERATION_STORAGE_PREFIX = 'neptlium.funding-operations.v2.';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const SCOPE = /^[0-9a-f]{64}$/;
+
+export function isOperationScope(value: unknown): value is string {
+  return typeof value === 'string' && SCOPE.test(value);
+}
+
+export function operationStorageKey(scope: string): string {
+  if (!isOperationScope(scope)) throw new Error('Invalid funding operation scope');
+  return `${FUNDING_OPERATION_STORAGE_PREFIX}${scope}`;
+}
 
 export function isOperationKey(value: unknown): value is string {
   return typeof value === 'string' && UUID.test(value);
@@ -109,19 +122,35 @@ export function parseOperationStore(raw: string | null): FundingOperationStore {
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
-export function readOperationStore(storage: StorageLike | null): FundingOperationStore {
+// Returns null when the stored operations cannot be read. Unknown is not
+// empty: a record that may exist must never be overwritten by a fresh key.
+export function readOperationStore(
+  storage: StorageLike | null,
+  scope: string,
+): FundingOperationStore | null {
+  if (!storage) return null;
   try {
-    return parseOperationStore(storage?.getItem(FUNDING_OPERATION_STORAGE_KEY) ?? null);
+    return parseOperationStore(storage.getItem(operationStorageKey(scope)));
   } catch {
-    return {};
+    return null;
   }
 }
 
-export function writeOperationStore(storage: StorageLike | null, store: FundingOperationStore) {
+// Writes the operations and reads them back. Returns true only when the
+// stored record is verified, i.e. a reload in this tab can recover it.
+// Blocked storage, quota exhaustion and silent write loss all return false.
+export function persistOperationStore(
+  storage: StorageLike | null,
+  scope: string,
+  store: FundingOperationStore,
+): boolean {
+  if (!storage) return false;
   try {
-    storage?.setItem(FUNDING_OPERATION_STORAGE_KEY, JSON.stringify(store));
+    const key = operationStorageKey(scope);
+    const serialized = JSON.stringify(store);
+    storage.setItem(key, serialized);
+    return storage.getItem(key) === serialized;
   } catch {
-    // Storage may be unavailable (private mode, blocked site data). The
-    // in-memory operation still protects retries within this page.
+    return false;
   }
 }

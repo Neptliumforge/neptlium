@@ -11,7 +11,9 @@ export type InstructionLookup =
   // instruction with an address is a usable deposit route.
   | { readonly status: 'RESOLVED'; readonly instruction: DepositInstruction }
   | {
-      readonly status: 'SESSION_EXPIRED' | 'FORBIDDEN' | 'UNAVAILABLE';
+      // PRINCIPAL_CHANGED: the signed-in account is not the one this
+      // operation was recorded for; nothing was read.
+      readonly status: 'SESSION_EXPIRED' | 'FORBIDDEN' | 'UNAVAILABLE' | 'PRINCIPAL_CHANGED';
       readonly message: string;
     };
 
@@ -25,7 +27,17 @@ export type IntentFailure =
   | 'AMBIGUOUS'
   // The operation key was already bound to a different request. A new key is
   // required; the customer must explicitly request again.
-  | 'KEY_CONFLICT';
+  | 'KEY_CONFLICT'
+  // This browser could not durably record the request reference, so a lost
+  // response could not be replayed safely. Nothing was sent.
+  | 'STORAGE_UNAVAILABLE'
+  // The signed-in account differs from the one this page or operation belongs
+  // to (for example after signing in as someone else in another tab). Nothing
+  // was sent; the original operation is retained for its own account.
+  | 'PRINCIPAL_CHANGED'
+  // The operation's recorded intent is not readable by the signed-in account.
+  // The operation is retained; its intent ID is not presented.
+  | 'FORBIDDEN';
 
 export type FundingRequestResult =
   | {
@@ -53,6 +65,34 @@ function errorShape(error: unknown): { status: number | null; code: string | nul
 export const SESSION_EXPIRED_MESSAGE =
   'Your session has expired. Sign in again to continue this deposit request.';
 
+export const PRINCIPAL_CHANGED_MESSAGE =
+  'You are now signed in as a different account than the one this page was opened for. Reload the page to continue. No request was sent.';
+
+export const STORAGE_UNAVAILABLE_MESSAGE =
+  'This browser could not securely save a reference for this request, so it was not sent. Allow site storage for Neptlium, or close unused tabs, then try again.';
+
+export const FORBIDDEN_MESSAGE = 'This deposit request is not available to the signed-in account.';
+
+// Returns the customer to the page they were on after re-authenticating. The
+// sign-in entry validates the destination; it grants no access to it.
+export function signInToContinueHref(returnPath: string): string {
+  return `/auth/sign-in?${new URLSearchParams({ next: returnPath })}`;
+}
+
+export function failureHeading(failure: IntentFailure): string {
+  switch (failure) {
+    case 'AMBIGUOUS':
+      return 'Funding request not confirmed.';
+    case 'FORBIDDEN':
+      return 'Deposit instructions are not available.';
+    case 'STORAGE_UNAVAILABLE':
+    case 'PRINCIPAL_CHANGED':
+      return 'No request was sent.';
+    default:
+      return 'Deposit instructions were not created.';
+  }
+}
+
 export function classifyInstructionFailure(error: unknown): InstructionLookup {
   const { status, code } = errorShape(error);
   if (status === 401 || code === 'session_expired') {
@@ -61,10 +101,7 @@ export function classifyInstructionFailure(error: unknown): InstructionLookup {
   // Funding intents are owner-scoped: an intent the signed-in principal cannot
   // read is reported as not found, which is equivalent to forbidden here.
   if (status === 403 || status === 404 || code === 'forbidden' || code === 'not_found') {
-    return {
-      status: 'FORBIDDEN',
-      message: 'This deposit request is not available to the signed-in account.',
-    };
+    return { status: 'FORBIDDEN', message: FORBIDDEN_MESSAGE };
   }
   return {
     status: 'UNAVAILABLE',

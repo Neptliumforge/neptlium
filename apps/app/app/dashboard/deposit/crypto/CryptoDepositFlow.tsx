@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { Check, Copy, LoaderCircle, ShieldAlert } from 'lucide-react';
 import { useDepositInstructions } from '@/app/dashboard/capital-account/useDepositInstructions';
+import { failureHeading, signInToContinueHref } from '@/lib/funding/outcome';
 
 type Capability = {
   readonly code: string;
@@ -28,10 +29,10 @@ function instructionState(state: string) {
   return state.replaceAll('_', ' ').toLowerCase();
 }
 
-export function CryptoDepositFlow({ capabilities, capabilityError }: { readonly capabilities: readonly Capability[]; readonly capabilityError: boolean }) {
+export function CryptoDepositFlow({ capabilities, capabilityError, operationScope }: { readonly capabilities: readonly Capability[]; readonly capabilityError: boolean; readonly operationScope: string }) {
   const enabledCapabilities = useMemo(() => capabilities.filter((capability) => capability.state === 'ENABLED'), [capabilities]);
   const [selected, setSelected] = useState(enabledCapabilities[0]?.code ?? '');
-  const deposit = useDepositInstructions();
+  const deposit = useDepositInstructions(operationScope);
   const { result, pending } = deposit;
   const [copied, setCopied] = useState(false);
   const selectedCapability = capabilities.find((capability) => capability.code === selected);
@@ -80,7 +81,7 @@ export function CryptoDepositFlow({ capabilities, capabilityError }: { readonly 
         <ol className="deposit-instruction-list"><li>Send only the asset shown above on the exact network shown above.</li><li>Confirm the address in your sending wallet before authorizing the transfer.</li><li>Keep the transaction hash or provider receipt after sending.</li><li>Your available capital updates only after the deposit is verified and reconciled.</li></ol>
         <div className="deposit-evidence-note">Creating instructions records a funding request; it does not mean funds were received. You can follow recorded changes in Activity.</div>
         <div className="mt-4 flex flex-wrap gap-2"><Link className="op-button op-button-primary" href="/dashboard/activity">View activity</Link><Link className="op-button" href="/dashboard/capital">Back to Capital</Link><button className="op-button" type="button" disabled={pending} onClick={() => deposit.startNew(selected)}>Start a new deposit request</button></div>
-      </div> : lookupFailure ? <div className="deposit-unavailable" role="alert"><ShieldAlert size={20} aria-hidden="true"/><div><strong>{lookupFailure.status === 'UNAVAILABLE' ? 'Deposit instructions could not be retrieved.' : 'Deposit instructions are not available.'}</strong><p>{lookupFailure.message} Do not send funds until an address is displayed here.</p>{sessionExpired ? <Link className="op-button" href="/sign-in">Sign in again</Link> : null}</div></div> : !result.ok ? <div className="deposit-unavailable" role="alert"><ShieldAlert size={20} aria-hidden="true"/><div><strong>{result.failure === 'AMBIGUOUS' ? 'Funding request not confirmed.' : 'Deposit instructions were not created.'}</strong><p>{result.error}</p>{sessionExpired ? <Link className="op-button" href="/sign-in">Sign in again</Link> : null}</div></div> : null}
+      </div> : lookupFailure ? <div className="deposit-unavailable" role="alert"><ShieldAlert size={20} aria-hidden="true"/><div><strong>{lookupFailure.status === 'UNAVAILABLE' ? 'Deposit instructions could not be retrieved.' : 'Deposit instructions are not available.'}</strong><p>{lookupFailure.message} Do not send funds until an address is displayed here.</p>{sessionExpired ? <Link className="op-button" href={signInToContinueHref('/dashboard/deposit/crypto')}>Sign in again</Link> : null}</div></div> : !result.ok ? <div className="deposit-unavailable" role="alert"><ShieldAlert size={20} aria-hidden="true"/><div><strong>{failureHeading(result.failure)}</strong><p>{result.error}</p>{sessionExpired ? <Link className="op-button" href={signInToContinueHref('/dashboard/deposit/crypto')}>Sign in again</Link> : null}</div></div> : null}
     </section>
   </div>;
 }

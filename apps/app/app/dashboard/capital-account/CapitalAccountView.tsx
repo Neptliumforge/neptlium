@@ -13,6 +13,7 @@ import type {
 } from '@/lib/api/financial';
 import { createTransferAliasAction } from './actions';
 import { useDepositInstructions } from './useDepositInstructions';
+import { signInToContinueHref } from '@/lib/funding/outcome';
 import {
   FinancialValue,
   ProductStateBadge,
@@ -154,6 +155,7 @@ export function CapitalAccountView({
   transferActivityError,
   aliases,
   aliasError,
+  operationScope,
 }: {
   readonly capabilities: readonly FundingCapability[];
   readonly capabilityError: boolean;
@@ -167,10 +169,15 @@ export function CapitalAccountView({
   readonly transferActivityError: boolean;
   readonly aliases: readonly TransferAlias[];
   readonly aliasError: boolean;
+  readonly operationScope: string;
 }) {
   const [active, setActive] = useState<Tab>('Capital State');
   const [selectedCapability, setSelectedCapability] = useState(capabilities[0]?.code ?? '');
-  const deposit = useDepositInstructions();
+  const deposit = useDepositInstructions(operationScope);
+  const fundingSessionExpired =
+    deposit.result?.ok === false
+      ? deposit.result.failure === 'SESSION_EXPIRED'
+      : deposit.result?.instructions.status === 'SESSION_EXPIRED';
   const isFundingPending = deposit.pending;
   // A lookup failure against a recorded intent is reported as such, never as
   // a failed intent; retrying recovers by the recorded intent ID.
@@ -652,6 +659,15 @@ export function CapitalAccountView({
                       <p className="mt-3 text-sm text-status-danger" role="alert">
                         {fundingError}
                       </p>
+                    ) : null}
+                    {fundingSessionExpired ? (
+                      <Button
+                        className="mt-3"
+                        variant="secondary"
+                        href={signInToContinueHref('/dashboard/capital-account')}
+                      >
+                        Sign in again
+                      </Button>
                     ) : null}
                     <Button className="mt-4" onClick={beginFunding} disabled={isFundingPending}>
                       {isFundingPending ? 'Preparing instructions…' : 'Continue to instructions'}

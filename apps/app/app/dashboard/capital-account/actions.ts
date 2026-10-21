@@ -12,9 +12,12 @@ import { isFundingIntentId, isOperationKey } from '@/lib/funding/operation';
 import {
   classifyInstructionFailure,
   classifyIntentFailure,
+  PRINCIPAL_CHANGED_MESSAGE,
+  SESSION_EXPIRED_MESSAGE,
   type FundingRequestResult,
   type InstructionLookup,
 } from '@/lib/funding/outcome';
+import { checkFundingOperationScope } from '@/lib/funding/scope';
 
 export type FundingIntentActionResult = FundingRequestResult;
 
@@ -24,8 +27,11 @@ export type TransferAliasActionResult =
 
 // Records (or replays) the funding intent for one deposit operation. The
 // caller supplies the operation-scoped idempotency key and must reuse it for
-// every retry of the same request; the API scopes replay to the owner.
+// every retry of the same request; the API scopes replay to the owner. The
+// operation scope must belong to the current session's principal, so a key
+// recorded for one account is never submitted under another.
 export async function createFundingIntentAction(
+  operationScope: string,
   capability: string,
   idempotencyKey: string,
   amountAtomic?: string | null,
@@ -45,6 +51,21 @@ export async function createFundingIntentAction(
       ok: false,
       failure: 'REJECTED',
       error: 'Funding amount must be expressed in positive atomic units.',
+    };
+  }
+
+  const scope = await checkFundingOperationScope(operationScope);
+  if (scope === 'NO_SESSION') {
+    return { ok: false, failure: 'SESSION_EXPIRED', error: SESSION_EXPIRED_MESSAGE };
+  }
+  if (scope === 'MISMATCH') {
+    return { ok: false, failure: 'PRINCIPAL_CHANGED', error: PRINCIPAL_CHANGED_MESSAGE };
+  }
+  if (scope === 'UNVERIFIED') {
+    return {
+      ok: false,
+      failure: 'REJECTED',
+      error: 'We could not verify your signed-in account. No request was sent; try again.',
     };
   }
 
@@ -76,11 +97,20 @@ export async function createFundingIntentAction(
 }
 
 // Recovers deposit instructions for an intent that already exists. Read-only:
-// it never records a new intent.
+// it never records a new intent. The API enforces ownership of the intent; the
+// scope check additionally keeps one account's stored intent from being looked
+// up under another account's session.
 export async function getDepositInstructionsAction(
+  operationScope: string,
   fundingIntentId: string,
 ): Promise<InstructionLookup> {
   if (!isFundingIntentId(fundingIntentId)) return classifyInstructionFailure({ status: 404 });
+  const scope = await checkFundingOperationScope(operationScope);
+  if (scope === 'NO_SESSION') return classifyInstructionFailure({ status: 401 });
+  if (scope === 'MISMATCH') {
+    return { status: 'PRINCIPAL_CHANGED', message: PRINCIPAL_CHANGED_MESSAGE };
+  }
+  if (scope === 'UNVERIFIED') return classifyInstructionFailure({ status: 503 });
   return lookupInstructions(fundingIntentId);
 }
 
