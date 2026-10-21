@@ -1,14 +1,26 @@
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { SettingsExperience } from '@/components/product/RecordExperiences';
-import { MfaEnrollment } from './MfaEnrollment';
+import { settingsDestinations } from '@/components/settings/SettingsShell';
 
 export default function SettingsPage() {
   return (
     <div className="op-stack">
       <SettingsExperience />
-      <section className="op-panel">
-        <div className="op-section-heading"><div><span>Authentication</span><h2>Security controls</h2></div></div>
-        <p className="op-settings-intro">Manage multi-factor authentication and active Supabase Auth sessions. Authentication controls remain separate from financial authority.</p>
-        <div className="op-auth-settings"><MfaEnrollment /></div>
+      <section className="op-panel" aria-labelledby="settings-sections-heading">
+        <div className="op-section-heading">
+          <div>
+            <span>Manage</span>
+            <h2 id="settings-sections-heading">Settings</h2>
+          </div>
+        </div>
+        <nav aria-label="Settings sections" className="grid gap-2 sm:grid-cols-2">
+          {settingsDestinations.map(([label, href]) => (
+            <Link key={href} className="op-inline-link" href={href}>
+              {label} <ArrowRight size={14} />
+            </Link>
+          ))}
+        </nav>
       </section>
     </div>
   );

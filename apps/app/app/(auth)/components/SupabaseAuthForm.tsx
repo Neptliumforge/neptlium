@@ -2,19 +2,24 @@
 
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@neptlium/lib/supabase/browser';
-import { safeInternalPath } from '../auth-utils';
+import { accountEntryHref, safeInternalPath } from '../auth-utils';
 
-export function SupabaseAuthForm({ mode }: { readonly mode: 'sign-in' | 'sign-up' }) {
+export function SupabaseAuthForm({
+  mode,
+  returnTo,
+}: {
+  readonly mode: 'sign-in' | 'sign-up';
+  readonly returnTo: string;
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const destination = safeInternalPath(searchParams.get('next'));
+  const destination = safeInternalPath(returnTo);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -128,7 +133,7 @@ export function SupabaseAuthForm({ mode }: { readonly mode: 'sign-in' | 'sign-up
         {isSignIn ? 'New to Neptlium? ' : 'Already have an account? '}
         <Link
           className="font-medium text-[#35D5C1] underline-offset-4 hover:underline"
-          href={isSignIn ? '/auth/sign-up' : '/auth/sign-in'}
+          href={accountEntryHref(isSignIn ? 'sign-up' : 'sign-in', destination)}
         >
           {isSignIn ? 'Create account' : 'Sign in'}
         </Link>
