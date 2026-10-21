@@ -174,7 +174,7 @@ test.describe('Neptlium unified marketing release', () => {
       'href',
       '/capital',
     );
-    await expect(page.locator('main').getByRole('link', { name: 'Treasury', exact: true }).first()).toHaveAttribute(
+    await expect(page.locator('main').getByRole('link', { name: /^Treasury\s/ }).first()).toHaveAttribute(
       'href',
       '/treasury',
     );
