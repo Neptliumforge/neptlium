@@ -21,7 +21,7 @@ test('CSS inventory reports the active global dependency chain', () => {
 test('CSS inventory preserves known route consumers', () => {
   assert.ok(get('apps/web/app/home-elite.module.css')?.importedBy.includes('apps/web/app/page.tsx'));
   assert.ok(get('apps/web/app/product-pages.module.css')?.importedBy.includes('apps/web/app/portfolio/page.tsx'));
-  assert.ok(get('apps/web/app/product-pages.module.css')?.importedBy.includes('apps/web/app/investments/page.tsx'));
+  assert.ok(get('apps/web/app/home-elite.module.css')?.importedBy.includes('apps/web/app/investments/page.tsx'));
 });
 
 test('retired global layers are not reintroduced into root layout', () => {

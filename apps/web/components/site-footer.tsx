@@ -1,57 +1,118 @@
 import Link from 'next/link';
+import { COLLECTIONS } from '@/lib/content/invest';
 import { Brand } from './brand';
 import { SOLUTIONS } from '@/lib/content/public-architecture';
 import { SITE } from '@/lib/content/site';
 
 const groups = [
-  { label: 'Product', links: [
-    ['Capital', '/capital'], ['Portfolio', '/portfolio'], ['Investments', '/investments'],
-    ['Treasury', '/treasury'], ['Intelligence', '/intelligence'], ['Pay', SITE.payUrl],
-  ] },
+  {
+    label: 'Product',
+    links: [
+      ['Capital', '/capital'],
+      ['Portfolio', '/portfolio'],
+      ['Investments', '/investments'],
+      ['Treasury', '/treasury'],
+      ['Intelligence', '/intelligence'],
+      ['Pay', SITE.payUrl],
+    ],
+  },
   { label: 'Solutions', links: SOLUTIONS.map(({ label, href }) => [label, href] as const) },
-  { label: 'Platform', links: [
-    ['Institutional', '/institutional'], ['Infrastructure', '/infrastructure'], ['Security', '/security'],
-  ] },
-  { label: 'Resources', links: [
-    ['Insights', '/insights'], ['Learn', '/learn'], ['Support', '/contact'],
-  ] },
-  { label: 'Company', links: [
-    ['Company', '/company'], ['Contact', '/contact'],
-  ] },
+  {
+    label: 'Platform',
+    links: [
+      ['Institutional', '/institutional'],
+      ['Infrastructure', '/infrastructure'],
+      ['Security', '/security'],
+    ],
+  },
+  {
+    label: 'Research collections',
+    links: COLLECTIONS.map(({ title, slug }) => [title, `/investments/${slug}`] as const),
+  },
+  {
+    label: 'Resources',
+    links: [
+      ['Insights', '/insights'],
+      ['Learn', '/learn'],
+      ['Support', '/contact'],
+    ],
+  },
+  {
+    label: 'Company',
+    links: [
+      ['Company', '/company'],
+      ['Contact', '/contact'],
+    ],
+  },
 ] as const;
 
 const legalLinks = [
-  ['Legal', '/legal'], ['Terms', '/terms'], ['Privacy', '/privacy'], ['Risk disclosures', '/risk-disclosure'],
-  ['E-delivery', '/e-delivery'], ['Cookies', '/cookie-policy'], ['AML/KYC', '/aml-kyc'],
-  ['Complaints', '/complaints'], ['Accessibility', '/accessibility'],
+  ['Legal', '/legal'],
+  ['Terms', '/terms'],
+  ['Privacy', '/privacy'],
+  ['Risk disclosures', '/risk-disclosure'],
+  ['E-delivery', '/e-delivery'],
+  ['Cookies', '/cookie-policy'],
+  ['AML/KYC', '/aml-kyc'],
+  ['Complaints', '/complaints'],
+  ['Accessibility', '/accessibility'],
 ] as const;
 
 export function SiteFooter() {
-  return <footer className="neptlium-minimal-footer" aria-label="Neptlium footer">
-    <div className="neptlium-minimal-footer__shell">
-      <div className="neptlium-footer-directory">
-        <div className="neptlium-minimal-footer__identity">
-          <Brand tone="teal" />
-          <p>Capital, intelligently managed.</p>
-          <span>One capital operating platform for individuals and organizations.</span>
+  return (
+    <footer className="neptlium-minimal-footer" aria-label="Neptlium footer">
+      <div className="neptlium-minimal-footer__shell">
+        <div className="neptlium-footer-directory">
+          <div className="neptlium-minimal-footer__identity">
+            <Brand tone="teal" />
+            <p>Capital, intelligently managed.</p>
+            <span>One capital operating platform for individuals and organizations.</span>
+          </div>
+          {groups.map((group) => (
+            <nav className="footer-desktop-group" key={group.label} aria-label={group.label}>
+              <strong>{group.label}</strong>
+              {group.links.map(([label, href]) => (
+                <Link key={href} href={href}>
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          ))}
+          <div className="footer-mobile-directory" aria-label="Footer directory">
+            {groups.map((group) => (
+              <details key={group.label}>
+                <summary>{group.label}</summary>
+                <nav aria-label={group.label}>
+                  {group.links.map(([label, href]) => (
+                    <Link key={href} href={href}>
+                      {label}
+                    </Link>
+                  ))}
+                </nav>
+              </details>
+            ))}
+          </div>
+          <nav className="footer-account-group" aria-label="Account">
+            <strong>Account</strong>
+            <a href={SITE.personalSignInUrl}>Sign in</a>
+            <a href={SITE.personalSignUpUrl}>Get started</a>
+            <a href={SITE.businessAppUrl}>Treasury access</a>
+          </nav>
         </div>
-        {groups.map((group) => <nav className="footer-desktop-group" key={group.label} aria-label={group.label}>
-          <strong>{group.label}</strong>
-          {group.links.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
-        </nav>)}
-        <div className="footer-mobile-directory" aria-label="Footer directory">{groups.map((group) => <details key={group.label}><summary>{group.label}</summary><nav aria-label={group.label}>{group.links.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav></details>)}</div>
-        <nav className="footer-account-group" aria-label="Account">
-          <strong>Account</strong>
-          <a href={SITE.personalSignInUrl}>Sign in</a>
-          <a href={SITE.personalSignUpUrl}>Get started</a>
-          <a href={SITE.businessAppUrl}>Treasury access</a>
-        </nav>
+        <div className="neptlium-minimal-footer__base">
+          <nav className="neptlium-minimal-footer__legal" aria-label="Legal">
+            {legalLinks.map(([label, href]) => (
+              <Link key={href} href={href}>
+                {label}
+              </Link>
+            ))}
+          </nav>
+          <a href={SITE.statusUrl}>System status</a>
+          <span className="neptlium-minimal-footer__copyright">
+            © {new Date().getFullYear()} Neptlium
+          </span>
+        </div>
       </div>
-      <div className="neptlium-minimal-footer__base">
-        <nav className="neptlium-minimal-footer__legal" aria-label="Legal">{legalLinks.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav>
-        <a href={SITE.statusUrl}>System status</a>
-        <span className="neptlium-minimal-footer__copyright">© {new Date().getFullYear()} Neptlium</span>
-      </div>
-    </div>
-  </footer>;
+    </footer>
+  );
 }

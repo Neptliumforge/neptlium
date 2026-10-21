@@ -1,3 +1,5 @@
+import { COLLECTIONS } from './invest.ts';
+
 export type PublicRouteClass =
   | 'canonical-indexable'
   | 'public-supporting-noindex'
@@ -110,8 +112,16 @@ export const PRODUCTS = [
 export const PRIMARY_PRODUCTS = PRODUCTS;
 
 export const SOLUTIONS = [
-  { label: 'Capital visibility', href: '/solutions/capital-visibility', description: 'Understand capital across accounts, positions and liquidity.' },
-  { label: 'Treasury coordination', href: '/solutions/treasury-coordination', description: 'Connect liquidity, obligations and funding context.' },
+  {
+    label: 'Capital visibility',
+    href: '/solutions/capital-visibility',
+    description: 'Understand capital across accounts, positions and liquidity.',
+  },
+  {
+    label: 'Treasury coordination',
+    href: '/solutions/treasury-coordination',
+    description: 'Connect liquidity, obligations and funding context.',
+  },
 ] as const satisfies readonly NavigationLink[];
 
 export const INSIGHTS = [
@@ -160,12 +170,36 @@ export const COMPANY = [
 export const PRIMARY_COMPANY = COMPANY;
 
 export const PRODUCT_LINKS = [
-  { label: 'Capital', href: '/capital', description: 'Understand capital, availability and governed movement.' },
-  { label: 'Portfolio', href: '/portfolio', description: 'Understand positions, ownership and portfolio context.' },
-  { label: 'Investments', href: '/investments', description: 'Understand how eligible capital can be put to work.' },
-  { label: 'Treasury', href: '/treasury', description: 'Operate organizational capital with control.' },
-  { label: 'Intelligence', href: '/intelligence', description: 'Decision support grounded in evidence and context.' },
-  { label: 'Infrastructure', href: '/infrastructure', description: 'Build on governed Neptlium primitives.' },
+  {
+    label: 'Capital',
+    href: '/capital',
+    description: 'Understand capital, availability and governed movement.',
+  },
+  {
+    label: 'Portfolio',
+    href: '/portfolio',
+    description: 'Understand positions, ownership and portfolio context.',
+  },
+  {
+    label: 'Investments',
+    href: '/investments',
+    description: 'Understand how eligible capital can be put to work.',
+  },
+  {
+    label: 'Treasury',
+    href: '/treasury',
+    description: 'Operate organizational capital with control.',
+  },
+  {
+    label: 'Intelligence',
+    href: '/intelligence',
+    description: 'Decision support grounded in evidence and context.',
+  },
+  {
+    label: 'Infrastructure',
+    href: '/infrastructure',
+    description: 'Build on governed Neptlium primitives.',
+  },
 ] as const satisfies readonly NavigationLink[];
 
 export const NAVIGATION = [
@@ -203,6 +237,7 @@ export const INDEXABLE_ROUTES = [
   '/infrastructure',
   '/platform',
   '/investments',
+  ...COLLECTIONS.map(({ slug }) => `/investments/${slug}` as const),
   '/portfolio',
   '/allocation',
   '/treasury',
@@ -220,6 +255,9 @@ export const INDEXABLE_ROUTES = [
 ] as const;
 
 export const ROUTE_POLICY: Readonly<Record<string, PublicRouteClass>> = {
+  ...Object.fromEntries(
+    COLLECTIONS.map(({ slug }) => [`/investments/${slug}`, 'canonical-indexable' as const]),
+  ),
   '/': 'canonical-indexable',
   '/personal': 'legacy-redirect',
   '/business': 'legacy-redirect',

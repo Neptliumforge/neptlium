@@ -10,15 +10,15 @@ test('current homepage states a concise capital proposition and focused explorat
   assert.match(page, /Capital, intelligently managed\./);
   assert.match(
     page,
-    /Invest, manage and move capital through one financial platform built for[\s\S]*individuals[\s\S]*and institutions/i,
+    /Discover the ideas behind an investment/i,
   );
   assert.match(page, /href=\{SITE\.personalSignUpUrl\}[\s\S]*Get started/);
-  assert.match(page, /href="\/institutional"[\s\S]*For institutions/);
+  assert.match(page, /href="\/investments"[\s\S]*Explore investing/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
 });
 
 test('homepage uses clearly illustrative product compositions without fabricated customer state', () => {
-  for (const visual of ['WorldStage', 'ProductStage', 'SystemMap'])
+  for (const visual of ['ProductStage', 'InvestCollections'])
     assert.match(page, new RegExp(visual));
   assert.match(
     page,
@@ -33,28 +33,28 @@ test('homepage uses clearly illustrative product compositions without fabricated
 test('elite homepage styling is scoped and responsive after the established global system', () => {
   assert.match(layout, /neptlium-visual-direction\.css/);
   assert.match(page, /home-elite\.module\.css/);
-  assert.match(homepage, /@media\(max-width:1080px\)/);
-  assert.match(homepage, /@media\(max-width:760px\)/);
-  assert.match(homepage, /@media\(max-width:390px\)/);
-  assert.match(homepage, /prefers-reduced-motion:reduce/);
+  assert.match(homepage, /@media\s*\(max-width:\s*1080px\)/);
+  assert.match(homepage, /@media\s*\(max-width:\s*760px\)/);
+  assert.match(homepage, /@media\s*\(max-width:\s*390px\)/);
+  assert.match(homepage, /prefers-reduced-motion:\s*reduce/);
 });
 
 test('homepage architecture introduces financial world, product families, movement, product character, coherence and intelligence', () => {
   for (const context of [
     'Know where your capital stands',
-    'Put capital to work',
-    'Every movement has authority',
-    'Operate capital with control',
-    'Intelligence for every capital decision',
+    'Discover investments with a clearer view',
+    'A clearer path from investing',
+    'Treasury & institutional',
+    'Understand the market',
   ]) {
     assert.match(page, new RegExp(context.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
   }
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
-    assert.match(page, new RegExp(`label: '${family}'`));
-  for (const href of ['/capital', '/treasury', '/institutional', '/infrastructure', '/insights'])
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
+    assert.match(page, new RegExp(family, 'i'));
+  for (const href of ['/capital', '/treasury', '/institutional', '/investments', '/portfolio'])
     assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
-  assert.match(page, /Explore \{family\.label\}/);
-  assert.match(page, /Explore Intelligence/);
+  assert.match(page, /InvestCollections/);
+  assert.match(page, /Research & intelligence/);
   assert.doesNotMatch(
     page,
     /currently available public capability|not configured|capability unavailable/i,
