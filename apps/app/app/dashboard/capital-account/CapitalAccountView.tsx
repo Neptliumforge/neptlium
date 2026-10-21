@@ -6,13 +6,14 @@ import { ArrowRight, Check, Copy, ShieldCheck } from 'lucide-react';
 import { Button, Input, Label, Section, Stack } from '@neptlium/ui';
 import type {
   CanonicalBalance,
-  DepositInstruction,
   FundingActivity,
   FundingCapability,
   TransferActivity,
   TransferAlias,
 } from '@/lib/api/financial';
-import { createFundingIntentAction, createTransferAliasAction } from './actions';
+import { createTransferAliasAction } from './actions';
+import { useDepositInstructions } from './useDepositInstructions';
+import { signInToContinueHref } from '@/lib/funding/outcome';
 import {
   FinancialValue,
   ProductStateBadge,
@@ -154,6 +155,7 @@ export function CapitalAccountView({
   transferActivityError,
   aliases,
   aliasError,
+  operationScope,
 }: {
   readonly capabilities: readonly FundingCapability[];
   readonly capabilityError: boolean;
@@ -167,12 +169,29 @@ export function CapitalAccountView({
   readonly transferActivityError: boolean;
   readonly aliases: readonly TransferAlias[];
   readonly aliasError: boolean;
+  readonly operationScope: string;
 }) {
   const [active, setActive] = useState<Tab>('Capital State');
   const [selectedCapability, setSelectedCapability] = useState(capabilities[0]?.code ?? '');
-  const [fundingResult, setFundingResult] = useState<DepositInstruction | null>(null);
-  const [fundingError, setFundingError] = useState<string | null>(null);
-  const [isFundingPending, startFunding] = useTransition();
+  const deposit = useDepositInstructions(operationScope);
+  const fundingSessionExpired =
+    deposit.result?.ok === false
+      ? deposit.result.failure === 'SESSION_EXPIRED'
+      : deposit.result?.instructions.status === 'SESSION_EXPIRED';
+  const isFundingPending = deposit.pending;
+  // A lookup failure against a recorded intent is reported as such, never as
+  // a failed intent; retrying recovers by the recorded intent ID.
+  const fundingResult =
+    deposit.result?.ok && deposit.result.instructions.status === 'RESOLVED'
+      ? deposit.result.instructions.instruction
+      : null;
+  const fundingError = !deposit.result
+    ? null
+    : deposit.result.ok
+      ? deposit.result.instructions.status === 'RESOLVED'
+        ? null
+        : deposit.result.instructions.message
+      : deposit.result.error;
   const [copied, setCopied] = useState<string | null>(null);
 
   const [selectedTransferCapability, setSelectedTransferCapability] = useState(
@@ -241,16 +260,7 @@ export function CapitalAccountView({
 
   function beginFunding() {
     if (!selected || selected.state !== 'ENABLED') return;
-    setFundingError(null);
-    setFundingResult(null);
-    startFunding(async () => {
-      const result = await createFundingIntentAction(selected.code);
-      if (!result.ok) {
-        setFundingError(result.error);
-        return;
-      }
-      setFundingResult(result.instructions);
-    });
+    deposit.request(selected.code);
   }
 
   function saveDestination() {
@@ -516,8 +526,7 @@ export function CapitalAccountView({
                     value={selectedCapability}
                     onChange={(event) => {
                       setSelectedCapability(event.target.value);
-                      setFundingResult(null);
-                      setFundingError(null);
+                      deposit.clear();
                     }}
                     className="mt-2 h-11 w-full rounded-md border border-border-default bg-surface-1 px-3 text-sm text-text-primary focus:border-border-focus focus:outline-none focus:shadow-[var(--shadow-focus-ring)]"
                   >
@@ -630,6 +639,14 @@ export function CapitalAccountView({
                       <p className="sr-only" aria-live="polite">
                         {copied ? `${copied} copied` : ''}
                       </p>
+                      <Button
+                        className="mt-4"
+                        variant="secondary"
+                        onClick={() => deposit.startNew(selected.code)}
+                        disabled={isFundingPending}
+                      >
+                        Start a new deposit request
+                      </Button>
                     </div>
                   </div>
                 ) : (
@@ -642,6 +659,15 @@ export function CapitalAccountView({
                       <p className="mt-3 text-sm text-status-danger" role="alert">
                         {fundingError}
                       </p>
+                    ) : null}
+                    {fundingSessionExpired ? (
+                      <Button
+                        className="mt-3"
+                        variant="secondary"
+                        href={signInToContinueHref('/dashboard/capital-account')}
+                      >
+                        Sign in again
+                      </Button>
                     ) : null}
                     <Button className="mt-4" onClick={beginFunding} disabled={isFundingPending}>
                       {isFundingPending ? 'Preparing instructions…' : 'Continue to instructions'}
