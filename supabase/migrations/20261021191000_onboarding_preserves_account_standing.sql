@@ -1,7 +1,7 @@
 -- Issue #109: onboarding must not change account standing.
 --
 -- complete_account_onboarding (last defined in
--- 20260825053749_clerk_application_identity_cutover.sql) unconditionally set
+-- migration version 20260825053749) unconditionally set
 -- compliance_status = 'pending' and provisioned_at = now(). The customer can
 -- call it through POST /v1/account/onboarding at any time, so a suspended or
 -- revoked customer could resubmit onboarding and reset their own standing.

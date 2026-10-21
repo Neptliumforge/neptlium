@@ -105,7 +105,7 @@ create table public.onboarding_drafts (user_id uuid primary key references auth.
 create table public.identity_principals (id uuid primary key, status text not null default 'ACTIVE');
 
 -- complete_account_onboarding as last defined in tracked history
--- (20260825053749_clerk_application_identity_cutover.sql), verbatim.
+-- (migration version 20260825053749), verbatim.
 -- Onboarding now accepts only an existing active internal principal/profile.
 -- It intentionally does not create the superseded per-customer wallet model.
 create or replace function public.complete_account_onboarding(
