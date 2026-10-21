@@ -74,12 +74,17 @@ export function getFundingCapabilities() {
   return apiRequest<{ environment: 'LIVE'; custody_model: 'OMNIBUS'; capabilities: readonly FundingCapability[] }>('/v1/funding/capabilities');
 }
 
+// The idempotency key is operation-scoped and supplied by the caller: every
+// retry of one deposit request must reuse it so the API replays the recorded
+// intent instead of creating another.
 export function createFundingIntent(input: {
   readonly capability: string;
   readonly amountAtomic?: string;
+  readonly idempotencyKey: string;
 }) {
   return apiRequest<FundingActivity & { readonly replayed: boolean }>('/v1/funding/intents', {
     method: 'POST',
+    headers: { 'idempotency-key': input.idempotencyKey },
     body: JSON.stringify({
       capability: input.capability,
       ...(input.amountAtomic ? { amount_atomic: input.amountAtomic } : {}),

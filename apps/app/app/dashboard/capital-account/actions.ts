@@ -6,57 +6,120 @@ import {
   createFundingIntent,
   createTransferAlias,
   getDepositInstructionsForIntent,
-  type DepositInstruction,
-  type FundingActivity,
   type TransferAlias,
 } from '@/lib/api/financial';
+import { isFundingIntentId, isOperationKey } from '@/lib/funding/operation';
+import {
+  classifyInstructionFailure,
+  classifyIntentFailure,
+  PRINCIPAL_CHANGED_MESSAGE,
+  SESSION_EXPIRED_MESSAGE,
+  type FundingRequestResult,
+  type InstructionLookup,
+} from '@/lib/funding/outcome';
+import { checkFundingOperationScope } from '@/lib/funding/scope';
 
-export type FundingIntentActionResult =
-  | {
-      readonly ok: true;
-      readonly intent: FundingActivity;
-      readonly instructions: DepositInstruction;
-    }
-  | { readonly ok: false; readonly error: string };
+export type FundingIntentActionResult = FundingRequestResult;
 
 export type TransferAliasActionResult =
   | { readonly ok: true; readonly alias: TransferAlias; readonly message: string }
   | { readonly ok: false; readonly error: string };
 
+// Records (or replays) the funding intent for one deposit operation. The
+// caller supplies the operation-scoped idempotency key and must reuse it for
+// every retry of the same request; the API scopes replay to the owner. The
+// operation scope must belong to the current session's principal, so a key
+// recorded for one account is never submitted under another.
 export async function createFundingIntentAction(
+  operationScope: string,
   capability: string,
-  amountAtomic?: string,
+  idempotencyKey: string,
+  amountAtomic?: string | null,
 ): Promise<FundingIntentActionResult> {
-  if (!capability) return { ok: false, error: 'Choose a governed funding asset first.' };
+  if (!capability) {
+    return { ok: false, failure: 'REJECTED', error: 'Choose a governed funding asset first.' };
+  }
+  if (!isOperationKey(idempotencyKey)) {
+    return {
+      ok: false,
+      failure: 'REJECTED',
+      error: 'This deposit request has no valid request reference. No request was sent.',
+    };
+  }
   if (amountAtomic && (!/^\d+$/.test(amountAtomic) || BigInt(amountAtomic) <= 0n)) {
-    return { ok: false, error: 'Funding amount must be expressed in positive atomic units.' };
+    return {
+      ok: false,
+      failure: 'REJECTED',
+      error: 'Funding amount must be expressed in positive atomic units.',
+    };
   }
 
+  const scope = await checkFundingOperationScope(operationScope);
+  if (scope === 'NO_SESSION') {
+    return { ok: false, failure: 'SESSION_EXPIRED', error: SESSION_EXPIRED_MESSAGE };
+  }
+  if (scope === 'MISMATCH') {
+    return { ok: false, failure: 'PRINCIPAL_CHANGED', error: PRINCIPAL_CHANGED_MESSAGE };
+  }
+  if (scope === 'UNVERIFIED') {
+    return {
+      ok: false,
+      failure: 'REJECTED',
+      error: 'We could not verify your signed-in account. No request was sent; try again.',
+    };
+  }
+
+  let intent: Awaited<ReturnType<typeof createFundingIntent>>;
   try {
-    const intent = await createFundingIntent({
+    intent = await createFundingIntent({
       capability,
+      idempotencyKey,
       ...(amountAtomic ? { amountAtomic } : {}),
     });
-    const instructions = await getDepositInstructionsForIntent(intent.id);
-    revalidatePath('/dashboard');
-    revalidatePath('/dashboard/capital');
-    revalidatePath('/dashboard/capital-account');
-    revalidatePath('/dashboard/activity');
-    revalidatePath('/dashboard/deposit');
-    return { ok: true, intent, instructions };
   } catch (error) {
-    if (error instanceof ApiClientError) {
-      if (error.code === 'provider_capability_unavailable') {
-        return { ok: false, error: 'This funding rail is not currently available.' };
-      }
-      if (error.code === 'provider_not_configured') {
-        return { ok: false, error: 'This funding method is not currently available.' };
-      }
-      if (error.code === 'session_expired') {
-        return { ok: false, error: 'Your session has expired. Sign in again before creating funding instructions.' };
-      }
-    }
-    return { ok: false, error: 'The governed funding intent could not be created.' };
+    return { ok: false, ...classifyIntentFailure(error) };
+  }
+
+  // The intent is now durably recorded by the API. A failed instruction lookup
+  // is classified against that intent and never reported as a failed intent.
+  const instructions = await lookupInstructions(intent.id);
+  revalidatePath('/dashboard');
+  revalidatePath('/dashboard/capital');
+  revalidatePath('/dashboard/capital-account');
+  revalidatePath('/dashboard/activity');
+  revalidatePath('/dashboard/deposit');
+  return {
+    ok: true,
+    intentId: intent.id,
+    source: intent.replayed ? 'REPLAYED' : 'CREATED',
+    instructions,
+  };
+}
+
+// Recovers deposit instructions for an intent that already exists. Read-only:
+// it never records a new intent. The API enforces ownership of the intent; the
+// scope check additionally keeps one account's stored intent from being looked
+// up under another account's session.
+export async function getDepositInstructionsAction(
+  operationScope: string,
+  fundingIntentId: string,
+): Promise<InstructionLookup> {
+  if (!isFundingIntentId(fundingIntentId)) return classifyInstructionFailure({ status: 404 });
+  const scope = await checkFundingOperationScope(operationScope);
+  if (scope === 'NO_SESSION') return classifyInstructionFailure({ status: 401 });
+  if (scope === 'MISMATCH') {
+    return { status: 'PRINCIPAL_CHANGED', message: PRINCIPAL_CHANGED_MESSAGE };
+  }
+  if (scope === 'UNVERIFIED') return classifyInstructionFailure({ status: 503 });
+  return lookupInstructions(fundingIntentId);
+}
+
+async function lookupInstructions(fundingIntentId: string): Promise<InstructionLookup> {
+  try {
+    const instruction = await getDepositInstructionsForIntent(fundingIntentId);
+    return { status: 'RESOLVED', instruction };
+  } catch (error) {
+    return classifyInstructionFailure(error);
   }
 }
 
