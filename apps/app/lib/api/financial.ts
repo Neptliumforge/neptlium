@@ -15,8 +15,9 @@ export interface FundingCapability {
 export interface CanonicalBalance {
   readonly asset: string;
   readonly network: string | null;
-  readonly decimals: number;
-  readonly atomicPrecision: number;
+  /** Governed precision for this exact asset and network; null when not governed. */
+  readonly decimals: number | null;
+  readonly atomic_precision?: number | null;
   readonly total_atomic: string;
   readonly available_atomic: string;
   readonly reserved_atomic: string;
@@ -86,8 +87,24 @@ export function createFundingIntent(input: {
     }),
   });
 }
+/** Canonical balances contract; see docs/financial/CANONICAL_BALANCES.md. */
+export interface CanonicalBalancesResponse {
+  readonly contract_version?: number;
+  /** EMPTY is the version 1 shape and is never treated as zero. */
+  readonly state: 'NOT_INITIALIZED' | 'ZERO' | 'VALUE' | 'EMPTY';
+  readonly source: 'NEPTLIUM_CANONICAL_LEDGER';
+  readonly as_of?: string;
+  readonly ledger_initialized_at?: string | null;
+  readonly reporting?: {
+    readonly currency: string;
+    readonly decimals: number;
+    readonly total_minor: string | null;
+    readonly valuation: 'ZERO_LEDGER' | 'UNAVAILABLE';
+  };
+  readonly balances: readonly CanonicalBalance[];
+}
 export function getCanonicalBalances() {
-  return apiRequest<{ state: 'VALUE' | 'EMPTY'; source: 'NEPTLIUM_CANONICAL_LEDGER'; balances: readonly CanonicalBalance[] }>('/v1/capital-account/balances');
+  return apiRequest<CanonicalBalancesResponse>('/v1/capital-account/balances');
 }
 export function getFundingActivity() {
   return apiRequest<{ state: 'VALUE' | 'EMPTY'; data: readonly FundingActivity[] }>('/v1/funding/activity');

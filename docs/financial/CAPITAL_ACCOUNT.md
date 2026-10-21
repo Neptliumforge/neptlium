@@ -35,6 +35,8 @@ Circle Developer-Controlled Wallets is provider infrastructure for supported dig
 
 Canonical customer capital comes from the Neptlium ledger after the required governed posting and reconciliation lifecycle. Provider observations, pending funding intents, deposit instructions, and UI completion states are not substitutes for canonical availability.
 
+How balances are aggregated, how an initialized zero account differs from an unknown or uninitialized one, and how amounts are displayed is defined in [Canonical Balances](CANONICAL_BALANCES.md).
+
 ## NEXT BOUNDARY
 
 The next movement slice must preserve the same customer/API separation for Withdraw and Transfer. Existing `/v1/treasury/*` naming used by legacy personal transfer plumbing is transitional debt and must not define the customer product boundary. Personal movement APIs should converge on Capital Account semantics without changing financial authority or bypassing existing fail-closed execution gates.

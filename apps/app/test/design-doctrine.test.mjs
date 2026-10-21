@@ -47,7 +47,7 @@ test('overview derives governed capital state from the shared bootstrap without 
   assert.match(bootstrap, /getCanonicalBalances\(\)/);
   assert.match(bootstrap, /getFundingCapabilities\(\)/);
   assert.match(bootstrap, /getTransferCapabilities\(\)/);
-  assert.match(experience, /snapshot\.balances\.state === 'READY'/);
+  assert.match(experience, /capitalBalanceView\(snapshot\.balanceSummary\)/);
   assert.match(experience, /Your capital/);
   assert.match(experience, /Shown separately because no verified combined valuation is available/);
   assert.match(experience, /PrimaryActions/);

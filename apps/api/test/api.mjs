@@ -237,7 +237,9 @@ test('legacy provider address route is retired while canonical customer balance 
   const balance = await app.inject({ method: 'GET', url: '/v1/capital-account/balances', headers });
   assert.equal(balance.statusCode, 200);
   assert.equal(balance.json().source, 'NEPTLIUM_CANONICAL_LEDGER');
-  assert.equal(balance.json().state, 'EMPTY');
+  assert.equal(balance.json().contract_version, 2);
+  assert.equal(balance.json().state, 'NOT_INITIALIZED');
+  assert.equal(balance.json().reporting.total_minor, null);
   assert.deepEqual(balance.json().balances, []);
   assert.equal(JSON.stringify(balance.json()).includes('12.5'), false);
 });
@@ -272,7 +274,7 @@ test('retired provider-wallet routes remain authenticated and fail closed for ev
   });
   assert.equal(otherBalance.statusCode, 200);
   assert.equal(otherBalance.json().source, 'NEPTLIUM_CANONICAL_LEDGER');
-  assert.equal(otherBalance.json().state, 'EMPTY');
+  assert.equal(otherBalance.json().state, 'NOT_INITIALIZED');
   assert.deepEqual(otherBalance.json().balances, []);
   assert.equal(
     (

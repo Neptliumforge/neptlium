@@ -18,6 +18,12 @@ export interface CanonicalBalance {
   restrictedAtomic: string;
 }
 
+/** Exact capital ledger aggregation and initialization; see docs/financial/CANONICAL_BALANCES.md. */
+export interface CanonicalBalanceSummary {
+  initializedAt: string | null;
+  balances: CanonicalBalance[];
+}
+
 export interface FundingIntentRecord {
   id: string;
   ownerId: string;
@@ -86,6 +92,7 @@ export interface FinancialRepository {
   listFundingIntents(ownerId: string, limit: number): Promise<FundingIntentRecord[]>;
   getDepositRoute(ownerId: string, fundingIntentId: string): Promise<DepositRouteRecord | null>;
   getCanonicalBalances(ownerId: string): Promise<CanonicalBalance[]>;
+  getCanonicalBalanceSummary(ownerId: string): Promise<CanonicalBalanceSummary>;
   listAliases(ownerId: string): Promise<TransferAliasRecord[]>;
   createAlias(input: {
     ownerId: string;
@@ -158,12 +165,47 @@ type TransferRow = {
   updated_at: string;
   request_digest?: string;
 };
-type PostingRow = {
-  direction: 'debit' | 'credit';
-  amount_atomic: string | number;
-  asset: string;
-  ledger_accounts: { account_code: string; account_class: string; network: string | null } | null;
-};
+const atomicPattern = /^-?\d+$/;
+
+function parseBalanceSummary(value: unknown): CanonicalBalanceSummary {
+  const invalid = () =>
+    new ApiError(503, 'financial_storage_unavailable', 'Canonical balances are unavailable');
+  if (!value || typeof value !== 'object') throw invalid();
+  const { initialized_at: initializedAt, balances } = value as Record<string, unknown>;
+  if (initializedAt !== null && typeof initializedAt !== 'string') throw invalid();
+  if (!Array.isArray(balances)) throw invalid();
+  return {
+    initializedAt,
+    balances: balances.map((row) => {
+      const item = row as Record<string, unknown>;
+      const atomic = (key: string) => {
+        const amount = item[key];
+        if (typeof amount !== 'string' || !atomicPattern.test(amount)) throw invalid();
+        return amount;
+      };
+      if (typeof item.asset !== 'string' || (item.network !== null && typeof item.network !== 'string'))
+        throw invalid();
+      const availableAtomic = atomic('available_atomic');
+      const reservedAtomic = atomic('reserved_atomic');
+      const pendingAtomic = atomic('pending_atomic');
+      const restrictedAtomic = atomic('restricted_atomic');
+      return {
+        asset: item.asset,
+        network: item.network as string | null,
+        availableAtomic,
+        reservedAtomic,
+        pendingAtomic,
+        restrictedAtomic,
+        totalAtomic: (
+          BigInt(availableAtomic) +
+          BigInt(reservedAtomic) +
+          BigInt(pendingAtomic) +
+          BigInt(restrictedAtomic)
+        ).toString(),
+      };
+    }),
+  };
+}
 
 const dbEnvironment = (value: ProviderEnvironment) => value.toLowerCase();
 const domainEnvironment = (value: string): ProviderEnvironment =>
@@ -273,6 +315,7 @@ export class SupabaseFinancialRepository implements FinancialRepository {
       ['reconciliation_items', 'id'],
       ['transfer_executions', 'id'],
       ['capital_reservations', 'id'],
+      ['capital_ledger_initializations', 'owner_id,initialized_at,source'],
     ];
     try {
       const probes = await Promise.all(
@@ -353,47 +396,18 @@ export class SupabaseFinancialRepository implements FinancialRepository {
     return row ? depositRoute(row) : null;
   }
   async getCanonicalBalances(ownerId: string): Promise<CanonicalBalance[]> {
-    const rows = await this.rows<PostingRow>(
-      `ledger_postings?select=direction,amount_atomic,asset,ledger_accounts!inner(account_code,account_class,network,owner_id)&ledger_accounts.owner_id=eq.${encodeURIComponent(ownerId)}`,
-      'Canonical balances are unavailable',
-    );
-    const balances = new Map<string, CanonicalBalance>();
-    for (const row of rows) {
-      const account = row.ledger_accounts;
-      if (!account || !account.account_code.startsWith('capital:')) continue;
-      const key = `${row.asset}:${account.network ?? ''}`;
-      const current = balances.get(key) ?? {
-        asset: row.asset,
-        network: account.network,
-        totalAtomic: '0',
-        availableAtomic: '0',
-        reservedAtomic: '0',
-        pendingAtomic: '0',
-        restrictedAtomic: '0',
-      };
-      const atomicText = String(row.amount_atomic).split('.')[0] ?? '0';
-      const signed = (row.direction === 'credit' ? 1n : -1n) * BigInt(atomicText);
-      const field =
-        account.account_code === 'capital:available'
-          ? 'availableAtomic'
-          : account.account_code === 'capital:reserved'
-            ? 'reservedAtomic'
-            : account.account_code === 'capital:pending'
-              ? 'pendingAtomic'
-              : account.account_code === 'capital:restricted'
-                ? 'restrictedAtomic'
-                : null;
-      if (field) current[field] = (BigInt(current[field]) + signed).toString();
-      balances.set(key, current);
-    }
-    for (const value of balances.values())
-      value.totalAtomic = (
-        BigInt(value.availableAtomic) +
-        BigInt(value.reservedAtomic) +
-        BigInt(value.pendingAtomic) +
-        BigInt(value.restrictedAtomic)
-      ).toString();
-    return [...balances.values()];
+    return (await this.getCanonicalBalanceSummary(ownerId)).balances;
+  }
+  async getCanonicalBalanceSummary(ownerId: string): Promise<CanonicalBalanceSummary> {
+    // Aggregated in the database with numeric arithmetic and returned as decimal
+    // strings: no JSON-number precision loss and no Data API row-limit truncation.
+    const response = await this.rest('rpc/canonical_capital_balance_summary', {
+      method: 'POST',
+      body: JSON.stringify({ p_owner_id: ownerId }),
+    });
+    if (!response.ok)
+      throw new ApiError(503, 'financial_storage_unavailable', 'Canonical balances are unavailable');
+    return parseBalanceSummary(await response.json());
   }
   async listAliases(ownerId: string) {
     return (
@@ -555,8 +569,15 @@ export class MemoryFinancialRepository implements FinancialRepository {
     const value = this.depositRoutes.get(fundingIntentId);
     return value && value.ownerId === ownerId ? value : null;
   }
+  readonly initializedOwners = new Map<string, string>();
   async getCanonicalBalances(ownerId: string) {
     return structuredClone(this.balancesByOwner.get(ownerId) ?? []);
+  }
+  async getCanonicalBalanceSummary(ownerId: string) {
+    return {
+      initializedAt: this.initializedOwners.get(ownerId) ?? null,
+      balances: await this.getCanonicalBalances(ownerId),
+    };
   }
   async listAliases(ownerId: string) {
     return [...this.aliases.values()].filter((x) => x.ownerId === ownerId);
