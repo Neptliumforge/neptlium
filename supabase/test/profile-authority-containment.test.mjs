@@ -73,3 +73,22 @@ test('database authorization test applies the tracked containment migration', ()
     assert.ok(run.includes(scenario), `missing scenario: ${scenario}`);
   }
 });
+
+test('onboarding is a one-time transition that never resets account standing', () => {
+  const onboarding = read(
+    'supabase/migrations/20261021191000_onboarding_preserves_account_standing.sql',
+  );
+  assert.match(
+    onboarding,
+    /if v_provisioned_at is not null then\s+return query select target_user_id;\s+return;/,
+  );
+  assert.match(onboarding, /compliance_status = coalesce\(p\.compliance_status, 'pending'\)/);
+  assert.doesNotMatch(onboarding, /compliance_status = 'pending'/);
+  assert.match(
+    onboarding,
+    /revoke all on function public\.complete_account_onboarding\(uuid, jsonb\)\s+from public, anon, authenticated/,
+  );
+  const run = read('supabase/test/profile-authority/run.sql');
+  assert.ok(run.includes('resubmitted onboarding keeps a suspended account suspended'));
+  assert.ok(run.includes('20261021191000_onboarding_preserves_account_standing.sql'));
+});
