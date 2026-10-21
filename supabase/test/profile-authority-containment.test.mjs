@@ -83,7 +83,8 @@ test('onboarding is a one-time transition that never resets account standing', (
     /if v_provisioned_at is not null then\s+return query select target_user_id;\s+return;/,
   );
   assert.match(onboarding, /compliance_status = coalesce\(p\.compliance_status, 'pending'\)/);
-  assert.doesNotMatch(onboarding, /compliance_status = 'pending'/);
+  const onboardingCode = onboarding.replace(/--.*$/gm, '');
+  assert.doesNotMatch(onboardingCode, /compliance_status = 'pending'/);
   assert.match(
     onboarding,
     /revoke all on function public\.complete_account_onboarding\(uuid, jsonb\)\s+from public, anon, authenticated/,
