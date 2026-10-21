@@ -151,9 +151,18 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         ],
       },
       {
+        heading: 'Using the website',
+        paragraphs: [
+          'The website is designed to support keyboard navigation, a skip-to-content link, visible focus and your browser’s text-size and zoom controls. Light, Dark and System appearance preferences are intended to help you choose a comfortable reading experience.',
+          'Where an interface includes motion, reduced-motion preferences should be respected. Color should support meaning alongside text rather than being the only way information is communicated.',
+        ],
+      },
+      {
         heading: 'Contact',
         paragraphs: [
           'If you encounter an accessibility barrier, please email support@neptlium.com so we can address it.',
+          'Include the page address, what you were trying to do, the barrier you encountered and your browser or assistive technology if you are comfortable sharing it. A redacted screenshot or description of an alternative format that would help can make the issue easier to understand. Do not send passwords, verification codes or sensitive financial records.',
+          'This statement describes our accessibility aims and feedback route. It is not a claim that every page has been independently certified as conforming to an accessibility standard.',
         ],
       },
     ],

@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -120,6 +121,10 @@ function CapitalCorePage() {
 }
 
 
-export default function CapitalPage() {
+function CapitalPageContent() {
   return <><CapitalCorePage /><PersonalLegacyContent /></>;
+}
+
+export default function CapitalPage() {
+  return <><CapitalPageContent /><PageContext route="/capital" /></>;
 }

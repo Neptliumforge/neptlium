@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -9,9 +10,9 @@ export const metadata = createPageMetadata({
   path: '/products',
 });
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   return (
-    <main className="family-page" data-npt-surface="ivory">
+    <div className="family-page" data-npt-surface="ivory">
       <div className="family-shell">
         <section className="family-hero" aria-labelledby="products-title">
           <div>
@@ -33,6 +34,10 @@ export default function ProductsPage() {
           ))}
         </section>
       </div>
-    </main>
+    </div>
   );
+}
+
+export default function ProductsPage() {
+  return <><ProductsPageContent /><PageContext route="/products" /></>;
 }
