@@ -253,22 +253,25 @@ html {
 .site-header.capital-command-bar[data-home='true'][data-scrolled='false'] {
   position: absolute;
   inset: 0 0 auto;
-  border-bottom-color: var(--web-rule-dark);
-  background: var(--web-carbon);
-  color: var(--web-ivory);
+  border-bottom-color: color-mix(in srgb, var(--n-warm-white) 14%, transparent);
+  background: var(--canvas-home);
+  color: var(--n-warm-white);
 }
 
 .site-header.capital-command-bar[data-home='true'][data-scrolled='true'] {
   position: fixed;
   inset: 0 0 auto;
   height: 4.125rem;
+  background: var(--canvas-home);
+  color: var(--n-warm-white);
+  border-bottom-color: color-mix(in srgb, var(--n-warm-white) 14%, transparent);
 }
 
 .desktop-command-nav {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 0.05rem;
+  gap: var(--space-4);
 }
 
 .command-menu-root {

@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -13,7 +14,7 @@ const capabilities = [
   ['Recommendation', 'Present decision support with evidence and limits while leaving authorization and execution under governed human control.'],
 ] as const;
 
-export default function IntelligencePage() {
+function IntelligencePageContent() {
   return <div className="family-page" data-route-canvas="intelligence">
     <div className="family-shell">
       <section className="family-hero" aria-labelledby="intelligence-title">
@@ -24,4 +25,8 @@ export default function IntelligencePage() {
       <p className="family-note">Transaction intelligence is observational and non-canonical. Recommendations do not authorize movement, post the ledger, establish settlement or replace reconciliation.</p>
     </div>
   </div>;
+}
+
+export default function IntelligencePage() {
+  return <><IntelligencePageContent /><PageContext route="/intelligence" /></>;
 }

@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { SOLUTIONS } from '@/lib/content/public-architecture';
@@ -10,9 +11,13 @@ const solutionDetails = [
   { id:'treasury-coordination', title:'Treasury coordination', question:'Liquidity should be read against obligations, timing and portfolio activity.', body:'An isolated cash view cannot explain why capital is held, what funding requirements are approaching, or how allocation intent changes future liquidity needs. Neptlium brings treasury context into the wider capital picture so reserves, movement, operating liquidity and readiness can be reviewed together.', boundary:'Understanding treasury state is distinct from managing cash or executing a treasury action. Timing, source, provider state, permissions and authorization remain explicit dependencies.', links:[['Treasury','/treasury'],['Capital','/capital']] },
 ] as const;
 
-export default function SolutionsPage(){return <div className="architecture-page solutions-hub">
+function SolutionsPageContent(){return <div className="architecture-page solutions-hub">
 <section className="architecture-hero"><div className="web-shell architecture-hero-grid"><div><p className="web-eyebrow on-light">Solutions</p><h1>Resolve operating ambiguity before it becomes financial consequence.</h1></div><div className="architecture-lead"><p>Capital operations become difficult when portfolio context, liquidity, movement, allocation and authority are split across systems that do not preserve each other’s state.</p><p>Neptlium approaches these problems as one operating model: connect what belongs together, and keep distinct what carries different evidentiary or financial meaning.</p></div></div></section>
 <section className="architecture-section architecture-compact" aria-label="Solution index"><div className="web-shell solution-index">{SOLUTIONS.map((s,i)=><a href={s.href} key={s.href}><span>{String(i+1).padStart(2,'0')}</span><strong>{s.label}</strong></a>)}</div></section>
 <section className="architecture-section solutions-detail" aria-labelledby="solutions-title"><div className="web-shell"><div className="architecture-section-heading"><p className="web-eyebrow on-light">Operating needs</p><h2 id="solutions-title">Two operating needs. One coherent platform.</h2></div><div className="solution-essays">{solutionDetails.map((s,i)=><article id={s.id} key={s.id}><span>{String(i+1).padStart(2,'0')}</span><div><p className="solution-label">{s.title}</p><h3>{s.question}</h3><p>{s.body}</p><p><strong>Boundary.</strong> {s.boundary}</p><div className="inline-links">{s.links.map(([label,href])=><Link href={href} key={href}>{label} <ArrowRight aria-hidden="true" /></Link>)}</div></div></article>)}</div></div></section>
 <section className="architecture-cta architecture-dark"><div className="web-shell architecture-cta-inner"><div><p className="web-eyebrow">System view</p><h2>See how these operating needs resolve into the platform architecture.</h2></div><Link className="web-button secondary" href="/platform">Explore platform <ArrowRight aria-hidden="true" /></Link></div></section>
 </div>}
+
+export default function SolutionsPage() {
+  return <><SolutionsPageContent /><PageContext route="/solutions" /></>;
+}

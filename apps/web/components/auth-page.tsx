@@ -19,7 +19,7 @@ export function AuthPage({
   const safeLinks = links.filter(([, href]) => !href.startsWith('/auth/'));
 
   return (
-    <main className="min-h-[70vh] bg-surface-subtle px-6 py-16 md:py-24">
+    <div className="min-h-[70vh] bg-surface-subtle px-6 py-16 md:py-24">
       <div className="mx-auto max-w-md border border-line bg-background p-7 md:p-10">
         <Brand />
         <p className="eyebrow mt-12">{eyebrow}</p>
@@ -49,6 +49,6 @@ export function AuthPage({
           </nav>
         )}
       </div>
-    </main>
+    </div>
   );
 }

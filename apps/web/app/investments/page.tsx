@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -10,7 +11,7 @@ export const metadata = createPageMetadata({
   path: '/investments',
 });
 
-export default function InvestmentsPage() {
+function InvestmentsPageContent() {
   return <div className={styles.page}>
     <section className={`${styles.hero} ${styles.investmentHero}`} aria-labelledby="investments-page-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
@@ -72,4 +73,8 @@ export default function InvestmentsPage() {
     <section className={`${styles.closing} ${styles.white}`}><div className={`${styles.shell} ${styles.closingGrid}`}><div><p className={styles.eyebrow}>Neptlium Investments</p><h2>Know what you are investing in — and what deserves understanding.</h2></div><div className={styles.actions}><Link className={`${styles.button} ${styles.buttonDark}`} href={SITE.personalSignUpUrl}>Get started <ArrowRight aria-hidden="true" /></Link></div></div></section>
     <div className={`${styles.disclosure} ${styles.white}`}><div className={styles.shell}><p>{DISCLOSURES.investment} {DISCLOSURES.general}</p></div></div>
   </div>;
+}
+
+export default function InvestmentsPage() {
+  return <><InvestmentsPageContent /><PageContext route="/investments" /></>;
 }

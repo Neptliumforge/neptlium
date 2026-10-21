@@ -1873,24 +1873,27 @@ button {
 
 /* Homepage brand continuity: preserve the canonical SVG mark, change only its surrounding surface. */
 .site-header.capital-command-bar[data-home='true'] {
-  background: var(--n-canvas);
-  color: #fff;
-  border-bottom-color: rgb(255 255 255 / 9%);
+  background: var(--canvas-home);
+  color: var(--n-warm-white);
+  border-bottom-color: color-mix(in srgb, var(--n-warm-white) 14%, transparent);
 }
-.site-header.capital-command-bar[data-home='true'] .brand { color: #fff; }
-.site-header.capital-command-bar[data-home='true'] .desktop-command-nav a,
-.site-header.capital-command-bar[data-home='true'] .command-actions > a:not(.command-primary-action) { color: rgb(255 255 255 / 82%); }
-.site-header.capital-command-bar[data-home='true'] .desktop-command-nav a:hover,
-.site-header.capital-command-bar[data-home='true'] .command-actions > a:hover { color: #fff; }
+.site-header.capital-command-bar[data-home='true'] .brand { color: var(--n-warm-white); }
+.site-header.capital-command-bar[data-home='true'] .command-nav-group > a,
+.site-header.capital-command-bar[data-home='true'] .command-actions > a:not(.command-primary-action) { color: var(--n-subdued); }
+.site-header.capital-command-bar[data-home='true'] .command-nav-group > a:hover,
+.site-header.capital-command-bar[data-home='true'] .command-actions > a:hover { color: var(--n-warm-white); }
 .site-header.capital-command-bar[data-home='true'] .command-primary-action,
 .site-header.capital-command-bar[data-home='true'] .elite-header-entry {
-  background: #fff !important;
+  background: var(--n-warm-white) !important;
   color: var(--n-canvas) !important;
 }
 .site-header.capital-command-bar[data-home='true'] .elite-menu-trigger {
   background: var(--n-surface);
-  color: #fff;
-  border-color: rgb(255 255 255 / 20%);
+  color: var(--n-warm-white);
+  border-color: color-mix(in srgb, var(--n-warm-white) 24%, transparent);
+}
+.site-header[data-home='true'] :where(a, button):focus-visible {
+  outline-color: var(--n-teal-bright);
 }
 /* Shared decision point: distinct actions and deliberate wrapping. */
 .elite-conversion-dual { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }

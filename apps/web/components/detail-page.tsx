@@ -18,7 +18,8 @@ export function DetailPage({
 }) {
   return (
     <div className="route-detail-page">
-      <section className="route-detail-hero n-rail-route-hero">\n        <CapitalRails variant="infrastructure" decorative className="n-rail-route-hero__field" />
+      <section className="route-detail-hero n-rail-route-hero">
+        <CapitalRails variant="infrastructure" decorative className="n-rail-route-hero__field" />
         <div className="container-page">
           {eyebrow && <p className="eyebrow">{eyebrow}</p>}
           <h1>{title}</h1>
