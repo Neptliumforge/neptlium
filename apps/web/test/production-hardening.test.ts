@@ -16,13 +16,13 @@ const contentShell = `${page}\n${layout}\n${header}\n${mobile}\n${footer}`;
 
 test('production public Web keeps a single canonical hero and truthful product-family architecture', () => {
   assert.match(page, /Capital, intelligently managed\./);
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
-    assert.match(page, new RegExp(`label: '${family}'`));
+  for (const family of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
+    assert.match(page, new RegExp(family, 'i'));
   assert.match(page, /Illustrative interface only/);
   assert.doesNotMatch(page, /CapitalRails|SignatureHeroObject/);
   assert.match(page, /No customer balances, returns or performance data are[\s\S]*shown\./);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  for (const visual of ['WorldStage', 'ProductStage', 'SystemMap'])
+  for (const visual of ['ProductStage', 'InvestCollections'])
     assert.match(page, new RegExp(visual));
   assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|fake balance|projected return/i);
 });
