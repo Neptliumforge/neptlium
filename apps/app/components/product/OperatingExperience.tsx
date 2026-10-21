@@ -22,7 +22,8 @@ import {
 import { useProductBootstrap } from './ProductBootstrapProvider';
 import { FinancialValue, ProductStateBadge, type ProductStateName } from './ProductState';
 import type { CanonicalBalance, FundingCapability } from '@/lib/api/financial';
-import { customerCollectionState, customerStateFromCapability, customerStateFromLifecycle } from './customer-state';
+import { customerStateFromCapability, customerStateFromLifecycle } from './customer-state';
+import { capitalBalanceView, type CapitalBalanceView } from './capital-balance';
 
 function firstName(name: string | null | undefined) {
   return name?.trim().split(/\s+/)[0] || 'there';
@@ -124,6 +125,9 @@ function BalanceFigure({
   readonly compact?: boolean;
 }) {
   if (!balance) return <span className={compact ? 'op-value-compact' : 'op-value'}>—</span>;
+  // Without governed precision an atomic amount cannot be shown truthfully.
+  if (balance.decimals === null || balance.decimals === undefined)
+    return <span className={compact ? 'op-value-compact' : 'op-value'}>Amount unavailable</span>;
   return (
     <FinancialValue
       valueAtomic={balance[field]}
@@ -145,13 +149,65 @@ function Metric({
   readonly field: 'available_atomic' | 'reserved_atomic' | 'pending_atomic' | 'total_atomic';
   readonly state: ProductStateName;
 }) {
+  const { snapshot } = useProductBootstrap();
+  const view = capitalBalanceView(snapshot.balanceSummary);
   return (
     <div className="op-metric">
       <span>{label}</span>
-      <BalanceFigure balance={balance} field={field} compact />
-      <ProductStateBadge state={balance ? state : 'UNAVAILABLE'} />
+      {view.kind === 'ZERO' ? (
+        <span className="op-value-compact tabular-nums">{view.display}</span>
+      ) : (
+        <BalanceFigure balance={balance} field={field} compact />
+      )}
+      <ProductStateBadge state={view.kind === 'ZERO' || balance ? state : 'UNAVAILABLE'} />
     </div>
   );
+}
+
+function CapitalHeadline({
+  view,
+  multipleNote,
+}: {
+  readonly view: CapitalBalanceView;
+  readonly multipleNote: string;
+}) {
+  switch (view.kind) {
+    case 'ZERO':
+      return (
+        <>
+          <strong className="tabular-nums">{view.display}</strong>
+          <p>Your recorded Capital balance is zero.</p>
+        </>
+      );
+    case 'SINGLE':
+      return (
+        <>
+          <BalanceFigure balance={view.balance} />
+          <p>{`${view.balance.asset}${view.balance.network ? ` · ${view.balance.network}` : ''}`}</p>
+        </>
+      );
+    case 'MULTIPLE':
+      return (
+        <>
+          <strong>{view.balances.length} asset positions</strong>
+          <p>{multipleNote}</p>
+        </>
+      );
+    case 'NOT_INITIALIZED':
+      return (
+        <>
+          <strong>No balance recorded yet</strong>
+          <p>No recorded balance is available for this account yet.</p>
+        </>
+      );
+    default:
+      return (
+        <>
+          <strong>—</strong>
+          <p>Your capital balance is temporarily unavailable.</p>
+        </>
+      );
+  }
 }
 
 function PrimaryActions() {
@@ -230,15 +286,16 @@ function ActivityRows({ limit }: { readonly limit?: number }) {
   );
 }
 
-function balanceContext(balances: readonly CanonicalBalance[]) {
-  return balances.length === 1 ? balances[0] : undefined;
-}
-
 export function OverviewExperience() {
   const { snapshot } = useProductBootstrap();
-  const balances = snapshot.balances.state === 'READY' ? snapshot.balances.data : [];
-  const balanceState = customerCollectionState(snapshot.balances);
-  const balance = balanceContext(balances);
+  const balanceView = capitalBalanceView(snapshot.balanceSummary);
+  const balances =
+    balanceView.kind === 'SINGLE'
+      ? [balanceView.balance]
+      : balanceView.kind === 'MULTIPLE'
+        ? balanceView.balances
+        : [];
+  const balance = balanceView.kind === 'SINGLE' ? balanceView.balance : undefined;
   const portfolio = snapshot.portfolio.state === 'READY' ? snapshot.portfolio.data : undefined;
   const notifications = snapshot.notifications.state === 'READY' ? snapshot.notifications.data : [];
   const pendingTransfers =
@@ -263,24 +320,10 @@ export function OverviewExperience() {
       <section className="op-hero">
         <div className="op-hero-primary">
           <span>Your capital</span>
-          {balanceState === 'UNAVAILABLE' ? (
-            <strong>—</strong>
-          ) : balanceState === 'EMPTY' ? (
-            <strong>No balance yet</strong>
-          ) : balance ? (
-            <BalanceFigure balance={balance} />
-          ) : (
-            <strong>{balances.length} asset positions</strong>
-          )}
-          <p>
-            {balance
-              ? `${balance.asset}${balance.network ? ` · ${balance.network}` : ''}`
-              : balances.length
-                ? 'Shown separately because no verified combined valuation is available.'
-                : balanceState === 'EMPTY'
-                  ? 'No recorded balance is available for this account yet.'
-                  : 'Your capital balance is temporarily unavailable.'}
-          </p>
+          <CapitalHeadline
+            view={balanceView}
+            multipleNote="Shown separately because no verified combined valuation is available."
+          />
           <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
         <div className="op-metric-grid">
@@ -404,9 +447,14 @@ export function OverviewExperience() {
 
 export function CapitalExperience() {
   const { snapshot } = useProductBootstrap();
-  const balances = snapshot.balances.state === 'READY' ? snapshot.balances.data : [];
-  const balanceState = customerCollectionState(snapshot.balances);
-  const balance = balanceContext(balances);
+  const balanceView = capitalBalanceView(snapshot.balanceSummary);
+  const balances =
+    balanceView.kind === 'SINGLE'
+      ? [balanceView.balance]
+      : balanceView.kind === 'MULTIPLE'
+        ? balanceView.balances
+        : [];
+  const balance = balanceView.kind === 'SINGLE' ? balanceView.balance : undefined;
   const funding =
     snapshot.fundingCapabilities.state === 'READY' ? snapshot.fundingCapabilities.data : [];
   const activity = snapshot.fundingActivity.state === 'READY' ? snapshot.fundingActivity.data : [];
@@ -433,24 +481,7 @@ export function CapitalExperience() {
       <section className="op-hero">
         <div className="op-hero-primary">
           <span>Your capital</span>
-          {balanceState === 'UNAVAILABLE' ? (
-            <strong>—</strong>
-          ) : balanceState === 'EMPTY' ? (
-            <strong>No balance yet</strong>
-          ) : balance ? (
-            <BalanceFigure balance={balance} />
-          ) : (
-            <strong>{balances.length} asset positions</strong>
-          )}
-          <p>
-            {balance
-              ? `${balance.asset}${balance.network ? ` · ${balance.network}` : ''}`
-              : balances.length
-                ? 'Values remain separated by asset.'
-                : balanceState === 'EMPTY'
-                  ? 'No recorded balance is available for this account yet.'
-                  : 'Your capital balance is temporarily unavailable.'}
-          </p>
+          <CapitalHeadline view={balanceView} multipleNote="Values remain separated by asset." />
           <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
         <div className="op-metric-grid">

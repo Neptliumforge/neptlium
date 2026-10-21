@@ -30,9 +30,9 @@ test('ordinary Capital UI does not expose provider or infrastructure state names
 
 test('unknown balances are not rendered as zero and authoritative empty is distinct', () => {
   const experience = read('components/product/OperatingExperience.tsx');
-  assert.match(experience, /balanceState === 'UNAVAILABLE'/);
-  assert.match(experience, /balanceState === 'EMPTY'/);
-  assert.match(experience, /No balance yet/);
+  assert.match(experience, /capitalBalanceView\(snapshot\.balanceSummary\)/);
+  assert.match(experience, /case 'NOT_INITIALIZED':[\s\S]*?No balance recorded yet/);
+  assert.match(experience, /case 'ZERO':[\s\S]*?\{view\.display\}/);
   assert.match(experience, /temporarily unavailable/);
   assert.doesNotMatch(experience, /balance.*\?\?\s*['"]0['"]/);
 });
