@@ -59,9 +59,10 @@ test('desktop and mobile navigation use the personal Capital hierarchy', () => {
   }
   assert.doesNotMatch(nav, /label: 'Treasury'/);
   assert.doesNotMatch(nav, /href: '\/dashboard\/treasury'/);
-  for (const label of ['Overview', 'Portfolio', 'Invest', 'Activity', 'More']) {
+  for (const label of ['Overview', 'Portfolio', 'Invest', 'Capital', 'Activity']) {
     assert.match(nav, new RegExp(`label: '${label}'`));
   }
+  assert.doesNotMatch(nav, /label: 'More'/);
   assert.doesNotMatch(mobile, /Menu|drawer|dialog|aria-modal/i);
 });
 
