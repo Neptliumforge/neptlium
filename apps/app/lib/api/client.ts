@@ -108,6 +108,9 @@ export type ResourceState<T = never> =
 export interface AccountContext {
   readonly id: string;
   readonly email: string | null;
+  /** Optional while an older API deployment may omit them. */
+  readonly firstName?: string | null;
+  readonly lastName?: string | null;
   readonly fullName: string | null;
   readonly displayName: string | null;
   readonly investorType: string | null;
@@ -224,6 +227,55 @@ export function completeAccountOnboarding(input: unknown): Promise<OnboardingCom
 
 export function getAccountContext(): Promise<AccountContext> {
   return apiRequest<AccountContext>('/v1/account/context');
+}
+
+export type OnboardingState = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
+export type IdentityVerificationStatus = 'NOT_VERIFIED' | 'PENDING' | 'ACTION_REQUIRED' | 'VERIFIED';
+
+export interface IdentityVerificationView {
+  readonly capability: 'NOT_ENABLED' | 'AVAILABLE' | 'DEGRADED';
+  readonly record:
+    | { readonly state: 'NOT_CONFIGURED' }
+    | { readonly state: 'UNAVAILABLE' }
+    | { readonly state: 'EMPTY' }
+    | {
+        readonly state: 'VALUE';
+        readonly value: {
+          readonly status: IdentityVerificationStatus;
+          readonly updated_at: string;
+          readonly action_required_reason: string | null;
+        };
+      };
+  readonly can_start: boolean;
+}
+
+/** Onboarding, standing and identity verification are separate API-owned states. */
+export interface AccountStatus {
+  readonly onboarding: { readonly state: OnboardingState; readonly completed_at: string | null };
+  readonly standing: 'UNRESTRICTED' | 'RESTRICTED';
+  readonly identity_verification: IdentityVerificationView;
+}
+
+export function getAccountStatus(): Promise<AccountStatus> {
+  return apiRequest<AccountStatus>('/v1/account/status');
+}
+
+export function updateAccountProfile(input: {
+  readonly first_name?: string;
+  readonly last_name?: string;
+  readonly display_name?: string | null;
+}): Promise<AccountContext> {
+  return apiRequest<AccountContext>('/v1/account/profile', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export function startIdentityVerificationSession(idempotencyKey: string) {
+  return apiRequest<{ customer_action_url: string; expires_at: string }>(
+    '/v1/account/identity-verification/sessions',
+    { method: 'POST', headers: { 'idempotency-key': idempotencyKey } },
+  );
 }
 
 export function getAccountSettings(): Promise<AccountSettings> {

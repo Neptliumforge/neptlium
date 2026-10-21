@@ -196,16 +196,13 @@ export function SettingsExperience() {
                 <strong>{account.email ?? 'Not provided'}</strong>
               </span>
             </div>
-            <div>
-              <ShieldCheck size={16} />
-              <span>
-                <small>Identity status</small>
-                <strong>{account.complianceStatus ?? 'Not reported'}</strong>
-              </span>
-            </div>
           </div>
-          <Link className="op-inline-link" href="/dashboard/verification">
-            Identity verification <ArrowRight size={14} />
+          {/* complianceStatus is account standing, not identity verification; it is never shown as verification. */}
+          <Link className="op-inline-link" href="/dashboard/settings/profile">
+            Edit profile <ArrowRight size={14} />
+          </Link>
+          <Link className="op-inline-link" href="/dashboard/settings/verification">
+            Verify your identity <ArrowRight size={14} />
           </Link>
         </article>
         <article className="op-panel">
