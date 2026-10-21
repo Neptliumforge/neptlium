@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import { PaymentsPage } from '@/components/business-product-pages';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -7,6 +8,10 @@ export const metadata = createPageMetadata({
   path: '/payments',
 });
 
-export default function Page() {
+function PageContent() {
   return <PaymentsPage />;
+}
+
+export default function Page() {
+  return <><PageContent /><PageContext route="/payments" /></>;
 }

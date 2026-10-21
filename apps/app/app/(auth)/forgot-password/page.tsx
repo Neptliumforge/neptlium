@@ -1,8 +1,15 @@
-import { redirect } from "next/navigation";
+import { AuthShell } from '../components/AuthShell';
+import { PasswordRecoveryRequestForm } from '../components/PasswordRecoveryForms';
 
-// Canonical password-reset route is /reset-password. This page provides
-// the standard URL alias so both /forgot-password and /reset-password
-// reach the same destination.
-export default function ForgotPasswordRedirectPage() {
-  redirect("/auth/sign-in");
+export default async function ForgotPasswordPage({
+  searchParams,
+}: {
+  readonly searchParams: Promise<{ error?: string | string[] }>;
+}) {
+  const { error } = await searchParams;
+  return (
+    <AuthShell>
+      <PasswordRecoveryRequestForm linkInvalid={error === 'recovery_link_invalid'} />
+    </AuthShell>
+  );
 }

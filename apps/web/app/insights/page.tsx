@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -18,9 +19,9 @@ const domains = [
   ['Product thinking', 'How Neptlium reasons about financial software, product boundaries and the representation of uncertainty and state.'],
 ] as const;
 
-export default function InsightsPage() {
+function InsightsPageContent() {
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <section className={styles.hero} aria-labelledby="insights-title">
         <div className={styles.shell}>
           <p className={styles.eyebrow}>Neptlium Insights</p>
@@ -88,6 +89,10 @@ export default function InsightsPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
+}
+
+export default function InsightsPage() {
+  return <><InsightsPageContent /><PageContext route="/insights" /></>;
 }

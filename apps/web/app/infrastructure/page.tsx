@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata = createPageMetadata({
@@ -12,7 +13,7 @@ const capabilities = [
   ['Docs', 'Developer contracts, integration guidance and capability status.'],
 ] as const;
 
-export default function InfrastructurePage() {
+function InfrastructurePageContent() {
   return <div className="family-page" data-npt-surface="ivory">
     <div className="family-shell">
       <section className="family-hero" aria-labelledby="infrastructure-title">
@@ -23,4 +24,8 @@ export default function InfrastructurePage() {
       <p className="family-note">Infrastructure documentation distinguishes live, beta and planned capabilities. A public product surface never implies custody, settlement authority or unrestricted financial execution.</p>
     </div>
   </div>;
+}
+
+export default function InfrastructurePage() {
+  return <><InfrastructurePageContent /><PageContext route="/infrastructure" /></>;
 }
