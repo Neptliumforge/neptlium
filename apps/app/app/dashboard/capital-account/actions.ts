@@ -6,74 +6,91 @@ import {
   createFundingIntent,
   createTransferAlias,
   getDepositInstructionsForIntent,
-  type DepositInstruction,
-  type FundingActivity,
   type TransferAlias,
 } from '@/lib/api/financial';
+import { isFundingIntentId, isOperationKey } from '@/lib/funding/operation';
+import {
+  classifyInstructionFailure,
+  classifyIntentFailure,
+  type FundingRequestResult,
+  type InstructionLookup,
+} from '@/lib/funding/outcome';
 
-export type FundingIntentActionResult =
-  | {
-      readonly ok: true;
-      readonly intent: FundingActivity;
-      readonly instructions: DepositInstruction;
-    }
-  | { readonly ok: false; readonly error: string };
+export type FundingIntentActionResult = FundingRequestResult;
 
 export type TransferAliasActionResult =
   | { readonly ok: true; readonly alias: TransferAlias; readonly message: string }
   | { readonly ok: false; readonly error: string };
 
+// Records (or replays) the funding intent for one deposit operation. The
+// caller supplies the operation-scoped idempotency key and must reuse it for
+// every retry of the same request; the API scopes replay to the owner.
 export async function createFundingIntentAction(
   capability: string,
-  amountAtomic?: string,
+  idempotencyKey: string,
+  amountAtomic?: string | null,
 ): Promise<FundingIntentActionResult> {
-  if (!capability) return { ok: false, error: 'Choose a governed funding asset first.' };
+  if (!capability) {
+    return { ok: false, failure: 'REJECTED', error: 'Choose a governed funding asset first.' };
+  }
+  if (!isOperationKey(idempotencyKey)) {
+    return {
+      ok: false,
+      failure: 'REJECTED',
+      error: 'This deposit request has no valid request reference. No request was sent.',
+    };
+  }
   if (amountAtomic && (!/^\d+$/.test(amountAtomic) || BigInt(amountAtomic) <= 0n)) {
-    return { ok: false, error: 'Funding amount must be expressed in positive atomic units.' };
+    return {
+      ok: false,
+      failure: 'REJECTED',
+      error: 'Funding amount must be expressed in positive atomic units.',
+    };
   }
 
-  let intent: FundingActivity;
+  let intent: Awaited<ReturnType<typeof createFundingIntent>>;
   try {
     intent = await createFundingIntent({
       capability,
+      idempotencyKey,
       ...(amountAtomic ? { amountAtomic } : {}),
     });
   } catch (error) {
-    return { ok: false, error: fundingIntentErrorMessage(error) };
+    return { ok: false, ...classifyIntentFailure(error) };
   }
 
   // The intent is now durably recorded by the API. A failed instruction lookup
-  // must not be reported as a failed intent (a retry would record a duplicate);
-  // it is surfaced as a pending route with no address, so no funds are sent.
-  const instructions = await getDepositInstructionsForIntent(intent.id).catch(
-    (): DepositInstruction => ({
-      funding_intent_id: intent.id,
-      capability,
-      state: 'PENDING',
-      reason: 'deposit_instructions_unavailable',
-    }),
-  );
+  // is classified against that intent and never reported as a failed intent.
+  const instructions = await lookupInstructions(intent.id);
   revalidatePath('/dashboard');
   revalidatePath('/dashboard/capital');
   revalidatePath('/dashboard/capital-account');
   revalidatePath('/dashboard/activity');
   revalidatePath('/dashboard/deposit');
-  return { ok: true, intent, instructions };
+  return {
+    ok: true,
+    intentId: intent.id,
+    source: intent.replayed ? 'REPLAYED' : 'CREATED',
+    instructions,
+  };
 }
 
-function fundingIntentErrorMessage(error: unknown): string {
-  if (error instanceof ApiClientError) {
-    if (error.code === 'provider_capability_unavailable') {
-      return 'This funding rail is not currently available.';
-    }
-    if (error.code === 'provider_not_configured') {
-      return 'This funding method is not currently available.';
-    }
-    if (error.code === 'session_expired') {
-      return 'Your session has expired. Sign in again before creating funding instructions.';
-    }
+// Recovers deposit instructions for an intent that already exists. Read-only:
+// it never records a new intent.
+export async function getDepositInstructionsAction(
+  fundingIntentId: string,
+): Promise<InstructionLookup> {
+  if (!isFundingIntentId(fundingIntentId)) return classifyInstructionFailure({ status: 404 });
+  return lookupInstructions(fundingIntentId);
+}
+
+async function lookupInstructions(fundingIntentId: string): Promise<InstructionLookup> {
+  try {
+    const instruction = await getDepositInstructionsForIntent(fundingIntentId);
+    return { status: 'RESOLVED', instruction };
+  } catch (error) {
+    return classifyInstructionFailure(error);
   }
-  return 'The governed funding intent could not be created.';
 }
 
 export async function createTransferAliasAction(

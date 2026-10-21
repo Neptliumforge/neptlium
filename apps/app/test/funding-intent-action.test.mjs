@@ -8,6 +8,17 @@ import ts from 'typescript';
 
 const root = resolve(import.meta.dirname, '..');
 
+function transpile(dir, source, name, replacements) {
+  let output = ts.transpileModule(readFileSync(join(root, source), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  for (const [specifier, file] of Object.entries(replacements)) {
+    output = output.replaceAll(`'${specifier}'`, `'${pathToFileURL(join(dir, file))}'`);
+  }
+  writeFileSync(join(dir, name), output);
+  return pathToFileURL(join(dir, name));
+}
+
 // Load the server action with its API transport replaced by in-memory stubs so
 // the action's own state handling is exercised without network or session.
 async function loadAction() {
@@ -24,30 +35,32 @@ async function loadAction() {
   );
   writeFileSync(
     join(dir, 'financial.mjs'),
-    `export const calls = { create: 0, instructions: 0 };
+    `export const calls = { create: [], instructions: [] };
     export const behavior = {};
-    export async function createFundingIntent(input) { calls.create += 1; return behavior.create(input); }
-    export async function getDepositInstructionsForIntent(id) { calls.instructions += 1; return behavior.instructions(id); }
+    export async function createFundingIntent(input) { calls.create.push(input); return behavior.create(input); }
+    export async function getDepositInstructionsForIntent(id) { calls.instructions.push(id); return behavior.instructions(id); }
     export async function createTransferAlias() { throw new Error('unused'); }`,
   );
-  const source = readFileSync(join(root, 'app/dashboard/capital-account/actions.ts'), 'utf8');
-  const output = ts
-    .transpileModule(source, {
-      compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
-    })
-    .outputText.replace("'next/cache'", `'${pathToFileURL(join(dir, 'cache.mjs'))}'`)
-    .replace("'@/lib/api/client'", `'${pathToFileURL(join(dir, 'client.mjs'))}'`)
-    .replace("'@/lib/api/financial'", `'${pathToFileURL(join(dir, 'financial.mjs'))}'`);
-  writeFileSync(join(dir, 'actions.mjs'), output);
-  const action = await import(pathToFileURL(join(dir, 'actions.mjs')));
+  transpile(dir, 'lib/funding/operation.ts', 'operation.mjs', {});
+  transpile(dir, 'lib/funding/outcome.ts', 'outcome.mjs', {});
+  const actionUrl = transpile(dir, 'app/dashboard/capital-account/actions.ts', 'actions.mjs', {
+    'next/cache': 'cache.mjs',
+    '@/lib/api/client': 'client.mjs',
+    '@/lib/api/financial': 'financial.mjs',
+    '@/lib/funding/operation': 'operation.mjs',
+    '@/lib/funding/outcome': 'outcome.mjs',
+  });
+  const action = await import(actionUrl);
   const financial = await import(pathToFileURL(join(dir, 'financial.mjs')));
   const client = await import(pathToFileURL(join(dir, 'client.mjs')));
   const cache = await import(pathToFileURL(join(dir, 'cache.mjs')));
   return { action, financial, client, cache };
 }
 
+const INTENT_ID = '11111111-1111-4111-8111-111111111111';
+const KEY = '22222222-2222-4222-8222-222222222222';
 const intent = {
-  id: 'fi_123',
+  id: INTENT_ID,
   asset: 'USDC',
   network: 'BASE',
   rail: 'USDC_BASE',
@@ -56,51 +69,158 @@ const intent = {
   environment: 'LIVE',
   created_at: '2026-10-21T00:00:00Z',
   updated_at: '2026-10-21T00:00:00Z',
+  replayed: false,
 };
 
-test('a recorded intent is not reported as failed when the instruction lookup fails', async () => {
-  const { action, financial, cache } = await loadAction();
+test('the operation key is forwarded to the API unchanged', async () => {
+  const { action, financial } = await loadAction();
   financial.behavior.create = async () => intent;
-  financial.behavior.instructions = async () => {
-    throw new Error('api_unavailable');
-  };
+  financial.behavior.instructions = async () => ({ capability: 'USDC_BASE', state: 'PENDING' });
 
-  const result = await action.createFundingIntentAction('USDC_BASE');
+  await action.createFundingIntentAction('USDC_BASE', KEY);
+  await action.createFundingIntentAction('USDC_BASE', KEY);
+
+  assert.deepEqual(
+    financial.calls.create.map((call) => call.idempotencyKey),
+    [KEY, KEY],
+  );
+});
+
+test('a missing or malformed operation key fails closed without calling the API', async () => {
+  const { action, financial } = await loadAction();
+  for (const key of [undefined, '', 'not-a-uuid']) {
+    const result = await action.createFundingIntentAction('USDC_BASE', key);
+    assert.equal(result.ok, false);
+    assert.equal(result.failure, 'REJECTED');
+  }
+  assert.equal(financial.calls.create.length, 0);
+});
+
+test('a replayed intent is reported as REPLAYED, not as a new intent', async () => {
+  const { action, financial } = await loadAction();
+  financial.behavior.create = async () => ({ ...intent, replayed: true });
+  financial.behavior.instructions = async () => ({ capability: 'USDC_BASE', state: 'PENDING' });
+
+  const result = await action.createFundingIntentAction('USDC_BASE', KEY);
 
   assert.equal(result.ok, true);
-  assert.equal(result.intent.id, 'fi_123');
-  assert.equal(result.instructions.state, 'PENDING');
-  assert.equal(result.instructions.funding_intent_id, 'fi_123');
-  assert.equal(result.instructions.deposit_address, undefined, 'no address may be fabricated');
-  assert.equal(financial.calls.create, 1);
+  assert.equal(result.source, 'REPLAYED');
+  assert.equal(result.intentId, INTENT_ID);
+});
+
+test('a recorded intent is not reported as failed when the instruction lookup fails', async () => {
+  const { action, financial, client, cache } = await loadAction();
+  financial.behavior.create = async () => intent;
+  financial.behavior.instructions = async () => {
+    throw new client.ApiClientError(503, 'api_unavailable', 'down');
+  };
+
+  const result = await action.createFundingIntentAction('USDC_BASE', KEY);
+
+  assert.equal(result.ok, true);
+  assert.equal(result.intentId, INTENT_ID);
+  assert.equal(result.instructions.status, 'UNAVAILABLE');
+  assert.equal(result.instructions.instruction, undefined, 'no instruction may be fabricated');
+  assert.doesNotMatch(result.instructions.message, /could not be created/);
+  assert.equal(financial.calls.create.length, 1);
   assert.ok(cache.revalidated.includes('/dashboard/activity'));
 });
 
-test('a rejected intent still fails closed with a mapped message and issues no lookup', async () => {
+test('instruction lookup failures are classified by cause', async () => {
+  const { action, financial, client } = await loadAction();
+  financial.behavior.create = async () => intent;
+  const cases = [
+    [new client.ApiClientError(401, 'session_expired', 'x'), 'SESSION_EXPIRED'],
+    [new client.ApiClientError(403, 'forbidden', 'x'), 'FORBIDDEN'],
+    [new client.ApiClientError(404, 'not_found', 'x'), 'FORBIDDEN'],
+    [new client.ApiClientError(503, 'api_timeout', 'x'), 'UNAVAILABLE'],
+    [new client.ApiClientError(500, 'api_error', 'x'), 'UNAVAILABLE'],
+    [new Error('socket hang up'), 'UNAVAILABLE'],
+  ];
+  for (const [error, status] of cases) {
+    financial.behavior.instructions = async () => {
+      throw error;
+    };
+    const result = await action.createFundingIntentAction('USDC_BASE', KEY);
+    assert.equal(result.ok, true, `${status}: intent stays recorded`);
+    assert.equal(result.instructions.status, status);
+  }
+});
+
+test('a pending route is RESOLVED as pending, distinct from a lookup failure', async () => {
+  const { action, financial } = await loadAction();
+  const pending = {
+    funding_intent_id: INTENT_ID,
+    capability: 'USDC_BASE',
+    state: 'PENDING',
+    reason: 'governed_deposit_route_not_assigned',
+  };
+  financial.behavior.create = async () => intent;
+  financial.behavior.instructions = async () => pending;
+
+  const result = await action.createFundingIntentAction('USDC_BASE', KEY);
+
+  assert.deepEqual(result.instructions, { status: 'RESOLVED', instruction: pending });
+});
+
+test('intent creation failures are classified; ambiguous outcomes are retryable', async () => {
+  const { action, financial, client } = await loadAction();
+  const cases = [
+    [new client.ApiClientError(401, 'session_expired', 'x'), 'SESSION_EXPIRED'],
+    [new client.ApiClientError(503, 'provider_capability_unavailable', 'x'), 'REJECTED'],
+    [new client.ApiClientError(422, 'validation_failed', 'x'), 'REJECTED'],
+    [new client.ApiClientError(409, 'idempotency_conflict', 'x'), 'KEY_CONFLICT'],
+    [new client.ApiClientError(503, 'api_timeout', 'x'), 'AMBIGUOUS'],
+    [new client.ApiClientError(503, 'api_unavailable', 'x'), 'AMBIGUOUS'],
+    [new client.ApiClientError(502, 'api_error', 'x'), 'AMBIGUOUS'],
+    [new Error('fetch failed'), 'AMBIGUOUS'],
+  ];
+  for (const [error, failure] of cases) {
+    financial.behavior.create = async () => {
+      throw error;
+    };
+    const result = await action.createFundingIntentAction('USDC_BASE', KEY);
+    assert.equal(result.ok, false);
+    assert.equal(result.failure, failure, error.message);
+  }
+  assert.equal(financial.calls.instructions.length, 0, 'no lookup without a recorded intent');
+});
+
+test('a rejected intent keeps the mapped capability message', async () => {
   const { action, financial, client } = await loadAction();
   financial.behavior.create = async () => {
     throw new client.ApiClientError(503, 'provider_capability_unavailable', 'gate closed');
   };
 
-  const result = await action.createFundingIntentAction('USDC_BASE');
+  const result = await action.createFundingIntentAction('USDC_BASE', KEY);
 
-  assert.deepEqual(result, { ok: false, error: 'This funding rail is not currently available.' });
-  assert.equal(financial.calls.instructions, 0);
+  assert.deepEqual(result, {
+    ok: false,
+    failure: 'REJECTED',
+    error: 'This funding rail is not currently available.',
+  });
 });
 
-test('issued instructions pass through unchanged', async () => {
+test('instruction recovery reads by intent ID and never creates an intent', async () => {
   const { action, financial } = await loadAction();
   const issued = {
-    funding_intent_id: 'fi_123',
+    funding_intent_id: INTENT_ID,
     capability: 'USDC_BASE',
     state: 'ENABLED',
     deposit_address: '0xabc',
   };
-  financial.behavior.create = async () => intent;
   financial.behavior.instructions = async () => issued;
 
-  const result = await action.createFundingIntentAction('USDC_BASE');
+  const result = await action.getDepositInstructionsAction(INTENT_ID);
 
-  assert.equal(result.ok, true);
-  assert.deepEqual(result.instructions, issued);
+  assert.deepEqual(result, { status: 'RESOLVED', instruction: issued });
+  assert.deepEqual(financial.calls.instructions, [INTENT_ID]);
+  assert.equal(financial.calls.create.length, 0);
+});
+
+test('instruction recovery rejects a malformed intent ID without calling the API', async () => {
+  const { action, financial } = await loadAction();
+  const result = await action.getDepositInstructionsAction('../intents');
+  assert.equal(result.status, 'FORBIDDEN');
+  assert.equal(financial.calls.instructions.length, 0);
 });
