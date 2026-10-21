@@ -32,32 +32,48 @@ export async function createFundingIntentAction(
     return { ok: false, error: 'Funding amount must be expressed in positive atomic units.' };
   }
 
+  let intent: FundingActivity;
   try {
-    const intent = await createFundingIntent({
+    intent = await createFundingIntent({
       capability,
       ...(amountAtomic ? { amountAtomic } : {}),
     });
-    const instructions = await getDepositInstructionsForIntent(intent.id);
-    revalidatePath('/dashboard');
-    revalidatePath('/dashboard/capital');
-    revalidatePath('/dashboard/capital-account');
-    revalidatePath('/dashboard/activity');
-    revalidatePath('/dashboard/deposit');
-    return { ok: true, intent, instructions };
   } catch (error) {
-    if (error instanceof ApiClientError) {
-      if (error.code === 'provider_capability_unavailable') {
-        return { ok: false, error: 'This funding rail is not currently available.' };
-      }
-      if (error.code === 'provider_not_configured') {
-        return { ok: false, error: 'This funding method is not currently available.' };
-      }
-      if (error.code === 'session_expired') {
-        return { ok: false, error: 'Your session has expired. Sign in again before creating funding instructions.' };
-      }
-    }
-    return { ok: false, error: 'The governed funding intent could not be created.' };
+    return { ok: false, error: fundingIntentErrorMessage(error) };
   }
+
+  // The intent is now durably recorded by the API. A failed instruction lookup
+  // must not be reported as a failed intent (a retry would record a duplicate);
+  // it is surfaced as a pending route with no address, so no funds are sent.
+  const instructions = await getDepositInstructionsForIntent(intent.id).catch(
+    (): DepositInstruction => ({
+      funding_intent_id: intent.id,
+      capability,
+      state: 'PENDING',
+      reason: 'deposit_instructions_unavailable',
+    }),
+  );
+  revalidatePath('/dashboard');
+  revalidatePath('/dashboard/capital');
+  revalidatePath('/dashboard/capital-account');
+  revalidatePath('/dashboard/activity');
+  revalidatePath('/dashboard/deposit');
+  return { ok: true, intent, instructions };
+}
+
+function fundingIntentErrorMessage(error: unknown): string {
+  if (error instanceof ApiClientError) {
+    if (error.code === 'provider_capability_unavailable') {
+      return 'This funding rail is not currently available.';
+    }
+    if (error.code === 'provider_not_configured') {
+      return 'This funding method is not currently available.';
+    }
+    if (error.code === 'session_expired') {
+      return 'Your session has expired. Sign in again before creating funding instructions.';
+    }
+  }
+  return 'The governed funding intent could not be created.';
 }
 
 export async function createTransferAliasAction(
