@@ -1,2 +1,10 @@
-import { redirect } from "next/navigation";
-export default function LegacySignInPage() { redirect("/auth/sign-in"); }
+import { redirect } from 'next/navigation';
+import { accountEntryHref, resolveReturnDestination, type ReturnSearchParams } from '../auth-utils';
+
+export default async function LegacySignInPage({
+  searchParams,
+}: {
+  readonly searchParams: Promise<ReturnSearchParams>;
+}) {
+  redirect(accountEntryHref('sign-in', resolveReturnDestination(await searchParams)));
+}

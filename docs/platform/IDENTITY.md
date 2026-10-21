@@ -40,6 +40,20 @@ Email may assist account communication and onboarding but must not be used as pr
 
 Account provisioning and onboarding read/write Neptlium business state through `apps/api`; API availability must not be confused with authentication-session validity.
 
+### CURRENT — App Account entry and session return
+
+`apps/app/app/(auth)/auth-utils.ts` owns the App return-destination contract. Producers write `next`. Account entry also accepts previously issued `redirect_url` links: a present `next` takes precedence, even if invalid or empty; duplicate occurrences of either parameter use the safe `/dashboard` default. No destination also uses that default.
+
+Server entry pages, the App proxy, legacy entry aliases and the authentication callback use the same resolver. Sign-in/sign-up switching, errors/retries, session-expired entry, successful sign-in and both sign-up session/confirmation paths preserve the validated destination. Form rendering does not depend on a client-only search-parameter suspense region.
+
+Only implemented App dashboard page paths and `/onboarding` are supported, with non-secret query state. External/protocol-relative URLs, malformed encodings, controls, backslashes, encoded path-separator ambiguity, auth/API destinations and unsupported pages fall back to `/dashboard`. Fragments are discarded. Authentication codes, credentials and session tokens are not return state. Cross-surface returns are not enabled by this contract. Route additions must update the resolver's page inventory and its behavioral coverage.
+
+The App proxy overwrites the private request header `x-neptlium-account-return` before forwarding session refresh. Server guards use this validated navigation context to preserve the route if the session disappears between proxy and rendering/action execution. A caller-supplied header is never trusted, and the header never conveys principal or access authority.
+
+Explicit onboarding entry may carry `next` to a dashboard destination; it is retained across authentication and used after successful provisioning or when already provisioned. An onboarding return cannot recursively target onboarding. Without that explicit destination, completion retains `/dashboard`. This does not add a mandatory onboarding gate or change provisioning policy.
+
+The requested route remains subject to existing server session, principal, role, organization-membership, ownership and API policy enforcement. A valid return URL is navigation context, never authorization. Password-recovery implementation and provider email activation are outside this contract. Candidate source/build verification must remain separate from exact-deployment authenticated runtime acceptance.
+
 ## Admin application
 
 `apps/admin` uses Supabase Auth for operator authentication. The API resolves the Supabase identity to a Neptlium principal, then enforces operator roles and domain authorization server-side.
