@@ -126,6 +126,8 @@ Failures are not states:
 
 ### Deployment order and existing accounts
 
+Operational procedure, verification queries and the batched backfill plan: [runbook](../operations/runbooks/canonical-balances-release.md). Merging to `main` deploys the API and app to production automatically, so the migration is applied first.
+
 1. Apply the migration (table, functions, trigger) through the approved production migration process.
 2. Deploy the API. Its readiness probe requires `capital_ledger_initializations`, so it will not report ready against a database without the migration. Without the aggregation function, balance reads fail closed (`503`, shown as unavailable).
 3. Deploy the application.
