@@ -11,10 +11,22 @@ const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const layout = read('app/dashboard/layout.tsx');
 const nav = read('components/navigation/dashboardNav.tsx');
 const mobile = read('components/navigation/ProductMobileNavigation.tsx');
+const profileMenu = read('components/navigation/ProfileMenu.tsx');
 const bootstrap = read('lib/product/bootstrap.ts');
 const provider = read('components/product/ProductBootstrapProvider.tsx');
 const experience = read('components/product/OperatingExperience.tsx');
 const css = read('app/authenticated-product.css');
+const mobileCss = read('app/authenticated-mobile.css');
+const dashboardCss = read('app/dashboard-v2.css');
+const recordsCss = read('app/authenticated-records.css');
+const authenticatedStyles = {
+  'global.css': read('app/global.css'),
+  'dashboard-v2.css': dashboardCss,
+  'investment-dashboard.css': read('app/investment-dashboard.css'),
+  'authenticated-product.css': css,
+  'authenticated-records.css': recordsCss,
+  'authenticated-mobile.css': mobileCss,
+};
 const tokens = read('../../packages/ui/src/styles/tokens.css');
 
 test('authenticated shell loads a shared account bootstrap once at layout authority', () => {
@@ -74,9 +86,40 @@ test('authenticated product keeps the carbon and mineral-teal system', () => {
   assert.match(tokens, /--n-warm-white:\s*#f0f0e8/);
   assert.match(tokens, /--n-teal-primary:\s*#4a9992/);
   assert.match(css, /var\(--color-accent-primary\)/);
-  assert.match(css, /--color-canvas:\s*var\(--n-canvas\)/);
-  assert.match(css, /\.neptlium-environment main\{background:var\(--n-canvas\)\}/);
-  assert.match(css, /--color-surface-2:\s*var\(--n-surface\)/);
+  assert.match(css, /\.neptlium-environment main\{background:var\(--color-canvas\)\}/);
+  assert.doesNotMatch(css, /--color-canvas:|--color-surface-2:|--color-text-secondary:#/);
   assert.doesNotMatch(css, /#050505/i);
   assert.doesNotMatch(css, /backdrop-filter:.*blur\(2[0-9]/i);
+});
+
+
+test('account appearance delegates to shared theme authority', () => {
+  assert.match(profileMenu, /useTheme/);
+  assert.match(profileMenu, /preference, setPreference/);
+  assert.doesNotMatch(profileMenu, /localStorage|matchMedia|document\.documentElement|function applyTheme/);
+});
+
+test('authenticated shell consumes semantic light and dark tokens without a local dark palette', () => {
+  assert.match(css, /background:var\(--color-canvas\)/);
+  assert.doesNotMatch(css, /--color-canvas:var\(--n-canvas\)/);
+  assert.doesNotMatch(css, /--color-text-secondary:#|--color-border-hairline:rgba\(255/);
+  assert.doesNotMatch(css, /\.op-more-grid>a:hover\{background:#111\}/);
+});
+
+test('authenticated app styles do not redefine canonical theme palette authority', () => {
+  const canonicalColorDefinition = /--color-(?:canvas|background|surface(?:-[\w-]+)?|text-[\w-]+|border-[\w-]+|accent-[\w-]+|brand(?:-[\w-]+)?|primary(?:-[\w-]+)?|sidebar(?:-[\w-]+)?|topnav)\s*:/i;
+  for (const [name, source] of Object.entries(authenticatedStyles)) {
+    assert.doesNotMatch(source, canonicalColorDefinition, `${name} must consume canonical semantic color tokens rather than define them`);
+  }
+  assert.doesNotMatch(dashboardCss, /--n-mineral-teal(?:-strong)?\s*:/i);
+  assert.doesNotMatch(recordsCss, /#35d5c1|#090909/i);
+});
+
+test('mobile primary navigation has durable thumb targets and five-item hierarchy', () => {
+  assert.match(mobileCss, /\.product-mobile-bottom>a\{[^}]*min-height:3\.75rem/s);
+  assert.match(mobileCss, /grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+  assert.match(mobileCss, /background:var\(--color-surface-1\)/);
+  assert.match(mobileCss, /color:var\(--color-accent-primary\)/);
+  assert.doesNotMatch(mobileCss, /rgba\(5,5,5|#35d5c1/i);
+  assert.match(mobile, /aria-current=\{isActive \? 'page' : undefined\}/);
 });
