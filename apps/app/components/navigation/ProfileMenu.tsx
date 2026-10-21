@@ -123,7 +123,13 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
           <div className="border-b border-border-hairline px-2 pb-3 pr-12 sm:pr-2">
             <p className="truncate text-sm font-medium">{name || 'Account'}</p>
             <p className="truncate text-xs text-text-muted">{email || 'Email not provided'}</p>
-            {verified && <p className="mt-1 text-xs text-success">Identity verified</p>}
+            <Link
+              href="/dashboard/settings/verification"
+              onClick={() => setOpen(false)}
+              className={`mt-1 flex min-h-11 items-center text-xs underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring sm:min-h-6 ${verified ? 'text-success' : 'text-text-secondary'}`}
+            >
+              {verified ? 'Identity verified' : 'Identity verification'}
+            </Link>
             <p className="mt-1 text-xs text-text-muted">Personal Capital account</p>
           </div>
           <nav aria-label="Account settings" className="py-2">
