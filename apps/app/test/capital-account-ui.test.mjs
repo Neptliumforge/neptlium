@@ -78,11 +78,15 @@ test('admin operations do not overstate completion authority', () => {
   assert.match(withdrawals, /Rejection unavailable/);
 });
 
-test('personal Capital actions remain reachable without entering primary navigation', () => {
+test('personal Capital is a primary destination on desktop and mobile', () => {
   const navigation = read('components/navigation/dashboardNav.tsx');
   const canonical = read('app/dashboard/capital/page.tsx');
   const legacyWallet = read('app/dashboard/wallet/page.tsx');
-  assert.match(navigation, /label: 'Capital actions',[\s\S]*?href: '\/dashboard\/capital'/);
+  for (const list of ['dashboardNavItems', 'dashboardMobilePrimaryNavItems']) {
+    const start = navigation.indexOf(`export const ${list}`);
+    const items = navigation.slice(start, navigation.indexOf('];', start));
+    assert.match(items, /label: 'Capital',[\s\S]*?href: '\/dashboard\/capital'/, list);
+  }
   assert.match(canonical, /CapitalExperience/);
   assert.match(legacyWallet, /redirect\('\/dashboard\/capital-account'\)/);
 });

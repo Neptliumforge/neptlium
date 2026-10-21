@@ -31,7 +31,7 @@ test('individual entry exposes the canonical investor navigation and truthful In
   const nav = read('components/navigation/dashboardNav.tsx');
   const invest = read('app/dashboard/invest/page.tsx');
   const experience = read('components/product/OperatingExperience.tsx');
-  for (const label of ['Overview', 'Portfolio', 'Invest', 'Activity', 'More']) {
+  for (const label of ['Overview', 'Portfolio', 'Invest', 'Capital', 'Activity']) {
     assert.match(nav, new RegExp(`label: '${label}'`));
   }
   assert.match(invest, /InvestExperience/);
