@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -18,9 +19,9 @@ const controls = [
   ['Audit & evidence', 'Important actions and state transitions are designed to remain attributable and reviewable while audit records, ledger records, provider evidence and reconciliation retain distinct meanings.'],
 ] as const;
 
-export default function SecurityPage() {
+function SecurityPageContent() {
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <section className={styles.hero} aria-labelledby="security-title">
         <div className={styles.shell}>
           <p className={styles.eyebrow}>Security</p>
@@ -92,7 +93,7 @@ export default function SecurityPage() {
         <div className={styles.shellGrid}>
           <div>
             <p className={styles.eyebrow}>Reporting</p>
-            <h2 id="disclosure-title">A dedicated public vulnerability-reporting program is not represented here unless it is verified.</h2>
+            <h2 id="disclosure-title">Report a security concern.</h2>
           </div>
           <div className={styles.prose}>
             <p>If you need to report a security concern today, use Neptlium’s established contact route and avoid including passwords, private keys, authentication tokens or other sensitive credentials in an initial message.</p>
@@ -100,6 +101,10 @@ export default function SecurityPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
+}
+
+export default function SecurityPage() {
+  return <><SecurityPageContent /><PageContext route="/security" /></>;
 }

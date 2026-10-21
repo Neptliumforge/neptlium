@@ -152,7 +152,7 @@ export const COMPANY = [
     label: 'Company',
     href: '/company',
     description:
-      'Neptlium is the financial platform company within parent company Neptliumforge, spanning Capital, Treasury, Institutional and Infrastructure.',
+      'Neptlium is a capital operating platform spanning Capital, Treasury, Institutional and Infrastructure.',
   },
   { label: 'Contact', href: '/contact', description: 'Start a conversation with Neptlium.' },
 ] as const satisfies readonly NavigationLink[];

@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -13,9 +14,13 @@ const trustPrinciples = [
  ['Risk is not decorative','Market, product, provider and infrastructure limitations should be communicated plainly and without guarantees, invented safeguards or unsupported certainty.'],
 ] as const;
 
-export default function TrustPage(){return <div className="architecture-page trust-page">
+function TrustPageContent(){return <div className="architecture-page trust-page">
 <section className="architecture-hero"><div className="web-shell architecture-hero-grid"><div><p className="web-eyebrow on-light">Resources · Trust</p><h1>Financial information deserves explicit evidence, state and authority.</h1></div><div className="architecture-lead"><p>Trust in a capital operating platform depends on more than availability or presentation quality. It depends on whether the system communicates what it knows, where that knowledge came from, what remains uncertain and which actions have actually become consequential.</p><p>Neptlium treats product truth as an operating discipline. Configured is not available. Requested is not approved. Approved is not submitted. Submitted is not settled. Modeled is not executed.</p></div></div></section>
 <section className="architecture-section" aria-labelledby="trust-title"><div className="web-shell architecture-split"><div><p className="web-eyebrow on-light">Trust model</p><h2 id="trust-title">Preserve the distinctions that financial decisions depend on.</h2><p>The platform is designed to provide context without borrowing authority from adjacent systems. That means a provider-reported value can remain provider-reported, a model can remain illustrative, and a consequential state can require evidence appropriate to that consequence.</p></div><div className="architecture-numbered-list">{trustPrinciples.map(([title,body],index)=><article key={title}><span>{String(index+1).padStart(2,'0')}</span><div><h3>{title}</h3><p>{body}</p></div></article>)}</div></div></section>
 <section className="architecture-section architecture-dark"><div className="web-shell architecture-split"><div><p className="web-eyebrow">Operating limitations</p><h2>Trust includes the limits of the product.</h2></div><div className="architecture-prose"><p>Neptlium’s public information does not establish custody, banking, brokerage, settlement, investment-advisory or execution authority. Product and provider capabilities should be understood from the authenticated operating context and the evidence supporting their current state.</p><p>Security architecture, provider availability and financial workflows can change over time. Where a fact requires verification, the system should prefer explicit unavailability or uncertainty to a simulated result.</p></div></div></section>
 <section className="architecture-section"><div className="web-shell architecture-statement"><p className="web-eyebrow on-light">Security relationship</p><h2>Trust defines the representation standard. Security defines supported control boundaries.</h2><p>Trust addresses evidence, uncertainty, limitations and responsible financial representation. Security addresses identity, authorization, privileged operations and service boundaries. Neither page is a substitute for certifications, regulatory status or controls that have not been explicitly documented.</p><Link className="text-arrow-link" href="/security">Explore Security <ArrowRight aria-hidden="true" /></Link></div></section>
 </div>}
+
+export default function TrustPage() {
+  return <><TrustPageContent /><PageContext route="/trust" /></>;
+}

@@ -1,3 +1,4 @@
+import { PageContext } from '@/components/page-context';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { SharedCoreVisual } from '@/components/unified-product-visuals';
@@ -10,7 +11,7 @@ export const metadata = createPageMetadata({
   path: '/platform',
 });
 
-export default function PlatformPage() {
+function PlatformPageContent() {
   return <div className={styles.page}>
     <section className={styles.journeyHero} data-npt-surface="carbon" aria-labelledby="platform-title"><div className={styles.shell}><div className={styles.heroCopy}><p className={styles.eyebrow}>Platform</p><h1 id="platform-title">One shared financial system underneath.</h1><p className={styles.heroLead}>Neptlium serves invested capital and operational capital through two product journeys built on one control philosophy.</p><div className={styles.buttonRow}><Link className={`${styles.button} ${styles.buttonPrimary}`} href="/personal">Explore Personal <ArrowRight aria-hidden="true" /></Link><Link className={`${styles.button} ${styles.buttonSecondary}`} href="/business">Explore Business</Link></div></div></div></section>
 
@@ -20,4 +21,8 @@ export default function PlatformPage() {
 
     <section className={styles.section} data-npt-surface="mineral" aria-labelledby="platform-cta-title"><div className={styles.shell}><div className={styles.sectionHead}><p className={styles.eyebrow}>Choose a journey</p><div><h2 id="platform-cta-title">The platform stays coherent as the customer changes.</h2><p>Personal prioritizes capital clarity and investment context. Business prioritizes treasury control and operational authority. Both remain unmistakably Neptlium.</p></div></div></div></section>
   </div>;
+}
+
+export default function PlatformPage() {
+  return <><PlatformPageContent /><PageContext route="/platform" /></>;
 }
