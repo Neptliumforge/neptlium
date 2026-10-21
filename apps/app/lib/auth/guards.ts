@@ -1,13 +1,20 @@
-import { redirect } from "next/navigation";
-import { hasRole, type Role } from "@neptlium/lib/rbac";
-import { resolveRole } from "@/components/security/resolveRole";
-import { getCurrentProfile, getSessionUser, type SessionProfile, type SessionUser } from "./session";
+import { redirect } from 'next/navigation';
+import { hasRole, type Role } from '@neptlium/lib/rbac';
+import { resolveRole } from '@/components/security/resolveRole';
+import {
+  getCurrentProfile,
+  getSessionUser,
+  type SessionProfile,
+  type SessionUser,
+} from './session';
+import { accountEntryHref } from '@/app/(auth)/auth-utils';
+import { getRequestReturnPath } from './return-context';
 
 export async function requireUser(): Promise<SessionUser> {
   const user = await getSessionUser();
 
   if (!user) {
-    redirect("/auth/sign-in");
+    redirect(accountEntryHref('sign-in', await getRequestReturnPath()));
   }
 
   return user;
@@ -43,7 +50,7 @@ export async function requireRole(minRole: Role) {
   const role = await resolveRole(user.id);
 
   if (!hasRole(role, minRole)) {
-    redirect("/dashboard");
+    redirect('/dashboard');
   }
 
   return { user, role };

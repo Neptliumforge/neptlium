@@ -1,14 +1,13 @@
-import { Button } from "@neptlium/ui";
-import { AuthShell } from "../components/AuthShell";
-import { safeInternalPath } from "../auth-utils";
+import { Button } from '@neptlium/ui';
+import { AuthShell } from '../components/AuthShell';
+import { accountEntryHref, resolveReturnDestination, type ReturnSearchParams } from '../auth-utils';
 
 export default async function SessionExpiredPage({
   searchParams,
 }: {
-  readonly searchParams: Promise<{ next?: string }>;
+  readonly searchParams: Promise<ReturnSearchParams>;
 }) {
-  const { next } = await searchParams;
-  const destination = safeInternalPath(next, "/dashboard");
+  const destination = resolveReturnDestination(await searchParams);
 
   return (
     <AuthShell>
@@ -19,12 +18,10 @@ export default async function SessionExpiredPage({
           <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-text-primary">
             Session expired
           </h1>
-          <p className="text-[13px] text-text-muted">
-            Sign in again to continue securely.
-          </p>
+          <p className="text-[13px] text-text-muted">Sign in again to continue securely.</p>
         </div>
         <Button
-          href={`/auth/sign-in?redirect_url=${encodeURIComponent(destination)}`}
+          href={accountEntryHref('sign-in', destination)}
           variant="cta"
           className="h-11 w-full rounded-md text-[14px] font-semibold"
         >
