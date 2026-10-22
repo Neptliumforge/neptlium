@@ -19,12 +19,12 @@ test('customer presentation state separates empty, unavailable, restricted and f
 test('ordinary Capital UI does not expose provider or infrastructure state names', () => {
   const experience = read('components/product/OperatingExperience.tsx');
   const paymentMethods = read('app/dashboard/settings/payment-methods/page.tsx');
-  const fundingActions = read('app/dashboard/capital-account/actions.ts');
+  const fundingActions = read('lib/funding/outcome.ts');
   for (const source of [experience, paymentMethods]) {
     assert.doesNotMatch(source, />\s*(?:NOT_CONFIGURED|CAPABILITY_DISABLED|provider_not_configured|Funding intents|Live routes)\s*</);
     assert.doesNotMatch(source, /item\.state\.replaceAll/);
   }
-  assert.match(fundingActions, /error\.code === 'provider_not_configured'/);
+  assert.match(fundingActions, /code === 'provider_not_configured'/);
   assert.doesNotMatch(fundingActions, /Funding infrastructure for this asset is not configured/);
 });
 

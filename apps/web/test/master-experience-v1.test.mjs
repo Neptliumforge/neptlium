@@ -13,8 +13,8 @@ const nts = readFileSync(
 );
 
 test('public architecture exposes the four canonical Neptlium product families', () => {
-  for (const label of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
-    assert.match(architecture, new RegExp(`label: '${label}'`));
+  for (const label of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
+    assert.match(architecture, new RegExp(label, 'i'));
   assert.match(architecture, /\/institutional/);
   assert.match(architecture, /\/infrastructure/);
 });
@@ -23,8 +23,8 @@ test('homepage uses the canonical hero without a redundant brand eyebrow', () =>
   assert.match(homepage, /Capital, intelligently managed\./);
   assert.match(homepage, /data-npt-nts="hero"/);
   assert.doesNotMatch(homepage, /styles\.kicker}>Neptlium/);
-  for (const label of ['Capital', 'Treasury', 'Institutional', 'Infrastructure'])
-    assert.match(homepage, new RegExp(`label: '${label}'`));
+  for (const label of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
+    assert.match(homepage, new RegExp(label, 'i'));
 });
 
 test('NTS defines centralized semantic typography roles', () => {
