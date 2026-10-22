@@ -49,33 +49,35 @@ test('desktop authenticated navigation reflects the personal Capital hierarchy',
   assert.doesNotMatch(nav, /href: '\/dashboard\/treasury'/);
 });
 
-test('mobile navigation is Overview Portfolio Invest Activity More with account secondary routes', () => {
+test('mobile navigation is Overview Portfolio Invest Capital Activity', () => {
   const nav = read('components/navigation/dashboardNav.tsx');
-  const primary = nav.slice(
-    nav.indexOf('dashboardMobilePrimaryNavItems'),
-    nav.indexOf('dashboardMobileSecondaryNavItems'),
+  const primary = nav.slice(nav.indexOf('dashboardMobilePrimaryNavItems'));
+  assert.deepEqual(
+    [...primary.matchAll(/label: '([^']+)',\s*href: '([^']+)'/g)].map(([, label, href]) => [label, href]),
+    [
+      ['Overview', '/dashboard'],
+      ['Portfolio', '/dashboard/portfolio'],
+      ['Invest', '/dashboard/invest'],
+      ['Capital', '/dashboard/capital'],
+      ['Activity', '/dashboard/activity'],
+    ],
   );
-  for (const [label, href] of [
-    ['Overview', '/dashboard'],
-    ['Portfolio', '/dashboard/portfolio'],
-    ['Invest', '/dashboard/invest'],
-    ['Activity', '/dashboard/activity'],
-    ['More', '/dashboard/more'],
-  ])
-    assert.match(primary, new RegExp(`label: '${label}'[\\s\\S]*?href: '${href}'`));
-  assert.equal((primary.match(/href:/g) ?? []).length, 5);
+  assert.doesNotMatch(nav, /label: 'More'/);
+  assert.doesNotMatch(nav, /href: '\/dashboard\/treasury'/);
+});
 
-  const more = read('components/product/OperatingExperience.tsx');
-  for (const route of [
-    '/dashboard/allocation',
-    '/dashboard/companies',
-    '/dashboard/documents',
-    '/dashboard/notifications',
-    '/dashboard/settings',
-  ]) {
-    assert.match(more, new RegExp(route.replaceAll('/', '\\/')));
-  }
-  assert.doesNotMatch(more, /href=['"]\/dashboard\/treasury['"]/);
+test('destinations outside the mobile bar stay discoverable in context', () => {
+  const experience = read('components/product/OperatingExperience.tsx');
+  const section = (name) => {
+    const start = experience.indexOf(`export function ${name}(`);
+    return experience.slice(start, experience.indexOf('\nexport function ', start + 1));
+  };
+  assert.match(section('OverviewExperience'), /href="\/dashboard\/notifications"/);
+  assert.match(section('PortfolioExperience'), /href="\/dashboard\/documents"/);
+  assert.match(section('PortfolioExperience'), /href="\/dashboard\/allocation"/);
+  assert.match(section('InvestExperience'), /href="\/dashboard\/companies"/);
+  assert.match(read('components/navigation/ProfileMenu.tsx'), /\['Settings', '\/dashboard\/settings'\]/);
+  assert.doesNotMatch(experience, /href=['"]\/dashboard\/treasury['"]/);
 });
 
 test('authenticated shell preserves keyboard access, stable shared bootstrap and responsive containment', () => {

@@ -654,7 +654,15 @@ export function PortfolioExperience() {
       </section>
       <section className="op-grid-2" id="allocation" aria-labelledby="portfolio-allocation-title">
         <article className="op-panel">
-          <SectionHeading label="Allocation" title="Portfolio composition" />
+          <SectionHeading
+            label="Allocation"
+            title="Portfolio composition"
+            action={
+              <Link href="/dashboard/allocation">
+                View allocation <ArrowRight size={14} />
+              </Link>
+            }
+          />
           <EmptyCanvas
             title="Position allocation unavailable"
             detail="Asset weights require canonical investment positions and valuation. Unknown allocation is not rendered as zero."

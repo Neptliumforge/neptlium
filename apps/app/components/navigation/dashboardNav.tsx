@@ -1,12 +1,9 @@
 import {
-  Bell,
-  FileText,
   Gauge,
   LayoutDashboard,
   List,
   Settings,
   Briefcase,
-  MoreHorizontal,
   LifeBuoy,
   Search,
 } from 'lucide-react';
@@ -92,48 +89,15 @@ export const dashboardMobilePrimaryNavItems: readonly RoleAwareNavItem[] = [
     icon: <Search className="size-4" />,
   },
   {
-    label: 'Activity',
-    href: '/dashboard/activity',
-    minRole: 'user',
-    icon: <List className="size-4" />,
-  },
-  {
-    label: 'More',
-    href: '/dashboard/more',
-    minRole: 'user',
-    icon: <MoreHorizontal className="size-4" />,
-  },
-];
-
-export const dashboardMobileSecondaryNavItems: readonly RoleAwareNavItem[] = [
-  {
-    label: 'Capital actions',
+    label: 'Capital',
     href: '/dashboard/capital',
     minRole: 'user',
     icon: <Gauge className="size-4" />,
   },
   {
-    label: 'Documents',
-    href: '/dashboard/documents',
+    label: 'Activity',
+    href: '/dashboard/activity',
     minRole: 'user',
-    icon: <FileText className="size-4" />,
-  },
-  {
-    label: 'Notifications',
-    href: '/dashboard/notifications',
-    minRole: 'user',
-    icon: <Bell className="size-4" />,
-  },
-  {
-    label: 'Help & Support',
-    href: '/dashboard/support',
-    minRole: 'user',
-    icon: <LifeBuoy className="size-4" />,
-  },
-  {
-    label: 'Settings',
-    href: '/dashboard/settings',
-    minRole: 'user',
-    icon: <Settings className="size-4" />,
+    icon: <List className="size-4" />,
   },
 ];
