@@ -167,6 +167,25 @@ Contrast/heading figures are axe violations summed over 390 and 1440 in Dark and
 - Lighthouse and Core Web Vitals: NOT RUN (tool unavailable; production unreachable).
 - Keyboard and menu behaviour: covered by the existing Playwright mobile-navigation and public-boundaries specs (see Validation).
 
+## Validation
+
+| Check                                               | Result                                        |
+| --------------------------------------------------- | --------------------------------------------- |
+| `git diff --check origin/main...HEAD`               | PASS                                          |
+| `pnpm --filter @neptlium/ui typecheck` / `lint`     | PASS                                          |
+| `pnpm --filter @neptlium/web typecheck` / `lint`    | PASS                                          |
+| `pnpm --filter @neptlium/web test:node`             | PASS (98/98)                                  |
+| `pnpm --filter @neptlium/web test:unit`             | PASS (27/27, 1 new)                           |
+| `pnpm --filter @neptlium/web build`                 | PASS                                          |
+| Playwright (5 projects, local build, Chromium 1194) | 721 passed, 6 skipped, 13 failed — see below  |
+| Production browser validation                       | BLOCKED (egress proxy refuses `neptlium.com`) |
+| Lighthouse / Core Web Vitals                        | NOT RUN                                       |
+
+The 13 Playwright failures:
+
+- **Docs/Status handoff (5):** BLOCKED. The test follows the redirect off-site, and the egress proxy refuses `docs.neptlium.com` and `status.neptlium.com`.
+- **Infrastructure/Intelligence snapshots (8):** they fail identically on unmodified `main` 8aa8a2e3 in this sandbox (for example 25,141 differing pixels on `/infrastructure` light at 1440 in both runs). These are browser-build differences against baselines produced on GitHub-hosted Ubuntu, not regressions from this branch. CI is the authoritative run.
+
 ## Product truth
 
 - **Claim scan:** public copy was scanned for returns, yields, AUM, customer counts, testimonials, licences, insurance, partnerships, and live execution or settlement claims. None were found outside negated or qualified statements.
