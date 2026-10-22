@@ -4,6 +4,11 @@ const releaseRoutes = [
   '/',
   '/platform',
   '/investments',
+  '/investments/ai-compute',
+  '/investments/cloud-software',
+  '/investments/digital-infrastructure',
+  '/investments/energy-power',
+  '/investments/global-innovation',
   '/capital',
   '/portfolio',
   '/allocation',
@@ -155,21 +160,21 @@ test.describe('Neptlium unified marketing release', () => {
   test('homepage brand and journey CTAs remain canonical', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
     await expect(
-      page.getByRole('heading', { name: 'Capital, intelligently managed.' }),
+      page.getByRole('heading', { name: 'Invest with clarity. Build with confidence.' }),
     ).toBeVisible();
     await expect(page.getByRole('link', { name: /Get started/i }).first()).toHaveAttribute(
       'href',
       'https://app.neptlium.com/auth/sign-up',
     );
-    await expect(page.getByRole('link', { name: /For institutions/i })).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /Explore investing/i })).toHaveAttribute(
       'href',
-      '/institutional',
+      '/investments',
     );
-    await expect(page.getByRole('link', { name: /Explore Capital/i }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /Discover Neptlium Capital/i }).first()).toHaveAttribute(
       'href',
       '/capital',
     );
-    await expect(page.getByRole('link', { name: /Explore Treasury/i }).first()).toHaveAttribute(
+    await expect(page.locator('main').getByRole('link', { name: /^Treasury\s/ }).first()).toHaveAttribute(
       'href',
       '/treasury',
     );
