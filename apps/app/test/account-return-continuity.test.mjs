@@ -197,6 +197,7 @@ function formFixture(mode, returnTo, results = {}) {
   let signupOptions;
   const fakeReact = {
     ...React,
+    useEffect: () => {},
     useState: (initial) => {
       const index = stateIndex++;
       state[index] = typeof initial === 'function' ? initial() : initial;

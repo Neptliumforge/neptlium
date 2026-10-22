@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@neptlium/lib/supabase/browser';
 import { accountEntryHref, safeInternalPath } from '../auth-utils';
+
+// Supabase Auth allows one confirmation email per address per 60 seconds.
+const RESEND_COOLDOWN_SECONDS = 60;
 
 export function SupabaseAuthForm({
   mode,
@@ -19,7 +22,40 @@ export function SupabaseAuthForm({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [resendIn, setResendIn] = useState(0);
+  const [resendStatus, setResendStatus] = useState<string | null>(null);
   const destination = safeInternalPath(returnTo);
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const timer = setTimeout(() => setResendIn((seconds) => seconds - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendIn]);
+
+  function confirmationRedirect() {
+    const callback = new URL('/auth/callback', window.location.origin);
+    callback.searchParams.set('next', destination);
+    return callback.toString();
+  }
+
+  async function resendConfirmation() {
+    if (!pendingEmail || resendIn > 0) return;
+    setResendStatus(null);
+    const supabase = createSupabaseBrowserClient();
+    const { error: resendError } = await supabase.auth.resend({
+      type: 'signup',
+      email: pendingEmail,
+      options: { emailRedirectTo: confirmationRedirect() },
+    });
+    setResendIn(RESEND_COOLDOWN_SECONDS);
+    // Supabase does not reveal whether an address is registered; neither does this message.
+    setResendStatus(
+      resendError?.status === 429
+        ? 'Too many requests. Wait a minute, then try again.'
+        : 'If a confirmation is waiting for this address, we sent a new email.',
+    );
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,12 +76,10 @@ export function SupabaseAuthForm({
         return;
       }
 
-      const callback = new URL('/auth/callback', window.location.origin);
-      callback.searchParams.set('next', destination);
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: callback.toString() },
+        options: { emailRedirectTo: confirmationRedirect() },
       });
       if (signUpError) {
         console.error('Supabase sign-up failed', { code: signUpError.code });
@@ -57,13 +91,80 @@ export function SupabaseAuthForm({
         router.refresh();
         return;
       }
-      setNotice('Check your email to confirm your account, then return to sign in.');
+      // Supabase answers an already registered address with the same response and sends no
+      // email, so this state must also lead an existing customer to sign-in or reset.
+      setPendingEmail(email.trim());
+      setResendIn(RESEND_COOLDOWN_SECONDS);
+      setResendStatus(null);
     } finally {
       setSubmitting(false);
     }
   }
 
   const isSignIn = mode === 'sign-in';
+
+  if (!isSignIn && pendingEmail) {
+    return (
+      <div className="rounded-[14px] border border-border-hairline bg-surface-1 p-6 sm:p-7">
+        <p className="neptlium-meta mb-3">Confirm your email</p>
+        <h1 className="text-[1.8rem] font-medium tracking-[-0.035em] text-text-primary">
+          Check your email
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-text-secondary" role="status">
+          If <strong className="font-medium text-text-primary">{pendingEmail}</strong> can be used
+          for a new account, we sent a link to confirm it. Open the link on this device and browser
+          to finish creating your account.
+        </p>
+        <div className="mt-5 rounded-[10px] border border-border-hairline bg-surface-0 p-4 text-sm leading-6 text-text-secondary">
+          <p className="font-medium text-text-primary">Already have a Neptlium account?</p>
+          <p className="mt-1">No email is sent for an address that is already registered.</p>
+          <p className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+            <Link
+              className="font-medium text-[#35D5C1] underline-offset-4 hover:underline"
+              href={accountEntryHref('sign-in', destination)}
+            >
+              Sign in
+            </Link>
+            <Link
+              className="font-medium text-[#35D5C1] underline-offset-4 hover:underline"
+              href="/forgot-password"
+            >
+              Reset password
+            </Link>
+          </p>
+        </div>
+        <div className="mt-6 space-y-3">
+          <button
+            className="w-full rounded-[10px] border border-border-default px-4 py-3 text-sm font-semibold text-text-primary disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={resendIn > 0}
+            onClick={resendConfirmation}
+            type="button"
+          >
+            {resendIn > 0 ? `Resend email in ${resendIn}s` : 'Resend email'}
+          </button>
+          {resendStatus ? (
+            <p className="text-sm text-text-secondary" role="status">
+              {resendStatus}
+            </p>
+          ) : null}
+          <p className="text-sm text-text-muted">
+            Wrong address?{' '}
+            <button
+              className="font-medium text-[#35D5C1] underline-offset-4 hover:underline"
+              onClick={() => {
+                setPendingEmail(null);
+                setResendStatus(null);
+              }}
+              type="button"
+            >
+              Use a different email
+            </button>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-[14px] border border-border-hairline bg-surface-1 p-6 sm:p-7">
       <p className="neptlium-meta mb-3">Secure access</p>
