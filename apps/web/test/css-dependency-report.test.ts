@@ -8,7 +8,8 @@ const report = JSON.parse(execFileSync(process.execPath, [script, '--json'], { e
 const get = (file: string) => report.stylesheets.find((entry: { file: string }) => entry.file === file);
 
 test('CSS inventory reports the active global dependency chain', () => {
-  assert.ok(report.cssCount >= 21);
+  // Floor reflects the consolidated inventory after unimported global layers were removed.
+  assert.ok(report.cssCount >= 14);
   const layout = 'apps/web/app/layout.tsx';
   const globals = get('apps/web/app/globals.css');
   const visual = get('apps/web/app/neptlium-visual-direction.css');
