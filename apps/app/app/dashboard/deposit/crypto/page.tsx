@@ -2,10 +2,11 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { requireProvisionedUser } from '@/lib/auth';
 import { getFundingCapabilities } from '@/lib/api/financial';
+import { fundingOperationScope } from '@/lib/funding/scope';
 import { CryptoDepositFlow } from './CryptoDepositFlow';
 
 export default async function CryptoDepositPage() {
-  await requireProvisionedUser();
+  const { user } = await requireProvisionedUser();
   const result = await getFundingCapabilities().catch(() => null);
 
   return (
@@ -22,6 +23,7 @@ export default async function CryptoDepositPage() {
       <CryptoDepositFlow
         capabilities={result?.capabilities ?? []}
         capabilityError={!result}
+        operationScope={fundingOperationScope(user.id)}
       />
     </div>
   );

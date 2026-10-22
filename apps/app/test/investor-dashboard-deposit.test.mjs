@@ -30,7 +30,8 @@ test('deposit route is a dedicated personal funding experience', () => {
 
 test('crypto deposit creates instructions through the governed funding action and links to activity', () => {
   const flow = read('app/dashboard/deposit/crypto/CryptoDepositFlow.tsx');
-  assert.match(flow, /createFundingIntentAction/);
+  assert.match(flow, /useDepositInstructions/);
+  assert.match(read('app/dashboard/capital-account/useDepositInstructions.ts'), /createFundingIntentAction/);
   assert.match(flow, /deposit_address/);
   assert.match(flow, /\/dashboard\/activity/);
   assert.match(flow, /Creating instructions records a funding request; it does not mean funds were received/);
@@ -43,5 +44,5 @@ test('funding intent invalidates overview, Capital and Activity projections', ()
   assert.match(actions, /revalidatePath\('\/dashboard'\)/);
   assert.match(actions, /revalidatePath\('\/dashboard\/capital'\)/);
   assert.match(actions, /revalidatePath\('\/dashboard\/activity'\)/);
-  assert.match(actions, /session_expired/);
+  assert.match(read('lib/funding/outcome.ts'), /session_expired/);
 });
