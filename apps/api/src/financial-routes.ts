@@ -2,12 +2,13 @@ import { createHash } from 'node:crypto';
 import { ApiError } from './errors.js';
 import type { Config } from './config.js';
 import type { CapabilityState } from './funding-domain.js';
-import { publicFundingDefinitions } from './asset-registry.js';
+import { governedAtomicPrecision, publicFundingDefinitions } from './asset-registry.js';
 import { verifyStripeWebhook } from './stripe-webhook.js';
 import { verifyAlchemyWebhook } from './alchemy-observation.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
 import {
   requestDigest,
+  type CanonicalBalanceSummary,
   type FinancialRepository,
   type FundingIntentRecord,
   type TransferAliasRecord,
@@ -130,6 +131,54 @@ function enabled(capability: FinancialCapability) {
   if (capability.state !== 'ENABLED')
     throw new ApiError(503, 'provider_capability_unavailable', capability.reason ?? 'Funding capability is unavailable');
 }
+// Canonical balances contract v2: docs/financial/CANONICAL_BALANCES.md.
+export function canonicalBalancesV2(summary: CanonicalBalanceSummary, asOf = new Date()) {
+  const components = summary.balances.flatMap((item) => [
+    item.availableAtomic,
+    item.reservedAtomic,
+    item.pendingAtomic,
+    item.restrictedAtomic,
+  ]);
+  // A capital liability below zero is a ledger integrity defect, never a customer amount.
+  if (components.some((value) => BigInt(value) < 0n))
+    throw new ApiError(503, 'canonical_balance_integrity', 'Canonical balances are unavailable');
+  const initialized = summary.initializedAt !== null || summary.balances.length > 0;
+  const state = !initialized
+    ? 'NOT_INITIALIZED'
+    : components.every((value) => BigInt(value) === 0n)
+      ? 'ZERO'
+      : 'VALUE';
+  return {
+    contract_version: 2,
+    state,
+    source: 'NEPTLIUM_CANONICAL_LEDGER',
+    as_of: asOf.toISOString(),
+    ledger_initialized_at: summary.initializedAt,
+    reporting: {
+      currency: 'USD',
+      decimals: 2,
+      // Only a zero ledger has an established USD value; non-zero balances await a
+      // governed valuation authority and are never priced by assumption.
+      total_minor: state === 'ZERO' ? '0' : null,
+      valuation: state === 'ZERO' ? 'ZERO_LEDGER' : 'UNAVAILABLE',
+    },
+    balances: summary.balances.map((item) => {
+      const precision = governedAtomicPrecision(item.asset, item.network);
+      return {
+        asset: item.asset,
+        network: item.network,
+        atomic_precision: precision,
+        decimals: precision,
+        total_atomic: item.totalAtomic,
+        available_atomic: item.availableAtomic,
+        reserved_atomic: item.reservedAtomic,
+        pending_atomic: item.pendingAtomic,
+        restricted_atomic: item.restrictedAtomic,
+      };
+    }),
+  };
+}
+
 function fundingPublic(value: FundingIntentRecord) {
   return { id: value.id, asset: value.asset, network: value.network, rail: value.rail, amount_atomic: value.amountAtomic,
     state: value.state, environment: value.environment, created_at: value.createdAt, updated_at: value.updatedAt };
@@ -289,13 +338,8 @@ export async function handleFinancialRoute(
     return { data: { state: data.length ? 'VALUE' : 'EMPTY', data: data.map(fundingPublic) } };
   }
 
-  if (method === 'GET' && path === '/v1/capital-account/balances') {
-    const data = await deps.repository.getCanonicalBalances(await deps.ownerId());
-    return { data: { state: data.length ? 'VALUE' : 'EMPTY', source: 'NEPTLIUM_CANONICAL_LEDGER', balances: data.map((item) => ({
-      asset: item.asset, network: item.network, total_atomic: item.totalAtomic, available_atomic: item.availableAtomic,
-      reserved_atomic: item.reservedAtomic, pending_atomic: item.pendingAtomic, restricted_atomic: item.restrictedAtomic,
-    })) } };
-  }
+  if (method === 'GET' && path === '/v1/capital-account/balances')
+    return { data: canonicalBalancesV2(await deps.repository.getCanonicalBalanceSummary(await deps.ownerId())) };
 
   if (method === 'GET' && path === '/v1/capital-account/deposit-instructions') {
     const ownerId = await deps.ownerId();
