@@ -1,5 +1,7 @@
 'use server';
 
+import { clerkDevelopmentEnabled } from '@/lib/auth/provider';
+
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
@@ -12,6 +14,8 @@ export async function resetPasswordAction(
   _previous: ResetPasswordState,
   formData: FormData,
 ): Promise<ResetPasswordState> {
+  if (clerkDevelopmentEnabled())
+    return { error: 'Use an email code or a linked sign-in method to recover access.' };
   const password = formData.get('password');
   const confirm = formData.get('confirm');
   if (typeof password !== 'string' || !meetsPasswordRequirements(password))

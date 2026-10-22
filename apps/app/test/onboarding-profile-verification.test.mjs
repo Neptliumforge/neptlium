@@ -250,7 +250,7 @@ test('password recovery: request, dedicated code exchange and recovery-only rese
   const reset = read('app/(auth)/reset-password/page.tsx');
   const resetAction = read('app/(auth)/reset-password/actions.ts');
   assert.match(forgot, /PasswordRecoveryRequestForm/);
-  assert.doesNotMatch(forgot, /redirect\(/);
+  assert.ok(forgot.includes("if (clerkDevelopmentEnabled()) redirect('/auth/sign-in');"));
   assert.match(forms, /resetPasswordForEmail\(/);
   assert.match(forms, /RECOVERY_REDIRECT_PATH/);
   assert.match(forms, /If an account exists/);

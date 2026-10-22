@@ -1,3 +1,4 @@
+import { clerkDevelopmentEnabled } from '@/lib/auth/provider';
 import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { RECOVERY_COOKIE, RECOVERY_COOKIE_MAX_AGE } from '@/app/(auth)/recovery';
@@ -5,6 +6,8 @@ import { RECOVERY_COOKIE, RECOVERY_COOKIE_MAX_AGE } from '@/app/(auth)/recovery'
 // Password-recovery links land here (not /auth/callback) so recovery never depends on
 // the general return-destination allowlist and always ends at /reset-password.
 export async function GET(request: NextRequest) {
+  if (clerkDevelopmentEnabled())
+    return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   if (!code)

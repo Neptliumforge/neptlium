@@ -40,6 +40,8 @@ const { safeInternalPath, resolveReturnDestination, accountEntryHref, ACCOUNT_RE
 const target = '/dashboard/activity?tab=recent&filter=a%2Fb';
 const shell = ({ children }) => React.createElement('section', {}, children);
 const mocksForPages = {
+  '@/app/(auth)/components/ClerkAuthForm': { ClerkAuthForm: () => null },
+  '@/lib/auth/provider': { clerkDevelopmentEnabled: () => false },
   '@/app/(auth)/components/AuthShell': { AuthShell: shell },
   '../components/AuthShell': { AuthShell: shell },
   '@neptlium/ui': { Button: ({ href, children }) => React.createElement('a', { href }, children) },

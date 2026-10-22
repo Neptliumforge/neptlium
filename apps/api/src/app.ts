@@ -1,3 +1,9 @@
+import {
+  createClerkIdentityVerifier,
+  createClerkPrincipalAuthenticator,
+  bootstrapClerkIdentity,
+  completeDevelopmentOnboarding,
+} from './clerk-authentication.js';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import { loadConfig, type Config } from './config.js';
@@ -143,9 +149,20 @@ export async function buildApp(deps: Dependencies = {}) {
       : new DisabledCapitalProvider());
   const identityResolver =
     config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
-      ? new SupabaseIdentityPrincipalResolver(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
+      ? new SupabaseIdentityPrincipalResolver(
+          config.SUPABASE_URL,
+          config.SUPABASE_SERVICE_ROLE_KEY,
+          fetch,
+          config.AUTH_MODE === 'CLERK_DEVELOPMENT' ? 'CLERK' : 'SUPABASE_AUTH',
+        )
       : undefined;
-  const authenticate = deps.authenticate ?? createPrincipalAuthenticator(config, identityResolver);
+  const verifyClerk =
+    config.AUTH_MODE === 'CLERK_DEVELOPMENT' ? createClerkIdentityVerifier(config) : null;
+  const authenticate =
+    deps.authenticate ??
+    (verifyClerk
+      ? createClerkPrincipalAuthenticator(verifyClerk, identityResolver)
+      : createPrincipalAuthenticator(config, identityResolver));
   // No identity verification provider or record store is reviewed yet; both fail closed.
   const identityVerification = deps.identityVerification ?? {
     provider: new DisabledIdentityVerificationProvider(),
@@ -179,6 +196,18 @@ export async function buildApp(deps: Dependencies = {}) {
       60_000,
     );
 
+    if (method === 'POST' && path === '/v1/account/identity/bootstrap') {
+      if (!verifyClerk) throw new ApiError(404, 'not_found', 'Route not found');
+      const header = context.headers.authorization;
+      const identity = header?.startsWith('Bearer ') ? await verifyClerk(header.slice(7)) : null;
+      if (!identity)
+        throw new ApiError(
+          401,
+          'authentication_required',
+          'A verified email and active session are required',
+        );
+      return { data: await bootstrapClerkIdentity(config, identity, context.requestId) };
+    }
     const financialResult = await handleFinancialRoute(context, {
       config,
       repository: financialRepository,
@@ -334,12 +363,35 @@ export async function buildApp(deps: Dependencies = {}) {
     }
     if (method === 'POST' && path === '/v1/account/provision') {
       const user = await owner(context);
+      if (config.AUTH_MODE === 'CLERK_DEVELOPMENT')
+        throw new ApiError(
+          409,
+          'invalid_state_transition',
+          'Complete personal onboarding to set up this account',
+        );
       const result = await repository.provisionAccount(user.id);
       return { data: { status: 'provisioned', profile_id: result.profileId } };
     }
     if (method === 'POST' && path === '/v1/account/onboarding') {
       const user = await owner(context);
-      const result = await repository.completeOnboarding(user.id, context.body);
+      if (config.AUTH_MODE === 'CLERK_DEVELOPMENT') {
+        assertObject(context.body);
+        const input = context.body;
+        if (
+          input.investorType !== 'individual' ||
+          input.acceptedTerms !== true ||
+          ['organizationName', 'website', 'companyRole'].some((key) => Boolean(input[key]))
+        )
+          throw new ApiError(
+            422,
+            'validation_failed',
+            'Personal onboarding requires accepted terms and no organization',
+          );
+      }
+      const result =
+        config.AUTH_MODE === 'CLERK_DEVELOPMENT'
+          ? await completeDevelopmentOnboarding(config, user.id, context.body)
+          : await repository.completeOnboarding(user.id, context.body);
       return { data: { status: 'completed', profile_id: result.profileId } };
     }
 
