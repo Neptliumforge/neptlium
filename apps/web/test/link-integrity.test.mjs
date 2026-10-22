@@ -21,6 +21,7 @@ function filesUnder(root) {
 
 function routeExists(href) {
   const pathname = href.split('#')[0].split('?')[0] || '/';
+  if (pathname.startsWith('/investments/')) return existsSync(join(appRoot, 'investments/[slug]/page.tsx'));
   if (pathname === '/') return existsSync(join(appRoot, 'page.tsx'));
   return existsSync(join(appRoot, pathname.replace(/^\//, ''), 'page.tsx'));
 }

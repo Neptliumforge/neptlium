@@ -48,6 +48,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @neptlium/lib typecheck
       - run: pnpm --filter @neptlium/app typecheck
       - run: pnpm --filter @neptlium/app lint
       - run: pnpm --filter @neptlium/app test

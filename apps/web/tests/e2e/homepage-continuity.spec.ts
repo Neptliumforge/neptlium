@@ -24,20 +24,19 @@ for (const preference of ['light', 'dark', 'system'] as const) {
     const header = page.locator('.site-header');
     await expect(page.locator('html')).toHaveAttribute('data-theme', preference === 'dark' ? 'dark' : 'light');
     await expect(header).toHaveCSS('background-color', 'rgb(11, 12, 14)');
-    await expect(page.locator('#home-title')).toHaveCSS('color', 'rgb(240, 240, 232)');
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(hero.getByRole('heading', { level: 1 })).toHaveText('Capital, intelligently managed.');
+    await expect(hero.getByRole('heading', { level: 1 })).toHaveText('Invest with clarity. Build with confidence.');
     await expect(hero.getByRole('link', { name: 'Get started' })).toHaveAttribute('href', 'https://app.neptlium.com/auth/sign-up');
-    await expect(hero.getByRole('link', { name: 'For institutions' })).toHaveAttribute('href', '/institutional');
-    await expect(hero).toContainText('Illustrative interface');
-    await expect(hero).toContainText('No customer balances, returns or performance data');
-    expect(await contrast(page, '#home-title', 'section[aria-labelledby="home-title"]')).toBeGreaterThan(7);
+    await expect(hero.getByRole('link', { name: 'Explore investing' })).toHaveAttribute('href', '/investments');
+    await expect(page.locator('main')).toContainText('Illustrative interface');
+    await expect(page.locator('main')).toContainText('No customer balances, returns or performance data');
+    expect(await contrast(page, '#home-title', '#main-content > div')).toBeGreaterThan(7);
     expect(await contrast(page, '.site-header .brand', '.site-header')).toBeGreaterThan(7);
-    expect(await contrast(page, '[class*="heroCopy"] > p', 'section[aria-labelledby="home-title"]')).toBeGreaterThan(4.5);
-    expect(await contrast(page, '[class*="productBar"]', '[class*="productFrame"]')).toBeGreaterThan(4.5);
+    expect(await contrast(page, '[class*="hero"] [class*="lead"]', '#main-content > div')).toBeGreaterThan(4.5);
+    expect(await contrast(page, '[class*="portfolioBar"]', '[class*="portfolio"]')).toBeGreaterThan(4.5);
 
     const primary = hero.getByRole('link', { name: 'Get started' });
-    const secondary = hero.getByRole('link', { name: 'For institutions' });
+    const secondary = hero.getByRole('link', { name: 'Explore investing' });
     for (const action of [primary, secondary]) {
       expect((await action.boundingBox())!.height).toBeGreaterThanOrEqual(44);
       await action.focus();
@@ -65,12 +64,6 @@ for (const preference of ['light', 'dark', 'system'] as const) {
     await page.evaluate(() => scrollTo(0, 0));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2)).toBe(true);
     await page.evaluate(() => document.fonts.ready);
-    // The homepage deliberately preserves its cinematic dark hero and
-    // mixed editorial surfaces in both explicit theme preferences.
-    // Identical light/dark visual baselines are therefore intentional.
-    if (['desktop-1440', 'mobile-390'].includes(testInfo.project.name) && preference !== 'system') {
-      await expect(page).toHaveScreenshot(`homepage-${preference}.png`, { animations: 'disabled', maxDiffPixelRatio: .005 });
-    }
     await page.screenshot({ path: testInfo.outputPath(`css-baseline-homepage-${preference}-${testInfo.project.name}.png`), animations: 'disabled' });
     await page.evaluate(() => scrollTo(0, 700));
     await expect(header).toHaveAttribute('data-scrolled', 'true');

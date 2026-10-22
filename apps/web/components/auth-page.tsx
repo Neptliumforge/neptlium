@@ -7,15 +7,20 @@ export function AuthPage({
   title,
   intro,
   action,
+  actionHref,
   links = [],
 }: {
   eyebrow: string;
   title: string;
   intro: string;
   action: string;
+  /** Explicit application destination; defaults to the public account-creation CTA. */
+  actionHref?: string;
   links?: readonly [string, string][];
 }) {
   const isReturnState = action === 'Return to Neptlium';
+  const primaryHref = isReturnState ? '/' : (actionHref ?? SITE.publicAccessUrl);
+  const primaryLabel = isReturnState || actionHref ? action : SITE.publicAccessLabel;
   const safeLinks = links.filter(([, href]) => !href.startsWith('/auth/'));
 
   return (
@@ -29,11 +34,8 @@ export function AuthPage({
           Authenticated application access is certified separately from this public website.
         </p>
         <div className="mt-8 grid gap-3">
-          <Link
-            className="button w-full justify-center"
-            href={isReturnState ? '/' : SITE.publicAccessUrl}
-          >
-            {isReturnState ? action : SITE.publicAccessLabel}
+          <Link className="button w-full justify-center" href={primaryHref}>
+            {primaryLabel}
           </Link>
         </div>
         {safeLinks.length > 0 && (
