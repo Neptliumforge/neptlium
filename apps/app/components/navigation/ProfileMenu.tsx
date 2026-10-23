@@ -9,7 +9,7 @@ interface ProfileMenuProps {
 /** Compact account entry point. Account management lives on dedicated pages. */
 export function ProfileMenu({ name, email }: ProfileMenuProps) {
   const initials = (name || email)
-    .split(/\\s+|@/)
+    .split(/\s+|@/)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
