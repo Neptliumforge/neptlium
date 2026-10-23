@@ -95,9 +95,13 @@ test('authenticated product keeps the carbon and mineral-teal system', () => {
 
 
 test('account appearance delegates to shared theme authority', () => {
-  assert.match(profileMenu, /useTheme/);
-  assert.match(profileMenu, /preference, setPreference/);
-  assert.doesNotMatch(profileMenu, /localStorage|matchMedia|document\.documentElement|function applyTheme/);
+  const appearance = read('app/dashboard/settings/appearance/page.tsx');
+  const switcher = read('components/navigation/ThemeSwitcher.tsx');
+  assert.match(profileMenu, /href="\/dashboard\/settings"/);
+  assert.match(appearance, /<ThemeSwitcher \/>/);
+  assert.match(switcher, /useTheme/);
+  assert.match(switcher, /preference, setPreference/);
+  assert.doesNotMatch(switcher, /localStorage|matchMedia|document\.documentElement|function applyTheme/);
 });
 
 test('authenticated shell consumes semantic light and dark tokens without a local dark palette', () => {
