@@ -10,28 +10,24 @@ const menu = read('components/navigation/ProfileMenu.tsx');
 const shell = read('components/settings/SettingsShell.tsx');
 const verificationRoute = '/dashboard/settings/verification';
 
-test('compact profile hub keeps Profile, Security and Settings', () => {
-  const destinations = menu.slice(menu.indexOf('const destinations'), menu.indexOf('] as const;'));
-  assert.deepEqual(
-    [...destinations.matchAll(/\['([^']+)', '([^']+)'\]/g)].map(([, label, href]) => [label, href]),
-    [
-      ['Profile', '/dashboard/settings/profile'],
-      ['Security', '/dashboard/settings/security'],
-      ['Settings', '/dashboard/settings'],
-    ],
-  );
+test('compact profile entry routes to the settings hub', () => {
+  assert.match(menu, /href="\/dashboard\/settings"/);
+  assert.match(menu, /aria-label="Account and settings"/);
 });
 
-test('profile hub links directly to identity verification without implying an outcome', () => {
-  assert.ok(menu.includes(`href="${verificationRoute}"`));
-  assert.match(menu, /verified \? 'Identity verified' : 'Identity verification'/);
+test('identity verification remains discoverable through settings without implying an outcome', () => {
+  assert.match(shell, new RegExp(`\\['Verification', '${verificationRoute}'\\]`));
   assert.doesNotMatch(menu, /not verified|unverified/i);
 });
 
-test('profile hub keeps sign out, appearance and support', () => {
-  assert.match(menu, /onClick=\{signOut\}/);
-  assert.match(menu, /<legend[^>]*>Appearance<\/legend>/);
-  assert.ok(menu.includes('href="/dashboard/support"'));
+test('settings hub retains sign out, appearance and support', () => {
+  const settingsIndex = read('app/dashboard/settings/page.tsx');
+  const signOut = read('components/settings/AccountSignOut.tsx');
+  assert.match(settingsIndex, /<AccountSignOut \/>/);
+  assert.match(signOut, /onClick=\{signOut\}/);
+  assert.match(signOut, /supabase\.auth\.signOut\(\)/);
+  assert.ok(shell.includes("'/dashboard/settings/appearance'"));
+  assert.ok(shell.includes("'/dashboard/settings/support'"));
 });
 
 test('verification is listed in settings navigation on every settings page and the index', () => {
