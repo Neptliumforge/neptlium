@@ -266,7 +266,7 @@ export function OverviewExperience() {
           {balanceState === 'UNAVAILABLE' ? (
             <strong>—</strong>
           ) : balanceState === 'EMPTY' ? (
-            <strong>No balance yet</strong>
+            <strong className="op-hero-empty-title">Your capital starts here</strong>
           ) : balance ? (
             <BalanceFigure balance={balance} />
           ) : (
@@ -278,7 +278,7 @@ export function OverviewExperience() {
               : balances.length
                 ? 'Shown separately because no verified combined valuation is available.'
                 : balanceState === 'EMPTY'
-                  ? 'No recorded balance is available for this account yet.'
+                  ? 'Once funds are verified and credited, your balance will appear here.'
                   : 'Your capital balance is temporarily unavailable.'}
           </p>
           <small>{relativeFreshness(snapshot.asOf)}</small>
@@ -306,13 +306,13 @@ export function OverviewExperience() {
         />
         {portfolio?.performance.state === 'VALUE' ? (
           <div className="op-empty-row">
-            <strong>Performance view is being prepared</strong>
-            <span>Your recorded performance data cannot yet be displayed as a chart.</span>
+            <strong>Performance chart coming soon</strong>
+            <span>Your recorded performance history is available, but chart visualization is not supported yet.</span>
           </div>
         ) : (
           <EmptyCanvas
-            title="Performance is not available yet"
-            detail="Your performance history will appear when verified valuation history is available."
+            title="No performance history yet"
+            detail="Once your investments have recorded valuation history, you’ll see it here."
           />
         )}
       </section>
@@ -330,10 +330,9 @@ export function OverviewExperience() {
           <div className="op-state-focus">
             <Search size={19} />
             <div>
-              <strong>Opportunities appear only when available to your account.</strong>
+              <strong>Explore investments when they become available</strong>
               <p>
-                Browse supported investments without mistaking research coverage for an investment
-                you own.
+                Discover investment opportunities and review their details before making a decision.
               </p>
             </div>
           </div>
@@ -352,9 +351,9 @@ export function OverviewExperience() {
             <Wallet size={19} />
             <div>
               <strong>
-                {portfolio ? 'Portfolio information loaded' : 'No portfolio information available'}
+                {portfolio ? 'Your portfolio overview' : 'Your portfolio is waiting'}
               </strong>
-              <p>Positions and returns appear only when supported by your account records.</p>
+              <p>Your holdings and returns will appear here when investments are recorded.</p>
             </div>
           </div>
         </article>
@@ -587,7 +586,7 @@ export function PortfolioExperience() {
       <PageHeader
         eyebrow="Portfolio"
         title="Your portfolio"
-        description="Positions, allocation and performance supported by your account records."
+        description="Explore your holdings, allocation and investment performance in one place."
         actions={
           <>
             <Link className="op-button op-button-primary" href="/dashboard/invest">
@@ -614,10 +613,10 @@ export function PortfolioExperience() {
           <strong>—</strong>
           <p>
             {valueState === 'UNAVAILABLE'
-              ? 'Portfolio valuation is not available yet.'
-              : 'A portfolio value exists, but this client does not yet receive a displayable amount.'}
+              ? 'Your portfolio value will appear once investments are recorded.'
+              : 'Your portfolio value is not available to display right now.'}
           </p>
-          <small>{relativeFreshness(snapshot.asOf)} · Account records required</small>
+          <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
         <div className="op-metric-grid">
           <div className="op-metric">
@@ -642,13 +641,11 @@ export function PortfolioExperience() {
         <div className="op-empty-row">
           <strong id="portfolio-positions-title">
             {positionState === 'EMPTY'
-              ? 'No investment positions are recorded'
-              : 'Investment positions are not available'}
+              ? 'No investments yet'
+              : 'Your investments could not be loaded'}
           </strong>
           <span>
-            Quantity, price, cost basis and return stay absent until the portfolio projection
-            provides authoritative investment-position records. Capital balances are not presented
-            as investments.
+            Your investments and their details will appear here once they are recorded in your account.
           </span>
         </div>
       </section>
@@ -664,23 +661,23 @@ export function PortfolioExperience() {
             }
           />
           <EmptyCanvas
-            title="Position allocation unavailable"
-            detail="Asset weights require canonical investment positions and valuation. Unknown allocation is not rendered as zero."
+            title="No allocation to show yet"
+            detail="Your portfolio breakdown will appear when your investments have verified values."
           />
         </article>
         <article className="op-panel">
           <SectionHeading label="Concentration" title="Exposure" />
           <EmptyCanvas
-            title="Exposure is not established"
-            detail="Sector, geography and asset-class concentration appear only when supported by classified portfolio positions."
+            title="No exposure details yet"
+            detail="Explore your portfolio by sector, region and asset class when holdings are available."
           />
         </article>
       </section>
       <section className="op-panel op-chart-panel" id="performance">
         <SectionHeading label="Performance" title="Portfolio value over time" />
         <EmptyCanvas
-          title="Reconciled valuation history is not available"
-          detail="No decorative or interpolated performance curve is rendered. History appears only from an authoritative valuation series."
+          title="No performance history yet"
+          detail="Your performance chart will appear when verified valuation history is available."
         />
       </section>
       <section className="op-grid-2">
@@ -688,10 +685,9 @@ export function PortfolioExperience() {
           <div id="income">
             <SectionHeading label="Income" title="Distributions and income" />
             <div className="op-empty-row">
-              <strong>No income records are available</strong>
+              <strong>No income recorded yet</strong>
               <span>
-                Dividends, interest and distributions appear only when linked to an authoritative
-                portfolio position and account record.
+                Dividends, interest and distributions will appear here when they are recorded.
               </span>
             </div>
           </div>
@@ -710,8 +706,7 @@ export function PortfolioExperience() {
             <div className="op-empty-row">
               <strong>Statements and account files</strong>
               <span>
-                Documents are kept in the account record and are never inferred from a position or
-                public-market source.
+                View statements and documents associated with your account.
               </span>
             </div>
           </div>
@@ -719,8 +714,8 @@ export function PortfolioExperience() {
       </section>
       <p className="op-footnote">
         {portfolioAvailable
-          ? 'Portfolio state loaded from the Neptlium API. Unavailable fields remain undisclosed.'
-          : 'Portfolio state could not be loaded. No balance, position, performance or income value has been inferred.'}
+          ? 'Portfolio figures reflect available account records.'
+          : 'Some portfolio information is temporarily unavailable. Please try again later.'}
       </p>
     </div>
   );
