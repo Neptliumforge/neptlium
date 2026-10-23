@@ -435,7 +435,7 @@ export function CapitalExperience() {
           {balanceState === 'UNAVAILABLE' ? (
             <strong>—</strong>
           ) : balanceState === 'EMPTY' ? (
-            <strong>No balance yet</strong>
+            <strong className="op-hero-empty-title">Your capital starts here</strong>
           ) : balance ? (
             <BalanceFigure balance={balance} />
           ) : (
@@ -447,7 +447,7 @@ export function CapitalExperience() {
               : balances.length
                 ? 'Values remain separated by asset.'
                 : balanceState === 'EMPTY'
-                  ? 'No recorded balance is available for this account yet.'
+                  ? 'Your balance will appear once funds are verified and credited.'
                   : 'Your capital balance is temporarily unavailable.'}
           </p>
           <small>{relativeFreshness(snapshot.asOf)}</small>
@@ -489,8 +489,8 @@ export function CapitalExperience() {
           </div>
         ) : (
           <div className="op-empty-row">
-            <strong>Proportions unavailable</strong>
-            <span>Ratios are shown only when one authoritative capital basis exists.</span>
+            <strong>No capital breakdown yet</strong>
+            <span>Your capital breakdown will appear when verified balances are available.</span>
           </div>
         )}
       </section>
@@ -800,7 +800,7 @@ export function ActivityExperience() {
       <PageHeader
         eyebrow="Activity"
         title="Account activity"
-        description="A chronological record of governed capital events and state changes."
+        description="Review your deposits, transfers and account activity in one place."
       />
       <section className="op-panel">
         <SectionHeading label="Account activity" title="Recent activity" />
