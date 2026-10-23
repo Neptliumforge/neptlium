@@ -67,9 +67,9 @@ test('desktop and mobile navigation use the personal Capital hierarchy', () => {
 });
 
 test('portfolio and allocation surfaces fail truthfully when canonical data is unavailable', () => {
-  assert.match(experience, /Portfolio valuation is not available yet/);
-  assert.match(experience, /No decorative or interpolated performance curve is rendered/);
-  assert.match(experience, /Unknown allocation is not rendered as zero/);
+  assert.match(experience, /valueState === 'UNAVAILABLE'/);
+  assert.match(experience, /No performance history yet/);
+  assert.match(experience, /No allocation to show yet/);
   assert.match(experience, /Allocation information is not currently available for this account/);
   assert.doesNotMatch(experience, /Governed progression/);
   assert.doesNotMatch(experience, /liquidity-curve/);
