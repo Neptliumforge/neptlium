@@ -11,7 +11,7 @@ This is the knowledge router. **Current authority is subject-based.** Files unde
 - **Experience:** [Design system](experience/DESIGN_SYSTEM.md), [Asset authority](experience/ASSETS.md), [Product experience](experience/PRODUCT_EXPERIENCE.md)
 - **Engineering:** [Development](engineering/DEVELOPMENT.md), [CI](engineering/CI.md), [Environment](engineering/ENVIRONMENT.md), [GitHub governance](engineering/GITHUB_GOVERNANCE.md), [Branch hygiene](engineering/BRANCH_HYGIENE.md)
 - **Operations:** [Deployment](operations/DEPLOYMENT.md), [Deployment architecture](operations/DEPLOYMENT_ARCHITECTURE.md), [Vercel](operations/VERCEL.md), [Admin operations](operations/ADMIN.md)
-- **Active engineering transition (non-production):** [Repository-wide Clerk and architecture alignment register](engineering/REPOSITORY_ALIGNMENT_CLERK_TRANSITION_2026-10-24.md). This records the owner-approved Clerk target separately from the currently deployed Supabase Auth implementation; it does not authorize production cutover.
+- **Active engineering transition (non-production):** [Repository-wide Clerk and architecture alignment register](engineering/REPOSITORY_ALIGNMENT_CLERK_TRANSITION_2026-10-24.md). This records the owner-approved Clerk target separately from the currently deployed Supabase Auth implementation; it does not authorize production cutover. See also the [App/API architecture reconciliation](engineering/APP_API_CLERK_ARCHITECTURE_RECONCILIATION.md) for source-level seams and test gates.
 - **Classification evidence:** [Documentation classification](DOCUMENT_CLASSIFICATION.md)
 
 ## Historical / archived
