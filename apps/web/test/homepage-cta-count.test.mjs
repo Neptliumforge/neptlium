@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const source = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
-const page = source.slice(source.indexOf('<section className={styles.hero}'), source.indexOf('</section>', source.indexOf('<section className={styles.hero}')));
+const page = source.match(/<section\b[^>]*aria-labelledby="home-title"[\s\S]*?<\/section>/)?.[0] ?? '';
 
 test('homepage hero keeps two focused brand and journey actions', () => {
   assert.equal((page.match(/Get started/g) ?? []).length, 1);

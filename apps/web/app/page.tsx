@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { InvestCollections } from '@/components/invest-collections';
+import { HomeBackground } from '@/components/home-background';
 import { INVEST_FAQS } from '@/lib/content/invest';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
@@ -49,8 +50,9 @@ function ProductStage() {
 export default function HomePage() {
   return (
     <div className={styles.page}>
-      <section className={styles.hero} aria-labelledby="home-title">
-        <div className={`${styles.shell} ${styles.heroGrid}`}>
+      <section className={`${styles.hero} ${styles.motionHero}`} aria-labelledby="home-title">
+        <HomeBackground />
+        <div className={`${styles.shell} ${styles.heroGrid} ${styles.motionHeroGrid}`}>
           <div>
             <p className={styles.eyebrow}>A clearer perspective on capital</p>
             <h1 id="home-title" data-npt-nts="hero">
@@ -70,16 +72,6 @@ export default function HomePage() {
             </div>
             <p className={styles.signature}>Capital, intelligently managed.</p>
           </div>
-          <figure className={styles.heroImage}>
-            <Image
-              src="/invest/compute.webp"
-              alt="Server infrastructure in a data center, an editorial view of the systems behind the digital economy"
-              fill
-              sizes="(max-width: 1080px) 100vw, 50vw"
-              preload
-            />
-            <figcaption>New perspectives / The infrastructure behind intelligence</figcaption>
-          </figure>
         </div>
       </section>
       <section className={styles.section} aria-labelledby="portfolio-title">
