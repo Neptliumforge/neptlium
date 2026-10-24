@@ -7,7 +7,8 @@
   margin-inline: auto;
 }
 .hero {
-  padding: var(--space-10) 0 var(--space-9);
+  /* The homepage header overlays the hero, so clearance derives from its height. */
+  padding: calc(var(--header-marketing) + var(--space-7)) 0 var(--space-9);
 }
 .heroGrid {
   display: grid;
@@ -60,7 +61,7 @@
   line-height: var(--web-type-body-leading);
 }
 .page .eyebrow {
-  color: var(--color-brand-emphasis);
+  color: var(--color-accent-primary);
   font-size: var(--text-label);
   letter-spacing: var(--web-type-label-track);
   text-transform: uppercase;
@@ -270,7 +271,7 @@
 }
 .stepNumber {
   display: block;
-  color: var(--color-brand-emphasis);
+  color: var(--color-accent-primary);
   font-size: var(--text-label);
   margin-bottom: var(--space-7);
 }
@@ -362,7 +363,7 @@
   font-size: var(--text-body-sm);
 }
 .plan span {
-  color: var(--color-brand-emphasis);
+  color: var(--color-accent-primary);
   font-size: var(--text-label);
 }
 .topicList {
@@ -414,7 +415,7 @@
     min-height: 560px;
   }
   .hero {
-    padding-top: var(--space-8);
+    padding-top: calc(var(--header-marketing) + var(--space-6));
   }
   .heroImage {
     min-height: 360px;

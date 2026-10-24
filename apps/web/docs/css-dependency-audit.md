@@ -75,3 +75,32 @@ Migration plan: preserve the emitted `data-scrolled` and `data-surface` contract
 At commit `1025bc664c3801d8ea7fea66e0654ad9af3be99d`, GitHub Actions CI, Neptlium Product Family Validation, Supabase Auth Source Contract and Web Production Browser QA all concluded success. Browser QA run `36495044378` published `neptlium-web-css-visual-baseline` (artifact `11003400575`, 22,413,079 bytes) and `neptlium-web-playwright-report` (artifact `11002941725`). These are captured evidence, not approved pixel snapshots. Review and retain baseline artifacts before broad CSS edits.
 
 The next implementation target is the overlapping global header selector family documented above. First enumerate all `data-home`, `data-surface`, `data-scrolled` writers and selectors, then migrate one family with browser comparison. No deletion is authorized solely from a zero-import result.
+
+## Update — 2026-10-22 removal
+
+Status for the files below: REMOVED after verification.
+
+Verification:
+- No runtime importer: `scripts/css-dependency-report.mjs` reported zero `importedBy` edges for each file.
+- The only references were tests asserting the files are *not* imported.
+- Local production build and the browser audit passed after removal.
+
+Removed:
+- `marketing-shell.css`, `marketing-production.css`, `unified-design.css`
+- `apple-calibration.css`, `product-showcase-calibration.css`
+- `route-product-consolidation.css`, `detail-product-consolidation.css`
+- `investments/investments.module.css`, `products/product-depth.module.css`
+- `components/site-chrome.module.css`
+- `product-light-header.module.css`: it painted a black band behind the header using the retired `--npt-*` aliases.
+
+Retained:
+- `marketing-platform.module.css`: no route imports it, but `test/production-hardening.test.ts` still asserts selectors in it.
+- `personal/personal.module.css`: imported only by `app/personal/page.tsx`, which `next.config.mjs` redirects permanently to `/capital`, so it is unreachable.
+
+These are follow-up removals together with their test contracts.
+
+Root cause recorded: #101 deleted the `--npt-*` alias layer while four modules still consumed it. These modules now consume canonical tokens directly:
+- `product-pages`
+- `unified-marketing`
+- `product-light-header` (removed)
+- `personal` (unreachable)
