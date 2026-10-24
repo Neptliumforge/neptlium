@@ -406,7 +406,7 @@ test('onboarding request context validates completion and already-provisioned se
   assert.equal(await context.getOnboardingReturnPath(), target);
   const page = load('app/onboarding/page.tsx', {
     '@/lib/auth': { requireUser: async () => ({ email: 'isolated@example.test' }) },
-    '@/lib/auth/session': { getCurrentProfile: async () => ({ provisionedAt: 'fixture' }) },
+    '@/lib/auth/account-state': { resolveAccountState: async () => ({ state: 'PROVISIONED', profile: { id: 'fixture' } }) },
     '@/lib/auth/return-context': context,
     './OnboardingWizard': { OnboardingWizard: 'fixture-wizard' },
     'next/navigation': mocksForPages['next/navigation'],

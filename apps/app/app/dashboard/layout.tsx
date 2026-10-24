@@ -33,7 +33,9 @@ export default async function DashboardLayout({ children }: { readonly children:
     />
   );
   const bootstrap = await getAuthenticatedProductBootstrap({
-    id: user.id,
+    // The product bootstrap must identify the API-owned principal, never the
+    // replaceable authentication-provider subject.
+    id: profile.id,
     email: profile.email ?? user.email ?? null,
     fullName: profile.fullName ?? null,
     displayName: profile.displayName ?? null,

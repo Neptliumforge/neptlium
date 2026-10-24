@@ -21,7 +21,7 @@ export type Projection<T> =
   | { readonly state: 'UNAVAILABLE'; readonly reason: string };
 
 export interface AuthenticatedProductBootstrap {
-  readonly account: Pick<AccountContext, 'id' | 'email' | 'fullName' | 'displayName' | 'complianceStatus' | 'role'>;
+  readonly account: Omit<Pick<AccountContext, 'id' | 'email' | 'fullName' | 'displayName' | 'complianceStatus' | 'role'>, 'id'> & { readonly id: string | null };
   readonly settings: Projection<AccountSettings>;
   readonly overview: Projection<OverviewState>;
   readonly balances: Projection<readonly CanonicalBalance[]>;

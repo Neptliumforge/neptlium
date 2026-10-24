@@ -124,3 +124,16 @@ test('mobile primary navigation has durable thumb targets and five-item hierarch
   assert.doesNotMatch(mobileCss, /rgba\(5,5,5|#35d5c1/i);
   assert.match(mobile, /aria-current=\{isActive \? 'page' : undefined\}/);
 });
+
+
+test('dashboard never promotes an unavailable API profile to an authenticated principal', () => {
+  const guards = read('lib/auth/guards.ts');
+  const session = read('lib/auth/session.ts');
+  const bootstrapTypes = read('lib/product/bootstrap-types.ts');
+  assert.match(guards, /function fallbackProfile[\s\S]*?id: null,/);
+  assert.doesNotMatch(guards, /function fallbackProfile[\s\S]*?id: user\.id,/);
+  assert.match(session, /interface SessionProfile[\s\S]*?id: string \| null/);
+  assert.match(bootstrapTypes, /readonly id: string \| null/);
+  assert.match(layout, /id: profile\.id/);
+  assert.doesNotMatch(layout, /id: user\.id/);
+});
