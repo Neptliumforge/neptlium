@@ -1,3 +1,5 @@
+import { clerkDevelopmentEnabled } from '@/lib/auth/provider';
+import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { AuthShell } from '../components/AuthShell';
@@ -13,6 +15,7 @@ import { RECOVERY_COOKIE } from '../recovery';
  * form; changing a known password lives in Security settings and requires it.
  */
 export default async function ResetPasswordPage() {
+  if (clerkDevelopmentEnabled()) redirect('/auth/sign-in');
   const cookieStore = await cookies();
   const supabase = await createSupabaseServerClient();
   const {

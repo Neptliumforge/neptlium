@@ -105,3 +105,7 @@ Allowed persistence uses include repositories, RLS/constraints, provider inboxes
 - Session loss, mapping ambiguity, storage failure, or identity-provider outage fails closed for privileged operations.
 - Identity migration never changes canonical financial ownership UUIDs.
 - No browser application may receive the Supabase service-role key.
+
+## TRANSITION — owner-approved Clerk development path
+
+See [Clerk development](CLERK_DEVELOPMENT.md). Production behavior described above remains CURRENT. Clerk is opt-in for App/API development with test keys; it does not activate production or change Admin/Treasury authentication.

@@ -1,12 +1,14 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 allowBuilds:
   sharp: true
   unrs-resolver: true
-  "@swc/core": true
+  '@swc/core': true
   esbuild: true
   secp256k1: false
 minimumReleaseAgeExclude:
   - lucide-react@1.24.0
   - viem@2.55.19
+  - '@clerk/backend@3.26.1'
+  - '@clerk/nextjs@7.9.19'

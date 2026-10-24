@@ -39,8 +39,10 @@ test('individual entry exposes the canonical investor navigation and truthful In
   assert.match(experience, /planned categories as current inventory/);
 });
 
-test('no legacy auth-completion bridge remains in the production entry flow', () => {
-  assert.equal(existsSync(resolve(root, 'app/auth/complete/page.tsx')), false);
+test('identity completion is development-only and legacy linking routes remain absent', () => {
+  assert.ok(
+    read('app/auth/complete/page.tsx').includes('if (!clerkDevelopmentEnabled()) notFound()'),
+  );
   assert.equal(existsSync(resolve(root, 'app/api/auth/link-existing/route.ts')), false);
   assert.equal(existsSync(resolve(root, 'app/auth/link-existing/page.tsx')), false);
 });
