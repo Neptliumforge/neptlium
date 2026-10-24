@@ -15,6 +15,21 @@
   gap: var(--space-8);
   align-items: center;
 }
+.motionHero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-bottom: var(--space-10);
+}
+.motionHeroGrid {
+  position: relative;
+  z-index: 1;
+  min-height: 620px;
+  pointer-events: none;
+}
+.motionHeroGrid > * {
+  pointer-events: auto;
+}
 .page h1,
 .page h2,
 .page h3 {
@@ -374,6 +389,9 @@
   .heroGrid {
     grid-template-columns: 1fr;
   }
+  .motionHeroGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.45fr);
+  }
   .hero h1 {
     max-width: 18ch;
   }
@@ -391,6 +409,10 @@
   }
 }
 @media (max-width: 760px) {
+  .motionHeroGrid {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 560px;
+  }
   .hero {
     padding-top: var(--space-8);
   }
