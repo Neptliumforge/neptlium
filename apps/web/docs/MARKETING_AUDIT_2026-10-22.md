@@ -214,6 +214,6 @@ The 13 Playwright failures:
    | 590     | Treasury, Payments                   |
    | 620     | Insights, Security                   |
 
-8. **Authentication coordination:** the root `AGENTS.md` mandates Supabase Auth only. This branch changes no authentication code or destinations. A Clerk workstream would conflict with that constitution and needs architecture approval before any web destination changes.
+8. **Authentication coordination:** the root `AGENTS.md` mandates Supabase Auth only. This branch changes no authentication code or destinations. A workstream reintroducing a retired authentication provider would conflict with that constitution and needs architecture approval before any web destination changes.
 
 **Readiness:** this branch is ready for review. It is not merged and not deployed.
