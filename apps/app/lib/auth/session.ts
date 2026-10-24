@@ -16,7 +16,8 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 }
 
 export interface SessionProfile {
-  readonly id: string;
+  /** API-verified internal principal, or null when unresolved. */
+  readonly id: string | null;
   readonly email: string | null;
   readonly fullName: string | null;
   readonly displayName: string | null;
