@@ -66,3 +66,23 @@ Archived documentation is historical evidence only; do not rewrite archives to m
 ## Non-negotiable boundaries
 
 No production database changes, no production environment or DNS edits, no production deployment, no financial-provider activation, no merge to main, no secrets committed. This document records evidence and next actions; it does not certify repository completeness or production readiness.
+
+
+## Detailed Clerk code reconciliation — follow-up inspection
+
+Inspected Clerk branch source: `apps/app/lib/auth/provider.ts`, `apps/app/lib/auth/session.ts`, `apps/api/src/clerk-authentication.ts`, `supabase/development/clerk-auth.sql`.
+
+- `clerkDevelopmentEnabled` is an explicit opt-in that requires test keys, development environment, and a loopback API. Its default remains `supabase`; this is deliberate development isolation, **not** the approved final provider configuration.
+- App session lookup switches to Clerk `currentUser()` in the development mode; business profile state still resolves through the API. Do not conflate the external Clerk user ID with Neptlium's internal principal UUID.
+- API verifies JWT signature and exact issuer/authorized party, requires active live Clerk session and user, verified primary email, and resolves an active `CLERK` subject mapping. Review timeout/error handling and token/session caching under real load before production.
+- Development SQL creates service-only bootstrap, refuses email-based automatic account linking, enforces normalized email uniqueness, and introduces one-time onboarding evidence. This is **not** a complete schema and intentionally cannot be applied by normal migrations.
+- The tracked `20260913123000_supabase_auth_only_cutover.sql` revokes active Clerk subjects and drops Clerk helper functions. The forward-only reconciliation must demonstrate why new development Clerk bootstrap is compatible with this history and how a production cutover would avoid historical principal loss.
+- Explicit acceptance cases: returning Supabase-era customer cannot acquire a second principal merely by using the same email; unlinked Clerk user fails closed; API must never trust a browser-supplied principal ID; onboarding must not mint capital, balances or financial authority.
+
+### Open PR inventory — preliminary
+
+Six open PRs were returned by GitHub search at the inspection checkpoint: marketing styling/accessibility/SEO; Clerk development auth (#142); investment catalog publication; controlled platform release reconciliation; canonical balances v2; and Supabase profile-write containment (#109). Detailed cross-PR diff and check-status review remains outstanding. Do not merge these by chronology alone.
+
+### Documentation convergence method
+
+Maintain one current router (`docs/README.md`), one working transition register (this document), subject-owned canonical documents, and archived historical evidence. Avoid a second competing architecture constitution. When runtime changes land, update the corresponding subject authority and tests in the same integration PR; do not rewrite CURRENT claims in advance of implementation.
