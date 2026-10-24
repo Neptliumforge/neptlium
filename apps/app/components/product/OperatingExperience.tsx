@@ -815,45 +815,12 @@ export function ActivityExperience() {
   );
 }
 
-export function InvestExperience() {
+/** Invest page shell: the server-rendered catalog plus the destinations Invest leads to. */
+export function InvestExperience({ children }: { readonly children: ReactNode }) {
   return (
     <div className="op-stack">
-      <PageHeader
-        eyebrow="Invest"
-        title="Discover investments"
-        description="Evaluate opportunities supported by your account without mistaking research coverage for investable inventory."
-        actions={
-          <Link className="op-button" href="/dashboard/portfolio">
-            View portfolio <ArrowRight size={14} />
-          </Link>
-        }
-      />
-      <section className="op-panel op-chart-panel">
-        <SectionHeading label="Opportunities" title="No investments are currently available" />
-        <EmptyCanvas
-          title="Investment discovery is not available yet"
-          detail="Opportunities will appear here only when their terms, documents, risks and account eligibility are available. Neptlium does not present planned categories as current inventory."
-        />
-      </section>
-      <section className="op-panel">
-        <SectionHeading label="Product standard" title="What every opportunity must establish" />
-        <div className="op-readiness-grid">
-          {[
-            ['Strategy', 'What the investment is designed to do.'],
-            ['Terms', 'Minimums, duration, liquidity and fees.'],
-            ['Documents', 'The records required to evaluate the product.'],
-            ['Risks', 'Material risks presented before any allocation action.'],
-            ['Eligibility', 'Whether this account may access the opportunity.'],
-          ].map(([title, detail]) => (
-            <div key={title}>
-              <ShieldCheck size={16} aria-hidden="true" />
-              <strong>{title}</strong>
-              <span>{detail}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="op-grid-2">
+      {children}
+      <section className="op-grid-2" aria-label="Related">
         <article className="op-panel">
           <SectionHeading label="Intelligence" title="Research before you act" />
           <p className="text-sm leading-6 text-text-secondary">
@@ -865,13 +832,18 @@ export function InvestExperience() {
           </Link>
         </article>
         <article className="op-panel">
-          <SectionHeading label="Capital" title="Available to invest" />
+          <SectionHeading label="Capital" title="Your capital" />
           <p className="text-sm leading-6 text-text-secondary">
-            Review your capital and the funding routes currently available to your account.
+            Review your capital and portfolio. Investing is not available, so nothing here moves funds.
           </p>
-          <Link className="op-inline-link" href="/dashboard/capital">
-            Review capital <ArrowRight size={14} />
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link className="op-inline-link" href="/dashboard/capital">
+              Review capital <ArrowRight size={14} />
+            </Link>
+            <Link className="op-inline-link" href="/dashboard/portfolio">
+              View portfolio <ArrowRight size={14} />
+            </Link>
+          </div>
         </article>
       </section>
     </div>

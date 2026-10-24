@@ -1,6 +1,8 @@
 import { ApiError } from './errors.js';
 import type { AdminRepository } from './admin-repository.js';
 import type { TreasuryDestinationRepository } from './treasury-destination-repository.js';
+import type { InvestCatalogRepository } from './invest-catalog-repository.js';
+import { handleInvestCatalogAdminRoute } from './invest-catalog-routes.js';
 import { governedAssetDefinition } from './asset-registry.js';
 import {
   assertChallengeUsable,
@@ -43,6 +45,7 @@ export async function handleAdminRoute(
   deps: {
     repository: AdminRepository;
     treasuryRepository: TreasuryDestinationRepository;
+    investCatalogRepository?: InvestCatalogRepository;
     principal: User;
     accessToken: string;
     environment: ProviderEnvironment;
@@ -459,6 +462,15 @@ export async function handleAdminRoute(
     const data = await deps.repository.listProviderWebhooks(query);
     await audit('admin.webhooks.provider.list', 'provider_webhooks', null);
     return { data };
+  }
+
+  // Invest catalog management; publication rules and audit are enforced in the database.
+  if (deps.investCatalogRepository) {
+    const catalog = await handleInvestCatalogAdminRoute(
+      { method, path, query, body: context.body },
+      { repository: deps.investCatalogRepository, actorId: actor.id },
+    );
+    if (catalog) return catalog;
   }
 
   throw new ApiError(404, 'admin_route_not_found', 'Administrative route was not found');

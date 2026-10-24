@@ -77,6 +77,30 @@ jobs:
           NEXT_PUBLIC_SITE_URL: https://admin.neptlium.com
           NEPTLIUM_API_URL: https://api.neptlium.com
 
+  validate-invest-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test supabase/test/invest-catalog.test.mjs
+      - name: Invest catalog database contract (disposable Postgres)
+        run: psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f supabase/test/invest-catalog/run.sql
+
   validate-web:
     runs-on: ubuntu-latest
     timeout-minutes: 20

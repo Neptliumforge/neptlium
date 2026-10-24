@@ -35,8 +35,9 @@ test('individual entry exposes the canonical investor navigation and truthful In
     assert.match(nav, new RegExp(`label: '${label}'`));
   }
   assert.match(invest, /InvestExperience/);
-  assert.match(experience, /Investment discovery is not available yet/);
-  assert.match(experience, /planned categories as current inventory/);
+  assert.match(invest, /InvestCatalogView/);
+  assert.match(invest, /getInvestCatalog/);
+  assert.doesNotMatch(experience, /Investment discovery is not available yet/);
 });
 
 test('no legacy auth-completion bridge remains in the production entry flow', () => {
