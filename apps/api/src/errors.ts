@@ -49,6 +49,7 @@ export type ErrorCode =
   | 'provider_execution_unimplemented'
   | 'live_execution_disabled'
   | 'financial_storage_unavailable'
+  | 'canonical_balance_integrity'
   | 'transaction_intelligence_storage_unavailable'
   | 'observation_idempotency_conflict'
   | 'platform_core_unavailable'

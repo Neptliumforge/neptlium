@@ -10,6 +10,7 @@ import type {
 } from '@/lib/api/client';
 import type {
   CanonicalBalance,
+  CanonicalBalancesResponse,
   FundingActivity,
   FundingCapability,
   TransferActivity,
@@ -25,6 +26,7 @@ export interface AuthenticatedProductBootstrap {
   readonly settings: Projection<AccountSettings>;
   readonly overview: Projection<OverviewState>;
   readonly balances: Projection<readonly CanonicalBalance[]>;
+  readonly balanceSummary: Projection<CanonicalBalancesResponse>;
   readonly fundingCapabilities: Projection<readonly FundingCapability[]>;
   readonly fundingActivity: Projection<readonly FundingActivity[]>;
   readonly transferCapabilities: Projection<readonly FundingCapability[]>;
