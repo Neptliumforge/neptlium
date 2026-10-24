@@ -17,7 +17,6 @@ import {
   getTransferAliases,
   getTransferCapabilities,
 } from '@/lib/api/financial';
-import type { AccountContext } from '@/lib/api/client';
 import type { AuthenticatedProductBootstrap, Projection } from './bootstrap-types';
 
 function projection<T>(result: PromiseSettledResult<T>): Projection<T> {
