@@ -55,3 +55,23 @@
 **First:** review every App/API source file and test in batches and record contract-level discrepancies. **Second:** create a dedicated code integration branch from the newest audited base and port Clerk selectively. **Third:** validate full migration chain in disposable local database. **Fourth:** run real Clerk development-provider acceptance. **Fifth:** update canonical architecture/README statements to match verified merged code, not aspirations.
 
 This assessment is an initial focused reconciliation; no integration code, production DB, DNS, environment, or deployment changes were made.
+
+
+## Deep file review — Batch 1: App identity, onboarding, funding; API profile and funding state
+
+**Complete files read on audit base (10):** `apps/app/lib/auth/guards.ts`, `apps/app/lib/auth/session.ts`, `apps/app/lib/auth/return-context.ts`, `apps/app/app/(auth)/auth-utils.ts`, `apps/app/app/onboarding/actions.ts`, `apps/app/app/dashboard/capital-account/actions.ts`, `apps/api/src/account-profile.ts`, `apps/api/src/funding-domain.ts`, `apps/app/lib/funding/operation.ts`, `apps/app/lib/funding/scope.ts`.
+
+### Findings and required tests
+
+- **F1 — Provider subject leaks into funding operation scope (integration defect risk):** `fundingOperationScope(user.id)` hashes the external session user's ID. A Supabase -> Clerk transition changes the hash for the same underlying principal, potentially hiding or stranding in-flight per-tab funding operation records. Resolve a verified Neptlium principal from API context before deriving the scope; never accept an unverified client principal ID. Migration of preexisting browser records must not enable cross-account replay. Test existing pending intent recovery, switched users, session expiry and ambiguous POST replay.
+- **F2 — Fallback profile ID is external identity:** `fallbackProfile(user)` sets `id: user.id`. Under Clerk, this is not a Neptlium UUID. Keep fallback strictly display-only or model it with a separate `externalSubject` and nullable `principalId`; prohibit passing fallback IDs to API ownership, funding, roles, or ledger attribution. Test API unavailable with authenticated Clerk user.
+- **F3 — Role resolution uses external ID:** `getCurrentRole()` and `requireRole()` call `resolveRole(user.id)`. Inspect resolver and any server-side role mapping before Clerk enablement; use durable principal/role authority, not Clerk subject or email.
+- **F4 — Auth return validation is a preserved invariant:** `auth-utils.ts` enforces allowlisted dashboard/onboarding routes, rejects dangerous redirects and sensitive query fields, and resolves duplicate/invalid return keys to safe defaults. Preserve across Clerk OAuth and email verification callbacks; test encoded paths, cross-origin returns, duplicated `next`, and session expiry.
+- **F5 — Onboarding error handling:** draft read errors return empty state while save/submit errors return generic failures. Verify no silent overwrite of a valid server draft after transient API failures; ensure completion remains one-time and service-authorized.
+- **F6 — Funding idempotency and session scope:** `capital-account/actions.ts` validates operation keys, checks account scope, creates one intent, and retrieves instructions separately. `funding/operation.ts` preserves per-tab records and refuses to treat inaccessible storage as empty. Preserve these distinctions during identity migration.
+- **F7 — Funding domain financial truth:** `funding-domain.ts` requires reconciled/matched evidence before credit eligibility, uses explicit lifecycle transitions and checks omnibus backing. These are financial invariants, not Clerk-dependent state.
+- **F8 — Profile and verification separation:** `account-profile.ts` distinguishes onboarding, standing and verification. Keep identity provider verification separate from regulatory identity verification and financial eligibility.
+
+### Batch 1 completion scope
+
+10 files read completely. 318 App/API tracked files remain outside this batch (some high-risk files were sampled in earlier rounds). Findings are source-review hypotheses until corresponding integration tests are executed. No code changes or runtime tests in this batch.
