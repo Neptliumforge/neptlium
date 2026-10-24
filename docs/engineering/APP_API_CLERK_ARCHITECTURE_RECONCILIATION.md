@@ -75,3 +75,34 @@ This assessment is an initial focused reconciliation; no integration code, produ
 ### Batch 1 completion scope
 
 10 files read completely. 318 App/API tracked files remain outside this batch (some high-risk files were sampled in earlier rounds). Findings are source-review hypotheses until corresponding integration tests are executed. No code changes or runtime tests in this batch.
+
+
+## Deep file review — Batch 2: authenticated dashboard shell, API client and financial persistence
+
+**Complete additional files inspected (10):** `apps/app/app/dashboard/layout.tsx`, `apps/app/app/dashboard/page.tsx`, `apps/app/lib/api/client.ts`, `apps/app/lib/api/financial.ts`, `apps/app/app/dashboard/capital-account/page.tsx`, `apps/app/app/onboarding/page.tsx`, `apps/app/app/onboarding/layout.tsx`, `apps/api/src/financial-routes.ts`, `apps/api/src/repositories.ts`, `apps/api/src/financial-repository.ts`. Also read complete `apps/app/lib/product/bootstrap.ts` and `apps/app/components/security/resolveRole.ts`.
+
+### Confirmed dashboard architecture
+
+- `dashboard/layout.tsx` renders a unified AppShell, filtered navigation, ProfileMenu, workspace header and ProductBootstrapProvider. It calls `requireProvisionedUser`, API-derived role/status, and a 13-projection product bootstrap. **Its bootstrap account ID is currently `user.id`, the external auth subject, not the API principal.** Correct before Clerk rollout; preserve nullable/unavailable state when API cannot resolve a principal.
+- `lib/product/bootstrap.ts` uses `Promise.allSettled` to independently load settings, overview, balances, funding capabilities/activity, transfer capabilities/destinations/activity, portfolio, allocation, activity, notifications and documents. This is a sound partial-outage model; do not substitute zero or fabricated data for unavailable projections.
+- `dashboard/capital-account/page.tsx` directly passes `fundingOperationScope(user.id)` to the client. This confirms F1 is an actual App wiring seam, not just an unused helper.
+- `lib/api/client.ts` verifies a Supabase user, obtains a session access token, forwards it to the API with request ID and `no-store`, adds an idempotency key for mutations when absent, and retries GET only. The Clerk adapter must preserve these controls; user authentication is distinct from business principal resolution.
+- `lib/api/financial.ts` exposes typed funding, balances, activity, instructions, transfer aliases and capabilities through the same server-only API client. The browser does not call Supabase service-role APIs.
+- `onboarding/page.tsx` and `onboarding/layout.tsx` both check authenticated state and existing API profile; avoid redirect loops or treating temporary API unavailability as a fresh account during Clerk migration.
+- `api/src/financial-routes.ts` derives owner from the authenticated API dependency and requires idempotency keys for relevant writes; `financial-repository.ts` scopes persisted funding and transfer operations by owner, environment and idempotency key. **Browser operation scope remains continuity/UX, not authoritative ownership.**
+- `api/src/repositories.ts` provides a memory implementation for local/test use. Production financial authority must use durable reviewed repository operations.
+
+### Correction to earlier F3 hypothesis
+
+`components/security/resolveRole.ts` accepts `_userId` but **does not use it**; it calls the authenticated API `getAccountContext()` and defaults to `user` for presentation when unavailable. Therefore the earlier concern that it directly authorizes a role from the external subject is **not supported**. The actual migration risk is `dashboard/layout.tsx` passing the external subject as the product bootstrap `account.id`; API role authorization remains separate.
+
+### Concrete preproduction acceptance gates
+
+1. AppShell profile/role/nav under Clerk authenticated, unprovisioned, API unavailable, suspended and switched-account states.
+2. All 13 product projections: independent failure handling; unknown balance never becomes zero; no stale cross-account bootstrap.
+3. Deposit intent replay and instruction recovery across session refresh, sign-out/sign-in, Supabase-to-Clerk linking and account switching.
+4. API ownership and idempotency tests against a durable disposable database; unauthorized owner IDs and cross-environment replay denied.
+5. Real Clerk email verification, OAuth callback, wallet-link and revoked-session tests, plus App/API build and browser tests.
+6. Explicit staging release gate and rollback; no production migration/deploy on an untested or docs-only PR.
+
+**Progress:** 22 additional complete files across batches 1 and 2, beyond previously sampled files. The full 328-file source and test audit is still ongoing.
