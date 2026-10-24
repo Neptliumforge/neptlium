@@ -26,7 +26,7 @@ function projection<T>(result: PromiseSettledResult<T>): Projection<T> {
 }
 
 export async function getAuthenticatedProductBootstrap(
-  account: Pick<AccountContext, 'id' | 'email' | 'fullName' | 'displayName' | 'complianceStatus' | 'role'>,
+  account: AuthenticatedProductBootstrap['account'],
 ): Promise<AuthenticatedProductBootstrap> {
   const [
     settings,
