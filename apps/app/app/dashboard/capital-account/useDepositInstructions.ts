@@ -32,6 +32,7 @@ export function useDepositInstructions(operationScope: string) {
   const [result, setResult] = useState<FundingRequestResult | null>(null);
   const [pending, startTransition] = useTransition();
 
+  // A missing verified principal must not mint or submit a new funding operation.
   const deps: FundingRequestDeps = {
     load: () => {
       if (storeRef.current?.scope === operationScope) return storeRef.current.store;
@@ -50,7 +51,7 @@ export function useDepositInstructions(operationScope: string) {
   };
 
   function request(capability: string, amountAtomic: string | null = null) {
-    if (!capability || inFlight.current) return;
+    if (!capability || !operationScope || inFlight.current) return;
     inFlight.current = true;
     setResult(null);
     startTransition(async () => {
@@ -63,7 +64,7 @@ export function useDepositInstructions(operationScope: string) {
   }
 
   function startNew(capability: string, amountAtomic: string | null = null) {
-    if (inFlight.current) return;
+    if (!operationScope || inFlight.current) return;
     startNewDepositRequest(deps, capability, amountAtomic);
     setResult(null);
   }
