@@ -13,6 +13,11 @@ const historical = new Set([
   'supabase/migrations/20260913123000_supabase_auth_only_cutover.sql',
   'docs/archive/remediation/GATE_05_LEGACY_MUTATION_PATHS.md',
 ]);
+const approvedTransitionDocuments = new Set([
+  'docs/README.md',
+  'docs/engineering/APP_API_' + retired.toUpperCase() + '_ARCHITECTURE_RECONCILIATION.md',
+  'docs/engineering/REPOSITORY_ALIGNMENT_' + retired.toUpperCase() + '_TRANSITION_2026-10-24.md',
+]);
 const self = 'scripts/retired-auth-contract.mjs';
 const providerName = retired[0].toUpperCase() + retired.slice(1);
 const markers = [
@@ -33,7 +38,7 @@ const markers = [
 const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\0').filter(Boolean);
 const hits = [];
 for (const file of files) {
-  if (file === self || historical.has(file)) continue;
+  if (file === self || historical.has(file) || approvedTransitionDocuments.has(file)) continue;
   const lowerPath = file.toLowerCase();
   if (lowerPath.includes(retired)) hits.push(`${file}: retired provider appears in active path`);
   let text;

@@ -20,3 +20,8 @@ This is the knowledge router. **Current authority is subject-based.** Files unde
 ## Authority rule
 
 Chronology does not establish authority. When documentation conflicts with current source, tests, configuration, migrations, or verified runtime state, investigate the conflict rather than creating another authority. Correct the current authoritative document in the same change when practical.
+
+## Active architecture transition reviews
+
+- [Clerk and repository alignment register](engineering/REPOSITORY_ALIGNMENT_CLERK_TRANSITION_2026-10-24.md) — CURRENT Supabase Auth runtime versus approved Clerk target, migration constraints and production isolation.
+- [Authenticated App and API reconciliation](engineering/APP_API_CLERK_ARCHITECTURE_RECONCILIATION.md) — source-backed dashboard, session, principal, funding and API architecture review. **Not** production readiness certification.
