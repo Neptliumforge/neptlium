@@ -29,7 +29,7 @@ export async function requireUser(): Promise<SessionUser> {
 
 function fallbackProfile(user: SessionUser): SessionProfile {
   return {
-    id: user.id,
+    id: null,
     email: user.email,
     fullName: null,
     displayName: null,
@@ -42,7 +42,7 @@ function fallbackProfile(user: SessionUser): SessionProfile {
 
 /**
  * Dashboard rendering must never treat an unavailable application profile as
- * an authentication failure. Supabase Auth owns the session boundary; account/profile
+ * an authentication failure. The configured auth provider owns the session boundary; account/profile
  * state is optional presentation context and can recover independently.
  */
 export async function requireProvisionedUser() {
