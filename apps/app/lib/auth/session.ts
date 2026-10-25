@@ -1,7 +1,9 @@
+import { currentUser } from '@clerk/nextjs/server';
+import { clerkDevelopmentEnabled } from './provider';
 import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
-import { hasRole, type Role } from "@neptlium/lib/rbac";
-import { resolveRole } from "@/components/security/resolveRole";
-import { ApiClientError, getAccountContext } from "@/lib/api/client";
+import { hasRole, type Role } from '@neptlium/lib/rbac';
+import { resolveRole } from '@/components/security/resolveRole';
+import { ApiClientError, getAccountContext } from '@/lib/api/client';
 
 export interface SessionUser {
   readonly id: string;
@@ -9,14 +11,22 @@ export interface SessionUser {
 }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
+  if (clerkDevelopmentEnabled()) {
+    const user = await currentUser();
+    if (!user) return null;
+    return { id: user.id, email: user.primaryEmailAddress?.emailAddress ?? null };
+  }
   const supabase = await createSupabaseServerClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
   if (error || !user) return null;
   return { id: user.id, email: user.email ?? null };
 }
 
 export interface SessionProfile {
-  readonly id: string;
+  readonly id: string | null;
   readonly email: string | null;
   readonly fullName: string | null;
   readonly displayName: string | null;
@@ -27,8 +37,10 @@ export interface SessionProfile {
 }
 
 /** Account/profile business state is resolved through api.neptlium.com. */
-export async function getCurrentProfile(existingUser?: SessionUser): Promise<SessionProfile | null> {
-  const user = existingUser ?? await getSessionUser();
+export async function getCurrentProfile(
+  existingUser?: SessionUser,
+): Promise<SessionProfile | null> {
+  const user = existingUser ?? (await getSessionUser());
   if (!user) return null;
 
   try {

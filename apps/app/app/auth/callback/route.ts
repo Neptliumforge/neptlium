@@ -1,8 +1,11 @@
+import { clerkDevelopmentEnabled } from '@/lib/auth/provider';
 import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
 import { accountEntryHref, resolveReturnDestination } from '@/app/(auth)/auth-utils';
 
 export async function GET(request: NextRequest) {
+  if (clerkDevelopmentEnabled())
+    return NextResponse.redirect(new URL('/auth/sign-in', request.url));
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const next = resolveReturnDestination(url.searchParams);

@@ -1,6 +1,6 @@
 import { ApiError } from './errors.js';
 
-export type IdentityProvider = 'SUPABASE_AUTH';
+export type IdentityProvider = 'SUPABASE_AUTH' | 'CLERK';
 export type IdentityPrincipalStatus = 'ACTIVE' | 'SUSPENDED' | 'RETIRED';
 export type IdentityProviderSubjectStatus = 'ACTIVE' | 'REVOKED';
 
@@ -20,7 +20,10 @@ export interface ResolvedIdentityPrincipal {
 }
 
 export interface IdentityPrincipalResolver {
-  resolveActivePrincipal(provider: IdentityProvider, providerSubject: string): Promise<ResolvedIdentityPrincipal | null>;
+  resolveActivePrincipal(
+    provider: IdentityProvider,
+    providerSubject: string,
+  ): Promise<ResolvedIdentityPrincipal | null>;
 }
 
 type Fetch = typeof fetch;
@@ -44,6 +47,7 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
     private readonly url: string,
     private readonly serviceRoleKey: string,
     private readonly request: Fetch = fetch,
+    private readonly acceptedProvider: IdentityProvider = 'SUPABASE_AUTH',
   ) {
     if (!url || !serviceRoleKey)
       throw new Error('Identity principal resolution requires durable database credentials');
@@ -63,14 +67,29 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
       signal: AbortSignal.timeout(8_000),
     });
     if (!response.ok)
-      throw new ApiError(503, 'identity_storage_unavailable', 'Identity principal storage is unavailable');
+      throw new ApiError(
+        503,
+        'identity_storage_unavailable',
+        'Identity principal storage is unavailable',
+      );
     return (await response.json()) as T[];
   }
 
-  async resolveActivePrincipal(provider: IdentityProvider, providerSubject: string): Promise<ResolvedIdentityPrincipal | null> {
-    if (provider !== 'SUPABASE_AUTH')
-      throw new ApiError(400, 'invalid_identity_provider', 'Only Supabase Auth identities are accepted at runtime');
-    if (!providerSubject || providerSubject !== providerSubject.trim() || providerSubject.length > 255)
+  async resolveActivePrincipal(
+    provider: IdentityProvider,
+    providerSubject: string,
+  ): Promise<ResolvedIdentityPrincipal | null> {
+    if (provider !== this.acceptedProvider)
+      throw new ApiError(
+        400,
+        'invalid_identity_provider',
+        'Identity provider is not enabled in this runtime',
+      );
+    if (
+      !providerSubject ||
+      providerSubject !== providerSubject.trim() ||
+      providerSubject.length > 255
+    )
       throw new ApiError(400, 'invalid_identity_subject', 'Identity subject is invalid');
 
     const subjects = await this.rows<ProviderSubjectRow>(
@@ -85,6 +104,14 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
       throw new ApiError(503, 'identity_mapping_ambiguous', 'Identity mapping is ambiguous');
 
     const subject = subjects[0]!;
+    if (
+      subject.provider !== provider ||
+      subject.provider_subject !== providerSubject ||
+      subject.status !== 'ACTIVE' ||
+      typeof subject.principal_id !== 'string' ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(subject.principal_id)
+    )
+      throw new ApiError(503, 'identity_mapping_ambiguous', 'Identity mapping is invalid');
     const principals = await this.rows<PrincipalRow>(
       `identity_principals?id=eq.${encodeURIComponent(subject.principal_id)}` +
         '&status=eq.ACTIVE' +
@@ -96,6 +123,13 @@ export class SupabaseIdentityPrincipalResolver implements IdentityPrincipalResol
       throw new ApiError(503, 'identity_mapping_ambiguous', 'Identity principal is ambiguous');
 
     const principal = principals[0]!;
+    if (
+      principal.id !== subject.principal_id ||
+      principal.status !== 'ACTIVE' ||
+      principal.suspended_at !== null ||
+      principal.retired_at !== null
+    )
+      throw new ApiError(503, 'identity_mapping_ambiguous', 'Identity principal is invalid');
     return {
       principal: {
         id: principal.id,

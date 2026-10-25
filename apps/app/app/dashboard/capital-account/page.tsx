@@ -11,7 +11,7 @@ import { fundingOperationScope } from '@/lib/funding/scope';
 import { CapitalAccountView } from './CapitalAccountView';
 
 export default async function CapitalAccountPage() {
-  const { user } = await requireProvisionedUser();
+  const { profile } = await requireProvisionedUser();
 
   const [capabilities, balances, funding, transferCapabilities, transfers, aliases] =
     await Promise.allSettled([
@@ -39,7 +39,7 @@ export default async function CapitalAccountPage() {
       transferActivityError={transfers.status === 'rejected'}
       aliases={aliases.status === 'fulfilled' ? aliases.value.data : []}
       aliasError={aliases.status === 'rejected'}
-      operationScope={fundingOperationScope(user.id)}
+      operationScope={profile.id ? fundingOperationScope(profile.id) : ''}
     />
   );
 }

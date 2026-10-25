@@ -4,16 +4,16 @@
 
 Canonical repository: `Neptliumforge/neptlium`.
 
-| Boundary | Domain | Responsibility |
-| --- | --- | --- |
-| `apps/web` | `neptlium.com` | Public institutional marketing, brand, editorial, SEO, and information. |
-| `apps/app` | `app.neptlium.com` | Authenticated individual Capital operating application. |
-| `apps/treasury` | Treasury surface | Organizational Treasury operating experience. |
-| `apps/pay` | Pay surface | Payment and collection experience; presentation is not financial authority. |
-| `apps/admin` | `admin.neptlium.com` | Internal operator comprehension, risk visibility, control, and auditability. |
-| `apps/api` | `api.neptlium.com` | Domain truth, authentication enforcement, authorization, durability, provider isolation, ledger, and reconciliation. |
-| `apps/docs` | Docs surface | Developer and platform documentation application. |
-| `apps/status` | Status surface | Platform availability experience. |
+| Boundary        | Domain               | Responsibility                                                                                                       |
+| --------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `apps/web`      | `neptlium.com`       | Public institutional marketing, brand, editorial, SEO, and information.                                              |
+| `apps/app`      | `app.neptlium.com`   | Authenticated individual Capital operating application.                                                              |
+| `apps/treasury` | Treasury surface     | Organizational Treasury operating experience.                                                                        |
+| `apps/pay`      | Pay surface          | Payment and collection experience; presentation is not financial authority.                                          |
+| `apps/admin`    | `admin.neptlium.com` | Internal operator comprehension, risk visibility, control, and auditability.                                         |
+| `apps/api`      | `api.neptlium.com`   | Domain truth, authentication enforcement, authorization, durability, provider isolation, ledger, and reconciliation. |
+| `apps/docs`     | Docs surface         | Developer and platform documentation application.                                                                    |
+| `apps/status`   | Status surface       | Platform availability experience.                                                                                    |
 
 Shared packages may be changed only when genuine shared authority requires it. Do not move subsystem-specific behavior into shared packages for convenience.
 
@@ -28,7 +28,9 @@ These surfaces share one Neptlium identity. They must not be visually or operati
 
 ### Authentication authority
 
-**AUTHENTICATION: Supabase Auth only.**
+**CURRENT production authentication: Supabase Auth.**
+
+**Owner-approved development transition (2026-10-22):** Clerk authentication may be implemented on the dedicated feature branch for App/API only, with test keys and explicit development runtime guards. This is the explicit architecture approval required below. See docs/platform/CLERK_DEVELOPMENT.md. Do not merge to main, deploy production, change DNS, mutate production databases or change production environment variables. The task-specific restrictions override standing Git completion/merge authorization.
 
 - Do not reintroduce any retired authentication provider, dependency, middleware, environment variable, webhook, identity mapper, or hosted auth UI.
 - Do not introduce another third-party identity system without explicit architecture approval.
