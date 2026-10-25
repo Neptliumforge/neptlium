@@ -53,6 +53,7 @@ const approvedDevelopment = new Set([
   'apps/app/test/account-return-continuity.test.mjs',
   'apps/app/test/api-boundary.test.mjs',
   'apps/app/test/clerk-development.test.mjs',
+  'apps/app/test/clerk-account-reconciliation.test.mjs',
   'apps/app/test/development-account-reconciliation.test.mjs',
   'apps/app/test/clerk-flows.test.mjs',
   'apps/app/test/onboarding-profile-verification.test.mjs',
