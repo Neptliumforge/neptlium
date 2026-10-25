@@ -1,15 +1,19 @@
 'use server';
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server';
-import { apiRequest } from '@/lib/api/client';
+import { apiRequest, getAccountContext } from '@/lib/api/client';
 import { clerkDevelopmentEnabled } from './provider';
-export async function completeClerkSignIn(): Promise<{ ok: boolean; error?: string }> {
+export async function completeClerkSignIn(): Promise<{ ok: boolean; provisioned?: boolean; error?: string }> {
   if (!clerkDevelopmentEnabled()) return { ok: false, error: 'Identity setup is unavailable.' };
   const user = await currentUser();
   if (!user || user.primaryEmailAddress?.verification?.status !== 'verified')
     return { ok: false, error: 'Verify your email before continuing.' };
   try {
     await apiRequest('/v1/account/identity/bootstrap', { method: 'POST' });
-    return { ok: true };
+    // A successful identity bootstrap does not mean onboarding has completed.
+    // Resolve the API-owned account state before choosing the destination.
+    const account = await getAccountContext();
+    if (!account.id) return { ok: false, error: 'Account identity is unavailable.' };
+    return { ok: true, provisioned: Boolean(account.provisionedAt) };
   } catch {
     return {
       ok: false,
