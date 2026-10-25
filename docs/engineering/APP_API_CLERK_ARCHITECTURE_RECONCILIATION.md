@@ -1,6 +1,6 @@
 # App and API architecture reconciliation — Clerk target
 
-**Status:** In-progress source-backed engineering assessment; **not** a certification that every source line was reviewed.  
+**Status:** In-progress source-backed engineering assessment; **not** a certification that every source line was reviewed.
 **Scope:** `apps/app` (202 tracked files, ~649 KB), `apps/api` (126 tracked files, ~739 KB) on `audit/authenticated-app-funding-target`; compared against Clerk PR #142. File counts are from the GitHub tree at the inspection checkpoint.
 
 ## Approved target, current implementation, transition
