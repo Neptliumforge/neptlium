@@ -1,3 +1,5 @@
+import { currentUser } from '@clerk/nextjs/server';
+import { clerkDevelopmentEnabled } from './provider';
 import { redirect } from 'next/navigation';
 import { hasRole, type Role } from '@neptlium/lib/rbac';
 import { resolveRole } from '@/components/security/resolveRole';
@@ -17,12 +19,17 @@ export async function requireUser(): Promise<SessionUser> {
     redirect(accountEntryHref('sign-in', await getRequestReturnPath()));
   }
 
+  if (clerkDevelopmentEnabled()) {
+    const identity = await currentUser();
+    if (identity?.primaryEmailAddress?.verification?.status !== 'verified')
+      redirect('/auth/complete');
+  }
   return user;
 }
 
 function fallbackProfile(user: SessionUser): SessionProfile {
   return {
-    id: user.id,
+    id: null,
     email: user.email,
     fullName: null,
     displayName: null,
@@ -35,7 +42,7 @@ function fallbackProfile(user: SessionUser): SessionProfile {
 
 /**
  * Dashboard rendering must never treat an unavailable application profile as
- * an authentication failure. Supabase Auth owns the session boundary; account/profile
+ * an authentication failure. The configured auth provider owns the session boundary; account/profile
  * state is optional presentation context and can recover independently.
  */
 export async function requireProvisionedUser() {

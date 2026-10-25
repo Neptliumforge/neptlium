@@ -1,5 +1,7 @@
 'use client';
 
+import { useIdentityActions } from '@/components/security/IdentityActions';
+
 import { useState, type FormEvent } from 'react';
 import { Button, Field, FieldError, Input, Label } from '@neptlium/ui';
 import { createSupabaseBrowserClient } from '@neptlium/lib/supabase/browser';
@@ -9,6 +11,17 @@ import { PasswordRequirements } from '@/app/(auth)/components/PasswordRequiremen
 type Result = { readonly kind: 'error' | 'success'; readonly message: string } | null;
 
 export function ChangePasswordForm() {
+  const identity = useIdentityActions();
+  return identity ? (
+    <p className="text-sm text-text-secondary">
+      This account uses passwordless sign-in. Use an email code or a linked sign-in method to
+      recover access.
+    </p>
+  ) : (
+    <SupabaseChangePasswordForm />
+  );
+}
+function SupabaseChangePasswordForm() {
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
   const [confirm, setConfirm] = useState('');

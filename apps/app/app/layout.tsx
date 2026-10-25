@@ -1,3 +1,6 @@
+import { ClerkProvider } from '@clerk/nextjs';
+import { ClerkIdentityActions } from '@/components/security/IdentityActions';
+import { clerkDevelopmentEnabled } from '@/lib/auth/provider';
 import React from 'react';
 import type { Metadata, Viewport } from 'next';
 import { ThemeProvider, themeBootScript } from '@neptlium/ui';
@@ -37,7 +40,17 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
       </head>
-      <body className="antialiased"><ThemeProvider>{children}</ThemeProvider></body>
+      <body className="antialiased">
+        <ThemeProvider>
+          {clerkDevelopmentEnabled() ? (
+            <ClerkProvider signInUrl="/auth/sign-in" signUpUrl="/auth/sign-up">
+              <ClerkIdentityActions>{children}</ClerkIdentityActions>
+            </ClerkProvider>
+          ) : (
+            children
+          )}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

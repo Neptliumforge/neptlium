@@ -49,7 +49,9 @@ export default async function AccountSettingsPage() {
                 {session
                   ? session.emailConfirmedAt
                     ? `Confirmed ${date(session.emailConfirmedAt)}`
-                    : 'Not confirmed'
+                    : session.emailVerified
+                      ? 'Verified'
+                      : 'Not confirmed'
                   : 'Not available'}
               </strong>
             </span>

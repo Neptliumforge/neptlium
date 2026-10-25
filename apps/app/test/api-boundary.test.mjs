@@ -27,12 +27,16 @@ test('customer product pages do not directly access database product tables or s
   }
 });
 
-test('server-only API client owns Supabase bearer authentication and customer data transport', () => {
+test('server-only API client owns provider-aware bearer authentication and customer data transport', () => {
   const source = read('lib/api/client.ts');
   assert.match(source, /import 'server-only'/);
-  assert.match(source, /createSupabaseServerClient/);
-  assert.match(source, /supabase\.auth\.getUser\(\)/);
-  assert.match(source, /supabase\.auth\.getSession\(\)/);
+  assert.match(source, /getIdentityToken/);
+  const token = read('lib/auth/token.ts');
+  assert.match(token, /import 'server-only'/);
+  assert.match(token, /supabase\.auth\.getUser\(\)/);
+  assert.match(token, /supabase\.auth\.getSession\(\)/);
+  assert.match(token, /clerkDevelopmentEnabled/);
+  assert.match(token, /session\.getToken\(\)/);
   assert.match(source, /headers\.set\('authorization', `Bearer \$\{token\}`\)/);
   assert.match(source, /headers\.set\('x-request-id', requestId\)/);
   assert.match(source, /cache: 'no-store'/);

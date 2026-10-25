@@ -1,3 +1,5 @@
+import { WalletLink } from '@/components/security/WalletLink';
+import { clerkDevelopmentEnabled } from '@/lib/auth/provider';
 import { SettingsShell } from '@/components/settings/SettingsShell';
 import { ChangePasswordForm } from '@/components/settings/ChangePasswordForm';
 import { SessionControls } from '@/components/settings/SessionControls';
@@ -13,6 +15,7 @@ export default async function SecuritySettingsPage() {
       title="Security and access"
       description="Your password, sessions and sign-in protection."
     >
+      {clerkDevelopmentEnabled() && <WalletLink />}
       <section className="op-panel" aria-labelledby="password-heading">
         <div className="op-section-heading">
           <div>
@@ -33,7 +36,14 @@ export default async function SecuritySettingsPage() {
       </section>
       <section className="op-panel">
         <div className="op-auth-settings">
-          <MfaEnrollment />
+          {clerkDevelopmentEnabled() ? (
+            <p className="text-sm text-text-secondary">
+              Authenticator enrollment is not available in this interface yet. Existing sign-in
+              verification requirements still apply.
+            </p>
+          ) : (
+            <MfaEnrollment />
+          )}
         </div>
       </section>
     </SettingsShell>

@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { randomUUID } from 'node:crypto';
-import { createSupabaseServerClient } from '@neptlium/lib/supabase/server';
+import { getIdentityToken } from '@/lib/auth/token';
 
 export class ApiClientError extends Error {
   constructor(
@@ -30,11 +30,7 @@ function apiOrigin(): string {
 }
 
 export async function apiRequest<T>(path: `/v1/${string}`, init: RequestInit = {}): Promise<T> {
-  const supabase = await createSupabaseServerClient();
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-  if (userError || !user) throw new ApiClientError(401, 'session_expired', 'Your session has expired.');
-  const { data: { session } } = await supabase.auth.getSession();
-  const token = session?.access_token;
+  const token = await getIdentityToken();
   if (!token) throw new ApiClientError(401, 'session_expired', 'Your session has expired.');
 
   const method = (init.method ?? 'GET').toUpperCase();
@@ -48,10 +44,7 @@ export async function apiRequest<T>(path: `/v1/${string}`, init: RequestInit = {
   headers.set('authorization', `Bearer ${token}`);
   headers.set('x-request-id', requestId);
 
-  if (
-    !['GET', 'HEAD', 'OPTIONS'].includes(method) &&
-    !headers.has('idempotency-key')
-  ) {
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(method) && !headers.has('idempotency-key')) {
     headers.set('idempotency-key', randomUUID());
   }
 
@@ -230,7 +223,8 @@ export function getAccountContext(): Promise<AccountContext> {
 }
 
 export type OnboardingState = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
-export type IdentityVerificationStatus = 'NOT_VERIFIED' | 'PENDING' | 'ACTION_REQUIRED' | 'VERIFIED';
+export type IdentityVerificationStatus =
+  'NOT_VERIFIED' | 'PENDING' | 'ACTION_REQUIRED' | 'VERIFIED';
 
 export interface IdentityVerificationView {
   readonly capability: 'NOT_ENABLED' | 'AVAILABLE' | 'DEGRADED';
@@ -282,11 +276,17 @@ export function getAccountSettings(): Promise<AccountSettings> {
   return apiRequest<AccountSettings>('/v1/account/settings');
 }
 
-export function getOnboardingDraftApi(): Promise<{ data: Record<string, unknown>; stepIndex: number }> {
+export function getOnboardingDraftApi(): Promise<{
+  data: Record<string, unknown>;
+  stepIndex: number;
+}> {
   return apiRequest('/v1/account/onboarding-draft');
 }
 
-export function saveOnboardingDraftApi(input: { data: Record<string, unknown>; stepIndex: number }) {
+export function saveOnboardingDraftApi(input: {
+  data: Record<string, unknown>;
+  stepIndex: number;
+}) {
   return apiRequest<{ status: 'saved' }>('/v1/account/onboarding-draft', {
     method: 'POST',
     body: JSON.stringify({ data: input.data, step_index: input.stepIndex }),
@@ -306,14 +306,16 @@ export function getAllocationState(): Promise<AllocationState> {
   return apiRequest('/v1/customer/allocation');
 }
 
-export function getCapitalActivity(params: {
-  readonly offset?: number;
-  readonly limit?: number;
-  readonly status?: string;
-  readonly asset?: string;
-  readonly network?: string;
-  readonly q?: string;
-} = {}): Promise<CapitalActivityPage> {
+export function getCapitalActivity(
+  params: {
+    readonly offset?: number;
+    readonly limit?: number;
+    readonly status?: string;
+    readonly asset?: string;
+    readonly network?: string;
+    readonly q?: string;
+  } = {},
+): Promise<CapitalActivityPage> {
   const search = new URLSearchParams();
   if (params.offset) search.set('offset', String(params.offset));
   if (params.limit) search.set('limit', String(params.limit));
@@ -341,7 +343,9 @@ export function markAllNotificationsRead() {
 }
 
 export function getDocuments() {
-  return apiRequest<{ state: 'VALUE' | 'EMPTY'; data: readonly CustomerDocument[] }>('/v1/documents');
+  return apiRequest<{ state: 'VALUE' | 'EMPTY'; data: readonly CustomerDocument[] }>(
+    '/v1/documents',
+  );
 }
 export function getDocumentDownloadUrl(documentId: string) {
   return apiRequest<{ url: string; expires_in: number }>(

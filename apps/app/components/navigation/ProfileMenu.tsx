@@ -1,5 +1,7 @@
 'use client';
 
+import { useIdentityActions } from '@/components/security/IdentityActions';
+
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTheme } from '@neptlium/ui';
@@ -20,7 +22,8 @@ const destinations = [
 
 export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
   const router = useRouter();
-  const supabase = useMemo(() => createSupabaseBrowserClient(), []);
+  const identity = useIdentityActions();
+  const supabase = useMemo(() => (identity ? null : createSupabaseBrowserClient()), [identity]);
   const [open, setOpen] = useState(false);
   const { preference, setPreference } = useTheme();
   const [signingOut, setSigningOut] = useState(false);
@@ -69,7 +72,8 @@ export function ProfileMenu({ name, email, verified }: ProfileMenuProps) {
   async function signOut() {
     setSigningOut(true);
     try {
-      await supabase.auth.signOut();
+      if (identity) await identity.signOut();
+      else await supabase?.auth.signOut();
       router.replace('/auth/sign-in');
       router.refresh();
     } finally {

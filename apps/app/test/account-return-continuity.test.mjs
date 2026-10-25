@@ -40,6 +40,8 @@ const { safeInternalPath, resolveReturnDestination, accountEntryHref, ACCOUNT_RE
 const target = '/dashboard/activity?tab=recent&filter=a%2Fb';
 const shell = ({ children }) => React.createElement('section', {}, children);
 const mocksForPages = {
+  '@/app/(auth)/components/ClerkAuthForm': { ClerkAuthForm: () => null },
+  '@/lib/auth/provider': { clerkDevelopmentEnabled: () => false },
   '@/app/(auth)/components/AuthShell': { AuthShell: shell },
   '../components/AuthShell': { AuthShell: shell },
   '@neptlium/ui': { Button: ({ href, children }) => React.createElement('a', { href }, children) },
@@ -406,7 +408,7 @@ test('onboarding request context validates completion and already-provisioned se
   assert.equal(await context.getOnboardingReturnPath(), target);
   const page = load('app/onboarding/page.tsx', {
     '@/lib/auth': { requireUser: async () => ({ email: 'isolated@example.test' }) },
-    '@/lib/auth/session': { getCurrentProfile: async () => ({ provisionedAt: 'fixture' }) },
+    '@/lib/auth/account-state': { resolveAccountState: async () => ({ state: 'PROVISIONED', profile: { id: 'fixture' } }) },
     '@/lib/auth/return-context': context,
     './OnboardingWizard': { OnboardingWizard: 'fixture-wizard' },
     'next/navigation': mocksForPages['next/navigation'],

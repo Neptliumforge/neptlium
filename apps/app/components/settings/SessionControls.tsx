@@ -1,5 +1,7 @@
 'use client';
 
+import { useIdentityActions } from '@/components/security/IdentityActions';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@neptlium/ui';
@@ -9,6 +11,7 @@ type Scope = 'local' | 'others' | 'global';
 
 export function SessionControls({ lastSignInAt }: { readonly lastSignInAt: string | null }) {
   const router = useRouter();
+  const identity = useIdentityActions();
   const [busy, setBusy] = useState<Scope | null>(null);
   const [message, setMessage] = useState<{
     readonly kind: 'error' | 'success';
@@ -19,7 +22,9 @@ export function SessionControls({ lastSignInAt }: { readonly lastSignInAt: strin
     setBusy(scope);
     setMessage(null);
     try {
-      const { error } = await createSupabaseBrowserClient().auth.signOut({ scope });
+      const { error } = identity
+        ? (await identity.signOut(scope), { error: null })
+        : await createSupabaseBrowserClient().auth.signOut({ scope });
       if (error) {
         setMessage({ kind: 'error', text: 'We couldn’t sign you out. Try again.' });
         return;
