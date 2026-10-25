@@ -18,7 +18,11 @@ export function Completion({ returnTo }: { returnTo: string }) {
     const result = await completeClerkSignIn();
     setBusy(false);
     if (result.ok)
-      window.location.replace('/onboarding?next=' + encodeURIComponent(safeInternalPath(returnTo)));
+      window.location.replace(
+        result.provisioned
+          ? safeInternalPath(returnTo)
+          : '/onboarding?next=' + encodeURIComponent(safeInternalPath(returnTo)),
+      );
     else setMessage(result.error ?? 'Account setup is unavailable.');
   }
   useEffect(() => {
