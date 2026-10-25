@@ -1,8 +1,8 @@
 # Neptlium repository-wide alignment and Clerk transition register
 
-**Status:** WORKING AUDIT — not deployment approval.  
-**Prepared:** 2026-10-24  
-**Base:** `audit/authenticated-app-funding-target`  
+**Status:** WORKING AUDIT — not deployment approval.
+**Prepared:** 2026-10-24
+**Base:** `audit/authenticated-app-funding-target`
 **Clerk implementation:** draft PR [#142](https://github.com/Neptliumforge/neptlium/pull/142), `feat/clerk-custom-auth-development`
 
 ## Owner-approved direction and verified current state
