@@ -110,7 +110,7 @@ button {
   border: 1px solid transparent;
   border-radius: 0.375rem;
   background: var(--color-accent-primary);
-  color: var(--color-text-primary);
+  color: var(--color-accent-primary-foreground);
   font-size: 0.875rem;
   font-weight: 600;
   transition:
@@ -2218,3 +2218,269 @@ body { font-family: var(--font-sans); }
 @media (prefers-reduced-motion: reduce) {
   .family-action { transition: none; }
 }
+
+/* Public editorial surfaces.
+   One shared grammar for text-led routes (Learn, Research, Pricing, Press, Contact,
+   solution details and product explainers). Every value consumes canonical tokens so
+   Dark, Light and System render from the same rules. Route class names are hooks only. */
+:is(.route-detail-hero, .route-page-header, .editorial-hero, .learn-editorial-hero,
+  .performance-hero, .universe-hero) {
+  padding-block: var(--space-9) var(--space-8);
+  border-bottom: 1px solid var(--color-border-hairline);
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
+}
+.editorial-hero {
+  padding-inline: max(var(--page-gutter), calc((100% - var(--container-wide)) / 2));
+}
+:is(.route-detail-hero, .route-page-header, .editorial-hero, .learn-editorial-hero,
+  .performance-hero, .universe-hero) h1 {
+  max-width: 18ch;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-display-l);
+  font-weight: var(--web-type-heading-weight);
+  line-height: 1.04;
+  letter-spacing: var(--web-type-heading-track);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.route-page-header h1 { font-size: var(--text-display-m); }
+:is(.route-detail-hero, .route-page-header, .editorial-hero, .learn-editorial-hero,
+  .performance-hero, .universe-hero) :is(.eyebrow, .web-eyebrow),
+.editorial-hero > p:first-of-type,
+:is(.learn-definition-heading, .performance-evidence-heading) > span {
+  display: block;
+  margin: 0 0 var(--space-5);
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--web-type-label-track);
+  text-transform: uppercase;
+}
+.route-detail-hero .container-page > p:not(.eyebrow),
+.route-page-intro,
+.editorial-hero > span,
+:is(.learn-editorial-hero-grid, .performance-hero-inner, .universe-hero-grid) p:not(.web-eyebrow) {
+  display: block;
+  max-width: var(--np-reading-wide);
+  margin: var(--space-5) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-lg);
+  line-height: var(--web-type-body-leading);
+}
+:is(.learn-editorial-hero-grid, .universe-hero-grid) {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: end;
+}
+:is(.learn-editorial-hero-grid, .universe-hero-grid) > div:last-child > p:first-child { margin-top: 0; }
+.editorial-hero > a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  padding: 0 var(--space-5);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--motion-duration-fast) ease;
+}
+.editorial-hero > a:hover { background: var(--color-surface-interactive); }
+.editorial-hero > a svg { width: 1rem; height: 1rem; }
+
+/* Section rhythm shared by every editorial body block. */
+:is(.route-detail-showcase, .route-detail-action, .learn-definition-ledger, .learn-principle,
+  .learn-paths, .editorial-chapters, .performance-evidence, .performance-boundary,
+  .performance-return-context, .universe-role-field, .universe-boundary,
+  .universe-provider-independent) {
+  padding-block: var(--space-9);
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
+}
+:is(.learn-principle, .performance-boundary, .universe-provider-independent, .route-detail-action) {
+  border-block: 1px solid var(--color-border-hairline);
+  background: var(--color-surface-1);
+}
+:is(.route-detail-showcase, .route-detail-action, .learn-definition-ledger, .learn-principle,
+  .learn-paths, .editorial-chapters, .performance-evidence, .performance-boundary,
+  .performance-return-context, .universe-role-field, .universe-boundary,
+  .universe-provider-independent) h2 {
+  max-width: 22ch;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-h1);
+  font-weight: var(--web-type-section-weight);
+  line-height: 1.14;
+  letter-spacing: var(--web-type-section-track);
+  text-wrap: balance;
+}
+:is(.learn-principle-grid, .learn-paths-grid, .performance-boundary-grid, .performance-return-grid,
+  .universe-boundary-grid, .universe-provider-grid) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+:is(.learn-principle-grid, .performance-boundary-grid, .performance-return-grid,
+  .universe-boundary-grid, .universe-provider-grid) p:not(.web-eyebrow) {
+  max-width: var(--np-reading-wide);
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body);
+  line-height: var(--web-type-body-leading);
+}
+:is(.learn-principle-grid, .universe-boundary-grid) > .web-eyebrow { grid-column: 1 / -1; margin: 0; }
+.learn-paths-grid { align-items: center; }
+.learn-paths-grid > a.text-arrow-link { grid-column: 2; justify-self: start; }
+
+/* Numbered definition ledgers: one term column, one explanation column. */
+:is(.learn-definition-heading, .performance-evidence-heading, .universe-role-heading) {
+  margin-bottom: var(--space-7);
+}
+:is(.learn-definition-ledger, .performance-evidence) dl {
+  margin: 0;
+  border-top: 1px solid var(--color-border-default);
+}
+:is(.learn-definition-ledger, .performance-evidence) dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--space-6);
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--color-border-default);
+}
+:is(.learn-definition-ledger, .performance-evidence) dt {
+  display: flex;
+  gap: var(--space-4);
+  color: var(--color-text-primary);
+  font-size: var(--text-body-lg);
+  font-weight: 600;
+}
+:is(.learn-definition-ledger, .performance-evidence) dt > span,
+:is(.editorial-chapters, .universe-role-map) article > span {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  line-height: 2;
+}
+:is(.learn-definition-ledger, .performance-evidence) dd {
+  max-width: var(--np-reading-wide);
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body);
+  line-height: var(--web-type-body-leading);
+}
+
+/* Point grids: chapters, role maps and detail points share one quiet card-free grid. */
+.editorial-chapters,
+.route-detail-showcase .container-page,
+.universe-role-map {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-7) var(--space-6);
+}
+.editorial-chapters { padding-inline: max(var(--page-gutter), calc((100% - var(--container-wide)) / 2)); }
+.route-detail-showcase .container-page.has-visual { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.route-detail-points {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-7) var(--space-6);
+  grid-column: 1 / -1;
+}
+:is(.editorial-chapters, .universe-role-map, .route-detail-points) article {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-default);
+}
+:is(.editorial-chapters, .universe-role-map, .route-detail-points) article :is(h2, h3) {
+  max-width: none;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-h3);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.route-detail-points article h2 { margin-top: 0; }
+:is(.editorial-chapters, .universe-role-map, .route-detail-points) article p {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body);
+  line-height: var(--web-type-body-leading);
+}
+
+/* Closing action used by detail pages. */
+.route-detail-action .container-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-5) var(--space-8);
+  align-items: end;
+}
+.route-detail-action .container-page > span {
+  grid-column: 1 / -1;
+  color: var(--color-text-secondary);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--web-type-label-track);
+  text-transform: uppercase;
+}
+.route-detail-action .container-page > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+}
+.route-detail-action .button { color: var(--color-accent-primary-foreground); }
+.route-detail-action .container-page > div > a:not(.button) {
+  display: inline-flex;
+  min-height: var(--space-7);
+  align-items: center;
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+}
+
+@media (max-width: 900px) {
+  :is(.learn-editorial-hero-grid, .universe-hero-grid, .learn-principle-grid, .learn-paths-grid,
+    .performance-boundary-grid, .performance-return-grid, .universe-boundary-grid,
+    .universe-provider-grid, .route-detail-action .container-page) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .learn-paths-grid > a.text-arrow-link { grid-column: auto; }
+  .route-detail-showcase .container-page.has-visual { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  :is(.route-detail-hero, .route-page-header, .editorial-hero, .learn-editorial-hero,
+    .performance-hero, .universe-hero) { padding-block: var(--space-8) var(--space-7); }
+  :is(.route-detail-showcase, .route-detail-action, .learn-definition-ledger, .learn-principle,
+    .learn-paths, .editorial-chapters, .performance-evidence, .performance-boundary,
+    .performance-return-context, .universe-role-field, .universe-boundary,
+    .universe-provider-independent) { padding-block: var(--space-8); }
+  :is(.learn-definition-ledger, .performance-evidence) dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+}
+
+/* Editorial routes place labels on the canvas, not on inverse bands. */
+:is(.learn-editorial-hero, .performance-hero, .universe-hero, .universe-role-field,
+  .universe-boundary, .learn-principle, .performance-boundary) .web-eyebrow,
+:is(.learn-editorial-hero, .performance-hero, .universe-hero, .universe-role-field,
+  .universe-boundary) .web-eyebrow.on-light {
+  color: var(--color-text-secondary);
+}
+/* The footer sits on the deep background; muted ink there needs the secondary step. */
+.neptlium-minimal-footer { --color-text-muted: var(--color-text-secondary); }
+/* Footer and directory links meet the 24px minimum target, and 44px on touch layouts. */
+.neptlium-minimal-footer a { display: inline-flex; min-height: 1.5rem; align-items: center; }
+@media (max-width: 760px) { .neptlium-minimal-footer a { min-height: 2.75rem; } }
+/* Breadcrumbs and legal directory links keep the 24px minimum target. */
+nav[aria-label='Breadcrumb'] a,
+nav[aria-label='Breadcrumb'] [aria-current='page'] { display: inline-flex; min-height: 1.5rem; align-items: center; }
