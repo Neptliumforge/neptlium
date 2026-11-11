@@ -3,12 +3,9 @@ import { createHash } from 'node:crypto';
 import { loadConfig, type Config } from './config.js';
 import { ApiError } from './errors.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
-import { StripeSubscriptionRepository } from './stripe-subscription.js';
-import { completeWebhookWithDisposition as completeWebhook } from './webhook-completion.js';
+import { processStoredWebhook, SupabaseFencedWebhookStore } from './webhook-assurance.js';
 import {
-  stripeIngressDisposition,
   verifyStripeWebhook,
-  type StripeIngressDisposition,
 } from './stripe-webhook.js';
 
 type Fetch = typeof fetch;
@@ -37,15 +34,6 @@ function json(statusCode: number, data: unknown): StripeIngressResponse {
     headers: responseHeaders,
     body: JSON.stringify(data),
   };
-}
-
-function processingState(value: Record<string, unknown>) {
-  return typeof value.processing_state === 'string' ? value.processing_state : undefined;
-}
-
-function stableProcessingError(error: unknown) {
-  if (error instanceof ApiError) return error.code.slice(0, 120);
-  return 'stripe_webhook_processing_failed';
 }
 
 export async function executeStripeWebhook(
@@ -84,12 +72,10 @@ export async function executeStripeWebhook(
       nowSeconds: Math.floor(now.getTime() / 1000),
     });
 
+    if (!config.STRIPE_WEBHOOK_ENVIRONMENT || verified.environment !== config.STRIPE_WEBHOOK_ENVIRONMENT)
+      throw new ApiError(503, 'provider_environment_mismatch', 'Stripe webhook environment is not bound');
+
     const operations = new SupabaseFinancialOperations(
-      config.SUPABASE_URL,
-      config.SUPABASE_SERVICE_ROLE_KEY,
-      dependencies.fetch,
-    );
-    const subscriptions = new StripeSubscriptionRepository(
       config.SUPABASE_URL,
       config.SUPABASE_SERVICE_ROLE_KEY,
       dependencies.fetch,
@@ -105,68 +91,13 @@ export async function executeStripeWebhook(
       signatureVerifiedAt: now.toISOString(),
     });
 
-    const claimed = await operations.claimWebhook(
-      'stripe',
-      verified.environment,
-      verified.id,
-      60,
+    const outcome = await processStoredWebhook(
+      new SupabaseFencedWebhookStore(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY, dependencies.fetch),
+      { provider: 'stripe', environment: verified.environment, providerEventId: verified.id },
     );
-
-    const state = processingState(claimed);
-    if (state === 'processed' || state === 'dead_letter') {
-      return json(200, {
-        received: true,
-        duplicate: true,
-        action: state === 'processed' ? 'already_processed' : 'dead_letter',
-      });
-    }
-
-    if (state !== 'processing') {
-      return json(200, {
-        received: true,
-        duplicate: insertion === 'duplicate',
-        action: 'deferred',
-      });
-    }
-
-    let disposition: StripeIngressDisposition;
-    try {
-      disposition = stripeIngressDisposition(verified);
-
-      // Subscription billing is deliberately distinct from capital authority.
-      // Only a verified, durably recorded, successfully claimed event may update
-      // the non-financial subscriptions table. Stripe capital funding remains
-      // disabled: this boundary cannot create settlement evidence, post ledger
-      // entries, mutate legacy balances, or make customer capital available.
-      if (disposition.action === 'subscription_update')
-        await subscriptions.apply(disposition.command);
-
-      await completeWebhook({
-        supabaseUrl: config.SUPABASE_URL,
-        serviceRoleKey: config.SUPABASE_SERVICE_ROLE_KEY,
-        provider: 'stripe',
-        environment: verified.environment,
-        providerEventId: verified.id,
-        action: disposition.action,
-        ...(disposition.reason ? { reason: disposition.reason } : {}),
-        ...(dependencies.fetch ? { request: dependencies.fetch } : {}),
-      });
-    } catch (error) {
-      await operations.failWebhook(
-        'stripe',
-        verified.environment,
-        verified.id,
-        stableProcessingError(error),
-        8,
-      );
-      throw error;
-    }
-
-    return json(insertion === 'duplicate' ? 200 : 202, {
-      received: true,
-      duplicate: insertion === 'duplicate',
-      action: disposition.action,
-      reason: disposition.reason,
+    if (outcome === 'deferred') return json(503, { received: true, action: 'deferred', retryable: true });
+    return json(outcome === 'duplicate' || insertion === 'duplicate' ? 200 : 202, {
+      received: true, duplicate: outcome === 'duplicate' || insertion === 'duplicate', action: outcome,
     });
   } catch (error) {
     const safe =

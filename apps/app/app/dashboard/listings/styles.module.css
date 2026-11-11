@@ -1,0 +1,184 @@
+.workspace {
+  color: var(--color-text-primary);
+}
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-1);
+}
+.notice svg {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+.notice p,
+.summary > p:not(.amount) {
+  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+  font-size: var(--text-body-sm);
+  line-height: 1.6;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-1);
+  transition:
+    border-color var(--motion-duration-normal) var(--motion-ease-out),
+    transform var(--motion-duration-normal) var(--motion-ease-out);
+}
+.card:hover,
+.card:focus-within {
+  border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+}
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.card h2 {
+  font-size: var(--text-h3);
+  margin: var(--space-6) 0 var(--space-3);
+}
+.amount {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-financial-l);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 0 0 var(--space-5);
+  overflow-wrap: anywhere;
+}
+.amount span {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: var(--text-label);
+  letter-spacing: normal;
+  margin-top: var(--space-2);
+}
+.facts,
+.requirements {
+  margin: 0;
+}
+.facts > div,
+.requirements > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  border-top: 1px solid var(--color-border-hairline);
+  padding: var(--space-3) 0;
+  font-size: var(--text-body-sm);
+}
+.facts dt,
+.requirements dt {
+  color: var(--color-text-secondary);
+}
+.facts dd,
+.requirements dd {
+  margin: 0;
+  text-align: right;
+}
+.requirements dd {
+  color: var(--color-text-muted);
+}
+.caption {
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+.card .caption {
+  margin: var(--space-4) 0 var(--space-5);
+  flex: 1;
+}
+.details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 44px;
+  border-top: 1px solid var(--color-border-hairline);
+  padding-top: var(--space-4);
+  font-size: var(--text-body-sm);
+}
+.details:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: var(--space-1);
+  border-radius: var(--radius-xs);
+}
+.summary {
+  padding: var(--space-6);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-1);
+}
+.summary .amount {
+  margin-top: var(--space-5);
+}
+.summary button {
+  margin-top: var(--space-5);
+}
+.journey {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: var(--space-5);
+}
+.journey li {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+.stepIndex {
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  font-size: var(--text-label);
+}
+.journey strong {
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+}
+.journey p {
+  font-size: var(--text-label);
+  color: var(--color-text-muted);
+  margin: var(--space-1) 0 0;
+}
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .grid,
+  .journey {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .card,
+  .summary {
+    padding: var(--space-5);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  .card:hover,
+  .card:focus-within {
+    transform: none;
+  }
+}

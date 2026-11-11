@@ -37,6 +37,7 @@ const dashboardPages = new Set([
   '/dashboard/deposit/crypto',
   '/dashboard/documents',
   '/dashboard/invest',
+  '/dashboard/listings',
   '/dashboard/more',
   '/dashboard/notifications',
   '/dashboard/portfolio',
@@ -100,6 +101,7 @@ function validateInternalPath(value: string | null | undefined, allowOnboarding:
     }
     const supported =
       dashboardPages.has(url.pathname) ||
+      /^\/dashboard\/listings\/[a-z-]{1,40}$/.test(url.pathname) ||
       /^\/dashboard\/(?:research|company-intelligence)\/company\/[^/]+$/.test(url.pathname);
     if (!supported && !(allowOnboarding && url.pathname === '/onboarding'))
       return DEFAULT_RETURN_PATH;

@@ -14,6 +14,7 @@ function config() {
     SUPABASE_URL: 'https://example.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'test-service-role',
     STRIPE_WEBHOOK_SECRET: signingSecret,
+    STRIPE_WEBHOOK_ENVIRONMENT: 'test',
     WEBHOOK_TOLERANCE_SECONDS: '300',
   });
 }
@@ -27,6 +28,7 @@ function signature(body) {
 
 test('payment-mode Stripe completion persists ignored disposition evidence', async () => {
   const body = Buffer.from(JSON.stringify({
+    created: timestamp,
     id: 'evt_gate04_disposition',
     object: 'event',
     livemode: false,
@@ -38,10 +40,10 @@ test('payment-mode Stripe completion persists ignored disposition evidence', asy
     const parsedBody = init.body ? JSON.parse(String(init.body)) : undefined;
     calls.push({ url: String(url), body: parsedBody });
     if (String(url).endsWith('/provider_webhook_inbox')) return new Response('', { status: 201 });
-    if (String(url).endsWith('/rpc/claim_provider_webhook'))
-      return new Response(JSON.stringify({ processing_state: 'processing' }), { status: 200, headers: { 'content-type': 'application/json' } });
-    if (String(url).endsWith('/rpc/complete_provider_webhook'))
-      return new Response(JSON.stringify({ processing_state: 'processed' }), { status: 200, headers: { 'content-type': 'application/json' } });
+    if (String(url).endsWith('/rpc/claim_provider_webhook_v2'))
+      return new Response(JSON.stringify({ acquired: true, state: 'processing', token: 'test-fence', payload: JSON.parse(body) }), { status: 200, headers: { 'content-type': 'application/json' } });
+    if (String(url).endsWith('/rpc/finish_provider_webhook_v2'))
+      return new Response(JSON.stringify({ state: 'processed' }), { status: 200, headers: { 'content-type': 'application/json' } });
     throw new Error(`Unexpected request ${url}`);
   };
 
@@ -54,15 +56,14 @@ test('payment-mode Stripe completion persists ignored disposition evidence', asy
   assert.deepEqual(JSON.parse(response.body), {
     received: true,
     duplicate: false,
-    action: 'ignored',
-    reason: 'stripe_capital_funding_not_enabled',
+    action: 'processed',
   });
 
-  const completion = calls.find((call) => call.url.endsWith('/rpc/complete_provider_webhook'));
+  const completion = calls.find((call) => call.url.endsWith('/rpc/finish_provider_webhook_v2'));
   assert.ok(completion);
   assert.equal(completion.body.p_provider, 'stripe');
   assert.equal(completion.body.p_provider_event_id, 'evt_gate04_disposition');
-  assert.equal(completion.body.p_disposition_action, 'ignored');
-  assert.equal(completion.body.p_disposition_reason, 'stripe_capital_funding_not_enabled');
+  assert.equal(completion.body.p_disposition.action, 'ignored');
+  assert.equal(completion.body.p_disposition.reason, 'stripe_capital_funding_not_enabled');
   assert.doesNotMatch(JSON.stringify(calls), /transactions|portfolios|funding_intents|settlement_evidence|ledger_journals|ledger_postings|subscriptions/i);
 });

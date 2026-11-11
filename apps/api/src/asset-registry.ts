@@ -369,3 +369,18 @@ export function governedAssetDefinition(
       definition.environment === environment,
   );
 }
+
+/**
+ * Governed atomic precision for an exact (asset, network) pair, independent of
+ * provider environment. Null when the pair is not governed or its definitions
+ * disagree, so callers present the amount as unavailable rather than guess.
+ */
+export function governedAtomicPrecision(asset: string, network: string | null): number | null {
+  if (!network) return null;
+  const precisions = new Set(
+    governedAssetRegistry
+      .filter((definition) => definition.asset === asset && definition.network === network)
+      .map((definition) => definition.atomicPrecision),
+  );
+  return precisions.size === 1 ? [...precisions][0]! : null;
+}

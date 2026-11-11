@@ -2,18 +2,22 @@ import { createHash } from 'node:crypto';
 import { ApiError } from './errors.js';
 import type { Config } from './config.js';
 import type { CapabilityState } from './funding-domain.js';
-import { publicFundingDefinitions } from './asset-registry.js';
-import { verifyStripeWebhook } from './stripe-webhook.js';
-import { verifyAlchemyWebhook } from './alchemy-observation.js';
+import { governedAtomicPrecision, publicFundingDefinitions } from './asset-registry.js';
+import { executeStripeWebhook } from './stripe-serverless.js';
+import type { ErrorCode } from './errors.js';
+import { CirclePublicKeys, verifyCircleWebhook } from './circle-webhook.js';
+import { validateAlchemyEnvelope, verifyAlchemyWebhook } from './alchemy-observation.js';
 import { SupabaseFinancialOperations } from './financial-operations.js';
 import {
   requestDigest,
+  type CanonicalBalanceSummary,
   type FinancialRepository,
   type FundingIntentRecord,
   type TransferAliasRecord,
   type TransferExecutionRecord,
 } from './financial-repository.js';
 import { handleAllocationRoute } from './allocation-routes.js';
+import { handleInvestmentOrderRoute } from './investment-orders.js';
 import {
   MemoryAllocationRepository,
   SupabaseAllocationRepository,
@@ -48,6 +52,8 @@ function allocationRepositoryFor(config: Config): AllocationRepository {
   allocationRepositories.set(config, repository);
   return repository;
 }
+
+const circleKeys = new WeakMap<Config, CirclePublicKeys>();
 
 function assertObject(value: unknown): asserts value is Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -130,6 +136,54 @@ function enabled(capability: FinancialCapability) {
   if (capability.state !== 'ENABLED')
     throw new ApiError(503, 'provider_capability_unavailable', capability.reason ?? 'Funding capability is unavailable');
 }
+// Canonical balances contract v2: docs/financial/CANONICAL_BALANCES.md.
+export function canonicalBalancesV2(summary: CanonicalBalanceSummary, asOf = new Date()) {
+  const components = summary.balances.flatMap((item) => [
+    item.availableAtomic,
+    item.reservedAtomic,
+    item.pendingAtomic,
+    item.restrictedAtomic,
+  ]);
+  // A capital liability below zero is a ledger integrity defect, never a customer amount.
+  if (components.some((value) => BigInt(value) < 0n))
+    throw new ApiError(503, 'canonical_balance_integrity', 'Canonical balances are unavailable');
+  const initialized = summary.initializedAt !== null || summary.balances.length > 0;
+  const state = !initialized
+    ? 'NOT_INITIALIZED'
+    : components.every((value) => BigInt(value) === 0n)
+      ? 'ZERO'
+      : 'VALUE';
+  return {
+    contract_version: 2,
+    state,
+    source: 'NEPTLIUM_CANONICAL_LEDGER',
+    as_of: asOf.toISOString(),
+    ledger_initialized_at: summary.initializedAt,
+    reporting: {
+      currency: 'USD',
+      decimals: 2,
+      // Only a zero ledger has an established USD value; non-zero balances await a
+      // governed valuation authority and are never priced by assumption.
+      total_minor: state === 'ZERO' ? '0' : null,
+      valuation: state === 'ZERO' ? 'ZERO_LEDGER' : 'UNAVAILABLE',
+    },
+    balances: summary.balances.map((item) => {
+      const precision = governedAtomicPrecision(item.asset, item.network);
+      return {
+        asset: item.asset,
+        network: item.network,
+        atomic_precision: precision,
+        decimals: precision,
+        total_atomic: item.totalAtomic,
+        available_atomic: item.availableAtomic,
+        reserved_atomic: item.reservedAtomic,
+        pending_atomic: item.pendingAtomic,
+        restricted_atomic: item.restrictedAtomic,
+      };
+    }),
+  };
+}
+
 function fundingPublic(value: FundingIntentRecord) {
   return { id: value.id, asset: value.asset, network: value.network, rail: value.rail, amount_atomic: value.amountAtomic,
     state: value.state, environment: value.environment, created_at: value.createdAt, updated_at: value.updatedAt };
@@ -154,6 +208,8 @@ export async function handleFinancialRoute(
   },
 ): Promise<RouteResult | undefined> {
   const { method, path } = context;
+  const investment = await handleInvestmentOrderRoute(method, path, deps.ownerId);
+  if (investment) return investment;
   const capability = (code: string) => deps.capabilityResolver?.(code) ?? capabilityByCode(deps.config, code);
 
   if (path.startsWith('/v1/allocation/')) {
@@ -195,15 +251,8 @@ export async function handleFinancialRoute(
 
     assertObject(context.body);
 
-    const providerEventId =
-      typeof context.body.id === 'string' ? context.body.id.trim() : '';
-
-    if (!providerEventId || providerEventId.length > 200)
-      throw new ApiError(
-        422,
-        'validation_failed',
-        'Alchemy webhook event identity is missing or invalid',
-      );
+    const envelope = validateAlchemyEnvelope(context.body, { webhookId: deps.config.ALCHEMY_WEBHOOK_ID, environment: deps.config.ALCHEMY_ENVIRONMENT });
+    const providerEventId = envelope.id;
 
     const operations = new SupabaseFinancialOperations(
       deps.config.SUPABASE_URL,
@@ -231,25 +280,30 @@ export async function handleFinancialRoute(
   }
 
   if (method === 'POST' && path === '/v1/webhooks/stripe') {
-    if (!deps.config.SUPABASE_URL || !deps.config.SUPABASE_SERVICE_ROLE_KEY)
-      throw new ApiError(503, 'financial_storage_unavailable', 'Durable webhook storage is not configured');
-    const verified = verifyStripeWebhook({
-      rawBody: context.rawBody,
-      signatureHeader: context.headers['stripe-signature'],
-      endpointSecret: deps.config.STRIPE_WEBHOOK_SECRET,
-      toleranceSeconds: deps.config.WEBHOOK_TOLERANCE_SECONDS,
-    });
-    const operations = new SupabaseFinancialOperations(
-      deps.config.SUPABASE_URL,
-      deps.config.SUPABASE_SERVICE_ROLE_KEY,
-    );
-    const insertion = await operations.recordWebhook({
-      provider: 'stripe',
-      environment: verified.environment,
-      providerEventId: verified.id,
-      payloadDigest: createHash('sha256').update(context.rawBody).digest('hex'),
-      payload: verified.payload,
-      signatureVerifiedAt: new Date().toISOString(),
+    const response = await executeStripeWebhook({ method, headers: context.headers, rawBody: context.rawBody }, { config: deps.config });
+    const body = JSON.parse(response.body);
+    if (response.statusCode >= 400) throw new ApiError(response.statusCode,
+      body.error?.code ?? 'webhook_inbox_unavailable' as ErrorCode, body.error?.message ?? 'Webhook processing is deferred');
+    return { status: response.statusCode, data: body };
+  }
+
+  if (method === 'POST' && path === '/v1/webhooks/circle') {
+    const { config } = deps;
+    if (!config.SUPABASE_URL || !config.SUPABASE_SERVICE_ROLE_KEY || !config.CIRCLE_WEBHOOK_ENVIRONMENT ||
+        !config.CIRCLE_WEBHOOK_API_KEY || !config.CIRCLE_WEBHOOK_SUBSCRIPTION_ID)
+      throw new ApiError(503, 'provider_not_configured', 'Circle evidence ingress is not configured');
+    let keys = circleKeys.get(config);
+    if (!keys) {
+      keys = new CirclePublicKeys(config.CIRCLE_WEBHOOK_ENVIRONMENT, config.CIRCLE_WEBHOOK_API_KEY);
+      circleKeys.set(config, keys);
+    }
+    const payload = await verifyCircleWebhook({ rawBody: context.rawBody,
+      signature: context.headers['x-circle-signature'], keyId: context.headers['x-circle-key-id'], keys,
+      subscriptionId: config.CIRCLE_WEBHOOK_SUBSCRIPTION_ID, environment: config.CIRCLE_WEBHOOK_ENVIRONMENT });
+    const insertion = await new SupabaseFinancialOperations(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY).recordWebhook({
+      provider: 'circle', environment: config.CIRCLE_WEBHOOK_ENVIRONMENT === 'production' ? 'live' : 'test',
+      providerEventId: payload.notificationId, payloadDigest: createHash('sha256').update(context.rawBody).digest('hex'),
+      payload, signatureVerifiedAt: new Date().toISOString(),
     });
     return { status: insertion === 'duplicate' ? 200 : 202, data: { received: true, duplicate: insertion === 'duplicate' } };
   }
@@ -289,13 +343,8 @@ export async function handleFinancialRoute(
     return { data: { state: data.length ? 'VALUE' : 'EMPTY', data: data.map(fundingPublic) } };
   }
 
-  if (method === 'GET' && path === '/v1/capital-account/balances') {
-    const data = await deps.repository.getCanonicalBalances(await deps.ownerId());
-    return { data: { state: data.length ? 'VALUE' : 'EMPTY', source: 'NEPTLIUM_CANONICAL_LEDGER', balances: data.map((item) => ({
-      asset: item.asset, network: item.network, total_atomic: item.totalAtomic, available_atomic: item.availableAtomic,
-      reserved_atomic: item.reservedAtomic, pending_atomic: item.pendingAtomic, restricted_atomic: item.restrictedAtomic,
-    })) } };
-  }
+  if (method === 'GET' && path === '/v1/capital-account/balances')
+    return { data: canonicalBalancesV2(await deps.repository.getCanonicalBalanceSummary(await deps.ownerId())) };
 
   if (method === 'GET' && path === '/v1/capital-account/deposit-instructions') {
     const ownerId = await deps.ownerId();

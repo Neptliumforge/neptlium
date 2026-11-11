@@ -70,8 +70,8 @@ test('Portfolio financial truth is sourced once and valuation remains unavailabl
   assert.match(bootstrap, /getCanonicalBalances\(\)/);
   assert.match(bootstrap, /getPortfolioState\(\)/);
   assert.match(bootstrap, /canonical_balances_unavailable/);
-  assert.match(experience, /Portfolio valuation is not available yet/);
-  assert.match(experience, /Unknown allocation is not rendered as zero/);
-  assert.match(experience, /Investment positions are not available/);
+  assert.match(experience, /valueState === 'UNAVAILABLE'/);
+  assert.match(experience, /No allocation to show yet/);
+  assert.match(experience, /positionState === 'EMPTY'/);
   assert.doesNotMatch(experience, /mock|illustrative|sample holding|fake valuation/i);
 });

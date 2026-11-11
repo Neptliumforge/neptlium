@@ -22,7 +22,8 @@ import {
 import { useProductBootstrap } from './ProductBootstrapProvider';
 import { FinancialValue, ProductStateBadge, type ProductStateName } from './ProductState';
 import type { CanonicalBalance, FundingCapability } from '@/lib/api/financial';
-import { customerCollectionState, customerStateFromCapability, customerStateFromLifecycle } from './customer-state';
+import { customerStateFromCapability, customerStateFromLifecycle } from './customer-state';
+import { capitalBalanceView, type CapitalBalanceView } from './capital-balance';
 
 function firstName(name: string | null | undefined) {
   return name?.trim().split(/\s+/)[0] || 'there';
@@ -124,6 +125,9 @@ function BalanceFigure({
   readonly compact?: boolean;
 }) {
   if (!balance) return <span className={compact ? 'op-value-compact' : 'op-value'}>—</span>;
+  // Without governed precision an atomic amount cannot be shown truthfully.
+  if (balance.decimals === null || balance.decimals === undefined)
+    return <span className={compact ? 'op-value-compact' : 'op-value'}>Amount unavailable</span>;
   return (
     <FinancialValue
       valueAtomic={balance[field]}
@@ -145,13 +149,65 @@ function Metric({
   readonly field: 'available_atomic' | 'reserved_atomic' | 'pending_atomic' | 'total_atomic';
   readonly state: ProductStateName;
 }) {
+  const { snapshot } = useProductBootstrap();
+  const view = capitalBalanceView(snapshot.balanceSummary);
   return (
     <div className="op-metric">
       <span>{label}</span>
-      <BalanceFigure balance={balance} field={field} compact />
-      <ProductStateBadge state={balance ? state : 'UNAVAILABLE'} />
+      {view.kind === 'ZERO' ? (
+        <span className="op-value-compact tabular-nums">{view.display}</span>
+      ) : (
+        <BalanceFigure balance={balance} field={field} compact />
+      )}
+      <ProductStateBadge state={view.kind === 'ZERO' || balance ? state : 'UNAVAILABLE'} />
     </div>
   );
+}
+
+function CapitalHeadline({
+  view,
+  multipleNote,
+}: {
+  readonly view: CapitalBalanceView;
+  readonly multipleNote: string;
+}) {
+  switch (view.kind) {
+    case 'ZERO':
+      return (
+        <>
+          <strong className="tabular-nums">{view.display}</strong>
+          <p>Your recorded Capital balance is zero.</p>
+        </>
+      );
+    case 'SINGLE':
+      return (
+        <>
+          <BalanceFigure balance={view.balance} />
+          <p>{`${view.balance.asset}${view.balance.network ? ` · ${view.balance.network}` : ''}`}</p>
+        </>
+      );
+    case 'MULTIPLE':
+      return (
+        <>
+          <strong>{view.balances.length} asset positions</strong>
+          <p>{multipleNote}</p>
+        </>
+      );
+    case 'NOT_INITIALIZED':
+      return (
+        <>
+          <strong>No balance recorded yet</strong>
+          <p>No recorded balance is available for this account yet.</p>
+        </>
+      );
+    default:
+      return (
+        <>
+          <strong>—</strong>
+          <p>Your capital balance is temporarily unavailable.</p>
+        </>
+      );
+  }
 }
 
 function PrimaryActions() {
@@ -230,15 +286,16 @@ function ActivityRows({ limit }: { readonly limit?: number }) {
   );
 }
 
-function balanceContext(balances: readonly CanonicalBalance[]) {
-  return balances.length === 1 ? balances[0] : undefined;
-}
-
 export function OverviewExperience() {
   const { snapshot } = useProductBootstrap();
-  const balances = snapshot.balances.state === 'READY' ? snapshot.balances.data : [];
-  const balanceState = customerCollectionState(snapshot.balances);
-  const balance = balanceContext(balances);
+  const balanceView = capitalBalanceView(snapshot.balanceSummary);
+  const balances =
+    balanceView.kind === 'SINGLE'
+      ? [balanceView.balance]
+      : balanceView.kind === 'MULTIPLE'
+        ? balanceView.balances
+        : [];
+  const balance = balanceView.kind === 'SINGLE' ? balanceView.balance : undefined;
   const portfolio = snapshot.portfolio.state === 'READY' ? snapshot.portfolio.data : undefined;
   const notifications = snapshot.notifications.state === 'READY' ? snapshot.notifications.data : [];
   const pendingTransfers =
@@ -263,24 +320,10 @@ export function OverviewExperience() {
       <section className="op-hero">
         <div className="op-hero-primary">
           <span>Your capital</span>
-          {balanceState === 'UNAVAILABLE' ? (
-            <strong>—</strong>
-          ) : balanceState === 'EMPTY' ? (
-            <strong>No balance yet</strong>
-          ) : balance ? (
-            <BalanceFigure balance={balance} />
-          ) : (
-            <strong>{balances.length} asset positions</strong>
-          )}
-          <p>
-            {balance
-              ? `${balance.asset}${balance.network ? ` · ${balance.network}` : ''}`
-              : balances.length
-                ? 'Shown separately because no verified combined valuation is available.'
-                : balanceState === 'EMPTY'
-                  ? 'No recorded balance is available for this account yet.'
-                  : 'Your capital balance is temporarily unavailable.'}
-          </p>
+          <CapitalHeadline
+            view={balanceView}
+            multipleNote="Shown separately because no verified combined valuation is available."
+          />
           <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
         <div className="op-metric-grid">
@@ -306,13 +349,13 @@ export function OverviewExperience() {
         />
         {portfolio?.performance.state === 'VALUE' ? (
           <div className="op-empty-row">
-            <strong>Performance view is being prepared</strong>
-            <span>Your recorded performance data cannot yet be displayed as a chart.</span>
+            <strong>Performance chart coming soon</strong>
+            <span>Your recorded performance history is available, but chart visualization is not supported yet.</span>
           </div>
         ) : (
           <EmptyCanvas
-            title="Performance is not available yet"
-            detail="Your performance history will appear when verified valuation history is available."
+            title="No performance history yet"
+            detail="Once your investments have recorded valuation history, you’ll see it here."
           />
         )}
       </section>
@@ -330,10 +373,9 @@ export function OverviewExperience() {
           <div className="op-state-focus">
             <Search size={19} />
             <div>
-              <strong>Opportunities appear only when available to your account.</strong>
+              <strong>Explore investments when they become available</strong>
               <p>
-                Browse supported investments without mistaking research coverage for an investment
-                you own.
+                Discover investment opportunities and review their details before making a decision.
               </p>
             </div>
           </div>
@@ -352,9 +394,9 @@ export function OverviewExperience() {
             <Wallet size={19} />
             <div>
               <strong>
-                {portfolio ? 'Portfolio information loaded' : 'No portfolio information available'}
+                {portfolio ? 'Your portfolio overview' : 'Your portfolio is waiting'}
               </strong>
-              <p>Positions and returns appear only when supported by your account records.</p>
+              <p>Your holdings and returns will appear here when investments are recorded.</p>
             </div>
           </div>
         </article>
@@ -404,9 +446,14 @@ export function OverviewExperience() {
 
 export function CapitalExperience() {
   const { snapshot } = useProductBootstrap();
-  const balances = snapshot.balances.state === 'READY' ? snapshot.balances.data : [];
-  const balanceState = customerCollectionState(snapshot.balances);
-  const balance = balanceContext(balances);
+  const balanceView = capitalBalanceView(snapshot.balanceSummary);
+  const balances =
+    balanceView.kind === 'SINGLE'
+      ? [balanceView.balance]
+      : balanceView.kind === 'MULTIPLE'
+        ? balanceView.balances
+        : [];
+  const balance = balanceView.kind === 'SINGLE' ? balanceView.balance : undefined;
   const funding =
     snapshot.fundingCapabilities.state === 'READY' ? snapshot.fundingCapabilities.data : [];
   const activity = snapshot.fundingActivity.state === 'READY' ? snapshot.fundingActivity.data : [];
@@ -433,24 +480,7 @@ export function CapitalExperience() {
       <section className="op-hero">
         <div className="op-hero-primary">
           <span>Your capital</span>
-          {balanceState === 'UNAVAILABLE' ? (
-            <strong>—</strong>
-          ) : balanceState === 'EMPTY' ? (
-            <strong>No balance yet</strong>
-          ) : balance ? (
-            <BalanceFigure balance={balance} />
-          ) : (
-            <strong>{balances.length} asset positions</strong>
-          )}
-          <p>
-            {balance
-              ? `${balance.asset}${balance.network ? ` · ${balance.network}` : ''}`
-              : balances.length
-                ? 'Values remain separated by asset.'
-                : balanceState === 'EMPTY'
-                  ? 'No recorded balance is available for this account yet.'
-                  : 'Your capital balance is temporarily unavailable.'}
-          </p>
+          <CapitalHeadline view={balanceView} multipleNote="Values remain separated by asset." />
           <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
         <div className="op-metric-grid">
@@ -490,8 +520,8 @@ export function CapitalExperience() {
           </div>
         ) : (
           <div className="op-empty-row">
-            <strong>Proportions unavailable</strong>
-            <span>Ratios are shown only when one authoritative capital basis exists.</span>
+            <strong>No capital breakdown yet</strong>
+            <span>Your capital breakdown will appear when verified balances are available.</span>
           </div>
         )}
       </section>
@@ -587,7 +617,7 @@ export function PortfolioExperience() {
       <PageHeader
         eyebrow="Portfolio"
         title="Your portfolio"
-        description="Positions, allocation and performance supported by your account records."
+        description="Explore your holdings, allocation and investment performance in one place."
         actions={
           <>
             <Link className="op-button op-button-primary" href="/dashboard/invest">
@@ -614,10 +644,10 @@ export function PortfolioExperience() {
           <strong>—</strong>
           <p>
             {valueState === 'UNAVAILABLE'
-              ? 'Portfolio valuation is not available yet.'
-              : 'A portfolio value exists, but this client does not yet receive a displayable amount.'}
+              ? 'Your portfolio value will appear once investments are recorded.'
+              : 'Your portfolio value is not available to display right now.'}
           </p>
-          <small>{relativeFreshness(snapshot.asOf)} · Account records required</small>
+          <small>{relativeFreshness(snapshot.asOf)}</small>
         </div>
         <div className="op-metric-grid">
           <div className="op-metric">
@@ -642,13 +672,11 @@ export function PortfolioExperience() {
         <div className="op-empty-row">
           <strong id="portfolio-positions-title">
             {positionState === 'EMPTY'
-              ? 'No investment positions are recorded'
-              : 'Investment positions are not available'}
+              ? 'No investments yet'
+              : 'Your investments could not be loaded'}
           </strong>
           <span>
-            Quantity, price, cost basis and return stay absent until the portfolio projection
-            provides authoritative investment-position records. Capital balances are not presented
-            as investments.
+            Your investments and their details will appear here once they are recorded in your account.
           </span>
         </div>
       </section>
@@ -664,23 +692,23 @@ export function PortfolioExperience() {
             }
           />
           <EmptyCanvas
-            title="Position allocation unavailable"
-            detail="Asset weights require canonical investment positions and valuation. Unknown allocation is not rendered as zero."
+            title="No allocation to show yet"
+            detail="Your portfolio breakdown will appear when your investments have verified values."
           />
         </article>
         <article className="op-panel">
           <SectionHeading label="Concentration" title="Exposure" />
           <EmptyCanvas
-            title="Exposure is not established"
-            detail="Sector, geography and asset-class concentration appear only when supported by classified portfolio positions."
+            title="No exposure details yet"
+            detail="Explore your portfolio by sector, region and asset class when holdings are available."
           />
         </article>
       </section>
       <section className="op-panel op-chart-panel" id="performance">
         <SectionHeading label="Performance" title="Portfolio value over time" />
         <EmptyCanvas
-          title="Reconciled valuation history is not available"
-          detail="No decorative or interpolated performance curve is rendered. History appears only from an authoritative valuation series."
+          title="No performance history yet"
+          detail="Your performance chart will appear when verified valuation history is available."
         />
       </section>
       <section className="op-grid-2">
@@ -688,10 +716,9 @@ export function PortfolioExperience() {
           <div id="income">
             <SectionHeading label="Income" title="Distributions and income" />
             <div className="op-empty-row">
-              <strong>No income records are available</strong>
+              <strong>No income recorded yet</strong>
               <span>
-                Dividends, interest and distributions appear only when linked to an authoritative
-                portfolio position and account record.
+                Dividends, interest and distributions will appear here when they are recorded.
               </span>
             </div>
           </div>
@@ -710,8 +737,7 @@ export function PortfolioExperience() {
             <div className="op-empty-row">
               <strong>Statements and account files</strong>
               <span>
-                Documents are kept in the account record and are never inferred from a position or
-                public-market source.
+                View statements and documents associated with your account.
               </span>
             </div>
           </div>
@@ -719,8 +745,8 @@ export function PortfolioExperience() {
       </section>
       <p className="op-footnote">
         {portfolioAvailable
-          ? 'Portfolio state loaded from the Neptlium API. Unavailable fields remain undisclosed.'
-          : 'Portfolio state could not be loaded. No balance, position, performance or income value has been inferred.'}
+          ? 'Portfolio figures reflect available account records.'
+          : 'Some portfolio information is temporarily unavailable. Please try again later.'}
       </p>
     </div>
   );
@@ -805,7 +831,7 @@ export function ActivityExperience() {
       <PageHeader
         eyebrow="Activity"
         title="Account activity"
-        description="A chronological record of governed capital events and state changes."
+        description="Review your deposits, transfers and account activity in one place."
       />
       <section className="op-panel">
         <SectionHeading label="Account activity" title="Recent activity" />

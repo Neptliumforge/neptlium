@@ -18,6 +18,8 @@ Supabase service-role access is infrastructure authority only. It is never a cus
 
 ## Circle
 
+**TRANSITION (local, unreleased):** Wallets v2 signature verification and evidence-only inbox ingress are implemented behind explicit subscription/environment/key bindings. No configuration is enabled. Fenced consumption depends on unapplied [Gate 01B proposals](../engineering/proposals/gate-01b/README.md); source does not establish deployed verification or provider capability.
+
 Circle Developer-Controlled Wallets is a capital-provider adapter in the API architecture.
 
 Implemented source may include wallet/address lookup and provider observations. Configuration or source support does not establish customer-facing production eligibility. Provider balance/transaction observations are evidence and remain non-canonical until governed posting/reconciliation.
@@ -26,11 +28,15 @@ Circle credentials and entity secrets are server-only.
 
 ## Alchemy
 
+**TRANSITION (local, unreleased):** ingress binds webhook identity, event type and network. An unscheduled read-only Base USDC consumer validates receipt/log/block and route evidence before proposed durable observation storage. This does not establish settlement or available capital. See [Gate 01B dependencies](../engineering/proposals/gate-01b/README.md).
+
 Alchemy is observation/RPC infrastructure where configured. It may normalize chain observations into settlement evidence, but it cannot authorize capital movement, create canonical availability, or replace ledger/reconciliation authority.
 
 Production use requires explicit verified capability and secure webhook/observation contracts.
 
 ## Stripe
+
+**TRANSITION (local, unreleased):** both ingress paths now require an explicit signed-environment binding and fenced v2 processing. The proposed database contract supplies atomic subscription updates, immutable billing bindings and stale-event protection. These dependencies are unapplied; current schema availability must not be assumed. See [Gate 01B release prerequisites](../engineering/proposals/gate-01b/README.md).
 
 Current Stripe source supports governed subscription-billing webhook ingress. It does **not** establish live customer capital funding.
 

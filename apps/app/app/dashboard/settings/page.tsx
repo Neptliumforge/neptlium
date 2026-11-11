@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { AccountSignOut } from '@/components/settings/AccountSignOut';
 import { ArrowRight } from 'lucide-react';
 import { SettingsExperience } from '@/components/product/RecordExperiences';
 import { settingsDestinations } from '@/components/settings/SettingsShell';
@@ -21,6 +22,10 @@ export default function SettingsPage() {
             </Link>
           ))}
         </nav>
+      </section>
+      <section className="op-panel" aria-label="Account session">
+        <div className="op-section-heading"><div><span>Account</span><h2>Session</h2></div></div>
+        <AccountSignOut />
       </section>
     </div>
   );

@@ -566,14 +566,10 @@ export async function buildApp(deps: Dependencies = {}) {
         'Per-customer provider-wallet routes are superseded by funding_intent → deposit_route → treasury_destination',
       );
     }
-    if (method === 'POST' && (path === '/v1/webhooks/alchemy' || path === '/v1/webhooks/circle')) {
-      const provider = path.endsWith('alchemy') ? 'alchemy' : 'circle';
-      if (provider === 'circle')
-        throw new ApiError(
-          503,
-          'provider_not_configured',
-          'Circle webhook verification is disabled pending implementation against the reviewed official contract',
-        );
+    if (method === 'POST' && path === '/v1/webhooks/alchemy') {
+      if (config.NODE_ENV !== 'test')
+        throw new ApiError(503, 'provider_not_configured', 'Alchemy production evidence ingress is not configured');
+      const provider = 'alchemy';
       const verifier = deps.webhookVerifiers?.[provider];
       if (!verifier)
         throw new ApiError(

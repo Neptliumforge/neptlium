@@ -57,10 +57,10 @@ test('funding capability cannot manufacture a Portfolio holding', () => {
 
 test('Portfolio distinguishes unavailable canonical state from authoritative absence', () => {
   assert.match(bootstrap, /state: 'UNAVAILABLE'/);
-  assert.match(portfolioExperience, /Portfolio valuation is not available yet/);
-  assert.match(portfolioExperience, /Investment positions are not available/);
-  assert.match(portfolioExperience, /Unknown allocation is not rendered as zero/);
-  assert.match(portfolioExperience, /Reconciled valuation history is not available/);
+  assert.match(portfolioExperience, /Your portfolio value is not available to display right now/);
+  assert.match(portfolioExperience, /Your investments could not be loaded/);
+  assert.match(portfolioExperience, /Your portfolio breakdown will appear when your investments have verified values/);
+  assert.match(portfolioExperience, /Your performance chart will appear when verified valuation history is available/);
 });
 
 test('Portfolio does not manufacture valuation, performance, or risk scores', () => {
@@ -79,14 +79,14 @@ test('Portfolio does not manufacture valuation, performance, or risk scores', ()
     assert.doesNotMatch(surface, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
 
   assert.match(portfolioExperience, /Portfolio value<\/span>[\s\S]*?<strong>—<\/strong>/);
-  assert.match(portfolioExperience, /No decorative or interpolated performance curve is rendered/);
+  assert.match(portfolioExperience, /No performance history yet/);
 });
 
 test('Portfolio holdings remain absent until authoritative positions exist', () => {
-  assert.match(portfolioExperience, /Investment positions are not available/);
+  assert.match(portfolioExperience, /Your investments could not be loaded/);
   assert.match(
     portfolioExperience,
-    /Quantity, price, cost basis and return stay absent until the portfolio projection\s+provides authoritative investment-position records/,
+    /Your investments and their details will appear here once they are recorded in your account/,
   );
   assert.doesNotMatch(surface, /sample holding|illustrative holding|mock position/i);
 });
@@ -112,7 +112,7 @@ test('Portfolio has no execution actions', () => {
 
 test('Portfolio preserves allocation as context rather than inferred financial truth', () => {
   assert.match(portfolioExperience, /Portfolio composition/);
-  assert.match(portfolioExperience, /Position allocation unavailable/);
+  assert.match(portfolioExperience, /No allocation to show yet/);
   assert.match(bootstrap, /getAllocationState\(\)/);
   assert.doesNotMatch(surface, /transaction feed/i);
 });
@@ -128,7 +128,7 @@ test('Portfolio exposes the complete investor information architecture without f
   ]) {
     assert.match(portfolioExperience, new RegExp(`['"]${section}['"]`));
   }
-  assert.match(portfolioExperience, /Capital balances are not presented\s+as investments/);
-  assert.match(portfolioExperience, /No income records are available/);
+  assert.match(portfolioExperience, /const portfolio = snapshot\.portfolio\.state === 'READY' \? snapshot\.portfolio\.data : undefined/);
+  assert.match(portfolioExperience, /No income recorded yet/);
   assert.match(portfolioExperience, /\/dashboard\/documents/);
 });

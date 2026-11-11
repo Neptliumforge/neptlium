@@ -67,9 +67,9 @@ test('desktop and mobile navigation use the personal Capital hierarchy', () => {
 });
 
 test('portfolio and allocation surfaces fail truthfully when canonical data is unavailable', () => {
-  assert.match(experience, /Portfolio valuation is not available yet/);
-  assert.match(experience, /No decorative or interpolated performance curve is rendered/);
-  assert.match(experience, /Unknown allocation is not rendered as zero/);
+  assert.match(experience, /valueState === 'UNAVAILABLE'/);
+  assert.match(experience, /No performance history yet/);
+  assert.match(experience, /No allocation to show yet/);
   assert.match(experience, /Allocation information is not currently available for this account/);
   assert.doesNotMatch(experience, /Governed progression/);
   assert.doesNotMatch(experience, /liquidity-curve/);
@@ -95,9 +95,13 @@ test('authenticated product keeps the carbon and mineral-teal system', () => {
 
 
 test('account appearance delegates to shared theme authority', () => {
-  assert.match(profileMenu, /useTheme/);
-  assert.match(profileMenu, /preference, setPreference/);
-  assert.doesNotMatch(profileMenu, /localStorage|matchMedia|document\.documentElement|function applyTheme/);
+  const appearance = read('app/dashboard/settings/appearance/page.tsx');
+  const switcher = read('components/navigation/ThemeSwitcher.tsx');
+  assert.match(profileMenu, /href="\/dashboard\/settings"/);
+  assert.match(appearance, /<ThemeSwitcher \/>/);
+  assert.match(switcher, /useTheme/);
+  assert.match(switcher, /preference, setPreference/);
+  assert.doesNotMatch(switcher, /localStorage|matchMedia|document\.documentElement|function applyTheme/);
 });
 
 test('authenticated shell consumes semantic light and dark tokens without a local dark palette', () => {

@@ -57,7 +57,7 @@ export default async function TransactionsPage() {
 
       <div className="border-y border-border-hairline">
         {error ? (
-          <ProductStateMessage state="ERROR" title="Capital activity could not be loaded">The Neptlium API did not return recent funding and transfer activity.</ProductStateMessage>
+          <ProductStateMessage state="ERROR" title="Capital activity could not be loaded">We couldn't load your transactions right now. Please try again later.</ProductStateMessage>
         ) : rows.length === 0 ? (
           <ProductStateMessage state="NO_ACTIVITY" title="No capital activity yet">You have not created any deposits or transfers yet.</ProductStateMessage>
         ) : (

@@ -3,6 +3,8 @@
 import { usePathname } from 'next/navigation';
 
 const titles: readonly [string, string][] = [
+  ['/dashboard/listings', 'Neptlium Listings'],
+  ['/dashboard/invest', 'Invest'],
   ['/dashboard/capital', 'Capital'],
   ['/dashboard/capital-account', 'Capital'],
   ['/dashboard/treasury', 'Treasury'],

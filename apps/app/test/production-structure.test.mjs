@@ -76,7 +76,7 @@ test('destinations outside the mobile bar stay discoverable in context', () => {
   assert.match(section('PortfolioExperience'), /href="\/dashboard\/documents"/);
   assert.match(section('PortfolioExperience'), /href="\/dashboard\/allocation"/);
   assert.match(section('InvestExperience'), /href="\/dashboard\/companies"/);
-  assert.match(read('components/navigation/ProfileMenu.tsx'), /\['Settings', '\/dashboard\/settings'\]/);
+  assert.match(read('components/navigation/ProfileMenu.tsx'), /href="\/dashboard\/settings"/);
   assert.doesNotMatch(experience, /href=['"]\/dashboard\/treasury['"]/);
 });
 
@@ -142,7 +142,7 @@ test('Overview is a shared-bootstrap capital home without fabricated valuation',
   }
   assert.match(experience, /Your capital/);
   assert.match(experience, /Shown separately because no verified combined valuation is available/);
-  assert.match(experience, /Performance is not available yet/);
+  assert.match(experience, /No performance history yet/);
   assert.doesNotMatch(experience, /balance\?\.total_atomic\s*\?\?\s*['\"]0['\"]/);
   assert.doesNotMatch(page, /getCanonicalBalances|getFundingCapabilities|getTransferCapabilities/);
 });
@@ -160,10 +160,10 @@ test('Portfolio remains evidence-aware and contains no execution authority', () 
   const page = read('app/dashboard/portfolio/page.tsx');
   const experience = read('components/product/OperatingExperience.tsx');
   assert.match(page, /PortfolioExperience/);
-  assert.match(experience, /Portfolio valuation is not available yet/);
-  assert.match(experience, /Reconciled valuation history is not available/);
-  assert.match(experience, /Investment positions are not available/);
-  assert.match(experience, /Unknown allocation is not rendered as zero/);
+  assert.match(experience, /Your portfolio value is not available to display right now/);
+  assert.match(experience, /Your performance chart will appear when verified valuation history is available/);
+  assert.match(experience, /Your investments could not be loaded/);
+  assert.match(experience, /Your portfolio breakdown will appear when your investments have verified values/);
   assert.doesNotMatch(experience, />Buy<|>Sell<|>Trade<|Execute allocation/);
 });
 

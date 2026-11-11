@@ -32,6 +32,7 @@ jobs:
       - run: pnpm --filter @neptlium/api vercel-build
       - run: node --test supabase/test/stripe-webhook-retirement.test.mjs
       - run: node --test supabase/test/gate05-legacy-authority-retirement.test.mjs
+      - run: node --test supabase/test/profile-authority-containment.test.mjs
 
   validate-app:
     runs-on: ubuntu-latest
@@ -52,6 +53,29 @@ jobs:
       - run: pnpm --filter @neptlium/app lint
       - run: pnpm --filter @neptlium/app test
       - run: pnpm --filter @neptlium/app build
+
+  validate-canonical-balances:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --test supabase/test/canonical-balances.test.mjs
+      - name: Canonical balances database contract
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d postgres -X -v ON_ERROR_STOP=1 -f supabase/test/canonical-balances/run.sql
 
   validate-admin:
     runs-on: ubuntu-latest
@@ -101,3 +125,25 @@ jobs:
       - name: Web Vitest executable unit tests
         run: pnpm --filter @neptlium/web test:unit
       - run: pnpm --filter @neptlium/web build
+
+  validate-profile-authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Database authorization for public.profiles (issue #109)
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d postgres -X -v ON_ERROR_STOP=1 -f supabase/test/profile-authority/run.sql
