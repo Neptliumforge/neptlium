@@ -12,8 +12,8 @@ jobs:
     timeout-minutes: 10
     services:
       postgres:
-        # BLOCKER: replace tag with independently verified immutable SHA256 digest.
-        image: postgres:17.11
+        # Candidate index digest from Docker Hub metadata; verify via registry before enabling.
+        image: postgres:17.11@sha256:653186fe15006c099d2fb3bc1d8461c1dee9d036c43f2e5fdaf4f22e5e601876
         env:
           POSTGRES_PASSWORD: disposable-test-only
         ports:
