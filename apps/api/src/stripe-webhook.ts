@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { ApiError } from './errors.js';
 import type {
   StripeSubscriptionCommand,
+  StripeSubscriptionMutation,
   StripeSubscriptionStatus,
 } from './stripe-subscription.js';
 
@@ -16,6 +17,7 @@ export const STRIPE_INGRESS_EVENT_TYPES = [
   'checkout.session.completed',
   'invoice.paid',
   'customer.subscription.updated',
+  'customer.subscription.deleted',
 ] as const;
 
 export type StripeIngressDisposition =
@@ -29,7 +31,9 @@ export type StripeIngressDisposition =
       reason:
         | 'stripe_capital_funding_not_enabled'
         | 'unsupported_event_type'
-        | 'unsupported_subscription_state';
+        | 'unsupported_subscription_state'
+        | 'invoice_requires_subscription_sync'
+        | 'checkout_payment_unconfirmed';
     };
 
 function equalHex(a: string, b: string) {
@@ -75,7 +79,7 @@ function subscriptionStatus(value: unknown): StripeSubscriptionStatus | undefine
     value === 'canceled' ||
     value === 'past_due' ||
     value === 'trialing' ||
-    value === 'incomplete'
+    value === 'incomplete' || value === 'incomplete_expired' || value === 'unpaid' || value === 'paused'
     ? value
     : undefined;
 }
@@ -90,7 +94,7 @@ function requireField(value: string | undefined, name: string) {
   return value;
 }
 
-export function stripeIngressDisposition(event: VerifiedStripeEvent): StripeIngressDisposition {
+function classifyStripeEvent(event: VerifiedStripeEvent): Exclude<StripeIngressDisposition, { action: 'subscription_update' }> | { action: 'subscription_update'; reason: 'supported_subscription_event'; command: StripeSubscriptionMutation } {
   const object = eventObject(event);
 
   if (event.type === 'checkout.session.completed') {
@@ -98,6 +102,8 @@ export function stripeIngressDisposition(event: VerifiedStripeEvent): StripeIngr
       return { action: 'ignored', reason: 'stripe_capital_funding_not_enabled' };
     }
 
+    if (object.payment_status !== 'paid')
+      return { action: 'ignored', reason: 'checkout_payment_unconfirmed' };
     const meta = metadata(object);
     const plan = paidPlan(meta?.plan);
     if (!plan)
@@ -124,18 +130,12 @@ export function stripeIngressDisposition(event: VerifiedStripeEvent): StripeIngr
   }
 
   if (event.type === 'invoice.paid') {
-    return {
-      action: 'subscription_update',
-      reason: 'supported_subscription_event',
-      command: {
-        kind: 'renew_customer',
-        customerId: requireField(idFromExpandable(object?.customer), 'customer'),
-      },
-    };
+    // An invoice is payment evidence, not authoritative current subscription state.
+    return { action: 'ignored', reason: 'invoice_requires_subscription_sync' };
   }
 
-  if (event.type === 'customer.subscription.updated') {
-    const status = subscriptionStatus(object?.status);
+  if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
+    const status = event.type === 'customer.subscription.deleted' ? 'canceled' : subscriptionStatus(object?.status);
     if (!status) {
       return { action: 'ignored', reason: 'unsupported_subscription_state' };
     }
@@ -157,6 +157,15 @@ export function stripeIngressDisposition(event: VerifiedStripeEvent): StripeIngr
   }
 
   return { action: 'ignored', reason: 'unsupported_event_type' };
+}
+
+export function stripeIngressDisposition(event: VerifiedStripeEvent): StripeIngressDisposition {
+  if (event.payload.id !== event.id || event.payload.livemode !== (event.environment === 'live') ||
+      !Number.isSafeInteger(event.payload.created) || Number(event.payload.created) < 0)
+    throw new ApiError(422, 'invalid_webhook', 'Stripe stored event identity or ordering is invalid');
+  const result = classifyStripeEvent(event);
+  return result.action === 'subscription_update' ? { ...result, command: { ...result.command,
+    eventCreated: Number(event.payload.created), eventId: event.id, environment: event.environment } } : result;
 }
 
 export function verifyStripeWebhook(input: {
@@ -220,7 +229,10 @@ export function verifyStripeWebhook(input: {
   const event = payload as Record<string, unknown>;
   if (
     typeof event.id !== 'string' ||
+    !/^evt_[A-Za-z0-9_]{1,196}$/.test(event.id) ||
     typeof event.type !== 'string' ||
+    !event.type || event.type.length > 200 ||
+    !Number.isSafeInteger(event.created) || Number(event.created) < 0 ||
     typeof event.livemode !== 'boolean'
   )
     throw new ApiError(

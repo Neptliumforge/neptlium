@@ -26,7 +26,10 @@ test('Stripe evidence cannot manufacture a Capital Account funding route', () =>
   const client = read('apps/app/lib/api/financial.ts');
   const capitalAccount = read('apps/app/app/dashboard/capital-account/CapitalAccountView.tsx');
 
-  assert.match(financial, /verifyStripeWebhook/);
+  assert.match(financial, /executeStripeWebhook/);
+  const stripe = read('apps/api/src/stripe-serverless.ts');
+  assert.match(stripe, /verifyStripeWebhook/);
+  assert.match(stripe, /processStoredWebhook/);
   assert.match(financial, /recordWebhook/);
   assert.doesNotMatch(`${financial}\n${client}\n${capitalAccount}`, /USD_ACH|ENABLE_FIAT/);
   assert.match(capitalAccount, /capabilities\.map/);

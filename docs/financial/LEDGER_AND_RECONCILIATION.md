@@ -1,5 +1,7 @@
 # Ledger and Reconciliation
 
+**TRANSITION (local, unreleased):** [Gate 01B](../engineering/proposals/gate-01b/README.md) prepares forward-only integer/null/network-balance/grant hardening and fenced webhook consumption outside the migration directory. These proposals and their isolated database tests have not been executed. Existing canonical balance code also requires the initialization/aggregation dependencies from PR #137; migration presence and local code do not establish applied production state.
+
 The Neptlium ledger is canonical financial truth only when entries are validly created through reviewed workflows. Provider systems supply evidence; they do not replace the ledger.
 
 ## CURRENT migration evidence
@@ -20,7 +22,7 @@ The same migration defines `wallet_deposits` and `wallet_withdrawals` with expli
 - Wallet/provider mutations require idempotency keys at the API boundary.
 - `provider_webhook_events` deduplicates `(provider, provider_event_id)`, records a payload digest, safe headers, processing state, and timestamps.
 - A repeated event ID with a different digest is a replay/conflict, not a retry.
-- Alchemy observations require verified webhook ingress. Circle webhook verification remains explicitly disabled until its reviewed contract is implemented. Stripe events are evidence only and never become capital state without attribution, ledger posting, and reconciliation.
+- Alchemy observations require verified webhook ingress. Local Circle v2 evidence ingress now requires explicit reviewed subscription/environment/key configuration; none is activated by this work. Stripe events are evidence only and never become capital state without attribution, ledger posting, and reconciliation.
 
 ### Reconciliation evidence
 

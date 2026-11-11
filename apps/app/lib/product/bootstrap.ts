@@ -65,6 +65,9 @@ export async function getAuthenticatedProductBootstrap(
     balances: balances.status === 'fulfilled'
       ? { state: 'READY', data: balances.value.balances }
       : { state: 'UNAVAILABLE', reason: 'canonical_balances_unavailable' },
+    balanceSummary: balances.status === 'fulfilled'
+      ? { state: 'READY', data: balances.value }
+      : { state: 'UNAVAILABLE', reason: 'canonical_balances_unavailable' },
     fundingCapabilities: fundingCapabilities.status === 'fulfilled'
       ? { state: 'READY', data: fundingCapabilities.value.capabilities }
       : { state: 'UNAVAILABLE', reason: 'funding_capability_unavailable' },

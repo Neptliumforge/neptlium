@@ -33,6 +33,7 @@ export type ErrorCode =
   | 'invalid_transfer_transition'
   | 'invalid_allocation_transition'
   | 'invalid_canonical_balance'
+  | 'canonical_balance_integrity'
   | 'idempotency_conflict'
   | 'idempotency_key_required'
   | 'provider_not_configured'

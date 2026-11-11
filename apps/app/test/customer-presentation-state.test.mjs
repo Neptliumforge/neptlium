@@ -30,10 +30,20 @@ test('ordinary Capital UI does not expose provider or infrastructure state names
 
 test('unknown balances are not rendered as zero and authoritative empty is distinct', () => {
   const experience = read('components/product/OperatingExperience.tsx');
-  assert.match(experience, /balanceState === 'UNAVAILABLE'/);
-  assert.match(experience, /balanceState === 'EMPTY'/);
-  assert.match(experience, /Once funds are verified and credited, your balance will appear here/);
+  const balanceView = read('components/product/capital-balance.ts');
+
+  assert.match(experience, /capitalBalanceView\(snapshot\.balanceSummary\)/);
+  assert.match(experience, /case 'NOT_INITIALIZED'/);
   assert.match(experience, /temporarily unavailable/);
+  assert.match(experience, /case 'ZERO'/);
+
+  assert.match(balanceView, /projection\.state !== 'READY'/);
+  assert.match(balanceView, /kind: 'UNAVAILABLE'/);
+  assert.match(balanceView, /kind: 'NOT_INITIALIZED'/);
+  assert.match(balanceView, /response\.contract_version !== 2/);
+  assert.match(balanceView, /ZERO_LEDGER/);
+  assert.match(balanceView, /reporting\.total_minor !== '0'/);
+
   assert.doesNotMatch(experience, /balance.*\?\?\s*['"]0['"]/);
 });
 

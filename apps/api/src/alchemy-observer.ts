@@ -69,7 +69,8 @@ export function normalizeAlchemyObservation(
     throw new Error('Alchemy Base observation chain mismatch');
   if (!observation.receiptPresent || observation.receiptStatus !== 'SUCCESS')
     throw new Error('Alchemy observation lacks a successful transaction receipt');
-  if (!observation.blockHash || !observation.blockNumber)
+  if (!observation.blockHash || !/^0x[0-9a-fA-F]{64}$/.test(observation.blockHash) ||
+      !observation.blockNumber || !/^0x[0-9a-fA-F]+$/.test(observation.blockNumber))
     throw new Error('Alchemy observation lacks durable block identity');
   if (observation.network !== 'BASE')
     throw new Error('Alchemy observation network is not Base mainnet');
@@ -90,6 +91,14 @@ export function normalizeAlchemyObservation(
     throw new Error('Alchemy observation lacks governed route correlation');
   if (!Number.isFinite(Date.parse(observation.observedAt)))
     throw new Error('Alchemy observation timestamp is invalid');
+  if (observation.confirmations !== undefined && (!Number.isSafeInteger(observation.confirmations) || observation.confirmations < 0))
+    throw new Error('Alchemy observation confirmations are invalid');
+  if (observation.transferType === 'NATIVE' && observation.asset === 'USDC')
+    throw new Error('Alchemy USDC observation cannot be classified as a native transfer');
+  if (!['ERC20', 'NATIVE'].includes(observation.transferType) ||
+      (observation.transferType === 'NATIVE' && observation.asset !== 'ETH') ||
+      (observation.transferType === 'ERC20' && observation.asset !== 'USDC'))
+    throw new Error('Alchemy observation asset and transfer type are unsupported');
   if (observation.transferType === 'ERC20') {
     if (
       !observation.tokenContract ||
@@ -97,6 +106,10 @@ export function normalizeAlchemyObservation(
       observation.tokenDecimals === undefined
     )
       throw new Error('Alchemy ERC-20 observation lacks contract, decimals, or log identity');
+    if (!/^0x[0-9a-fA-F]{40}$/.test(observation.tokenContract) ||
+        !Number.isSafeInteger(observation.logIndex) || observation.logIndex < 0 ||
+        !Number.isSafeInteger(observation.tokenDecimals) || observation.tokenDecimals < 0)
+      throw new Error('Alchemy ERC-20 observation log identity is invalid');
     if (
       observation.asset === 'USDC' &&
       observation.tokenContract.toLowerCase() !== BASE_MAINNET_USDC_CONTRACT

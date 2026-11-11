@@ -20,6 +20,7 @@ const config = loadConfig({
   ALCHEMY_API_KEY: 'alchemy-api-key',
   ALCHEMY_RPC_URL: 'https://base-mainnet.g.alchemy.com/v2/alchemy-api-key',
   ALCHEMY_WEBHOOK_SIGNING_KEY: signingKey,
+  ALCHEMY_WEBHOOK_ID: 'wh_123',
 
   ALCHEMY_PRODUCTION_CAPABILITY_VERIFIED: 'false',
 
@@ -35,6 +36,7 @@ const payload = {
   type: 'ADDRESS_ACTIVITY',
   event: {
     network: 'BASE_MAINNET',
+    activity: [],
   },
 };
 
