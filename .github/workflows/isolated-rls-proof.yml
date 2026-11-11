@@ -1,4 +1,4 @@
-# REVIEW ONLY: disabled until immutable PostgreSQL image digest is independently verified.
+# Isolated test only. Manual trigger; no production credentials or Supabase access.
 # No Supabase connections, credentials, or deployments.
 name: Isolated PostgreSQL RLS security proof
 on:
@@ -7,12 +7,11 @@ permissions:
   contents: read
 jobs:
   disposable-rls:
-    if: ${{ false }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     services:
       postgres:
-        # Candidate index digest from Docker Hub metadata; verify via registry before enabling.
+        # Immutable multi-platform index digest published on Docker Hub; runner must resolve linux/amd64.
         image: postgres:17.11@sha256:653186fe15006c099d2fb3bc1d8461c1dee9d036c43f2e5fdaf4f22e5e601876
         env:
           POSTGRES_PASSWORD: disposable-test-only
