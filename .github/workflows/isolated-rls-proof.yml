@@ -1,0 +1,39 @@
+# Isolated test only. Manual trigger; no production credentials or Supabase access.
+# No Supabase connections, credentials, or deployments.
+name: Isolated PostgreSQL RLS security proof
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/isolated-rls-proof.yml'
+      - 'tests/rls-exact-production.sql'
+permissions:
+  contents: read
+jobs:
+  disposable-rls:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        # Immutable multi-platform index digest published on Docker Hub; runner must resolve linux/amd64.
+        image: postgres:17.11@sha256:653186fe15006c099d2fb3bc1d8461c1dee9d036c43f2e5fdaf4f22e5e601876
+        env:
+          POSTGRES_PASSWORD: disposable-test-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Create disposable database
+        env:
+          PGPASSWORD: disposable-test-only
+        run: psql -h localhost -U postgres -d postgres -X -v ON_ERROR_STOP=1 -c 'CREATE DATABASE neptlium_disposable_rls'
+      - name: Test event-trigger function
+        env:
+          PGPASSWORD: disposable-test-only
+        run: psql -h localhost -U postgres -d neptlium_disposable_rls -X -v ON_ERROR_STOP=1 -f tests/rls-exact-production.sql
