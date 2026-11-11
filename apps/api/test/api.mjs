@@ -238,6 +238,8 @@ test('legacy provider address route is retired while canonical customer balance 
   assert.equal(balance.statusCode, 200);
   assert.equal(balance.json().source, 'NEPTLIUM_CANONICAL_LEDGER');
   assert.equal(balance.json().state, 'NOT_INITIALIZED');
+  assert.equal(balance.json().contract_version, 2);
+  assert.equal(balance.json().reporting.total_minor, null);
   assert.deepEqual(balance.json().balances, []);
   assert.equal(JSON.stringify(balance.json()).includes('12.5'), false);
 });

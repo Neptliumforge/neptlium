@@ -34,6 +34,8 @@ test('unknown balances are not rendered as zero and authoritative empty is disti
 
   assert.match(experience, /capitalBalanceView\(snapshot\.balanceSummary\)/);
   assert.match(experience, /case 'NOT_INITIALIZED'/);
+  assert.match(experience, /case 'NOT_INITIALIZED':[\s\S]*?No balance recorded yet/);
+  assert.match(experience, /case 'ZERO':[\s\S]*?\{view\.display\}/);
   assert.match(experience, /temporarily unavailable/);
   assert.match(experience, /case 'ZERO'/);
 
