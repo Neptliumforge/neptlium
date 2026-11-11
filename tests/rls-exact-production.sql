@@ -1,8 +1,17 @@
 \set ON_ERROR_STOP on
 -- Disposable PostgreSQL 17 database ONLY. Never point this at Supabase.
-SELECT CASE WHEN current_setting('server_version_num')::int / 10000 = 17 THEN 1 ELSE 1/0 END AS require_pg17;
-SELECT CASE WHEN current_database() = 'neptlium_disposable_rls' THEN 1 ELSE 1/0 END AS require_disposable_database;
-SELECT CASE WHEN (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m')) = 0 THEN 1 ELSE 1/0 END AS require_empty_public_schema;
+DO $guard$ BEGIN
+ IF current_setting('server_version_num')::int / 10000 <> 17 THEN
+  RAISE EXCEPTION 'Disposable test requires PostgreSQL 17';
+ END IF;
+ IF current_database() <> 'neptlium_disposable_rls' THEN
+  RAISE EXCEPTION 'Refusing to run outside disposable database';
+ END IF;
+ IF EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+            WHERE n.nspname='public' AND c.relkind IN ('r','p','v','m')) THEN
+  RAISE EXCEPTION 'Refusing to run on nonempty public schema';
+ END IF;
+END $guard$;
 BEGIN;
 CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
