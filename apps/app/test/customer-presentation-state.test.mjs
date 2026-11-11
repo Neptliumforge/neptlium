@@ -32,7 +32,7 @@ test('unknown balances are not rendered as zero and authoritative empty is disti
   const experience = read('components/product/OperatingExperience.tsx');
   assert.match(experience, /balanceState === 'UNAVAILABLE'/);
   assert.match(experience, /balanceState === 'EMPTY'/);
-  assert.match(experience, /No balance yet/);
+  assert.match(experience, /Once funds are verified and credited, your balance will appear here/);
   assert.match(experience, /temporarily unavailable/);
   assert.doesNotMatch(experience, /balance.*\?\?\s*['"]0['"]/);
 });
