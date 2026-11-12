@@ -8,6 +8,7 @@ import { createPublicKey, verify as verifySignature, type JsonWebKey } from 'nod
 export interface ClerkJwtTrust {
   readonly issuer: string;
   readonly audience: string;
+  readonly authorizedParties: readonly string[];
   readonly keys: Readonly<Record<string, JsonWebKey>>;
   readonly nowSeconds?: number;
 }
@@ -41,6 +42,8 @@ export function verifyClerkJwtRs256(
   const denied: ClerkJwtVerification = { valid: false };
   if (!trust.issuer.startsWith('https://') || !trust.audience ||
       !Number.isFinite(trust.nowSeconds ?? Math.floor(Date.now() / 1000)) ||
+      !Array.isArray(trust.authorizedParties) || trust.authorizedParties.length === 0 ||
+      trust.authorizedParties.some((origin) => { try { const url = new URL(origin); return url.origin !== origin || url.protocol !== 'https:'; } catch { return true; } }) ||
       token.length > 16384) return denied;
   const segments = token.split('.');
   if (segments.length !== 3 || segments.some((part) => !part)) return denied;
@@ -55,6 +58,7 @@ export function verifyClerkJwtRs256(
     const now = trust.nowSeconds ?? Math.floor(Date.now() / 1000);
     if (claims.iss !== trust.issuer ||
         !exactAudience(claims.aud, trust.audience) ||
+        typeof claims.azp !== 'string' || !trust.authorizedParties.includes(claims.azp) ||
         typeof claims.sub !== 'string' ||
         !/^user_[A-Za-z0-9]{8,128}$/.test(claims.sub) ||
         typeof claims.exp !== 'number' || !Number.isSafeInteger(claims.exp) || now >= claims.exp ||
