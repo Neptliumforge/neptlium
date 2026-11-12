@@ -22,7 +22,7 @@ export function previewBridgeQuote(input: BridgeQuoteInput, now: Date = new Date
   const amount = positiveAmount(input.inputAmountBaseUnits);
   const output = positiveAmount(input.outputAmountBaseUnits);
   const fee = positiveAmount(input.feeAmountBaseUnits, true);
-  if (output > amount || fee > amount) throw new Error('Quote exceeds input amount');
+  // Cross-chain routes may involve different pricing/fee semantics. Do not infer\n  // provider economics from raw input/output quantities alone.\n  if (fee > amount) throw new Error('Fee exceeds input amount');
   const expiry = Date.parse(input.expiresAt);
   if (!Number.isFinite(expiry) || !/Z$/.test(input.expiresAt) || expiry <= now.getTime()) throw new Error('Expired or invalid quote');
   return Object.freeze({ ...input, status: 'UNVERIFIED_QUOTE', executionAuthorized: false });
