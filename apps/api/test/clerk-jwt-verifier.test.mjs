@@ -6,8 +6,8 @@ import { verifyClerkJwtRs256 } from '../dist/clerk-jwt-verifier.js';
 const { privateKey, publicKey } = generateKeyPairSync('rsa', { modulusLength: 2048 });
 const jwk = { ...publicKey.export({ format: 'jwk' }), alg: 'RS256', use: 'sig' };
 const now = 2_000_000_000;
-const trust = { issuer: 'https://clerk-preview.example.test', audience: 'neptlium-api-preview', keys: { 'key-1': jwk }, nowSeconds: now };
-const claims = { iss: trust.issuer, aud: trust.audience, sub: 'user_12345678', exp: now + 300, nbf: now - 10, iat: now - 10 };
+const trust = { issuer: 'https://clerk-preview.example.test', audience: 'neptlium-api-preview', authorizedParties: ['https://preview.neptlium.test'], keys: { 'key-1': jwk }, nowSeconds: now };
+const claims = { iss: trust.issuer, aud: trust.audience, azp: trust.authorizedParties[0], sub: 'user_12345678', exp: now + 300, nbf: now - 10, iat: now - 10 };
 
 function token(payload = claims, header = { alg: 'RS256', kid: 'key-1', typ: 'JWT' }) {
   const body = [header, payload].map((v) => Buffer.from(JSON.stringify(v)).toString('base64url')).join('.');
@@ -46,4 +46,18 @@ test('rejects unsupported algorithms', () => {
 });
 test('rejects malformed token', () => {
   assert.equal(verifyClerkJwtRs256('bad.token', trust).valid, false);
+});
+
+test('rejects missing authorized party', () => {
+  const { azp, ...missing } = claims;
+  assert.equal(verifyClerkJwtRs256(token(missing), trust).valid, false);
+});
+test('rejects token minted for a different origin', () => {
+  assert.equal(verifyClerkJwtRs256(token({ ...claims, azp: 'https://attacker.test' }), trust).valid, false);
+});
+test('rejects empty trusted origin allowlist', () => {
+  assert.equal(verifyClerkJwtRs256(token(), { ...trust, authorizedParties: [] }).valid, false);
+});
+test('rejects insecure trusted origin', () => {
+  assert.equal(verifyClerkJwtRs256(token(), { ...trust, authorizedParties: ['http://preview.neptlium.test'] }).valid, false);
 });
