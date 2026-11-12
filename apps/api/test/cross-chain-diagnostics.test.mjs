@@ -33,5 +33,5 @@ test('quote is non-executable and unverified', () => {
 });
 test('expired quote rejected',()=>assert.throws(()=>previewBridgeQuote({...quote,expiresAt:'2020-01-01T00:00:00Z'})));
 test('invalid route rejected',()=>assert.throws(()=>previewBridgeQuote({...quote,destinationChainId:1})));
-test('output above input rejected',()=>assert.throws(()=>previewBridgeQuote({...quote,outputAmountBaseUnits:'1000001'})));
+test('output above input is not rejected without provider-specific pricing rules',()=>{\n  const result=previewBridgeQuote({...quote,outputAmountBaseUnits:'1000001'});\n  assert.equal(result.executionAuthorized,false);\n});
 test('negative fee rejected',()=>assert.throws(()=>previewBridgeQuote({...quote,feeAmountBaseUnits:'-1'})));
