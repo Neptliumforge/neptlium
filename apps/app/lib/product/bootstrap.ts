@@ -17,7 +17,6 @@ import {
   getTransferAliases,
   getTransferCapabilities,
 } from '@/lib/api/financial';
-import type { AccountContext } from '@/lib/api/client';
 import type { AuthenticatedProductBootstrap, Projection } from './bootstrap-types';
 
 function projection<T>(result: PromiseSettledResult<T>): Projection<T> {
@@ -26,7 +25,7 @@ function projection<T>(result: PromiseSettledResult<T>): Projection<T> {
 }
 
 export async function getAuthenticatedProductBootstrap(
-  account: Pick<AccountContext, 'id' | 'email' | 'fullName' | 'displayName' | 'complianceStatus' | 'role'>,
+  account: AuthenticatedProductBootstrap['account'],
 ): Promise<AuthenticatedProductBootstrap> {
   const [
     settings,

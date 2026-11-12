@@ -22,7 +22,8 @@ export async function requireUser(): Promise<SessionUser> {
 
 function fallbackProfile(user: SessionUser): SessionProfile {
   return {
-    id: user.id,
+    // No API principal was verified. Never substitute the provider subject.
+    id: null,
     email: user.email,
     fullName: null,
     displayName: null,
