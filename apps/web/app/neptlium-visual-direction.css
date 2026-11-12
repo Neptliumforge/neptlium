@@ -2,14 +2,16 @@
   /* Compatibility aliases only; canonical values live in @neptlium/ui tokens. */
   --web-ivory: var(--color-text-primary);
   --web-font-display: var(--font-sans);
-  --web-ivory-high: var(--n-high-white);
+  /* Raised inverse band: stays on the ivory side of the theme so --web-carbon ink keeps contrast. */
+  --web-ivory-high: color-mix(in oklab, var(--web-ivory) 97%, var(--web-carbon));
   --web-ivory-low: var(--color-text-secondary);
   --web-carbon: var(--color-canvas);
   --web-carbon-soft: var(--color-surface-1);
   --web-carbon-muted: var(--color-surface-2);
   --web-teal: var(--color-brand);
   --web-teal-interaction: var(--color-brand-emphasis);
-  --web-graphite: var(--n-graphite-3);
+  /* Secondary ink for inverse (ivory) bands; derived so it holds contrast in Dark and Light. */
+  --web-graphite: color-mix(in oklab, var(--web-carbon) 74%, var(--web-ivory));
   --web-stone: var(--color-border-strong);
   --web-mist: var(--color-surface-2);
   --web-rule-dark: var(--color-border-default);
@@ -132,7 +134,7 @@ html {
 
 .web-eyebrow {
   margin: 0;
-  color: rgb(131 201 195 / 92%);
+  color: var(--color-text-secondary);
   font-size: 0.69rem;
   font-weight: 680;
   letter-spacing: 0.115em;
@@ -140,7 +142,7 @@ html {
 }
 
 .web-eyebrow.on-light {
-  color: var(--web-teal);
+  color: var(--web-graphite);
 }
 
 .text-arrow-link,
@@ -206,8 +208,8 @@ html {
 }
 
 .web-button.primary {
-  background: var(--web-teal);
-  color: #fff;
+  background: var(--color-accent-primary);
+  color: var(--color-accent-primary-foreground);
 }
 
 .web-button.primary:hover,
@@ -880,7 +882,7 @@ html {
 .solution-index a > span,
 .solution-essays article > span,
 .architecture-sequence li > span {
-  color: var(--web-teal);
+  color: var(--web-graphite);
   font-size: 0.66rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
@@ -1163,7 +1165,7 @@ html {
 .architecture-dark .architecture-prose p,
 .architecture-dark .architecture-statement > p:last-of-type,
 .architecture-dark .architecture-split > div:first-child > p {
-  color: rgb(245 243 238 / 62%);
+  color: var(--color-text-secondary);
 }
 
 .dark-links {
@@ -1319,7 +1321,7 @@ html {
 
 .solution-label,
 .resource-ledger small {
-  color: var(--web-teal);
+  color: var(--web-graphite);
   font-size: 0.7rem;
   font-weight: 650;
 }

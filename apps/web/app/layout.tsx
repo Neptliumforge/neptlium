@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   description: SITE.description,
   applicationName: SITE.name,
   creator: SITE.name,
-  alternates: { canonical: '/' },
   icons: {
     icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
     apple: [{ url: '/apple-icon', sizes: '180x180', type: 'image/png' }],

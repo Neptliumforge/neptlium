@@ -251,6 +251,10 @@
 }
 
 .card h2 a {
+  /* Directory titles are the legal index's primary links; keep a 24px target. */
+  display: inline-flex;
+  min-height: 1.5rem;
+  align-items: center;
   color: var(--color-text-primary);
   text-decoration: underline;
   text-decoration-color: var(--color-border-strong);

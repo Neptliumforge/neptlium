@@ -1,11 +1,11 @@
 .page {
-  background: var(--npt-black);
-  color: var(--npt-white);
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
   overflow: clip;
 }
 
 .shell {
-  width: var(--npt-shell);
+  width: min(calc(100% - var(--page-gutter) * 2), var(--container-wide));
   margin-inline: auto;
 }
 
@@ -64,14 +64,14 @@
 .heroLead {
   max-width: 62ch;
   margin: clamp(22px, 2.2vw, 30px) 0 0;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   font-size: clamp(18px, 1.5vw, 22px);
   line-height: 1.56;
 }
 
 .eyebrow {
   margin: 0 0 16px;
-  color: var(--npt-teal);
+  color: var(--color-text-secondary);
   font-size: 11px;
   font-weight: 760;
   letter-spacing: .15em;
@@ -105,28 +105,28 @@
 }
 
 .buttonPrimary {
-  background: var(--npt-teal);
-  color: var(--npt-ink);
+  background: var(--color-accent-primary);
+  color: var(--color-accent-primary-foreground);
 }
 
 .buttonSecondary {
-  border-color: var(--npt-line);
-  color: var(--npt-white);
+  border-color: var(--color-border-default);
+  color: var(--color-text-primary);
 }
 
 .buttonGhost {
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
 }
 
 .button:focus-visible,
 .textAction:focus-visible {
   outline: 0;
-  box-shadow: var(--npt-focus);
+  box-shadow: var(--shadow-focus-ring);
 }
 
 .section {
   padding: clamp(104px, 9.5vw, 156px) 0;
-  border-top: 1px solid var(--npt-line);
+  border-top: 1px solid var(--color-border-default);
 }
 
 .compact {
@@ -134,8 +134,8 @@
 }
 
 .ivory {
-  background: var(--npt-ivory);
-  color: var(--npt-ink);
+  background: var(--color-surface-1);
+  color: var(--color-text-primary);
 }
 
 .sectionHead,
@@ -161,7 +161,7 @@
 .journeyHead p {
   max-width: 60ch;
   margin: 18px 0 0;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   font-size: clamp(17px, 1.3vw, 20px);
   line-height: 1.62;
 }
@@ -169,7 +169,7 @@
 .ivory .sectionHead p,
 .ivory .sticky > p,
 .ivory .journeyHead p {
-  color: #555550;
+  color: var(--color-text-secondary);
 }
 
 .textAction {
@@ -192,8 +192,8 @@
 .journeyGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--npt-line);
-  border-bottom: 1px solid var(--npt-line);
+  border-top: 1px solid var(--color-border-default);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .journeyCard {
@@ -205,11 +205,11 @@
 }
 
 .journeyCard + .journeyCard {
-  border-left: 1px solid var(--npt-line);
+  border-left: 1px solid var(--color-border-default);
 }
 
 .journeyCard span {
-  color: var(--npt-teal);
+  color: var(--color-text-secondary);
   font-size: 11px;
   font-weight: 750;
   letter-spacing: .13em;
@@ -228,7 +228,7 @@
 .journeyCard p {
   max-width: 50ch;
   margin: 0;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   font-size: 17px;
   line-height: 1.6;
 }
@@ -242,8 +242,8 @@
 .aiRules {
   display: grid;
   gap: 1px;
-  background: var(--npt-line);
-  border: 1px solid var(--npt-line);
+  background: var(--color-border-default);
+  border: 1px solid var(--color-border-default);
   border-radius: 18px;
   overflow: hidden;
 }
@@ -257,7 +257,7 @@
 .coreStage > section {
   min-height: 220px;
   padding: 30px;
-  background: var(--npt-black-raised);
+  background: var(--color-surface-1);
 }
 
 .coreStage > section h3 {
@@ -270,7 +270,7 @@
 .coreStage > section p {
   max-width: 52ch;
   margin: 15px 0 0;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
@@ -278,15 +278,15 @@
 .platformCore {
   grid-column: 1 / -1;
   padding: 30px;
-  background: #090909;
+  background: var(--color-surface-1);
 }
 
 .featureList,
 .sequence,
 .capabilityGrid {
   display: grid;
-  border-top: 1px solid var(--npt-line);
-  border-bottom: 1px solid var(--npt-line);
+  border-top: 1px solid var(--color-border-default);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .featureList,
@@ -321,12 +321,12 @@
 .featureList > div + div,
 .sequence > div + div,
 .capability + .capability {
-  border-left: 1px solid var(--npt-line);
+  border-left: 1px solid var(--color-border-default);
 }
 
 .featureList span,
 .sequence span {
-  color: var(--npt-teal);
+  color: var(--color-text-secondary);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .11em;
@@ -345,7 +345,7 @@
 .sequence p,
 .capability p {
   margin: 10px 0 0;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -364,7 +364,7 @@
 .editorialGrid {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) repeat(2, minmax(0, .78fr));
-  border-top: 1px solid var(--npt-line);
+  border-top: 1px solid var(--color-border-default);
 }
 
 .editorialGrid a {
@@ -374,8 +374,8 @@
   flex-direction: column;
   color: inherit;
   text-decoration: none;
-  border-right: 1px solid var(--npt-line);
-  border-bottom: 1px solid var(--npt-line);
+  border-right: 1px solid var(--color-border-default);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .editorialGrid a:nth-child(3n) {
@@ -388,7 +388,7 @@
 }
 
 .editorialGrid span {
-  color: var(--npt-teal);
+  color: var(--color-text-secondary);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .12em;
@@ -412,20 +412,20 @@
 .editorialGrid p {
   max-width: 48ch;
   margin: 0;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.55;
 }
 
 .disclosure {
   padding: 28px 0 38px;
-  border-top: 1px solid var(--npt-line);
+  border-top: 1px solid var(--color-border-default);
 }
 
 .disclosure p {
   max-width: 88ch;
   margin: 0;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   font-size: 12px;
   line-height: 1.68;
 }
@@ -435,12 +435,12 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
   font-size: 12px;
 }
 
 .productWordmark strong {
-  color: var(--npt-white);
+  color: var(--color-text-primary);
   font-size: 14px;
   letter-spacing: -.01em;
 }
@@ -450,9 +450,9 @@
   min-height: 26px;
   align-items: center;
   padding: 0 9px;
-  border: 1px solid rgba(140, 232, 220, .24);
+  border: 1px solid var(--color-border-hover);
   border-radius: 999px;
-  color: var(--npt-teal-soft);
+  color: var(--color-text-primary);
   font-size: 9px;
   font-weight: 720;
   letter-spacing: .08em;
@@ -461,7 +461,7 @@
 
 .aiRules > div {
   padding: 32px;
-  background: var(--npt-black-raised);
+  background: var(--color-surface-1);
 }
 
 .aiRules h3 {
@@ -477,12 +477,12 @@
   list-style: none;
   display: grid;
   gap: 11px;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
 }
 
 .platformMap > section {
   padding: 34px;
-  background: var(--npt-black-raised);
+  background: var(--color-surface-1);
 }
 
 .platformMap > section h3 {
@@ -498,7 +498,7 @@
   list-style: none;
   display: grid;
   gap: 11px;
-  color: var(--npt-muted);
+  color: var(--color-text-secondary);
 }
 
 .platformCore h3 {
@@ -541,7 +541,7 @@
 
   .featureList > div:nth-child(n+3),
   .capability:nth-child(n+3) {
-    border-top: 1px solid var(--npt-line);
+    border-top: 1px solid var(--color-border-default);
   }
 
   .sequence {
@@ -553,7 +553,7 @@
   }
 
   .sequence > div:nth-child(n+4) {
-    border-top: 1px solid var(--npt-line);
+    border-top: 1px solid var(--color-border-default);
   }
 
   .editorialGrid {
@@ -561,7 +561,7 @@
   }
 
   .editorialGrid a:nth-child(3n) {
-    border-right: 1px solid var(--npt-line);
+    border-right: 1px solid var(--color-border-default);
   }
 
   .editorialGrid a:nth-child(2n) {
@@ -653,7 +653,7 @@
 
   .journeyCard + .journeyCard {
     border-left: 0;
-    border-top: 1px solid var(--npt-line);
+    border-top: 1px solid var(--color-border-default);
   }
 
   .journeyCard h3 {
@@ -677,7 +677,7 @@
     min-height: 156px;
     padding: 24px 2px;
     border-left: 0 !important;
-    border-top: 1px solid var(--npt-line);
+    border-top: 1px solid var(--color-border-default);
   }
 
   .featureList > div:first-child,

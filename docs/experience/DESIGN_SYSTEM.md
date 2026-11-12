@@ -69,6 +69,28 @@ Canonical route propositions:
 - Infrastructure — Build on Neptlium.
 Composition is header → generous opening space → proposition → concise support → appropriate CTA → intentional whitespace → evidence/product composition → structured sections → closing proposition. Pages need not share identical heroes.
 `/personal` remains legacy convergence to `/capital`; `/business` remains legacy convergence to `/treasury`.
+
+### Marketing surface specification
+Public Web composes from four route patterns. Each consumes canonical tokens only, so Dark, Light and System render from the same rules.
+
+| Pattern | Used by | Owner |
+| --- | --- | --- |
+| Brand story | `/` | `app/home-elite.module.css` |
+| Product story (hero, illustrative workspace, alternating bands, closing) | Capital, Portfolio, Allocation, Treasury, Payments, Platform, Company | `app/product-pages.module.css`, `app/unified-marketing.module.css`, `components/business-product-pages.module.css` |
+| Family overview (hero, capability rows, qualification note) | Institutional, Intelligence, Infrastructure | `.family-*` in `app/globals.css` |
+| Editorial (page header, numbered ledger, point grid, principle band, closing action) | Learn, Research, Pricing, Press, Contact, solution details, product explainers | "Public editorial surfaces" in `app/globals.css` |
+
+Every route then closes with the shared route context (`PageContext`), the conversion plane and the footer.
+
+- **Type:** one H1 per route at Display L (the homepage may use Display XL). Section titles use H1 size with weight 540. Labels are 12px uppercase with 0.14em tracking in secondary ink. Body copy uses Body/Body L at 1.65 leading, with reading widths of `--np-reading-wide` or `--np-reading-compact`.
+- **Space:** use `--page-gutter` and `--container-wide`. Section padding is `--space-9`, or `--space-8` below 600px.
+- **Surfaces:** canvas, then `surface-1` bands for emphasis, separated by hairline borders. Bands alternate by role, not by forced light/dark literals.
+- **Ink:** labels and small text on deep or raised surfaces use secondary ink. Muted ink is reserved for large text on canvas.
+- **Actions:** a primary action uses `accent-primary` with `accent-primary-foreground`. Secondary actions are outlined or underlined text links.
+- **Targets:** every link or button is at least 24px tall, and at least 44px on touch layouts.
+- **Illustrative interfaces:** label them, and never use document headings inside them.
+- **Prohibited:** page-local colour aliases (the retired `--npt-*` set), raw hex section palettes and new global override layers.
+- **TRANSITION:** `components/business-product-pages.module.css` (Treasury and Payments) still declares a local palette of forced light and dark bands. Its secondary ink is now derived from each section's own colour, but the palette itself must converge onto canonical surfaces before new Treasury sections are added.
 ## 9. Authenticated Capital
 Capital is an operational environment, not a marketing page or trading terminal. Canonical hierarchy follows Overview, Capital, Portfolio, Investments, Activity/Records, More/Workspace and Settings as supported by repository routes. Funding, withdrawal, transfer, wallet and allocation experiences must display real domain state and safe disabled states.
 Treasury remains a separate organization product and authority boundary.

@@ -50,4 +50,12 @@ describe('createPageMetadata', () => {
     expect(metadata.alternates).toEqual({ canonical: path });
     expect(metadata.openGraph?.url).toBe(url);
   });
+
+  it('follows the public route policy when indexing is not specified', () => {
+    const supporting = createPageMetadata({ title: 'Products', description: 'Hub', path: '/products' });
+    const canonical = createPageMetadata({ title: 'Treasury', description: 'Treasury', path: '/treasury' });
+
+    expect(supporting.robots).toEqual({ index: false, follow: false });
+    expect(canonical.robots).toEqual({ index: true, follow: true });
+  });
 });

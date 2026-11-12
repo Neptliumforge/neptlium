@@ -4,7 +4,6 @@ import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
 import styles from '../product-pages.module.css';
-import headerStyles from '../product-light-header.module.css';
 
 export const metadata = createPageMetadata({
   title: 'Portfolio — Neptlium',
@@ -14,7 +13,7 @@ export const metadata = createPageMetadata({
 
 function PortfolioPageContent() {
   return <div className={styles.page}>
-    <section className={`${styles.hero} ${styles.white} ${headerStyles.light}`} aria-labelledby="portfolio-page-title">
+    <section className={`${styles.hero} ${styles.white}`} aria-labelledby="portfolio-page-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>Portfolio</p>

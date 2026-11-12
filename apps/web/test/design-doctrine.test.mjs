@@ -20,7 +20,8 @@ test('marketing root loads the canonical visual-direction and experience layers'
 
 test('marketing uses teal as a precision instrument', () => {
   assert.match(css, /--web-teal-interaction:\s*var\(--color-brand-emphasis\)/i);
-  assert.match(css, /--web-graphite:\s*var\(--n-graphite-3\)/i);
+  // Inverse-band ink derives from canonical canvas/ivory so it holds contrast in Dark and Light.
+  assert.match(css, /--web-graphite:\s*color-mix\(in oklab, var\(--web-carbon\) \d+%, var\(--web-ivory\)\)/i);
   assert.match(css, /--web-stone:\s*var\(--color-border-strong\)/i);
   assert.match(css, /--web-mist:\s*var\(--color-surface-2\)/i);
   assert.doesNotMatch(css, /#258be5|#0141f3|#2764ff|#147dff/i);

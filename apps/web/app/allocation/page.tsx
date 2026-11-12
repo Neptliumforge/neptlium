@@ -11,7 +11,7 @@ export const metadata = createPageMetadata({
   path: '/allocation',
 });
 
-const Mix = ({ title, values }: { title: string; values: [string, string, string][] }) => <div className={styles.allocationColumn}><h3>{title}</h3><div className={styles.allocationRows}>{values.map(([label, width, note]) => <div key={label}><i /><span>{label}</span><em>{note}</em><b style={{'--w':width} as React.CSSProperties} /></div>)}</div></div>;
+const Mix = ({ title, values }: { title: string; values: [string, string, string][] }) => <div className={styles.allocationColumn}><strong className={styles.allocationTitle}>{title}</strong><div className={styles.allocationRows}>{values.map(([label, width, note]) => <div key={label}><i /><span>{label}</span><em>{note}</em><b style={{'--w':width} as React.CSSProperties} /></div>)}</div></div>;
 
 function AllocationPageContent() {
   return <div className={styles.page}>

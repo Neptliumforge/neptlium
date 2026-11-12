@@ -4,8 +4,6 @@ import { ArrowRight } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 import { DISCLOSURES, SITE } from '@/lib/content/site';
 import styles from '../product-pages.module.css';
-import headerStyles from '../product-light-header.module.css';
-import PersonalLegacyContent from '../personal/page';
 
 export const metadata = createPageMetadata({
   title: 'Capital — Neptlium',
@@ -19,7 +17,7 @@ const AccountRow = ({ name, state }: { name: string; state: string }) => (
 
 function CapitalCorePage() {
   return <div className={styles.page}>
-    <section className={`${styles.hero} ${styles.white} ${headerStyles.light}`} aria-labelledby="capital-page-title">
+    <section className={`${styles.hero} ${styles.white}`} aria-labelledby="capital-page-title">
       <div className={`${styles.shell} ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>Personal capital</p>
@@ -27,7 +25,7 @@ function CapitalCorePage() {
           <p className={styles.heroLead}>Bring accounts, liquidity, movement and financial context into a clearer view of the resources around you.</p>
           <div className={styles.actions}>
             <Link className={`${styles.button} ${styles.buttonDark}`} href={SITE.personalSignUpUrl}>Open account <ArrowRight aria-hidden="true" /></Link>
-            <Link className={styles.button} href="/personal">Explore Personal</Link>
+            <Link className={styles.button} href="/portfolio">Explore Portfolio</Link>
           </div>
         </div>
         <div className={styles.workspace} aria-label="Illustrative personal capital workspace">
@@ -122,7 +120,7 @@ function CapitalCorePage() {
 
 
 function CapitalPageContent() {
-  return <><CapitalCorePage /><PersonalLegacyContent /></>;
+  return <CapitalCorePage />;
 }
 
 export default function CapitalPage() {
