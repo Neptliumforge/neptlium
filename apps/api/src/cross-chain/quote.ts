@@ -20,7 +20,7 @@ export function previewBridgeQuote(input: BridgeQuoteInput, now: Date = new Date
   if (!/^[a-z0-9][a-z0-9_-]{1,63}$/.test(input.providerId)) throw new Error('Invalid provider identifier');
   if (input.sourceChainId !== 42161 || input.destinationChainId !== 8453) throw new Error('Unsupported quote route');
   const amount = positiveAmount(input.inputAmountBaseUnits);
-  const output = positiveAmount(input.outputAmountBaseUnits);
+  positiveAmount(input.outputAmountBaseUnits);
   const fee = positiveAmount(input.feeAmountBaseUnits, true);
   // Cross-chain routes may involve different pricing/fee semantics. Do not infer\n  // provider economics from raw input/output quantities alone.\n  if (fee > amount) throw new Error('Fee exceeds input amount');
   const expiry = Date.parse(input.expiresAt);
