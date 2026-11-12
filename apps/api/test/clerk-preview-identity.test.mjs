@@ -52,3 +52,27 @@ test('verified Preview token and explicitly authorized membership resolve stable
   assert.deepEqual(await authenticateClerkPreviewTenant(token(), orgId, trust, store, 'preview'), { principalId, organizationId: orgId });
   assert.equal(await authenticateClerkPreviewTenant(token(), '00000000-0000-4000-8000-000000000003', trust, store, 'preview'), null);
 });
+
+const supabaseUserId = '00000000-0000-4000-8000-000000000111';
+test('membership is authorized only through active Supabase Auth subject linked to the same principal', async () => {
+  const seen = [];
+  const store = new SupabaseClerkPreviewIdentityStore('https://db.example.test', 'fixture-only', async url => {
+    const path = String(url); seen.push(path);
+    if (path.includes('identity_provider_subjects')) return reply([{ provider_subject: supabaseUserId }]);
+    if (path.includes('organization_memberships')) return reply([{ id: orgId, organization_id: orgId, user_id: supabaseUserId, status: 'active' }]);
+    throw new Error('unexpected path');
+  });
+  assert.equal(await store.isActiveOrganizationMember(principalId, orgId), true);
+  assert.match(seen[0], /provider=eq.SUPABASE_AUTH/);
+  assert.match(seen[0], /principal_id=eq./);
+  assert.match(seen[1], /user_id=eq./);
+  assert.match(seen[1], /status=eq.active/);
+});
+test('cross-tenant, ambiguous, revoked and missing membership deny', async () => {
+  for (const membership of [[], [{ organization_id: orgId, user_id: supabaseUserId, status: 'revoked' }], [{ organization_id: orgId, user_id: supabaseUserId, status: 'active' }, { organization_id: orgId, user_id: supabaseUserId, status: 'active' }]]) {
+    const store = new SupabaseClerkPreviewIdentityStore('https://db.example.test', 'fixture-only', async url => String(url).includes('identity_provider_subjects') ? reply([{ provider_subject: supabaseUserId }]) : reply(membership));
+    assert.equal(await store.isActiveOrganizationMember(principalId, orgId), false);
+  }
+  const wrong = new SupabaseClerkPreviewIdentityStore('https://db.example.test', 'fixture-only', async url => String(url).includes('identity_provider_subjects') ? reply([{ provider_subject: supabaseUserId }]) : reply([{ organization_id: '00000000-0000-4000-8000-000000000099', user_id: supabaseUserId, status: 'active' }]));
+  assert.equal(await wrong.isActiveOrganizationMember(principalId, orgId), false);
+});
