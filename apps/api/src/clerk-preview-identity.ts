@@ -54,9 +54,20 @@ export class SupabaseClerkPreviewIdentityStore implements ClerkPreviewIdentitySt
 
   async isActiveOrganizationMember(principalId: string, organizationId: string): Promise<boolean> {
     if (!UUID.test(principalId) || !UUID.test(organizationId)) return false;
-    // This deliberately fails closed until the canonical organization membership
-    // table and active-status semantics are certified in the development schema.
-    return false;
+    // The membership table refers to auth.users.id, not the Neptlium principal.
+    // Resolve the active Supabase Auth subject through the SAME principal first.
+    const subjects = await this.rows(
+      `identity_provider_subjects?principal_id=eq.${encodeURIComponent(principalId)}&provider=eq.SUPABASE_AUTH&status=eq.ACTIVE&select=provider_subject&limit=2`,
+    );
+    if (subjects.length !== 1) return false;
+    const userId = (subjects[0] as { provider_subject?: unknown }).provider_subject;
+    if (typeof userId !== 'string' || !UUID.test(userId)) return false;
+    const memberships = await this.rows(
+      `organization_memberships?organization_id=eq.${encodeURIComponent(organizationId)}&user_id=eq.${encodeURIComponent(userId)}&status=eq.active&revoked_at=is.null&suspended_at=is.null&select=id,organization_id,user_id,status&limit=2`,
+    );
+    if (memberships.length !== 1) return false;
+    const membership = memberships[0] as { organization_id?: unknown; user_id?: unknown; status?: unknown };
+    return membership.organization_id === organizationId && membership.user_id === userId && membership.status === 'active';
   }
 }
 
