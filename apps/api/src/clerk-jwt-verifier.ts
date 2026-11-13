@@ -1,4 +1,4 @@
-import { createPublicKey, verify as verifySignature, type JsonWebKey } from 'node:crypto';
+import { createPublicKey, verify as verifySignature } from 'node:crypto';
 
 /**
  * Independent, offline RS256 JWT verification for the preview API.
