@@ -39,10 +39,14 @@ export class SupabaseClerkPreviewIdentityStore implements ClerkPreviewIdentitySt
   async resolveActiveClerkPrincipal(subject: string): Promise<string | null> {
     if (!/^user_[A-Za-z0-9]{8,128}$/.test(subject)) return null;
     const links = await this.rows(
-      `identity_provider_subjects?provider=eq.CLERK&provider_subject=eq.${encodeURIComponent(subject)}&status=eq.ACTIVE&select=principal_id&limit=2`,
+      `identity_provider_subjects?provider=eq.CLERK&provider_subject=eq.${encodeURIComponent(subject)}&status=eq.ACTIVE&select=principal_id,provider,provider_subject,status&limit=2`,
     );
     if (links.length !== 1) return null;
-    const id = (links[0] as { principal_id?: unknown })?.principal_id;
+    const link = links[0] as { principal_id?: unknown; provider?: unknown; provider_subject?: unknown; status?: unknown };
+    const id = link.principal_id;
+    if (link.provider !== undefined && link.provider !== 'CLERK') return null;
+    if (link.provider_subject !== undefined && link.provider_subject !== subject) return null;
+    if (link.status !== undefined && link.status !== 'ACTIVE') return null;
     if (typeof id !== 'string' || !UUID.test(id)) return null;
     const principals = await this.rows(
       `identity_principals?id=eq.${encodeURIComponent(id)}&status=eq.ACTIVE&select=id,suspended_at,retired_at&limit=2`,
@@ -57,17 +61,21 @@ export class SupabaseClerkPreviewIdentityStore implements ClerkPreviewIdentitySt
     // The membership table refers to auth.users.id, not the Neptlium principal.
     // Resolve the active Supabase Auth subject through the SAME principal first.
     const subjects = await this.rows(
-      `identity_provider_subjects?principal_id=eq.${encodeURIComponent(principalId)}&provider=eq.SUPABASE_AUTH&status=eq.ACTIVE&select=provider_subject&limit=2`,
+      `identity_provider_subjects?principal_id=eq.${encodeURIComponent(principalId)}&provider=eq.SUPABASE_AUTH&status=eq.ACTIVE&select=provider_subject,principal_id,provider,status&limit=2`,
     );
     if (subjects.length !== 1) return false;
-    const userId = (subjects[0] as { provider_subject?: unknown }).provider_subject;
+    const subject = subjects[0] as { provider_subject?: unknown; principal_id?: unknown; provider?: unknown; status?: unknown };
+    if (subject.principal_id !== undefined && subject.principal_id !== principalId) return false;
+    if (subject.provider !== undefined && subject.provider !== 'SUPABASE_AUTH') return false;
+    if (subject.status !== undefined && subject.status !== 'ACTIVE') return false;
+    const userId = subject.provider_subject;
     if (typeof userId !== 'string' || !UUID.test(userId)) return false;
     const memberships = await this.rows(
-      `organization_memberships?organization_id=eq.${encodeURIComponent(organizationId)}&user_id=eq.${encodeURIComponent(userId)}&status=eq.active&revoked_at=is.null&suspended_at=is.null&select=id,organization_id,user_id,status&limit=2`,
+      `organization_memberships?organization_id=eq.${encodeURIComponent(organizationId)}&user_id=eq.${encodeURIComponent(userId)}&status=eq.active&revoked_at=is.null&suspended_at=is.null&select=id,organization_id,user_id,status,suspended_at,revoked_at&limit=2`,
     );
     if (memberships.length !== 1) return false;
-    const membership = memberships[0] as { organization_id?: unknown; user_id?: unknown; status?: unknown };
-    return membership.organization_id === organizationId && membership.user_id === userId && membership.status === 'active';
+    const membership = memberships[0] as { organization_id?: unknown; user_id?: unknown; status?: unknown; suspended_at?: unknown; revoked_at?: unknown };
+    return membership.organization_id === organizationId && membership.user_id === userId && membership.status === 'active' && membership.suspended_at == null && membership.revoked_at == null;
   }
 }
 
