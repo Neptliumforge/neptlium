@@ -1,4 +1,4 @@
-name: Supabase Auth Source Contract
+name: Authentication Migration Source Contract
 
 on:
   pull_request:
@@ -18,5 +18,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Enforce Supabase Auth only
+      - name: Enforce guarded Clerk migration contract
         run: node scripts/retired-auth-contract.mjs
