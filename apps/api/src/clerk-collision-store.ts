@@ -15,7 +15,10 @@ export class SupabaseClerkAccountCollisionStore implements ClerkAccountCollision
     // collisions while holding appropriate locks before inserting an identity.
     const query = new URL('/rest/v1/profiles', this.url);
     query.searchParams.set('select', 'id,email');
-    query.searchParams.set('limit', '1000');
+    // Narrow server-side query; wildcard characters are escaped to avoid broad enumeration.
+    const escaped = email.replace(/[\\%_]/g, character => '\\\\' + character);
+    query.searchParams.set('email', 'ilike.' + escaped);
+    query.searchParams.set('limit', '2');
     let response: Response;
     try {
       response = await this.request(query.toString(), {
@@ -27,7 +30,7 @@ export class SupabaseClerkAccountCollisionStore implements ClerkAccountCollision
     }
     if (!response.ok) throw new Error('identity collision lookup unavailable');
     const rows: unknown = await response.json().catch(() => null);
-    if (!Array.isArray(rows) || rows.length >= 1000) throw new Error('identity collision lookup incomplete');
+    if (!Array.isArray(rows) || rows.length >= 2) throw new Error('identity collision lookup incomplete');
     if (!rows.every(row => row && typeof row === 'object' && typeof row.id === 'string' && typeof row.email === 'string'))
       throw new Error('invalid identity collision response');
     return rows.filter(row => (row.email as string).trim().toLowerCase() === email).map(row => ({ id: row.id as string }));
