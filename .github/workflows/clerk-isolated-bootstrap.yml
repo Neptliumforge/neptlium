@@ -1,0 +1,43 @@
+name: Clerk Isolated Bootstrap SQL
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20261116050000_clerk_bootstrap_no_email_auto_link.sql'
+      - 'supabase/tests/clerk_bootstrap_isolated_*.sql'
+      - '.github/workflows/clerk-isolated-bootstrap.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: isolated_test_only
+          POSTGRES_DB: neptlium_clerk_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd 'pg_isready -U postgres -d neptlium_clerk_test'
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: isolated_test_only
+      PGDATABASE: neptlium_clerk_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Load disposable identity fixture
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/clerk_bootstrap_isolated_fixture.sql
+      - name: Apply staged bootstrap override to disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261116050000_clerk_bootstrap_no_email_auto_link.sql
+      - name: Assert account ownership and replay invariants
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/clerk_bootstrap_isolated_assertions.sql
