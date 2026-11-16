@@ -8,7 +8,7 @@ const badgeVariants = cva(
     variants: {
       tone: {
         neutral: "bg-surface-3 text-text-secondary",
-        primary: "bg-accent-emerald/12 text-accent-emerald",
+        primary: "bg-accent-primary/12 text-accent-primary",
         success: "bg-success/12 text-success",
         warning: "bg-warning/12 text-warning",
         danger: "bg-danger/12 text-danger",
@@ -56,7 +56,7 @@ const statusConfig: Record<Status, { readonly label: string; readonly tone: NonN
 
 const dotToneClasses: Record<NonNullable<BadgeProps["tone"]>, string> = {
   neutral: "bg-text-muted",
-  primary: "bg-accent-emerald",
+  primary: "bg-accent-primary",
   success: "bg-success",
   warning: "bg-warning",
   danger: "bg-danger",
