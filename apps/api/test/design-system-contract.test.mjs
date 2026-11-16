@@ -36,3 +36,19 @@ test('primary badge uses canonical mineral-teal accent, not legacy emerald', () 
   assert.doesNotMatch(badge, /accent-emerald/);
   assert.match(badge, /aria-hidden="true"/);
 });
+
+test('sidebar keyboard focus is visible and respects reduced motion', () => {
+  const sidebar = read('packages/ui/src/shell/Sidebar.tsx');
+  assert.match(sidebar, /focus-visible:ring-2/);
+  assert.match(sidebar, /motion-reduce:transition-none/);
+  assert.match(sidebar, /aria-current=\{isActive \? "page" : undefined\}/);
+});
+
+test('closed mobile drawer is inert and open drawer traps keyboard focus', () => {
+  const mobile = read('packages/ui/src/shell/MobileNavigation.tsx');
+  assert.match(mobile, /inert=\{!open\}/);
+  assert.match(mobile, /event\.key === "Escape"/);
+  assert.match(mobile, /event\.key !== "Tab"/);
+  assert.match(mobile, /triggerRef\.current\?\.focus\(\)/);
+  assert.match(mobile, /motion-reduce:transition-none/);
+});
