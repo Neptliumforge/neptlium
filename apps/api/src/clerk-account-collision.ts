@@ -19,7 +19,7 @@ export async function checkClerkNewAccountCollision(
   if (environment !== 'preview') return { allowed: false, reason: 'not-preview' };
   if (typeof verifiedPrimaryEmail !== 'string') return { allowed: false, reason: 'invalid-email' };
   const email = verifiedPrimaryEmail.trim().toLowerCase();
-  if (email.length < 3 || email.length > 320 || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))
+  if (email.length < 3 || email.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     return { allowed: false, reason: 'invalid-email' };
   try {
     const matches = await store.findProfilesByNormalizedEmail(email);
