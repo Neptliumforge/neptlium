@@ -50,7 +50,7 @@ export function Sidebar({ items }: SidebarProps): ReactElement {
                   aria-current={isActive ? "page" : undefined}
                   title={item.label}
                   className={cn(
-                    "relative flex min-h-9 items-center justify-center gap-2.5 px-3 py-2 text-[13px] font-medium transition-colors duration-150 ease-out xl:justify-start",
+                    "relative flex min-h-9 items-center justify-center gap-2.5 px-3 py-2 text-[13px] font-medium transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring motion-reduce:transition-none xl:justify-start",
                     isActive
                       ? "bg-sidebar-surface-raised text-sidebar-text-primary"
                       : "text-sidebar-text-secondary hover:bg-sidebar-surface-secondary hover:text-sidebar-text-primary",
