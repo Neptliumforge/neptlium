@@ -1,55 +1,49 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
-const retired = ['cl', 'erk'].join('');
-const historical = new Set([
-  'supabase/migrations/20260825051902_identity_principal_provider_subject_foundation.sql',
-  'supabase/migrations/20260825051927_' + retired + '_identity_linking_commands.sql',
-  'supabase/migrations/20260825053722_' + retired + '_dual_session_link_service.sql',
-  'supabase/migrations/20260825053749_' + retired + '_application_identity_cutover.sql',
-  'supabase/migrations/20260825053809_' + retired + '_bootstrap_existing_account_guard.sql',
-  'supabase/migrations/20260825082059_self_custody_treasury_principal_cutover.sql',
-  'supabase/migrations/20260912223000_' + retired + '_only_identity_cutover.sql',
-  'supabase/migrations/20260913123000_supabase_auth_only_cutover.sql',
-  'docs/archive/remediation/GATE_05_LEGACY_MUTATION_PATHS.md',
-]);
-const self = 'scripts/retired-auth-contract.mjs';
-const providerName = retired[0].toUpperCase() + retired.slice(1);
-const markers = [
-  retired,
-  `@${retired}`,
-  retired.toUpperCase() + '_',
-  'NEXT_PUBLIC_' + retired.toUpperCase() + '_',
-  providerName + 'Provider',
-  retired + 'Middleware',
-  retired + 'Client',
-  'currentUser',
-  'useUser',
-  'useAuth',
-  'SignedIn',
-  'SignedOut',
-];
-
+/**
+ * Authentication transition contract: Clerk is an approved customer target,
+ * NOT automatically the production provider. Keep disallowed provider SDKs,
+ * unauthorized production cutover and accidental removal of legacy recovery
+ * paths detectable until the release gate is explicitly approved.
+ */
 const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\0').filter(Boolean);
-const hits = [];
-for (const file of files) {
-  if (file === self || historical.has(file)) continue;
-  const lowerPath = file.toLowerCase();
-  if (lowerPath.includes(retired)) hits.push(`${file}: retired provider appears in active path`);
-  let text;
-  try { text = readFileSync(file, 'utf8'); } catch { continue; }
-  const lower = text.toLowerCase();
-  for (const marker of markers) {
-    if (lower.includes(marker.toLowerCase())) {
-      hits.push(`${file}: active retired-auth reference (${marker})`);
-      break;
-    }
-  }
+const tracked = new Set(files);
+const errors = [];
+const read = (path) => readFileSync(path, 'utf8');
+const required = [
+  'AGENTS.md',
+  'docs/platform/IDENTITY.md',
+  'apps/api/src/clerk-jwt-verifier.ts',
+  'apps/api/src/clerk-principal-gate.ts',
+  'apps/api/src/clerk-preview-principal.ts',
+  'apps/api/src/authentication.ts',
+  'apps/api/src/identity-principal.ts',
+  'apps/app/app/auth/sign-in/page.tsx',
+  'apps/app/app/auth/sign-up/page.tsx',
+];
+for (const path of required) if (!tracked.has(path)) errors.push('Missing required migration or current-session boundary: ' + path);
+if (tracked.has('AGENTS.md') && !read('AGENTS.md').includes('approved migration: Supabase Auth (CURRENT)'))
+  errors.push('Repository authority must explicitly describe the guarded Clerk transition');
+if (tracked.has('docs/platform/IDENTITY.md') && !read('docs/platform/IDENTITY.md').includes('TRANSITION, not production activation'))
+  errors.push('Identity authority must distinguish current sessions from target cutover');
+if (tracked.has('apps/api/src/authentication.ts') && !read('apps/api/src/authentication.ts').includes('verifySupabaseSubject'))
+  errors.push('Current production API authentication changed without a separate release gate');
+for (const path of ['apps/app/app/auth/sign-in/page.tsx', 'apps/app/app/auth/sign-up/page.tsx']) {
+  if (tracked.has(path) && !read(path).includes('SupabaseAuthForm'))
+    errors.push('Current customer session route changed before reviewed cutover: ' + path);
 }
-
-if (hits.length) {
-  console.error('Retired authentication references are not permitted outside explicit historical evidence.');
-  for (const hit of hits) console.error(`- ${hit}`);
+const disallowedImports = ['@auth0/', 'next-auth', 'firebase/auth'];
+for (const path of files) {
+  if (!/\\.(?:ts|tsx|js|mjs|cjs)$/.test(path) || path.startsWith('docs/archive/')) continue;
+  let source;
+  try { source = read(path); } catch { continue; }
+  if (disallowedImports.some((name) => source.includes("from '" + name) || source.includes('from "' + name) || source.includes("require('" + name) || source.includes('require("' + name)))
+    errors.push('Unapproved authentication provider import: ' + path);
+}
+if (errors.length) {
+  console.error('Authentication migration contract: FAIL');
+  for (const error of errors) console.error('- ' + error);
   process.exit(1);
 }
-console.log('Retired authentication source contract: PASS');
+console.log('Authentication migration contract: PASS (Clerk Preview target, Supabase production retained)');
