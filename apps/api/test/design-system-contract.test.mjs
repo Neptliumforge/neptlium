@@ -52,3 +52,10 @@ test('closed mobile drawer is inert and open drawer traps keyboard focus', () =>
   assert.match(mobile, /triggerRef\.current\?\.focus\(\)/);
   assert.match(mobile, /motion-reduce:transition-none/);
 });
+
+test('admin shell uses canonical sidebar surface and constrains main overflow', () => {
+  const admin = read('apps/admin/components/admin/AdminShell.tsx');
+  assert.match(admin, /bg-sidebar/);
+  assert.doesNotMatch(admin, /bg-\[#[0-9a-fA-F]{3,8}\]/);
+  assert.match(admin, /min-w-0 flex-1/);
+});
