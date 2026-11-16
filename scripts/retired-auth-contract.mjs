@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
  * unauthorized production cutover and accidental removal of legacy recovery
  * paths detectable until the release gate is explicitly approved.
  */
-const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\\0').filter(Boolean);
+const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\0').filter(Boolean);
 const tracked = new Set(files);
 const errors = [];
 const read = (path) => readFileSync(path, 'utf8');
