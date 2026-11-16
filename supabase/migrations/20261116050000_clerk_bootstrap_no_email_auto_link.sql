@@ -26,7 +26,7 @@ begin
     raise exception 'invalid Clerk subject';
   end if;
   if v_email is null or length(v_email) not between 3 and 320
-     or v_email !~ '^[^[:space:]@]+@[^[:space:]@]+\\.[^[:space:]@]+$' then
+     or v_email !~ '^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$' then
     raise exception 'invalid verified email';
   end if;
   if p_request_id is null or p_request_id !~ '^[A-Za-z0-9:_-]{16,128}$' then
