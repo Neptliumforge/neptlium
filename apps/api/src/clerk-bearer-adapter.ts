@@ -12,7 +12,7 @@ export async function authenticateClerkBearer(
   store: ClerkPrincipalStore,
 ): Promise<ClerkPrincipalDecision> {
   if (typeof authorization !== 'string' ||
-      !/^Bearer [A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$/.test(authorization)) {
+      !/^Bearer [A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(authorization)) {
     return { authorized: false, reason: 'invalid-token' };
   }
   return resolveVerifiedClerkPrincipal(authorization.slice(7), trust, store);
