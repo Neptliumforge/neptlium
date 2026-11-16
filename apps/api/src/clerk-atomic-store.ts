@@ -17,7 +17,7 @@ export class SupabaseAtomicClerkProvisioningStore implements AtomicClerkProvisio
 
   async provisionVerifiedSubject(subject: string, idempotencyKey: string): Promise<{ principalId: string; replayed: boolean }> {
     const email = await this.verifiedPrimaryEmail(subject);
-    if (typeof email !== 'string' || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email.trim()))
+    if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
       throw new Error('verified primary email unavailable');
     const response = await this.request(new URL('/rest/v1/rpc/bootstrap_clerk_identity_principal', this.url).toString(), {
       method: 'POST',
