@@ -33,12 +33,12 @@ for (const path of ['apps/app/app/auth/sign-in/page.tsx', 'apps/app/app/auth/sig
   if (tracked.has(path) && !read(path).includes('SupabaseAuthForm'))
     errors.push('Current customer session route changed before reviewed cutover: ' + path);
 }
-const disallowed = [/from\\s*['\"]@auth0\\//i, /from\\s*['\"]next-auth(?:\\/|['\"])/i, /from\\s*['\"]firebase\\/auth/i];
+const disallowedImports = ['@auth0/', 'next-auth', 'firebase/auth'];
 for (const path of files) {
   if (!/\\.(?:ts|tsx|js|mjs|cjs)$/.test(path) || path.startsWith('docs/archive/')) continue;
   let source;
   try { source = read(path); } catch { continue; }
-  if (disallowed.some((pattern) => pattern.test(source)))
+  if (disallowedImports.some((name) => source.includes("from '" + name) || source.includes('from "' + name) || source.includes("require('" + name) || source.includes('require("' + name)))
     errors.push('Unapproved authentication provider import: ' + path);
 }
 if (errors.length) {
