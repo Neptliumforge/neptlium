@@ -28,14 +28,15 @@ These surfaces share one Neptlium identity. They must not be visually or operati
 
 ### Authentication authority
 
-**AUTHENTICATION: Supabase Auth only.**
+**AUTHENTICATION — approved migration: Supabase Auth (CURRENT) → Clerk (TARGET for customer App/API).**
 
-- Do not reintroduce any retired authentication provider, dependency, middleware, environment variable, webhook, identity mapper, or hosted auth UI.
-- Do not introduce another third-party identity system without explicit architecture approval.
-- Browser applications may use only the Supabase project URL and publishable client key. Service-role credentials and provider secrets are server-only.
-- Authentication proves identity only. It never grants financial, administrative, treasury, organization, or provider-execution authority by itself.
-- Authorization remains server-owned through immutable Neptlium principals, role/membership/policy state, governed API commands, RLS where applicable, and the financial authority chain.
-- Never authorize from user-editable metadata, email-domain heuristics, browser-provided user IDs, or client-visible role state.
+- CURRENT production customer and operator sessions remain Supabase Auth until a separately approved, tested cutover. Clerk foundations may be developed and tested in isolated Preview only.
+- TARGET customer `apps/app` registration, sign-in and sessions use Clerk. `apps/api` independently verifies Clerk-issued JWTs and resolves an active durable Neptlium principal before granting any account access. Admin and Treasury remain on their current provider until independently reviewed and authorized.
+- Supabase remains the persistence provider. Existing principal IDs, ownership, ledger, audit and provider evidence must not be rewritten or deleted by the authentication migration.
+- No additional third-party authentication provider may be introduced without explicit architecture approval. Clerk is the sole approved target for this migration; no implicit activation or production credential changes follow from this approval.
+- Authentication proves identity only. Authorization remains server-owned through immutable principals, active membership, roles, policy, resource ownership, and the financial authority chain. Missing or ambiguous mapping, invalid token, disabled/suspended principal, or unavailable storage fails closed.
+- Never authorize from email, user-editable metadata, browser-provided IDs or client-visible role state. Secrets and service-role credentials remain server-only.
+- Do not delete existing user identities or retire Supabase Auth production routes until equivalent Clerk registration, recovery, session, account provisioning, tenant isolation, rollback and CI acceptance are verified.
 
 ### Public Web independence
 
