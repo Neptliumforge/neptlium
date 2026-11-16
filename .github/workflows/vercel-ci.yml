@@ -1,0 +1,60 @@
+name: Vercel CI — Integration Quality Gate
+
+# Git-linked Vercel projects already handle Preview deployments.
+# This workflow verifies build contracts; it never deploys or accesses Vercel secrets.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'scripts/vercel-ci-check.mjs'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/vercel-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vercel-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-contract:
+    name: Vercel project integration contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify linked application build contracts
+        run: node --test scripts/vercel-ci-check.mjs
+
+  shared-ui:
+    name: Shared UI typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate shared UI types
+        run: pnpm --filter @neptlium/ui typecheck
+
+# Initial tasks: project contract audit + shared UI typecheck.
+# Existing CI and product-family workflows retain build/test/security authority.
+# No VERCEL_TOKEN, deployment, production promotion or database migration here.
