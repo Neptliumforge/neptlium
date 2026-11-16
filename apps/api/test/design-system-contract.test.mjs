@@ -29,3 +29,10 @@ test('shared motion constants have bounded durations', () => {
     assert.match(motion, new RegExp(key + ':\\s*0\\.\\d+'));
   }
 });
+
+test('primary badge uses canonical mineral-teal accent, not legacy emerald', () => {
+  const badge = read('packages/ui/src/components/Badge.tsx');
+  assert.match(badge, /primary:\s*"bg-accent-primary\/12 text-accent-primary"/);
+  assert.doesNotMatch(badge, /accent-emerald/);
+  assert.match(badge, /aria-hidden="true"/);
+});
