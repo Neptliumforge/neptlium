@@ -59,3 +59,22 @@ test('admin shell uses canonical sidebar surface and constrains main overflow', 
   assert.doesNotMatch(admin, /bg-\[#[0-9a-fA-F]{3,8}\]/);
   assert.match(admin, /min-w-0 flex-1/);
 });
+
+test('admin mobile navigation provides accessible focus isolation', () => {
+  const shell = read('apps/admin/components/admin/AdminShell.tsx');
+  const drawer = read('apps/admin/components/admin/AdminMobileNavigation.tsx');
+  assert.match(shell, /lg:ml-60/);
+  assert.match(shell, /<AdminMobileNavigation>/);
+  assert.match(drawer, /inert=\{!open\}/);
+  assert.match(drawer, /aria-modal="true"/);
+  assert.match(drawer, /event\.key === "Escape"/);
+  assert.match(drawer, /motion-reduce:transition-none/);
+});
+
+test('Pay references canonical color tokens without local hex palette', () => {
+  const pay = read('apps/pay/app/global.css');
+  assert.match(pay, /@neptlium\/ui\/styles\/tokens\.css/);
+  assert.match(pay, /--canvas: var\(--color-canvas\)/);
+  assert.match(pay, /--teal: var\(--color-accent-primary\)/);
+  assert.doesNotMatch(pay, /#[0-9a-fA-F]{3,8}\b/);
+});
