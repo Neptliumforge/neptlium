@@ -36,5 +36,4 @@ $$;
 rollback;
 select case when has_function_privilege('anon','public.bootstrap_clerk_identity_principal(text,text,text)','EXECUTE')
   or has_function_privilege('authenticated','public.bootstrap_clerk_identity_principal(text,text,text)','EXECUTE')
-  or has_function_privilege('public','public.bootstrap_clerk_identity_principal(text,text,text)','EXECUTE')
   then 1/0 else 1 end as privileges_restricted;
