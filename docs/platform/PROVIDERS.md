@@ -2,13 +2,21 @@
 
 Providers are replaceable infrastructure/capability adapters. Neptlium owns stable principal identity, authorization, policy, intents, canonical ledger, reservations, lifecycle, audit, and reconciliation.
 
-## Supabase Auth — identity provider
+## Clerk — canonical customer identity provider (target architecture)
 
-Supabase Auth is the sole active runtime authentication and browser-session provider for customer and operator surfaces.
+**Architecture decision:** Clerk is Neptlium's designated customer authentication and session provider. New customer sign-in, sign-up, MFA, recovery and session integrations MUST target Clerk, not Supabase Auth. This target-state decision does **not** mean the production cutover is complete.
 
-`apps/app`, `apps/admin`, and authenticated Neptlium Treasury surfaces use shared Supabase browser/server/session primitives. `apps/api` verifies Supabase bearer tokens and resolves the verified `SUPABASE_AUTH` subject to a stable Neptlium principal before authorization.
+**Observed runtime:** Customer-facing `apps/app` still contains Supabase Auth sessions and sign-in flows; `apps/api` still verifies Supabase access tokens. The migration branch contains an independent Clerk JWT verifier and isolated Preview authorization foundations, but has not certified the full replacement. Admin and Treasury authentication must be migrated and verified separately.
 
-Historical identity-provider mappings may remain as migration/audit evidence, but they are not active runtime authentication paths.
+The API must verify Clerk-issued tokens independently (issuer, audience, authorized parties, signature, expiration, key rotation) and resolve the verified subject through a unique active link to the stable Neptlium principal. Email equality, untrusted client claims, or Clerk organization claims never establish account ownership. Missing, ambiguous, suspended, revoked or unavailable mappings deny access.
+
+Existing `organization_memberships.user_id` records reference Supabase Auth user UUIDs. During migration, authorization must traverse the same stable principal to the verified legacy user ID and check active organization membership. This transitional data relationship does not make Supabase Auth the intended login provider. Retain the database/RLS dependencies until a certified Clerk-compatible authorization model replaces them.
+
+**Release gate:** Verify account continuity, tenant isolation, API authorization, Supabase RLS, Preview tests/builds, session transition, backups, rollback and independent review before switching production. See [Clerk migration safety contract](../security/clerk-primary-auth-migration.md) and [Preview identity verification ledger](../security/clerk-preview-identity-phase1.md).
+
+## Supabase Auth — legacy dependency being retired
+
+Supabase Auth is **not** the target customer identity provider. Its current runtime/session and `auth.users` foreign-key dependencies remain until the Clerk replacement is verified and released. Do not implement new customer login features on Supabase Auth. Do not remove existing users, mappings, schema or rollback paths prematurely. The production retirement is not yet complete.
 
 ## Supabase — persistence provider
 
@@ -90,7 +98,7 @@ Current and planned provider classification is:
 
 | Provider | Category | Repository state |
 | --- | --- | --- |
-| Supabase Auth | Identity Infrastructure | Current; sole active runtime authentication/session provider |
+| Clerk | Customer Identity Infrastructure | Canonical target; Preview foundations exist; production cutover not certified |\n| Supabase Auth | Legacy Identity Infrastructure | Current runtime and user-ID dependencies; retirement in progress |
 | Supabase/PostgreSQL | Persistence Infrastructure | Current |
 | Stripe | Payment / Billing Infrastructure | Current subscription-billing webhook ingress; not live Capital funding |
 | Circle | Custody / Wallet Infrastructure | Current adapter/source support; capability remains gated |
