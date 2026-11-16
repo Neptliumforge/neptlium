@@ -1,5 +1,16 @@
 # Identity and Access
 
+> **Architecture decision (TRANSITION, not production activation):** Clerk is approved as the target authentication provider for the customer App and its API identity boundary. The currently deployed Supabase Auth implementation remains authoritative until independent verification, durable principal provisioning, tenant isolation, recovery and rollback pass and an explicit cutover is approved. Admin and Treasury retain their existing authentication provider until separately migrated. Supabase continues as the database. Existing principal IDs and financial ownership must be preserved.
+
+## TARGET — Clerk customer identity cutover
+
+- Clerk authenticates customer registration, sign-in, recovery and browser sessions; API validates Clerk JWT signatures, issuer, audience, authorized party and expiry independently.
+- A verified Clerk subject must map to exactly one active durable Neptlium principal. Email is not an authorization key. Missing/ambiguous/revoked links and storage failures deny access.
+- Account provisioning must be idempotent and auditable; never create a second principal for an existing owner or infer identity linkage from matching email.
+- All organization, role, resource and financial permissions remain enforced by Neptlium server-side policy and persistence. No live financial execution is enabled by the authentication change.
+- Resend may deliver branded transactional notifications, but it must not replace Clerk's authentication authority or establish identity from email delivery.
+- Production activation requires reviewed configuration, passing tests, email verification, existing-user migration, rollback and recovery evidence. No automatic cutover is authorized by this document.
+
 ## Authoritative authentication model
 
 Supabase Auth is Neptlium's sole active authentication and browser-session provider for customer and operator surfaces.
