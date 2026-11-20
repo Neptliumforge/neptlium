@@ -7,6 +7,9 @@ const ready = {
   NEPTLIUM_CLERK_CUTOVER_APPROVED: 'true',
   NEPTLIUM_IDENTITY_MAPPING_VERIFIED: 'true',
   NEPTLIUM_AUTH_ROLLBACK_VERIFIED: 'true',
+  NEPTLIUM_CLERK_JWT_VERIFIER_VERIFIED: 'true',
+  NEPTLIUM_CLERK_TENANT_ISOLATION_VERIFIED: 'true',
+  NEPTLIUM_CLERK_ACCOUNT_BOOTSTRAP_VERIFIED: 'true',
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: 'pk_live_dummy_test_only',
   CLERK_SECRET_KEY: 'sk_live_dummy_test_only',
   NEXT_PUBLIC_SITE_URL: 'https://app.neptlium.com',
@@ -29,6 +32,15 @@ test('blocks test-mode credentials', () => {
 });
 test('blocks wrong production origin', () => {
   assert.equal(evaluateClerkCutover({ ...ready, NEXT_PUBLIC_SITE_URL: 'https://apps.neptlium.com' }).allowed, false);
+});
+test('blocks missing JWT verifier certification', () => {
+  assert.deepEqual(evaluateClerkCutover({ ...ready, NEPTLIUM_CLERK_JWT_VERIFIER_VERIFIED: undefined }), { allowed: false, reason: 'clerk-identity-security-not-certified' });
+});
+test('blocks missing tenant isolation certification', () => {
+  assert.equal(evaluateClerkCutover({ ...ready, NEPTLIUM_CLERK_TENANT_ISOLATION_VERIFIED: undefined }).allowed, false);
+});
+test('blocks missing account bootstrap certification', () => {
+  assert.equal(evaluateClerkCutover({ ...ready, NEPTLIUM_CLERK_ACCOUNT_BOOTSTRAP_VERIFIED: undefined }).allowed, false);
 });
 test('passes prerequisites only when explicitly satisfied', () => {
   assert.deepEqual(evaluateClerkCutover(ready), { allowed: true });
