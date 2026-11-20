@@ -289,8 +289,9 @@ async function loadScope(user) {
   writeFileSync(join(dir, 'server-only.mjs'), '');
   writeFileSync(
     join(dir, 'session.mjs'),
-    `export const state = { user: ${JSON.stringify(user)}, fail: false };
-    export async function getSessionUser() { if (state.fail) throw new Error('auth down'); return state.user; }`,
+    `export const state = { user: ${JSON.stringify(user)}, profile: ${JSON.stringify(user ? {id:user.id}:null)}, fail: false, profileFail: false };
+    export async function getSessionUser() { if (state.fail) throw new Error('auth down'); return state.user; }
+    export async function getCurrentProfile() { if (state.profileFail) throw new Error('api down'); return state.profile; }`,
   );
   transpile(dir, 'lib/funding/operation.ts', 'operation.mjs', {});
   const url = transpile(dir, 'lib/funding/scope.ts', 'scope.mjs', {
@@ -316,6 +317,14 @@ test('operation scopes are opaque, per principal, and checked against the live s
   assert.equal(await scope.checkFundingOperationScope(b), 'MISMATCH');
   assert.equal(await scope.checkFundingOperationScope('principal-a'), 'MISMATCH');
   assert.equal(await scope.checkFundingOperationScope(undefined), 'MISMATCH');
+  session.state.profile = { id: 'principal-b' };
+  assert.equal(await scope.checkFundingOperationScope(a), 'MISMATCH', 'account switch rejects prior account');
+  assert.equal(await scope.checkFundingOperationScope(b), 'MATCH');
+  session.state.profile = null;
+  assert.equal(await scope.checkFundingOperationScope(a), 'UNVERIFIED', 'unresolved API principal rejects operation');
+  session.state.profileFail = true;
+  assert.equal(await scope.checkFundingOperationScope(a), 'UNVERIFIED', 'API outage rejects operation');
+  session.state.profileFail = false;
   session.state.user = null;
   assert.equal(await scope.checkFundingOperationScope(a), 'NO_SESSION');
   session.state.fail = true;

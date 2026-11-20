@@ -64,7 +64,8 @@ test('onboarding remains governed by authenticated account provisioning contract
   const page = read('app/onboarding/page.tsx');
   const client = read('lib/api/client.ts');
   assert.match(page, /requireUser/);
-  assert.match(page, /getCurrentProfile/);
+  assert.match(page, /resolveAccountState/);
+  assert.match(read('lib/auth/account-state.ts'), /getCurrentProfile/);
   assert.match(page, /OnboardingWizard/);
   assert.match(client, /\/v1\/account\/onboarding-draft/);
   assert.match(client, /\/v1\/account\/provision/);

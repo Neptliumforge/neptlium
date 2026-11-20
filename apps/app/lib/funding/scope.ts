@@ -1,12 +1,12 @@
 import 'server-only';
 import { createHash } from 'node:crypto';
-import { getSessionUser } from '@/lib/auth/session';
+import { getCurrentProfile, getSessionUser } from '@/lib/auth/session';
 import { isOperationScope } from './operation';
 
 // An opaque partition for one authenticated principal's stored funding
 // operations. It keeps browser-held operation keys and intent IDs from being
 // reused across accounts in the same tab. It is derived only from the
-// server-verified session, and it is never authorization: the API still
+// API-verified internal principal, and it is never authorization: the API still
 // derives the owner from the authenticated request and scopes every intent to
 // that owner.
 export function fundingOperationScope(principalId: string): string {
@@ -28,5 +28,14 @@ export async function checkFundingOperationScope(scope: unknown): Promise<Operat
     return 'UNVERIFIED';
   }
   if (!user) return 'NO_SESSION';
-  return fundingOperationScope(user.id) === scope ? 'MATCH' : 'MISMATCH';
+  // Resolve the API-owned principal before accepting any browser operation.
+  // A valid auth session alone is not sufficient to authorize funding replay.
+  let profile: Awaited<ReturnType<typeof getCurrentProfile>>;
+  try {
+    profile = await getCurrentProfile(user);
+  } catch {
+    return 'UNVERIFIED';
+  }
+  if (!profile?.id) return 'UNVERIFIED';
+  return fundingOperationScope(profile.id) === scope ? 'MATCH' : 'MISMATCH';
 }
