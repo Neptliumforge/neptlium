@@ -1,4 +1,4 @@
-import { evaluateClerkCutover, type ClerkCutoverDecision } from '../clerk-cutover';
+import { evaluateClerkCutover, type ClerkCutoverDecision } from '../clerk-cutover.ts';
 
 /**
  * Production authentication selection must never silently fall back to
