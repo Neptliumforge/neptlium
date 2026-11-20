@@ -56,9 +56,9 @@ test('Gate 02 rejects partial auth UI cutover while Supabase session remains aut
   const api = read('lib/api/client.ts');
   const dashboard = read('app/dashboard/layout.tsx');
   const legacySessionAuthority =
-    /supabase\\.auth\\.getUser\\(/.test(root) ||
+    root.includes('supabase.auth.getUser(') ||
     /refreshSupabaseSession/.test(proxy) ||
-    /supabase\\.auth\\.getSession\\(/.test(api) ||
+    api.includes('supabase.auth.getSession(') ||
     /requireProvisionedUser/.test(dashboard);
 
   // Prevent a UI-only migration that accepts a Clerk sign-in yet cannot
