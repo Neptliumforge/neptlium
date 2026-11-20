@@ -57,3 +57,30 @@ test('wrong issuer, origin and expired tokens fail closed', async () => {
     }), { authorized: false, reason: 'invalid-token' });
   }
 });
+
+test('wrong audience, missing authorized party, future token and unknown key fail closed', async () => {
+  for (const claims of [
+    { aud: 'another-service' },
+    { aud: ['another-service'] },
+    { azp: undefined },
+    { nbf: 2000000001 },
+    { iat: 2000000001 },
+    { sub: 'attacker@example.test' },
+  ]) {
+    let queried = false;
+    const decision = await resolveVerifiedClerkPrincipal(token(claims), trust, {
+      resolveActiveClerkPrincipal: async () => { queried = true; return principalId; },
+    });
+    assert.deepEqual(decision, { authorized: false, reason: 'invalid-token' });
+    assert.equal(queried, false);
+  }
+});
+
+test('verified identity does not accept client-supplied principal identifiers', async () => {
+  const clientPrincipal = '00000000-0000-4000-8000-000000000099';
+  const decision = await resolveVerifiedClerkPrincipal(token({ principalId: clientPrincipal }), trust, {
+    resolveActiveClerkPrincipal: async () => principalId,
+  });
+  assert.deepEqual(decision, { authorized: true, principalId });
+  assert.notEqual(decision.principalId, clientPrincipal);
+});
