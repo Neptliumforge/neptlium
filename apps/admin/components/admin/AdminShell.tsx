@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AdminMobileNavigation } from "./AdminMobileNavigation";
 import { NeptliumMark } from "@neptlium/ui";
 
 
@@ -10,9 +11,9 @@ interface AdminShellProps {
 
 export function AdminShell({ sidebar, topbar, children }: AdminShellProps) {
   return (
-    <div className="min-h-screen bg-canvas text-text-primary">
+    <div className="min-h-screen min-w-0 bg-canvas text-text-primary">
       {/* Fixed sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-border-hairline bg-[#030508]">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 lg:flex flex-col border-r border-border-hairline bg-sidebar">
         {/* Logo */}
         <div className="flex h-14 shrink-0 items-center gap-3 border-b border-border-hairline px-4">
           <NeptliumMark size={22} />
@@ -30,13 +31,14 @@ export function AdminShell({ sidebar, topbar, children }: AdminShellProps) {
       </aside>
 
       {/* Content area */}
-      <div className="ml-60 flex min-h-screen flex-col">
+      <div className="flex min-h-screen min-w-0 flex-col lg:ml-60">
         {/* Fixed topbar */}
-        <header className="fixed top-0 left-60 right-0 z-30 flex h-14 items-center border-b border-border-hairline bg-topnav px-6">
-          {topbar}
+        <header className="fixed top-0 left-0 right-0 z-30 flex h-14 items-center gap-3 border-b border-border-hairline bg-topnav px-3 sm:px-6 lg:left-60">
+          <AdminMobileNavigation>{sidebar}</AdminMobileNavigation>
+          <div className="min-w-0 flex-1">{topbar}</div>
         </header>
         {/* Main content */}
-        <main className="mt-14 flex-1 p-6 lg:p-8">
+        <main className="mt-14 min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
           <div className="mx-auto max-w-[1600px]">{children}</div>
         </main>
       </div>

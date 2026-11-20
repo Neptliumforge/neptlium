@@ -127,7 +127,7 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring sm:px-1 sm:text-[11px]",
+                "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 text-[10px] font-medium transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus-ring sm:px-1 sm:text-[11px]",
                 isActive
                   ? "text-text-primary after:absolute after:inset-x-4 after:top-0 after:h-px after:bg-accent-primary"
                   : "text-text-muted hover:text-text-secondary",
@@ -147,6 +147,7 @@ export function MobileNavigation({ primaryItems, secondaryItems = [], footer, pr
       <div
         className={cn("fixed inset-0 z-50 lg:hidden", open ? "pointer-events-auto" : "pointer-events-none")}
         aria-hidden={open ? undefined : "true"}
+        inert={!open}
       >
         <button
           type="button"
