@@ -48,3 +48,24 @@ test('Gate 02 cutover cannot be certified from Clerk credentials alone', () => {
     process.stdout.write(`Gate 02 Clerk cutover NOT CERTIFIED: ${blockers.join(', ')}\n`);
   }
 });
+
+test('Gate 02 rejects partial auth UI cutover while Supabase session remains authoritative', () => {
+  const state = inspectClerkCutover();
+  const root = read('app/page.tsx');
+  const proxy = read('proxy.ts');
+  const api = read('lib/api/client.ts');
+  const dashboard = read('app/dashboard/layout.tsx');
+  const legacySessionAuthority =
+    /supabase\\.auth\\.getUser\\(/.test(root) ||
+    /refreshSupabaseSession/.test(proxy) ||
+    /supabase\\.auth\\.getSession\\(/.test(api) ||
+    /requireProvisionedUser/.test(dashboard);
+
+  // Prevent a UI-only migration that accepts a Clerk sign-in yet cannot
+  // authorize the customer dashboard and financial API with that identity.
+  if (legacySessionAuthority) {
+    assert.equal(state.clerkSignIn, false, 'Clerk sign-in must not ship with legacy session authority');
+    assert.equal(state.clerkSignUp, false, 'Clerk sign-up must not ship with legacy session authority');
+    assert.equal(state.clerkRouteGuard, false, 'Clerk route guard must not ship with legacy session authority');
+  }
+});
