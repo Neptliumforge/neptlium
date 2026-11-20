@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { LegalDoc } from './content/legal.ts';
+import { ROUTE_POLICY } from './content/public-architecture.ts';
 import { SITE } from './content/site.ts';
 
 type PageMetadataInput = {
@@ -13,7 +14,7 @@ export function createPageMetadata({
   title,
   description,
   path,
-  index = true,
+  index = isIndexableRoute(path),
 }: PageMetadataInput): Metadata {
   const url = new URL(path, SITE.url).toString();
 
@@ -37,6 +38,12 @@ export function createPageMetadata({
       images: ['/opengraph-image'],
     },
   };
+}
+
+/** A route classified in the public route policy is indexed only when it is canonical. */
+function isIndexableRoute(path: string): boolean {
+  const policy = ROUTE_POLICY[path];
+  return policy === undefined || policy === 'canonical-indexable';
 }
 
 /** Draft legal documents stay out of search indexes until approved. */

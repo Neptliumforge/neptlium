@@ -202,7 +202,7 @@ export function TreasuryPage() {
               </aside>
               <div className={styles.liquidityPanel}>
                 <span className={styles.uiKicker}>Liquidity context</span>
-                <h3>Primary reserve</h3>
+                <strong className={styles.panelTitle}>Primary reserve</strong>
                 <div className={styles.liquidityBars}><i /><i /><i /></div>
                 <div className={styles.liquidityLegend}><span>Available</span><span>Reserved</span><span>Pending context</span></div>
                 <div className={styles.movementRows}>

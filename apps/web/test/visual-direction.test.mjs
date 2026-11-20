@@ -110,8 +110,8 @@ test('personal and business journeys remain differentiated but share product tru
 
 test('platform presents one shared financial core without generic card-only architecture', () => {
   for (const copy of [
-    'Personal',
-    'Business',
+    'Capital',
+    'Treasury',
     'Identity',
     'Authority',
     'Evidence',
@@ -119,6 +119,8 @@ test('platform presents one shared financial core without generic card-only arch
     'Audit',
   ])
     assert.match(platform, new RegExp(copy, 'i'));
+  // Legacy Personal/Business routes redirect; the platform links the canonical products directly.
+  assert.doesNotMatch(platform, /href="\/(personal|business)"/);
   assert.match(platform, /platformMap/);
   assert.match(system, /\.platformMap/);
 });
