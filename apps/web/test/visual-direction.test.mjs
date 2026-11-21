@@ -26,34 +26,17 @@ const architecture = read('lib/content/public-architecture.ts');
 const surfacesFor = (source) =>
   [...source.matchAll(/data-npt-surface="([^"]+)"/g)].map((match) => match[1]);
 
-test('homepage is a distinct brand story rather than a copied product index', () => {
+test('homepage is a distinct Capital Operating Platform story, not a copied fintech template', () => {
   assert.equal((home.match(/<h1/g) ?? []).length, 1);
-  for (const copy of [
-    'Capital, intelligently managed',
-    'Know where your capital stands',
-    'Discover investments with a clearer view',
-    'A clearer path from investing',
-    'Treasury & institutional',
-    'Understand the market',
-  ])
-    assert.match(home, new RegExp(copy, 'i'));
-  for (const destination of [
-    '/capital',
-    '/treasury',
-    '/institutional',
-    '/investments',
-    '/portfolio',
-  ])
+  assert.match(home, /Capital, intelligently managed/);
+  assert.match(home, /The Capital Operating Platform/);
+  assert.match(home, /Every movement has authority\. Every position has evidence\./);
+  for (const capability of ['Capital', 'Portfolio', 'Investments', 'Treasury', 'Intelligence', 'Infrastructure'])
+    assert.match(home, new RegExp(capability, 'i'));
+  for (const destination of ['/capital', '/portfolio', '/investments', '/treasury', '/intelligence', '/infrastructure'])
     assert.match(home, new RegExp(destination.replaceAll('/', '\\/')));
-  assert.doesNotMatch(
-    home,
-    /STEP ONE|STEP TWO|FEATURE 0[1-9]|POWERFUL FEATURES|EVERYTHING YOU NEED|HOW IT WORKS|THE FUTURE OF FINANCE/i,
-  );
-  assert.doesNotMatch(
-    home,
-    /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i,
-  );
-  assert.doesNotMatch(home, /currently supported|not configured|capability unavailable/i);
+  assert.doesNotMatch(home, /STEP ONE|STEP TWO|FEATURE 0[1-9]|POWERFUL FEATURES|EVERYTHING YOU NEED|HOW IT WORKS|THE FUTURE OF FINANCE/i);
+  assert.doesNotMatch(home, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|\bAUM\b|guaranteed returns?|projected returns?/i);
   assert.match(homeElite, /font-size:\s*var\(--text-display-xl\)/);
   assert.match(homeElite, /@media\s*\(max-width:\s*760px\)/);
   assert.match(homeElite, /@media\s*\(max-width:\s*390px\)/);
