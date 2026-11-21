@@ -1,3 +1,5 @@
+import { clerkPreviewRouteConfig } from './clerk-preview-session-route.js';
+
 export type Environment = 'development' | 'test' | 'preview' | 'production';
 export type ProviderRuntimeEnvironment = 'testnet' | 'production';
 export type ApiAuthMode = 'SUPABASE';
@@ -80,6 +82,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     ENABLE_MAINNET: mainnetPermitted,
     SUPABASE_URL, SUPABASE_ANON_KEY: env.SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
     AUTH_MODE,
+    clerkPreviewSession: clerkPreviewRouteConfig(env),
     ALCHEMY_RPC_URL, ALCHEMY_API_KEY: env.ALCHEMY_API_KEY, ALCHEMY_ENVIRONMENT,
     ALCHEMY_WEBHOOK_ID: env.ALCHEMY_WEBHOOK_ID,
     CIRCLE_WEBHOOK_ENVIRONMENT: providerEnvironment(env.CIRCLE_WEBHOOK_ENVIRONMENT, 'CIRCLE_WEBHOOK_ENVIRONMENT'),

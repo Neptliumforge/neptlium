@@ -1,21 +1,13 @@
 import 'server-only';
 
-import { requireVerifiedClerkPrincipal, type VerifiedPrincipalResolution } from './clerk-principal-gate';
-
-/**
- * Server-only Preview adapter for a future Clerk -> Neptlium API session.
- * This does not alter the production Supabase bearer path.
- *
- * Both callbacks must be implemented on a trusted server: token issuance
- * by Clerk's authenticated server session, and principal resolution by
- * Neptlium's independently verified API identity boundary. Never populate
- * resolution from browser state, email, or unverified JWT claims.
- */
 export interface PreviewClerkSessionDependencies {
   readonly environment: string | undefined;
   readonly apiProvider: string | undefined;
+  /** Dedicated server-configured Preview API origin. */
+  readonly apiOrigin: string | undefined;
+  /** Acquire the JWT from the authenticated Clerk server session. */
   readonly getSessionToken: () => Promise<string | null>;
-  readonly resolveVerifiedPrincipal: (token: string, tenantId: string) => Promise<VerifiedPrincipalResolution | null>;
+  readonly request?: typeof fetch;
 }
 
 const JWT = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/;
@@ -28,16 +20,31 @@ export async function resolvePreviewClerkApiSession(
   if (deps.environment !== 'preview' || deps.apiProvider !== 'clerk-preview' || !UUID.test(tenantId)) {
     return null;
   }
-  const token = await deps.getSessionToken();
-  if (!token || token.length > 16384 || !JWT.test(token)) return null;
 
-  // The API verifies the JWT signature, issuer, audience, azp and expiry
-  // before returning a durable principal and active membership decision.
-  const resolution = await deps.resolveVerifiedPrincipal(token, tenantId);
-  if (!resolution || resolution.requestedTenantId.toLowerCase() !== tenantId.toLowerCase()) return null;
   try {
-    const principalId = requireVerifiedClerkPrincipal(resolution);
-    return { bearerToken: token, principalId };
+    if (!deps.apiOrigin) return null;
+    const origin = new URL(deps.apiOrigin);
+    if (origin.protocol !== 'https:' || origin.origin !== deps.apiOrigin) return null;
+
+    const token = await deps.getSessionToken();
+    if (!token || token.length > 16384 || !JWT.test(token)) return null;
+
+    const target = new URL('/v1/preview/clerk/session', origin);
+    target.searchParams.set('organization_id', tenantId.toLowerCase());
+    const response = await (deps.request ?? fetch)(target, {
+      method: 'GET',
+      headers: { accept: 'application/json', authorization: `Bearer ${token}` },
+      cache: 'no-store',
+      redirect: 'error',
+      signal: AbortSignal.timeout(8000),
+    });
+    if (response.status !== 200) return null;
+    const session = await response.json() as { principalId?: unknown; organizationId?: unknown } | null;
+    if (typeof session?.principalId !== 'string' || !UUID.test(session.principalId) ||
+        typeof session.organizationId !== 'string' || session.organizationId.toLowerCase() !== tenantId.toLowerCase()) {
+      return null;
+    }
+    return { bearerToken: token, principalId: session.principalId };
   } catch {
     return null;
   }

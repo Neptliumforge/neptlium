@@ -2,9 +2,11 @@
 
 ## Authoritative authentication model
 
-Supabase Auth is Neptlium's sole active authentication and browser-session provider for customer and operator surfaces.
+**TARGET — Clerk is Neptlium's selected primary customer authentication and session provider.** Clerk handles customer registration, sign-in, MFA, recovery, sessions, and sign-out. The Neptlium API independently verifies Clerk JWTs, resolves the verified subject to a durable Neptlium principal, and enforces database-backed authorization. Supabase remains Neptlium's PostgreSQL infrastructure.
 
-This applies to:
+**CURRENT — Supabase Auth still serves active sessions pending the customer cutover.** Clerk Preview work is gated. Production approval requires exact-deployment verification of customer flows, existing-account continuity, cross-tenant denial, and a rehearsed rollback.
+
+The current Supabase Auth scope includes:
 
 - `app.neptlium.com`
 - `admin.neptlium.com`
@@ -19,7 +21,7 @@ Authentication and business identity remain separate concepts.
 
 1. **Supabase Auth subject** — authenticated `auth.users.id` UUID.
 2. **Neptlium principal** — stable internal UUID used for ownership, authorization, policy, audit, and ledger attribution.
-3. **Identity mapping** — active `SUPABASE_AUTH` subject to Neptlium principal mapping.
+3. **Identity mapping** — an active, verified provider subject maps to one preserved Neptlium principal. Clerk customer sessions use the `CLERK` subject link after cutover.
 4. **Authorization** — Neptlium-owned roles, organization membership, compliance state, entitlements, policy, and resource ownership.
 
 A valid Supabase session proves authentication. It does not by itself authorize a treasury, allocation, administrative, organization, provider-execution, or financial operation.
@@ -28,7 +30,7 @@ A valid Supabase session proves authentication. It does not by itself authorize 
 
 Existing principal UUIDs and financial ownership must be preserved. Authentication migration is forward-only and must not rewrite balances, ledger entries, audit records, provider evidence, or ownership UUIDs.
 
-For existing accounts, the active Supabase Auth subject must resolve deterministically to the preserved Neptlium principal. Ambiguous, conflicting, missing, suspended, or retired mappings fail closed.
+For existing accounts, independently verified proof of account control is required before attaching a Clerk subject to the preserved principal. Reconciliation must verify that organization memberships, account ownership, and ledger attribution are preserved. Ambiguous, conflicting, missing, suspended, or retired mappings fail closed.
 
 Historical identity-provider mapping rows may remain as inert migration/audit evidence. They are not accepted runtime credentials unless the current runtime explicitly supports that provider; currently only `SUPABASE_AUTH` is supported.
 
@@ -56,11 +58,15 @@ The requested route remains subject to existing server session, principal, role,
 
 ## Admin application
 
+Operator authentication has a separate release boundary. Any migration must certify API role resolution and privileged-route access before changing Admin sessions.
+
 `apps/admin` uses Supabase Auth for operator authentication. The API resolves the Supabase identity to a Neptlium principal, then enforces operator roles and domain authorization server-side.
 
 Dashboard access requires explicit server-owned administrative authorization. Authentication alone is never sufficient.
 
 ## Neptlium Treasury
+
+Any Treasury authentication migration must certify organization membership, tenant isolation, and approval controls before changing its session handling.
 
 Neptlium Treasury uses Supabase Auth for user identity. Organization authority, treasury permissions, approvals, policy, and payment execution remain separate server-owned authorization domains.
 

@@ -8,6 +8,7 @@ process.env.SUPABASE_ANON_KEY = 'test-public-key';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-server-key';
 process.env.API_ALLOWED_ORIGINS = 'https://app.neptlium.com,https://admin.neptlium.com';
 const { default: productionHandler } = await import('../api/index.js');
+const { createServerlessHandler } = await import('../dist/serverless.js');
 
 function request(method, url, headers = {}) {
   const req = Readable.from([]);
@@ -52,4 +53,18 @@ test('production entrypoint preserves admin CORS preflight fast path', async () 
   assert.equal(res.statusCode, 204);
   assert.equal(res.headers['access-control-allow-origin'], 'https://admin.neptlium.com');
   assert.notEqual(res.headers['access-control-allow-origin'], '*');
+});
+
+test('Preview startup failure returns a redacted, non-cacheable 503 on every route', async () => {
+  const handler = createServerlessHandler(Promise.reject(new Error('fixture-private-detail')), true);
+  for (const url of ['/v1/health', '/v1/preview/clerk/session', '/v1/admin/session']) {
+    const res = response();
+    await handler(request('GET', url), res);
+    await res.completed;
+    assert.equal(res.statusCode, 503);
+    assert.equal(res.headers['cache-control'], 'no-store');
+    assert.deepEqual(JSON.parse(res.body), {
+      error: { code: 'api_unavailable', message: 'Preview API is unavailable.' },
+    });
+  }
 });

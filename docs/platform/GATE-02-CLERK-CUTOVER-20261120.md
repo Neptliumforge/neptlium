@@ -32,3 +32,21 @@ Verified deployment evidence: Vercel Preview deployment `dpl_FLMKebfHUVZArwUDmva
 - GitHub/Vercel integration and Preview build are verified, but end-to-end authentication is not.
 - Identity bootstrap, existing-account linking and database membership invariants require evidence.
 - Do not merge, promote to production, alter production Supabase, or enable financial execution without release-specific authorization and verified rollback.
+
+## Preview API acceptance
+
+The read-only `GET /v1/preview/clerk/session?organization_id=<uuid>` endpoint accepts a Clerk bearer token and returns the preserved Neptlium principal and verified organization IDs. It takes the same routing path on Node and Vercel. The endpoint is disabled unless the deployment is Vercel Preview and the existing Clerk Preview readiness flags are set.
+
+Set `NEPTLIUM_API_AUTH_PROVIDER=clerk-preview` and enable `NEPTLIUM_CLERK_API_VERIFIER_TESTED`, `NEPTLIUM_CLERK_IDENTITY_RESOLVER_TESTED`, and `NEPTLIUM_CLERK_TENANT_ISOLATION_TESTED` after reviewing automated evidence. Set `NEPTLIUM_CLERK_PREVIEW_ISSUER` to the exact Clerk Preview issuer origin, `NEPTLIUM_CLERK_PREVIEW_AUDIENCE` to the API token audience, and `NEPTLIUM_CLERK_PREVIEW_APP_ORIGIN` to the exact App origin expected in the token's authorized-party claim. Configure `NEPTLIUM_CLERK_PREVIEW_SUPABASE_URL` and `NEPTLIUM_CLERK_PREVIEW_SUPABASE_SERVICE_ROLE_KEY` for a dedicated fixture database, separate from the API's standard Supabase binding. Keep these settings Preview-scoped. The App needs a matching Clerk Preview publishable key and server secret.
+
+Use three isolated identities for deployed acceptance. Seed a preserved principal with both provider links and an active membership in one fixture organization. Seed a second existing principal with membership only in a different organization. Use a newly registered Clerk subject with no links to verify that the read-only route denies it and creates no principal. Exercise account bootstrap separately once the idempotent provisioning path is available.
+
+Record the exact App and API deployment SHAs, verified issuer, audience, authorized party, key rotation, issuer outage, database outage, and positive and negative tenant results. Exercise registration, sign-in, MFA, session recovery, sign-out, and unauthorized access in that deployment. Rehearse disabling the endpoint by removing the Preview provider selection and confirming it returns 404. Customer cutover also requires continuity and rollback evidence for production before approval.
+
+The App server adapter calls the Preview session endpoint with the Clerk server-session bearer and accepts a principal only for the requested organization. Its caller must supply the dedicated HTTPS Preview API origin from server configuration and use the Clerk server session to acquire the bearer. The Preview customer pages use Clerk's server session to acquire that bearer.
+
+## App Preview entry points
+
+The isolated App routes are `/preview/clerk/sign-up`, `/preview/clerk/sign-in`, and `/preview/clerk/session`. Clerk's prebuilt flows use the development instance's configured email verification, MFA, and account recovery policies. Sign-out returns to Preview sign-in. The session page verifies an organization through the read-only API and renders only the access result.
+
+Scope `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and server-only `CLERK_SECRET_KEY` to Preview using development-instance keys. Set `NEPTLIUM_API_AUTH_PROVIDER=clerk-preview`, `NEPTLIUM_CLERK_PREVIEW_APP_ORIGIN` to the exact stable Preview App origin, `NEPTLIUM_CLERK_PREVIEW_API_ORIGIN` to the dedicated API Preview origin, and `NEPTLIUM_CLERK_PREVIEW_TOKEN_TEMPLATE` to the Clerk JWT template name. Configure the development instance to allow that App origin and verify the issued token's issuer, audience and authorized party match the API settings. Keep the API fixture database isolated. Disable the Preview provider selection to remove the App Preview entry points and the API read-only route during the rollback rehearsal.

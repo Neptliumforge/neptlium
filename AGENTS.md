@@ -2,7 +2,7 @@
 
 ## Repository authority
 
-Canonical repository: `Neptliumforge/neptlium`.
+Canonical repository: `neptliumtech/neptlium`.
 
 | Boundary | Domain | Responsibility |
 | --- | --- | --- |
@@ -28,10 +28,10 @@ These surfaces share one Neptlium identity. They must not be visually or operati
 
 ### Authentication authority
 
-**AUTHENTICATION: Supabase Auth only.**
+**CUSTOMER AUTHENTICATION TARGET: Clerk.** Existing Supabase Auth sessions remain active during the approved transition. Supabase remains PostgreSQL infrastructure.
 
-- Do not reintroduce any retired authentication provider, dependency, middleware, environment variable, webhook, identity mapper, or hosted auth UI.
-- Do not introduce another third-party identity system without explicit architecture approval.
+- New customer authentication work targets Clerk. Retire the existing customer Supabase Auth path after verified replacement coverage and an approved production cutover.
+- Admin operator and Treasury session changes require an assessment of their distinct authorization boundaries. Any additional identity provider requires explicit architecture approval.
 - Browser applications may use only the Supabase project URL and publishable client key. Service-role credentials and provider secrets are server-only.
 - Authentication proves identity only. It never grants financial, administrative, treasury, organization, or provider-execution authority by itself.
 - Authorization remains server-owned through immutable Neptlium principals, role/membership/policy state, governed API commands, RLS where applicable, and the financial authority chain.

@@ -1,3 +1,5 @@
+import { clerkMiddleware } from '@clerk/nextjs/server';
+import { clerkPreviewConfig, clerkPreviewPaths, isClerkPreviewPath } from './lib/auth/clerk-preview-config';
 import { NextResponse, type NextRequest } from 'next/server';
 import { refreshSupabaseSession } from '@neptlium/lib/supabase/proxy';
 import {
@@ -22,7 +24,19 @@ function withRefreshedCookies(target: NextResponse, refreshed: NextResponse) {
   return target;
 }
 
-export default async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest, event: import('next/server').NextFetchEvent) {
+  if (isClerkPreviewPath(request.nextUrl.pathname)) {
+    const preview = clerkPreviewConfig();
+    if (!preview || request.nextUrl.origin !== preview.appOrigin)
+      return new NextResponse(null, { status: 404, headers: { 'cache-control': 'no-store' } });
+    return clerkMiddleware({
+      publishableKey: preview.publishableKey,
+      authorizedParties: [preview.appOrigin],
+      signInUrl: clerkPreviewPaths.signIn,
+      signUpUrl: clerkPreviewPaths.signUp,
+    })(request, event);
+  }
+
   // Never trust a caller-supplied return header. Set it before session refresh creates
   // its forwarded request response, preserving the existing refreshed-cookie handling.
   request.headers.delete(ACCOUNT_RETURN_HEADER);
