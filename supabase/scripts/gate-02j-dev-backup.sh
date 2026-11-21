@@ -5,8 +5,9 @@ umask 077
 mode=${1:?backup mode required}
 out=${2:?encrypted output directory required}
 scratch=$(mktemp -d)
-restore=gate02j-restore
-fixture=gate02j-source
+suffix=${scratch##*/}
+restore="gate02j-restore-$suffix"
+fixture="gate02j-source-$suffix"
 cleanup() {
   docker rm -f "$restore" "$fixture" >/dev/null 2>&1 || true
   rm -rf -- "$scratch"
@@ -25,6 +26,7 @@ wait_db() {
 private() {
   if ! "$@" 2>>"$scratch/private.log"; then
     printf 'Backup verification failed at stage: %s\n' "$stage" >&2
+    if [[ "$mode" = fixture ]]; then tail -n 12 "$scratch/private.log" >&2; fi
     exit 1
   fi
 }
@@ -84,9 +86,10 @@ mkdir "$scratch/bundle"
 private source_pg psql -XAt -v ON_ERROR_STOP=1 -c "
   select quote_ident(nspname) from pg_namespace
   where nspname not like 'pg\\_%' and nspname not in
-    ('information_schema','auth','storage','extensions','graphql','graphql_public','realtime','vault',
+    ('information_schema','auth','storage','extensions','graphql','graphql_public','realtime',
      'net','cron','supabase_functions','pgsodium','pgsodium_masks','_realtime','_analytics','supabase_internal',
      'pgmq','pgbouncer')
+    and (nspname = 'public' or not exists (select from pg_extension where extnamespace = pg_namespace.oid))
   order by nspname" > "$scratch/bundle/schemas.txt"
 mapfile -t schemas < "$scratch/bundle/schemas.txt"
 (( ${#schemas[@]} > 0 ))
