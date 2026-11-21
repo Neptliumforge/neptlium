@@ -1,0 +1,56 @@
+name: Gate 02J Dev backup and isolated restore
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/gate-02j-dev-backup.yml'
+      - 'supabase/scripts/gate-02j-dev-backup.sh'
+      - 'supabase/scripts/check-restored-schema.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  fixture:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq age
+      - run: bash supabase/scripts/gate-02j-dev-backup.sh fixture "$RUNNER_TEMP/gate02j-fixture"
+  dev-backup:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: gate-02j-dev-backup
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq age
+      - name: Capture and restore the Dev backup
+        env:
+          NEPTLIUM_DEV_DB_PASSWORD: ${{ secrets.NEPTLIUM_DEV_DB_PASSWORD }}
+          NEPTLIUM_DEV_DB_CA_PEM: ${{ secrets.NEPTLIUM_DEV_DB_CA_PEM }}
+          NEPTLIUM_DEV_SESSION_POOLER_HOST: ${{ vars.NEPTLIUM_DEV_SESSION_POOLER_HOST }}
+          NEPTLIUM_DEV_BACKUP_AGE_RECIPIENT: ${{ vars.NEPTLIUM_DEV_BACKUP_AGE_RECIPIENT }}
+        run: bash supabase/scripts/gate-02j-dev-backup.sh dev "$RUNNER_TEMP/gate02j-encrypted"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-dev-encrypted-backup
+          path: |
+            ${{ runner.temp }}/gate02j-encrypted/neptlium-dev-backup.tar.age
+            ${{ runner.temp }}/gate02j-encrypted/neptlium-dev-backup.tar.age.sha256
+          retention-days: 1
+          if-no-files-found: error

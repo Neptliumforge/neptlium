@@ -71,6 +71,7 @@ jobs:
           --health-retries 10
     steps:
       - uses: actions/checkout@v4
+      - run: node --test supabase/test/schema-install-plan.test.mjs
       - run: node --test supabase/test/canonical-balances.test.mjs
       - name: Canonical balances database contract
         env:
