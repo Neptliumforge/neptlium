@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { requireVerifiedClerkPrincipal, type VerifiedPrincipalResolution } from './clerk-principal-gate';
+import { requireVerifiedClerkPrincipal, type VerifiedPrincipalResolution } from './clerk-principal-gate.ts';
 
 /**
  * Server-only Preview adapter for a future Clerk -> Neptlium API session.
@@ -28,14 +28,14 @@ export async function resolvePreviewClerkApiSession(
   if (deps.environment !== 'preview' || deps.apiProvider !== 'clerk-preview' || !UUID.test(tenantId)) {
     return null;
   }
-  const token = await deps.getSessionToken();
-  if (!token || token.length > 16384 || !JWT.test(token)) return null;
-
-  // The API verifies the JWT signature, issuer, audience, azp and expiry
-  // before returning a durable principal and active membership decision.
-  const resolution = await deps.resolveVerifiedPrincipal(token, tenantId);
-  if (!resolution || resolution.requestedTenantId.toLowerCase() !== tenantId.toLowerCase()) return null;
   try {
+    const token = await deps.getSessionToken();
+    if (!token || token.length > 16384 || !JWT.test(token)) return null;
+
+    // The API verifies the JWT signature, issuer, audience, azp and expiry
+    // before returning a durable principal and active membership decision.
+    const resolution = await deps.resolveVerifiedPrincipal(token, tenantId);
+    if (!resolution || resolution.requestedTenantId.toLowerCase() !== tenantId.toLowerCase()) return null;
     const principalId = requireVerifiedClerkPrincipal(resolution);
     return { bearerToken: token, principalId };
   } catch {
