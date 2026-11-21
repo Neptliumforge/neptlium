@@ -21,9 +21,11 @@ test('Capital Rails use canonical semantic tokens and reduced motion', () => {
   assert.match(tokens, /\.n-capital-rails/);
 });
 
-test('homepage uses portfolio overview rather than Capital Rails', () => {
-  assert.match(home, /<ProductStage \/>/);
-  assert.match(home, /Portfolio overview/);
+test('homepage uses an illustrative authority workflow without inventing financial state', () => {
+  assert.match(home, /<AuthorityStage \/>/);
+  assert.match(home, /Movement with authority/);
+  assert.match(home, /Illustrative model/);
+  assert.match(home, /does not represent a live payment, settlement or customer account/);
   assert.doesNotMatch(home, /CapitalRails|SignatureHeroObject/);
 });
 
