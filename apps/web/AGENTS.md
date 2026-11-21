@@ -79,6 +79,7 @@ Describe capability state accurately as operational, Preview-only, planned, limi
 ## Frontend implementation standards
 
 - Use the existing Next.js App Router, TypeScript, React, Tailwind CSS 4 conventions, CSS Modules and `@neptlium/ui` primitives already present. Reuse shared components and tokens before creating local abstractions or adding dependencies.
+- The current Web manifest declares Next.js 16.2.10, React/React DOM 19.2.7, TypeScript 6.0.3 and Tailwind CSS 4.3.2; the root package manifest declares pnpm 11.9.0. Treat the package manifests and lockfile, not this version note, as the executable dependency authority.
 - The shared design authority is `docs/experience/DESIGN_SYSTEM.md` and `packages/ui/src/styles/tokens.css`. Do not introduce page-local brand palettes, duplicate typography/spacing scales, competing theme systems or unapproved visual primitives.
 - Build responsive compositions rather than shrinking desktop layouts. Check at least 360, 390, 768, 1280 and 1440 CSS pixels; avoid horizontal overflow and preserve readable line lengths and 44px minimum interactive targets.
 - Use semantic landmarks, a single meaningful H1 per page, ordered headings, real links for navigation, buttons for actions, accessible names, visible keyboard focus, focus-managed dialogs and non-color-only status cues. Target WCAG 2.2 AA contrast and interaction behavior.
