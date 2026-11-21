@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   browser-qa:
@@ -42,6 +42,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Check agent and workflow documentation formatting
+        run: pnpm exec prettier --check AGENTS.md apps/web/AGENTS.md .github/workflows/web-preview-browser-qa.yml
       - name: Build Web production application
         run: pnpm --filter @neptlium/web build
       - name: Build Customer App production application
@@ -83,30 +85,7 @@ jobs:
           fi
       - name: Run Playwright release QA
         working-directory: apps/web
-        run: |
-          if [ "${GITHUB_HEAD_REF:-}" = "feat/web-premium-experience" ]; then
-            pnpm exec playwright test --update-snapshots
-          else
-            pnpm exec playwright test
-          fi
-      # One-time refresh for the intentionally redesigned Infrastructure page.
-      # This branch-scoped step is removed after the updated baselines are committed.
-      - name: Commit refreshed Infrastructure visual baselines
-        if: success() && github.event_name == 'pull_request' && github.head_ref == 'feat/web-premium-experience'
-        shell: bash
-        run: |
-          mkdir -p /tmp/neptlium-infrastructure-baselines
-          cp apps/web/tests/e2e/dark-surfaces.spec.ts-snapshots/infrastructure-*.png /tmp/neptlium-infrastructure-baselines/
-          git fetch origin "${GITHUB_HEAD_REF}"
-          git reset --hard "origin/${GITHUB_HEAD_REF}"
-          cp /tmp/neptlium-infrastructure-baselines/infrastructure-*.png apps/web/tests/e2e/dark-surfaces.spec.ts-snapshots/
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/web/tests/e2e/dark-surfaces.spec.ts-snapshots/infrastructure-*.png
-          if ! git diff --cached --quiet; then
-            git commit -m "test(web): refresh infrastructure visual baselines"
-            git push origin "HEAD:${GITHUB_HEAD_REF}"
-          fi
+        run: pnpm exec playwright test
       - name: Upload canonical route visual baseline
         if: always()
         uses: actions/upload-artifact@v4
