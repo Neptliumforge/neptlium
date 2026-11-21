@@ -50,6 +50,15 @@ jobs:
         if: success() && github.event_name == 'pull_request' && github.head_ref == 'feat/web-premium-experience'
         shell: bash
         run: |
+          mkdir -p /tmp/neptlium-formatted-docs/apps/web /tmp/neptlium-formatted-docs/.github/workflows
+          cp AGENTS.md /tmp/neptlium-formatted-docs/AGENTS.md
+          cp apps/web/AGENTS.md /tmp/neptlium-formatted-docs/apps/web/AGENTS.md
+          cp .github/workflows/web-preview-browser-qa.yml /tmp/neptlium-formatted-docs/.github/workflows/web-preview-browser-qa.yml
+          git fetch origin "refs/heads/${GITHUB_HEAD_REF}:refs/remotes/origin/${GITHUB_HEAD_REF}"
+          git reset --hard "refs/remotes/origin/${GITHUB_HEAD_REF}"
+          cp /tmp/neptlium-formatted-docs/AGENTS.md AGENTS.md
+          cp /tmp/neptlium-formatted-docs/apps/web/AGENTS.md apps/web/AGENTS.md
+          cp /tmp/neptlium-formatted-docs/.github/workflows/web-preview-browser-qa.yml .github/workflows/web-preview-browser-qa.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add AGENTS.md apps/web/AGENTS.md .github/workflows/web-preview-browser-qa.yml
