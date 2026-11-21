@@ -25,6 +25,7 @@ export class SupabaseClerkPreviewIdentityStore implements ClerkPreviewIdentitySt
     try {
       response = await this.request(`${this.url}/rest/v1/${path}`, {
         headers: { apikey: this.serviceKey, authorization: `Bearer ${this.serviceKey}` },
+        redirect: 'error',
         signal: AbortSignal.timeout(8000),
       });
     } catch {
@@ -43,17 +44,17 @@ export class SupabaseClerkPreviewIdentityStore implements ClerkPreviewIdentitySt
     );
     if (links.length !== 1) return null;
     const link = links[0] as { principal_id?: unknown; provider?: unknown; provider_subject?: unknown; status?: unknown };
-    const id = link.principal_id;
-    if (link.provider !== undefined && link.provider !== 'CLERK') return null;
-    if (link.provider_subject !== undefined && link.provider_subject !== subject) return null;
-    if (link.status !== undefined && link.status !== 'ACTIVE') return null;
+    const id = link?.principal_id;
+    if (link?.provider !== 'CLERK') return null;
+    if (link?.provider_subject !== subject) return null;
+    if (link?.status !== 'ACTIVE') return null;
     if (typeof id !== 'string' || !UUID.test(id)) return null;
     const principals = await this.rows(
-      `identity_principals?id=eq.${encodeURIComponent(id)}&status=eq.ACTIVE&select=id,suspended_at,retired_at&limit=2`,
+      `identity_principals?id=eq.${encodeURIComponent(id)}&status=eq.ACTIVE&select=id,status,suspended_at,retired_at&limit=2`,
     );
     if (principals.length !== 1) return null;
-    const principal = principals[0] as { id?: unknown; suspended_at?: unknown; retired_at?: unknown };
-    return principal.id === id && principal.suspended_at == null && principal.retired_at == null ? id : null;
+    const principal = principals[0] as { id?: unknown; status?: unknown; suspended_at?: unknown; retired_at?: unknown };
+    return principal?.id === id && principal.status === 'ACTIVE' && principal.suspended_at === null && principal.retired_at === null ? id : null;
   }
 
   async isActiveOrganizationMember(principalId: string, organizationId: string): Promise<boolean> {
@@ -65,9 +66,9 @@ export class SupabaseClerkPreviewIdentityStore implements ClerkPreviewIdentitySt
     );
     if (subjects.length !== 1) return false;
     const subject = subjects[0] as { provider_subject?: unknown; principal_id?: unknown; provider?: unknown; status?: unknown };
-    if (subject.principal_id !== undefined && subject.principal_id !== principalId) return false;
-    if (subject.provider !== undefined && subject.provider !== 'SUPABASE_AUTH') return false;
-    if (subject.status !== undefined && subject.status !== 'ACTIVE') return false;
+    if (subject?.principal_id !== principalId) return false;
+    if (subject?.provider !== 'SUPABASE_AUTH') return false;
+    if (subject?.status !== 'ACTIVE') return false;
     const userId = subject.provider_subject;
     if (typeof userId !== 'string' || !UUID.test(userId)) return false;
     const memberships = await this.rows(
@@ -75,7 +76,7 @@ export class SupabaseClerkPreviewIdentityStore implements ClerkPreviewIdentitySt
     );
     if (memberships.length !== 1) return false;
     const membership = memberships[0] as { organization_id?: unknown; user_id?: unknown; status?: unknown; suspended_at?: unknown; revoked_at?: unknown };
-    return membership.organization_id === organizationId && membership.user_id === userId && membership.status === 'active' && membership.suspended_at == null && membership.revoked_at == null;
+    return membership?.organization_id === organizationId && membership.user_id === userId && membership.status === 'active' && membership.suspended_at === null && membership.revoked_at === null;
   }
 }
 
