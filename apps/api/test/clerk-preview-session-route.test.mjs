@@ -35,7 +35,7 @@ function bearer(overrides = {}) {
   return { authorization: 'Bearer ' + body + '.' + sign('RSA-SHA256', Buffer.from(body), privateKey).toString('base64url') };
 }
 
-function fixtureFetch({ jwksUnavailable = false, storageUnavailable = false } = {}) {
+function fixtureFetch({ jwksUnavailable = false, storageUnavailable = false, principalStatus = 'ACTIVE', membershipStatus = 'active' } = {}) {
   return async (input, options) => {
     const url = new URL(input);
     if (url.origin === issuer) {
@@ -59,10 +59,10 @@ function fixtureFetch({ jwksUnavailable = false, storageUnavailable = false } = 
         }
         return Response.json([{ principal_id: principalId, provider: 'SUPABASE_AUTH', provider_subject: legacyUser, status: 'ACTIVE' }]);
       case '/rest/v1/identity_principals':
-        return Response.json([{ id: principalId, status: 'ACTIVE', suspended_at: null, retired_at: null }]);
+        return Response.json([{ id: principalId, status: principalStatus, suspended_at: principalStatus === 'SUSPENDED' ? '2026-01-01' : null, retired_at: null }]);
       case '/rest/v1/organization_memberships':
         return Response.json(query.get('organization_id') === 'eq.' + organizationId && query.get('user_id') === 'eq.' + legacyUser
-          ? [{ organization_id: organizationId, user_id: legacyUser, status: 'active', suspended_at: null, revoked_at: null }]
+          ? [{ organization_id: organizationId, user_id: legacyUser, status: membershipStatus, suspended_at: null, revoked_at: membershipStatus === 'revoked' ? '2026-01-01' : null }]
           : []);
       default:
         assert.fail('unexpected fixture request');
@@ -99,6 +99,14 @@ test('denies on key service failure and reports unavailable durable identity sto
   assert.equal(await keysDown(bearer(), organizationId), null);
   const storageDown = createClerkPreviewSessionRoute(config, fixtureFetch({ storageUnavailable: true }));
   await assert.rejects(() => storageDown(bearer(), organizationId), { code: 'identity_storage_unavailable' });
+});
+
+test('denies a suspended principal and revoked organization membership', async () => {
+  const config = clerkPreviewRouteConfig(env);
+  for (const state of [{ principalStatus: 'SUSPENDED' }, { membershipStatus: 'revoked' }]) {
+    const session = createClerkPreviewSessionRoute(config, fixtureFetch(state));
+    assert.equal(await session(bearer(), organizationId), null);
+  }
 });
 
 test('canonical application exposes only the enabled Preview GET route', async () => {
