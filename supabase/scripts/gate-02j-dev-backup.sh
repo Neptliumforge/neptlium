@@ -115,8 +115,18 @@ stage=isolated-restore
 private docker run -d --name "$restore" --network none -e POSTGRES_USER=gate02j_restore \
   -e POSTGRES_HOST_AUTH_METHOD=trust "$image" >/dev/null
 private wait_db "$restore" gate02j_restore
+# PostgreSQL 17 requires the membership grantor to be the current role.
+# pg_dumpall emits the grantor explicitly. Reproduce it on the isolated target.
+sed -E '/^GRANT .* GRANTED BY (.+);$/ {
+  h
+  s/^.* GRANTED BY (.+);$/SET ROLE \1;/
+  p
+  g
+  p
+  s/.*/RESET ROLE;/
+}' "$scratch/bundle/roles.sql" > "$scratch/restore-roles.sql"
 private docker exec -i "$restore" psql -Xq -v ON_ERROR_STOP=1 -U gate02j_restore -d postgres \
-  < "$scratch/bundle/roles.sql" >/dev/null
+  < "$scratch/restore-roles.sql" >/dev/null
 private docker cp "$scratch/bundle/application.dump" "$restore:/tmp/application.dump"
 private docker exec "$restore" pg_restore --list /tmp/application.dump > "$scratch/archive.list"
 # PostgreSQL initializes public on the isolated target.
