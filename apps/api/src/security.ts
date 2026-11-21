@@ -49,6 +49,7 @@ export class SupabaseRateLimiter implements RateLimiter {
           'content-type': 'application/json',
         },
         body: JSON.stringify({ p_key: opaqueKey, p_limit: limit, p_window_ms: windowMs }),
+        redirect: 'error',
         signal: AbortSignal.timeout(3_000),
       });
     } catch {
@@ -56,12 +57,14 @@ export class SupabaseRateLimiter implements RateLimiter {
     }
     if (!response.ok)
       throw new ApiError(503, 'rate_limit_unavailable', 'Request rate limiting is unavailable');
-    const rows = await response.json().catch(() => undefined) as
-      | Array<{ allowed?: unknown; remaining?: unknown; reset_at?: unknown }>
-      | undefined;
-    const row = rows?.[0];
+    const rows: unknown = await response.json().catch(() => undefined);
+    const row = Array.isArray(rows) && rows.length === 1
+      ? rows[0] as { allowed?: unknown; remaining?: unknown; reset_at?: unknown } | null
+      : null;
     const resetAt = typeof row?.reset_at === 'string' ? Date.parse(row.reset_at) : NaN;
-    if (!row || typeof row.allowed !== 'boolean' || typeof row.remaining !== 'number' || !Number.isFinite(resetAt))
+    if (!row || typeof row.allowed !== 'boolean' || typeof row.remaining !== 'number' ||
+        !Number.isSafeInteger(row.remaining) || row.remaining < 0 || row.remaining >= limit ||
+        (!row.allowed && row.remaining !== 0) || !Number.isFinite(resetAt))
       throw new ApiError(503, 'rate_limit_unavailable', 'Request rate limiting is unavailable');
     if (!row.allowed)
       throw new ApiError(429, 'rate_limited', 'Request rate limit exceeded', {

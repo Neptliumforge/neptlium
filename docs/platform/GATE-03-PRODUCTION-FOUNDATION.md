@@ -52,3 +52,25 @@ The staged API gate reuses the independent RS256 verifier, requires production d
 | Capital | BLOCKED for hosted ledger authorization. Existing canonical balance fixtures remain the regression gate. |
 | Treasury | BLOCKED for hosted ownership and approval controls. Existing wallet/destination and approval tests remain required. |
 | Pay | BLOCKED for hosted provider and payment authorization. Keep the execution capability disabled. |
+
+## Gate 03B provisioning and recovery evidence
+
+### Clerk domains and approval
+
+Clerk still reports a Development-only Neptlium application. Its domain inventory cannot return a Production frontend endpoint before a Production instance exists. For the approved App origin `https://app.neptlium.com`, plan on the owned root `neptlium.com` and review the exact domain fields with the owner before the irreversible Production instance creation. Clerk documents `accounts.<root>` as the default **Account Portal** hostname. The preferred `accounts.neptlium.com` therefore describes the desired portal. Confirm the distinct actual Frontend API origin and the issuer from Clerk's returned Production configuration and a signed token. Obtain separate approval for any DNS changes, then publish only Clerk's returned records. [Clerk production deployment](https://clerk.com/docs/guides/development/deployment/production) · [Account Portal](https://clerk.com/docs/guides/account-portal/getting-started)
+
+Keep the Production origin allowlist restricted to `https://app.neptlium.com`; explicitly approve exact sign-in, sign-up and recovery return destinations and the chosen OAuth callback paths. The Production audience contract is `neptlium-api`. Record `iss`, `aud`, `azp`, signature and expiry only as redacted verification outcomes. Keep Production keys in separate server-only/public scopes as appropriate and keep router registration and certification switches disabled pending real signed-session evidence and rollback review.
+
+### Production backup connection
+
+The approved project is `udghxwlhztwxvkjaefjh` in `us-east-2`; its direct database host is `db.udghxwlhztwxvkjaefjh.supabase.co`. SQL reports SSL enabled. Actual backup-client TLS and credential scope remain unverified. Use an owner-approved existing backup role and temporary credential through protected secret storage. Use the project's trusted CA, strict hostname verification, and a read-only client default. If the direct endpoint is unavailable to the runner, use the dashboard-verified **session** pooler with project-scoped username and strict TLS. Privilege scope must support reading every approved application relation and metadata needed for recovery. Escalate missing role-operation permissions to the owner instead of creating or modifying Production roles.
+
+Check schema, rows, migration ledger, exportable roles and ACLs. Exclude role password verifiers. Encrypt the archive to an approved public recipient before retention, record an external checksum, and restore into a network-isolated Supabase-compatible target. Verify role grantors, schema, grants, RLS, rows and migration history before accepting the archive. Inventory managed Auth users, identities, signing material, Storage metadata and object content, managed settings, extensions and backup coverage separately. Gate 02J's Dev script is deliberately target-pinned and its fixture rehearsal does not certify Production. The restricted Production connection is not yet available; no Production archive or restore was attempted.
+
+The Production history table is still absent and the connector lists zero migrations. The Gate 02F replay and pinned 50-file planner cover the further installation plan. Repeat the target-specific plan and release-tool dry run after verified recovery, then ask for separate migration approval. Never infer that an empty migration history alone makes a database safe to install into.
+
+### Vercel and readiness
+
+Rechecked the Production scope metadata for Web, App, API, Treasury, Pay, Admin, Docs, and Status. Web shares Clerk keys and sign-in/redirect fields across environments. App, Treasury and Pay share the Supabase URL and publishable key across environments. Effective masked destinations and the provenance of Production-labeled Clerk settings remain unverified. Separate the scopes only during an approved release after an owner confirms effective project and instance refs for the deployed revisions.
+
+On the approved Production database, both `public.api_rate_limits` and `public.consume_api_rate_limit(text,integer,integer)` are absent. Migration `20260815115118` installs that durable RPC with service-role-only execution. The API's observed `503 rate_limit_unavailable` is consistent with the missing dependency if the deployment points at the approved project. The masked effective database target and connectivity prevent proving the live cause. Verify the actual target and credential scope without invoking the mutating limiter RPC on Production. Preserve fail-closed behavior; the code rejects redirect responses and malformed or ambiguous limiter decisions with the existing 503 shape.

@@ -16,6 +16,7 @@ test('distributed limiter uses server-only RPC with an opaque key', async () => 
   assert.equal(result.remaining, 4);
   assert.match(call.url, /\/rest\/v1\/rpc\/consume_api_rate_limit$/);
   assert.equal(call.init.headers.authorization, 'Bearer service-secret');
+  assert.equal(call.init.redirect, 'error');
   const body = JSON.parse(call.init.body);
   assert.match(body.p_key, /^[0-9a-f]{64}$/);
   assert.equal(call.init.body.includes('customer-ip'), false);
@@ -24,6 +25,26 @@ test('distributed limiter uses server-only RPC with an opaque key', async () => 
 test('distributed limiter fails closed on storage failure', async () => {
   const limiter = new SupabaseRateLimiter('https://example.supabase.co', 'service', async () => new Response('{}', { status: 503 }));
   await assert.rejects(() => limiter.consume('key', 5, 60_000), (error) => error.code === 'rate_limit_unavailable');
+});
+
+test('distributed limiter denies malformed and ambiguous storage decisions', async () => {
+  const row = { allowed: true, remaining: 4, reset_at: reset };
+  for (const payload of [
+    { 0: row },
+    [row, row],
+    [],
+    [{ ...row, remaining: -1 }],
+    [{ ...row, remaining: 1.5 }],
+    [{ ...row, remaining: 5 }],
+    [{ ...row, allowed: false, remaining: 2 }],
+    [{ ...row, reset_at: 'invalid' }],
+  ]) {
+    const limiter = new SupabaseRateLimiter('https://example.supabase.co', 'fixture-only', async () => Response.json(payload));
+    await assert.rejects(() => limiter.consume('key', 5, 60_000), {
+      status: 503,
+      code: 'rate_limit_unavailable',
+    });
+  }
 });
 
 test('distributed limiter preserves explicit throttling', async () => {
