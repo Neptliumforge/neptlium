@@ -80,7 +80,8 @@ jobs:
           docker exec "$db" pg_restore --list /tmp/gate02f.backup \
             | sed -E '/^[0-9]+; [0-9]+ [0-9]+ SCHEMA - (public|supabase_migrations) /d' \
             > "$RUNNER_TEMP/gate02f-restore.list"
-          docker exec -i "$db" pg_restore -U postgres -d postgres --exit-on-error \
+          # Restore Supabase-owned ACLs with the disposable container's bootstrap role.
+          docker exec -i "$db" pg_restore -U supabase_admin -d postgres --exit-on-error \
             --use-list=/dev/stdin /tmp/gate02f.backup < "$RUNNER_TEMP/gate02f-restore.list"
           docker exec "$db" psql -U postgres -d postgres -XAt -v ON_ERROR_STOP=1 \
             -c "select coalesce(json_agg(version order by version), '[]'::json) from supabase_migrations.schema_migrations" \
