@@ -112,9 +112,12 @@ private source_pg pg_dump --data-only "${scope[@]}" > "$scratch/source-data.sql"
 )
 
 stage=isolated-restore
-private docker run -d --name "$restore" --network none -e POSTGRES_USER=gate02j_restore \
+# Keep PostgreSQL's bootstrap role identity for role grants that name that grantor.
+bootstrap=$(private source_pg psql -XAt -v ON_ERROR_STOP=1 -c 'select rolname from pg_roles where oid = 10')
+[[ "$bootstrap" =~ ^[a-z_][a-z0-9_]*$ ]]
+private docker run -d --name "$restore" --network none -e "POSTGRES_USER=$bootstrap" \
   -e POSTGRES_HOST_AUTH_METHOD=trust "$image" >/dev/null
-private wait_db "$restore" gate02j_restore
+private wait_db "$restore" "$bootstrap"
 # PostgreSQL 17 requires the membership grantor to be the current role.
 # pg_dumpall emits the grantor explicitly. Reproduce it on the isolated target.
 sed -E '/^GRANT .* GRANTED BY (.+);$/ {
@@ -124,23 +127,24 @@ sed -E '/^GRANT .* GRANTED BY (.+);$/ {
   g
   p
   s/.*/RESET SESSION AUTHORIZATION;/
-}' "$scratch/bundle/roles.sql" > "$scratch/restore-roles.sql"
+}' "$scratch/bundle/roles.sql" \
+  | awk -v create="CREATE ROLE $bootstrap;" '$0 != create' > "$scratch/restore-roles.sql"
 stage=restore-roles
 if [[ "$mode" = fixture ]]; then
   grep -E '^(GRANT |SET SESSION AUTHORIZATION|RESET SESSION AUTHORIZATION)' "$scratch/restore-roles.sql" >> "$scratch/private.log" || true
 fi
-private docker exec -i "$restore" psql -Xq -v ON_ERROR_STOP=1 -U gate02j_restore -d postgres \
+private docker exec -i "$restore" psql -Xq -v ON_ERROR_STOP=1 -U "$bootstrap" -d postgres \
   < "$scratch/restore-roles.sql" >/dev/null
 stage=restore-application
 private docker cp "$scratch/bundle/application.dump" "$restore:/tmp/application.dump"
 private docker exec "$restore" pg_restore --list /tmp/application.dump > "$scratch/archive.list"
 # PostgreSQL initializes public on the isolated target.
 sed -E '/^[0-9]+; [0-9]+ [0-9]+ SCHEMA - public /d' "$scratch/archive.list" > "$scratch/restore.list"
-private docker exec -i "$restore" pg_restore -U gate02j_restore -d postgres --exit-on-error \
+private docker exec -i "$restore" pg_restore -U "$bootstrap" -d postgres --exit-on-error \
   --use-list=/dev/stdin /tmp/application.dump < "$scratch/restore.list" >/dev/null
-private docker exec "$restore" pg_dump -U gate02j_restore -d postgres --schema-only "${scope[@]}" > "$scratch/restored-schema.sql"
-private docker exec "$restore" pg_dump -U gate02j_restore -d postgres --data-only "${scope[@]}" > "$scratch/restored-data.sql"
-private docker exec "$restore" pg_dumpall -U gate02j_restore --roles-only --no-role-passwords > "$scratch/restored-roles.sql"
+private docker exec "$restore" pg_dump -U "$bootstrap" -d postgres --schema-only "${scope[@]}" > "$scratch/restored-schema.sql"
+private docker exec "$restore" pg_dump -U "$bootstrap" -d postgres --data-only "${scope[@]}" > "$scratch/restored-data.sql"
+private docker exec "$restore" pg_dumpall -U "$bootstrap" --roles-only --no-role-passwords > "$scratch/restored-roles.sql"
 
 stage=compare
 normalize() {
@@ -153,7 +157,7 @@ private node "$(dirname "$0")/check-restored-schema.mjs" "$scratch/source-schema
 private cmp -s <(normalize "$scratch/source-data.sql") <(normalize "$scratch/restored-data.sql")
 roles() {
   normalize "$1" | grep -E '^(CREATE ROLE |ALTER ROLE |GRANT |COMMENT ON ROLE |SECURITY LABEL)' \
-    | grep -vE '^(CREATE|ALTER) ROLE gate02j_restore([ ;]|$)' | LC_ALL=C sort
+    | LC_ALL=C sort
 }
 private cmp -s <(roles "$scratch/bundle/roles.sql") <(roles "$scratch/restored-roles.sql")
 
