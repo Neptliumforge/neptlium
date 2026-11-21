@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   browser-qa:
@@ -46,26 +46,16 @@ jobs:
         run: pnpm exec prettier --write AGENTS.md apps/web/AGENTS.md .github/workflows/web-preview-browser-qa.yml
       - name: Check agent and workflow documentation formatting
         run: pnpm exec prettier --check AGENTS.md apps/web/AGENTS.md .github/workflows/web-preview-browser-qa.yml
-      - name: Commit formatted agent and workflow documentation
-        if: success() && github.event_name == 'pull_request' && github.head_ref == 'feat/web-premium-experience'
-        shell: bash
-        run: |
-          mkdir -p /tmp/neptlium-formatted-docs/apps/web /tmp/neptlium-formatted-docs/.github/workflows
-          cp AGENTS.md /tmp/neptlium-formatted-docs/AGENTS.md
-          cp apps/web/AGENTS.md /tmp/neptlium-formatted-docs/apps/web/AGENTS.md
-          cp .github/workflows/web-preview-browser-qa.yml /tmp/neptlium-formatted-docs/.github/workflows/web-preview-browser-qa.yml
-          git fetch origin "refs/heads/${GITHUB_HEAD_REF}:refs/remotes/origin/${GITHUB_HEAD_REF}"
-          git reset --hard "refs/remotes/origin/${GITHUB_HEAD_REF}"
-          cp /tmp/neptlium-formatted-docs/AGENTS.md AGENTS.md
-          cp /tmp/neptlium-formatted-docs/apps/web/AGENTS.md apps/web/AGENTS.md
-          cp /tmp/neptlium-formatted-docs/.github/workflows/web-preview-browser-qa.yml .github/workflows/web-preview-browser-qa.yml
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add AGENTS.md apps/web/AGENTS.md .github/workflows/web-preview-browser-qa.yml
-          if ! git diff --cached --quiet; then
-            git commit -m "docs(web): format agent and workflow instructions"
-            git push origin "HEAD:${GITHUB_HEAD_REF}"
-          fi
+      - name: Upload formatted contributor instructions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-formatted-agent-instructions
+          path: |
+            AGENTS.md
+            apps/web/AGENTS.md
+            .github/workflows/web-preview-browser-qa.yml
+          retention-days: 7
       - name: Build Web production application
         run: pnpm --filter @neptlium/web build
       - name: Build Customer App production application
