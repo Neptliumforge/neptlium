@@ -10,18 +10,13 @@ const brand = read('components/brand.tsx');
 const site = read('lib/content/site.ts');
 const architecture = read('lib/content/public-architecture.ts');
 
-test('homepage states the canonical capital proposition without fabricated financial proof', () => {
+test('homepage states the platform proposition without fabricated financial proof', () => {
   assert.match(page, /Capital, intelligently managed\./);
-  assert.match(
-    page,
-    /Discover the ideas behind an investment/i,
-  );
-  assert.match(page, /Get started/);
-  assert.match(page, /Explore investing/);
-  assert.match(
-    page,
-    /Illustrative interface only\.[\s\S]*No customer balances, returns or performance data are[\s\S]*shown\./i,
-  );
+  assert.match(page, /The Capital Operating Platform/);
+  assert.match(page, /Every movement has authority\. Every position has evidence\./);
+  assert.match(page, /Illustrative model/);
+  assert.match(page, /does not represent a live payment, settlement or customer account/);
+  assert.match(page, /Explore the platform/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
   assert.doesNotMatch(
     page,
@@ -29,13 +24,13 @@ test('homepage states the canonical capital proposition without fabricated finan
   );
 });
 
-test('homepage exposes the four canonical product families and contextual intelligence', () => {
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
-    assert.match(page, new RegExp(family, 'i'));
-  for (const href of ['/capital', '/treasury', '/institutional', '/investments'])
+test('homepage exposes the six canonical capabilities and contextual intelligence', () => {
+  for (const capability of ['Capital', 'Portfolio', 'Investments', 'Treasury', 'Intelligence', 'Infrastructure'])
+    assert.match(page, new RegExp(capability, 'i'));
+  for (const href of ['/capital', '/portfolio', '/investments', '/treasury', '/intelligence', '/infrastructure'])
     assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
   assert.match(page, /InvestCollections/);
-  assert.match(page, /Research & intelligence/);
+  assert.match(page, /authority/);
   assert.match(page, /DISCLOSURES\.general/);
 });
 
