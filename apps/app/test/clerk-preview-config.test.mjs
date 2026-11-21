@@ -43,7 +43,9 @@ test('missing or invalid API settings leave sign-in available and tenant verific
   }
 });
 
-test('Clerk middleware is scoped to the Preview route subtree', () => {
+test('Clerk middleware is scoped to the Preview subtree and reads its server key from the environment', () => {
+  const proxy = readFileSync(new URL('../proxy.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(proxy, /secretKey\s*:/);
   for (const path of ['/preview/clerk', '/preview/clerk/sign-in/sso-callback', '/preview/clerk/session']) {
     assert.equal(isClerkPreviewPath(path), true);
   }

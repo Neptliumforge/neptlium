@@ -31,7 +31,6 @@ export default async function proxy(request: NextRequest, event: import('next/se
       return new NextResponse(null, { status: 404, headers: { 'cache-control': 'no-store' } });
     return clerkMiddleware({
       publishableKey: preview.publishableKey,
-      secretKey: preview.secretKey,
       authorizedParties: [preview.appOrigin],
       signInUrl: clerkPreviewPaths.signIn,
       signUpUrl: clerkPreviewPaths.signUp,

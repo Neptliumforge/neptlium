@@ -28,5 +28,5 @@ export function clerkPreviewConfig(env: Readonly<Record<string, string | undefin
   if (!publishableKey?.startsWith('pk_test_') || !secretKey?.startsWith('sk_test_') || !appOrigin) return undefined;
   // Clerk sign-in can be verified before the API's tenant session path is configured.
   const api = apiOrigin && template && appOrigin !== apiOrigin ? { origin: apiOrigin, template } : undefined;
-  return { publishableKey, secretKey, appOrigin, api };
+  return { publishableKey, appOrigin, api };
 }
