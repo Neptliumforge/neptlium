@@ -16,8 +16,21 @@ type CanonicalApplication = {
   }): Promise<InjectionResponse>;
 };
 
-export function createServerlessHandler(application: Promise<CanonicalApplication>) {
+export function createServerlessHandler(
+  application: Promise<CanonicalApplication>,
+  preview = false,
+) {
+  const previewApplication = preview ? application.catch(() => null) : undefined;
   return async function handler(req: IncomingMessage, res: ServerResponse) {
+    const previewApp = previewApplication ? await previewApplication : undefined;
+    if (previewApp === null) {
+      res.writeHead(503, {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'no-store',
+      });
+      res.end(JSON.stringify({ error: { code: 'api_unavailable', message: 'Preview API is unavailable.' } }));
+      return;
+    }
     const chunks: Buffer[] = [];
     let size = 0;
     for await (const chunk of req) {
@@ -51,7 +64,7 @@ export function createServerlessHandler(application: Promise<CanonicalApplicatio
       return;
     }
 
-    const app = await application;
+    const app = previewApp ?? await application;
     const response = await app.inject({
       method: req.method ?? 'GET',
       url,
@@ -77,6 +90,7 @@ async function buildProductionApplication() {
 
 let productionHandler: ReturnType<typeof createServerlessHandler> | undefined;
 export async function serverlessHandler(req: IncomingMessage, res: ServerResponse) {
-  productionHandler ??= createServerlessHandler(buildProductionApplication());
+  const preview = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_TARGET_ENV !== 'production';
+  productionHandler ??= createServerlessHandler(buildProductionApplication(), preview);
   return productionHandler(req, res);
 }
