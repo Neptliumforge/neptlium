@@ -32,3 +32,13 @@ Verified deployment evidence: Vercel Preview deployment `dpl_FLMKebfHUVZArwUDmva
 - GitHub/Vercel integration and Preview build are verified, but end-to-end authentication is not.
 - Identity bootstrap, existing-account linking and database membership invariants require evidence.
 - Do not merge, promote to production, alter production Supabase, or enable financial execution without release-specific authorization and verified rollback.
+
+## Preview API acceptance
+
+The read-only `GET /v1/preview/clerk/session?organization_id=<uuid>` endpoint accepts a Clerk bearer token and returns the preserved Neptlium principal and verified organization IDs. It takes the same routing path on Node and Vercel. The endpoint is disabled unless the deployment is Vercel Preview and the existing Clerk Preview readiness flags are set.
+
+Set `NEPTLIUM_API_AUTH_PROVIDER=clerk-preview` and enable `NEPTLIUM_CLERK_API_VERIFIER_TESTED`, `NEPTLIUM_CLERK_IDENTITY_RESOLVER_TESTED`, and `NEPTLIUM_CLERK_TENANT_ISOLATION_TESTED` after reviewing automated evidence. Set `NEPTLIUM_CLERK_PREVIEW_ISSUER` to the exact Clerk Preview issuer origin, `NEPTLIUM_CLERK_PREVIEW_AUDIENCE` to the API token audience, and `NEPTLIUM_CLERK_PREVIEW_APP_ORIGIN` to the exact App origin expected in the token's authorized-party claim. Configure `NEPTLIUM_CLERK_PREVIEW_SUPABASE_URL` and `NEPTLIUM_CLERK_PREVIEW_SUPABASE_SERVICE_ROLE_KEY` for a dedicated fixture database, separate from the API's standard Supabase binding. Keep these settings Preview-scoped. The App needs a matching Clerk Preview publishable key and server secret.
+
+Use three isolated identities for deployed acceptance. Seed a preserved principal with both provider links and an active membership in one fixture organization. Seed a second existing principal with membership only in a different organization. Use a newly registered Clerk subject with no links to verify that the read-only route denies it and creates no principal. Exercise account bootstrap separately once the idempotent provisioning path is available.
+
+Record the exact App and API deployment SHAs, verified issuer, audience, authorized party, key rotation, issuer outage, database outage, and positive and negative tenant results. Exercise registration, sign-in, MFA, session recovery, sign-out, and unauthorized access in that deployment. Rehearse disabling the endpoint by removing the Preview provider selection and confirming it returns 404. Customer cutover also requires continuity and rollback evidence for production before approval.

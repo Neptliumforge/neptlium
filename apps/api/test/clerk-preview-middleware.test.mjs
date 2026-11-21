@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync, sign } from 'node:crypto';
-import { authorizeClerkPreviewRequest } from '../dist/clerk-preview-middleware.js';
+import { authorizeClerkPreviewRequest, createClerkPreviewAuthorizer } from '../dist/clerk-preview-middleware.js';
 
 const principalId = '00000000-0000-4000-8000-000000000001';
 const orgId = '00000000-0000-4000-8000-000000000002';
@@ -35,4 +35,22 @@ test('isolated middleware authorizes only verified preview bearer with membershi
   assert.equal(await authorizeClerkPreviewRequest({ authorization: 'Bearer ' + jwt({ azp: 'https://untrusted.example.test' }) }, orgId, trust, store, 'preview'), null);
   assert.equal(await authorizeClerkPreviewRequest({ authorization: 'Bearer ' + jwt() }, '00000000-0000-4000-8000-000000000003', trust, store, 'preview'), null);
   assert.equal(await authorizeClerkPreviewRequest({ authorization: 'Bearer ' + jwt() }, orgId, trust, { ...store, resolveActiveClerkPrincipal: async () => null }, 'preview'), null);
+});
+
+test('Preview authorizer verifies bearer with issuer keys and denies when keys are unavailable', async () => {
+  let requests = 0;
+  const authorizer = createClerkPreviewAuthorizer(trust, store, async () => {
+    requests++;
+    return requests === 1 ? new Response(null, { status: 503 }) :
+      Response.json({ keys: [{ ...trust.keys.k1, kid: 'k1' }] });
+  });
+  const headers = { authorization: 'Bearer ' + jwt() };
+  assert.equal(await authorizer(headers, orgId, 'production'), null);
+  assert.equal(await authorizer({}, orgId, 'preview'), null);
+  assert.equal(await authorizer({ authorization: 'Bearer a.b.' + 'x'.repeat(16384) }, orgId, 'preview'), null);
+  assert.equal(requests, 0);
+  assert.equal(await authorizer(headers, orgId, 'preview'), null);
+  assert.deepEqual(await authorizer(headers, orgId, 'preview'), { principalId, organizationId: orgId });
+  assert.equal(await authorizer(headers, '00000000-0000-4000-8000-000000000003', 'preview'), null);
+  assert.equal(requests, 2);
 });

@@ -1,6 +1,7 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import { loadConfig, type Config } from './config.js';
+import { createClerkPreviewSessionRoute } from './clerk-preview-session-route.js';
 import { ApiError } from './errors.js';
 import { digest, validatePair, type Asset, type Network } from './domain.js';
 import { MemoryRepository, type ApiRepository } from './repositories.js';
@@ -47,6 +48,7 @@ export interface Dependencies {
   observer?: Observer;
   capitalProvider?: CapitalProvider;
   identityVerification?: IdentityVerificationDependencies;
+  clerkPreviewFetch?: typeof fetch;
 }
 export interface Injection {
   method: string;
@@ -145,6 +147,7 @@ export async function buildApp(deps: Dependencies = {}) {
     config.SUPABASE_URL && config.SUPABASE_SERVICE_ROLE_KEY
       ? new SupabaseIdentityPrincipalResolver(config.SUPABASE_URL, config.SUPABASE_SERVICE_ROLE_KEY)
       : undefined;
+  const clerkPreviewSession = createClerkPreviewSessionRoute(config.clerkPreviewSession, deps.clerkPreviewFetch);
   const authenticate = deps.authenticate ?? createPrincipalAuthenticator(config, identityResolver);
   // No identity verification provider or record store is reviewed yet; both fail closed.
   const identityVerification = deps.identityVerification ?? {
@@ -178,6 +181,18 @@ export async function buildApp(deps: Dependencies = {}) {
       isWrite ? 30 : 120,
       60_000,
     );
+
+    if (path === '/v1/preview/clerk/session') {
+      if (method !== 'GET' || !clerkPreviewSession)
+        throw new ApiError(404, 'not_found', 'Route not found');
+      const organizations = context.query.getAll('organization_id');
+      if (organizations.length !== 1)
+        throw new ApiError(422, 'validation_failed', 'Exactly one organization_id is required');
+      const session = await clerkPreviewSession(context.headers, organizations[0]!);
+      if (!session)
+        throw new ApiError(401, 'authentication_required', 'A verified tenant session is required');
+      return { data: session };
+    }
 
     const financialResult = await handleFinancialRoute(context, {
       config,
