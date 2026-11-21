@@ -91,19 +91,22 @@ test('personal and business journeys remain differentiated but share product tru
   assert.doesNotMatch(business, /guaranteed|bank-grade|risk-free/i);
 });
 
-test('platform presents one shared financial core without generic card-only architecture', () => {
+test('platform presents the canonical six capabilities and shared financial authority', () => {
   for (const copy of [
-    'Personal',
-    'Business',
+    'Capital',
+    'Portfolio',
+    'Investments',
+    'Treasury',
+    'Intelligence',
+    'Infrastructure',
     'Identity',
     'Authority',
     'Evidence',
     'Reconciliation',
-    'Audit',
   ])
     assert.match(platform, new RegExp(copy, 'i'));
-  assert.match(platform, /platformMap/);
-  assert.match(system, /\.platformMap/);
+  assert.match(platform, /SharedCoreVisual/);
+  assert.match(platform, /financial job/i);
 });
 
 test('insights uses a truthful editorial standard without invented publications', () => {
