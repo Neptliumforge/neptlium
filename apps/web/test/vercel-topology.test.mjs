@@ -23,10 +23,15 @@ test('remaining Vercel projects use path-aware ignored-build detection', () => {
   for (const [name, source] of projects) {
     const config = JSON.parse(source);
     assert.equal(typeof config.ignoreCommand, 'string', `${name} must define an ignored-build command`);
-    assert.match(config.ignoreCommand, /git diff --quiet HEAD\^ HEAD -- \./, `${name} must anchor detection to the project directory`);
-    assert.match(config.ignoreCommand, /\.\.\/\.\.\/package\.json/, `${name} must include root dependency metadata`);
-    assert.match(config.ignoreCommand, /\.\.\/\.\.\/pnpm-lock\.yaml/, `${name} must include the workspace lockfile`);
-    assert.match(config.ignoreCommand, /\.\.\/\.\.\/turbo\.json/, `${name} must include root build configuration`);
+    const detection = name === 'api' ? read('../../api/scripts/should-ignore-vercel-build.sh') : config.ignoreCommand;
+    if (name === 'api') {
+      assert.equal(config.ignoreCommand, 'sh scripts/should-ignore-vercel-build.sh');
+      assert.match(detection, /VERCEL_GIT_PREVIOUS_SHA/);
+    }
+    assert.match(detection, /git diff --quiet HEAD\^ HEAD -- \./, `${name} must anchor detection to the project directory`);
+    assert.match(detection, /\.\.\/\.\.\/package\.json/, `${name} must include root dependency metadata`);
+    assert.match(detection, /\.\.\/\.\.\/pnpm-lock\.yaml/, `${name} must include the workspace lockfile`);
+    assert.match(detection, /\.\.\/\.\.\/turbo\.json/, `${name} must include root build configuration`);
   }
 });
 
