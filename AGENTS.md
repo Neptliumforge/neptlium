@@ -2,7 +2,7 @@
 
 ## Repository authority
 
-Canonical repository: `Neptliumforge/neptlium`.
+Canonical repository: `neptliumtech/neptlium`.
 
 | Boundary | Domain | Responsibility |
 | --- | --- | --- |
@@ -169,6 +169,19 @@ A build or execution is not complete merely because local validation passes. Com
 - `docs/platform/PROVIDERS.md` owns provider/capability/evidence/disclosure doctrine. `docs/engineering/ENVIRONMENT.md` owns environment and credential doctrine. `docs/experience/DESIGN_SYSTEM.md` owns experience/theme/component doctrine.
 - All product surfaces are modes of one Neptlium experience system. Different density is allowed; independent brands, provider-themed product UI and competing application design systems are not.
 - Replacing a provider must not require redesigning Neptlium identity, account model, navigation, customer-state vocabulary, canonical financial representation or visual system.
+
+## Contributor and AI-agent execution policy
+
+- Neptlium is the **Capital Operating Platform**. Public positioning is **Capital, intelligently managed.** The operating principle is **Every movement has authority. Every position has evidence.**
+- The primary platform capabilities are **Capital, Portfolio, Investments, Treasury, Intelligence, and Infrastructure**. Inspect current route, source, product documentation and runtime evidence before describing any capability.
+- Distinguish **operational**, **Preview-only**, **planned**, **limited**, and **unavailable** functionality. Preview evidence is not production readiness; planned Wallet capabilities must never be presented as live custody, network support or execution.
+- The Neptlium ledger is canonical financial truth. Provider confirmation or observation alone does not establish available capital, settlement, posting or reconciliation.
+- Financial execution requires explicit server-side authorization and applicable capabilities. Tenant/organization ownership and isolation fail closed. Financial mutations preserve idempotency, durable audit evidence and append-only history; corrections use reversals or compensating entries.
+- Clearly label illustrative financial/product data. Never fabricate balances, customers, transactions, performance, licenses, certifications, provider relationships or execution capability.
+- Respect ownership boundaries: `apps/web` is public Web; `apps/app` is the customer application; `apps/api` owns API/domain financial authority; `supabase` owns database migrations; `packages` owns approved shared primitives. Coordinate and review cross-boundary dependencies instead of silently editing another subsystem.
+- AI and human contributors MUST read this file and the nearest nested `AGENTS.md`, inspect the current repository and relevant PRs, reuse established architecture, and make small reviewable changes. Do not infer implementation from historical chats or old screenshots.
+- Report verification truthfully as `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`, with exact command/workflow evidence. A successful build does not establish visual, accessibility, security or production quality.
+- Never expose credentials or weaken security/financial controls. Never merge or deploy Production without authorization from the current task. A task-specific prohibition overrides any general or standing authorization. Stop at explicit security, infrastructure and approval boundaries.
 
 ## Scope discipline
 

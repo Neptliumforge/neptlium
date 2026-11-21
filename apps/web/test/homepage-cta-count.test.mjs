@@ -5,10 +5,10 @@ import test from 'node:test';
 const source = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
 const page = source.match(/<section\b[^>]*aria-labelledby="home-title"[\s\S]*?<\/section>/)?.[0] ?? '';
 
-test('homepage hero keeps two focused brand and journey actions', () => {
-  assert.equal((page.match(/Get started/g) ?? []).length, 1);
-  assert.equal((page.match(/Explore investing/g) ?? []).length, 1);
-  assert.match(page, /href=\{SITE\.personalSignUpUrl\}/);
-  assert.match(page, /href="\/investments"/);
-  assert.doesNotMatch(page, /Explore the Platform|View Investment Solutions/);
+test('homepage hero keeps two focused platform and company actions', () => {
+  assert.equal((page.match(/Explore the platform/g) ?? []).length, 1);
+  assert.equal((page.match(/About Neptlium/g) ?? []).length, 1);
+  assert.match(page, /href="\/platform"/);
+  assert.match(page, /href="\/company"/);
+  assert.doesNotMatch(page, /Get started|Explore investing/);
 });

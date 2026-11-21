@@ -10,9 +10,10 @@ test('homepage background plays, pauses, and suspends outside the viewport', asy
   await expect(video).toHaveJSProperty('paused', true);
   await page.getByRole('button', { name: 'Play background motion' }).click();
   await expect(video).toHaveJSProperty('paused', false);
-  await page
-    .getByRole('heading', { name: 'Confidence begins with understanding.' })
-    .scrollIntoViewIfNeeded();
+  const heroBottom = await page
+    .locator('section[aria-labelledby="home-title"]')
+    .evaluate((hero) => hero.getBoundingClientRect().bottom + window.scrollY);
+  await page.evaluate((top) => window.scrollTo(0, top + 1), heroBottom);
   await expect(video).toHaveJSProperty('paused', true);
   await page.getByRole('heading', { level: 1 }).scrollIntoViewIfNeeded();
   await expect(video).toHaveJSProperty('paused', false);

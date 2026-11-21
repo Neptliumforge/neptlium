@@ -14,15 +14,15 @@ const footer = read('components/site-footer.tsx');
 const shell = `${page}\n${visualCss}\n${marketingCss}\n${mobileCss}\n${layout}\n${header}\n${mobile}\n${footer}`;
 const contentShell = `${page}\n${layout}\n${header}\n${mobile}\n${footer}`;
 
-test('production public Web keeps a single canonical hero and truthful product-family architecture', () => {
+test('production public Web keeps a single canonical hero and truthful six-capability architecture', () => {
   assert.match(page, /Capital, intelligently managed\./);
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
-    assert.match(page, new RegExp(family, 'i'));
-  assert.match(page, /Illustrative interface only/);
+  for (const capability of ['Capital', 'Portfolio', 'Investments', 'Treasury', 'Intelligence', 'Infrastructure'])
+    assert.match(page, new RegExp(capability, 'i'));
+  assert.match(page, /Illustrative model/);
   assert.doesNotMatch(page, /CapitalRails|SignatureHeroObject/);
-  assert.match(page, /No customer balances, returns or performance data are[\s\S]*shown\./);
+  assert.match(page, /does not represent a live payment, settlement or customer account/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
-  for (const visual of ['ProductStage', 'InvestCollections'])
+  for (const visual of ['AuthorityStage', 'InvestCollections'])
     assert.match(page, new RegExp(visual));
   assert.doesNotMatch(page, /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|fake balance|projected return/i);
 });

@@ -12,18 +12,18 @@ const nts = readFileSync(
   'utf8',
 );
 
-test('public architecture exposes the four canonical Neptlium product families', () => {
-  for (const label of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
+test('public architecture exposes the canonical six Neptlium capabilities', () => {
+  for (const label of ['Capital', 'Portfolio', 'Investments', 'Treasury', 'Intelligence', 'Infrastructure'])
     assert.match(architecture, new RegExp(label, 'i'));
-  assert.match(architecture, /\/institutional/);
   assert.match(architecture, /\/infrastructure/);
 });
 
-test('homepage uses the canonical hero without a redundant brand eyebrow', () => {
+test('homepage uses the canonical hero and presents all six capabilities', () => {
   assert.match(homepage, /Capital, intelligently managed\./);
   assert.match(homepage, /data-npt-nts="hero"/);
+  assert.match(homepage, /The Capital Operating Platform/);
   assert.doesNotMatch(homepage, /styles\.kicker}>Neptlium/);
-  for (const label of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
+  for (const label of ['Capital', 'Portfolio', 'Investments', 'Treasury', 'Intelligence', 'Infrastructure'])
     assert.match(homepage, new RegExp(label, 'i'));
 });
 

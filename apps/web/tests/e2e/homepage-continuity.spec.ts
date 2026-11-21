@@ -25,18 +25,18 @@ for (const preference of ['light', 'dark', 'system'] as const) {
     await expect(page.locator('html')).toHaveAttribute('data-theme', preference === 'dark' ? 'dark' : 'light');
     await expect(header).toHaveCSS('background-color', 'rgb(11, 12, 14)');
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(hero.getByRole('heading', { level: 1 })).toHaveText('Invest with clarity. Build with confidence.');
-    await expect(hero.getByRole('link', { name: 'Get started' })).toHaveAttribute('href', 'https://app.neptlium.com/auth/sign-up');
-    await expect(hero.getByRole('link', { name: 'Explore investing' })).toHaveAttribute('href', '/investments');
-    await expect(page.locator('main')).toContainText('Illustrative interface');
-    await expect(page.locator('main')).toContainText('No customer balances, returns or performance data');
+    await expect(hero.getByRole('heading', { level: 1 })).toHaveText('Capital, intelligently managed.');
+    await expect(hero.getByRole('link', { name: 'Explore the platform' })).toHaveAttribute('href', '/platform');
+    await expect(hero.getByRole('link', { name: 'About Neptlium' })).toHaveAttribute('href', '/company');
+    await expect(page.locator('main')).toContainText('Illustrative model');
+    await expect(page.locator('main')).toContainText('Conceptual workflow only. It does not represent a live payment, settlement or customer account.');
     expect(await contrast(page, '#home-title', '#main-content > div')).toBeGreaterThan(7);
     expect(await contrast(page, '.site-header .brand', '.site-header')).toBeGreaterThan(7);
     expect(await contrast(page, '[class*="hero"] [class*="lead"]', '#main-content > div')).toBeGreaterThan(4.5);
-    expect(await contrast(page, '[class*="portfolioBar"]', '[class*="portfolio"]')).toBeGreaterThan(4.5);
+    expect(await contrast(page, '[class*="stageKicker"]', '[class*="authorityStage"]')).toBeGreaterThan(4.5);
 
-    const primary = hero.getByRole('link', { name: 'Get started' });
-    const secondary = hero.getByRole('link', { name: 'Explore investing' });
+    const primary = hero.getByRole('link', { name: 'Explore the platform' });
+    const secondary = hero.getByRole('link', { name: 'About Neptlium' });
     for (const action of [primary, secondary]) {
       expect((await action.boundingBox())!.height).toBeGreaterThanOrEqual(44);
       await action.focus();

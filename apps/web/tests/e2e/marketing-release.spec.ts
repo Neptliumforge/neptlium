@@ -159,24 +159,26 @@ test.describe('Neptlium unified marketing release', () => {
 
   test('homepage brand and journey CTAs remain canonical', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
-    await expect(
-      page.getByRole('heading', { name: 'Invest with clarity. Build with confidence.' }),
-    ).toBeVisible();
-    await expect(page.getByRole('link', { name: /Get started/i }).first()).toHaveAttribute(
+    const hero = page.locator('section[aria-labelledby="home-title"]');
+    await expect(hero.getByRole('heading', { level: 1 })).toHaveText('Capital, intelligently managed.');
+    await expect(hero.getByRole('link', { name: 'Explore the platform' })).toHaveAttribute(
       'href',
-      'https://app.neptlium.com/auth/sign-up',
+      '/platform',
     );
-    await expect(page.getByRole('link', { name: /Explore investing/i })).toHaveAttribute(
+    await expect(hero.getByRole('link', { name: 'About Neptlium' })).toHaveAttribute(
       'href',
-      '/investments',
+      '/company',
     );
-    await expect(page.getByRole('link', { name: /Discover Neptlium Capital/i }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: 'Explore Neptlium Capital' })).toHaveAttribute(
       'href',
       '/capital',
     );
-    await expect(page.locator('main').getByRole('link', { name: /^Treasury\s/ }).first()).toHaveAttribute(
+    await expect(page.getByRole('link', { name: 'Explore Neptlium Treasury' })).toHaveAttribute(
       'href',
       '/treasury',
+    );
+    await expect(page.locator('main')).toContainText(
+      'Conceptual workflow only. It does not represent a live payment, settlement or customer account.',
     );
   });
 

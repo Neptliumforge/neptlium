@@ -6,24 +6,20 @@ const page = readFileSync(new URL('../app/page.tsx', import.meta.url), 'utf8');
 const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
 const homepage = readFileSync(new URL('../app/home-elite.module.css', import.meta.url), 'utf8');
 
-test('current homepage states a concise capital proposition and focused exploration paths', () => {
+test('homepage leads with the Capital Operating Platform proposition and clear journeys', () => {
   assert.match(page, /Capital, intelligently managed\./);
-  assert.match(
-    page,
-    /Discover the ideas behind an investment/i,
-  );
-  assert.match(page, /href=\{SITE\.personalSignUpUrl\}[\s\S]*Get started/);
-  assert.match(page, /href="\/investments"[\s\S]*Explore investing/);
+  assert.match(page, /The Capital Operating Platform/);
+  assert.match(page, /Every movement has authority\. Every position has evidence\./);
+  assert.match(page, /href="\/platform"[\s\S]*Explore the platform/);
+  assert.match(page, /href="\/company"[\s\S]*About Neptlium/);
   assert.equal((page.match(/<h1/g) ?? []).length, 1);
 });
 
-test('homepage uses clearly illustrative product compositions without fabricated customer state', () => {
-  for (const visual of ['ProductStage', 'InvestCollections'])
+test('homepage uses clearly illustrative authority and research compositions', () => {
+  for (const visual of ['AuthorityStage', 'InvestCollections'])
     assert.match(page, new RegExp(visual));
-  assert.match(
-    page,
-    /Illustrative interface only\.[\s\S]*No customer balances, returns or performance data are[\s\S]*shown\./i,
-  );
+  assert.match(page, /Illustrative model/);
+  assert.match(page, /does not represent a live payment, settlement or customer account/);
   assert.doesNotMatch(
     page,
     /\$[0-9]|[0-9]+(?:\.[0-9]+)?%|guaranteed returns?|projected returns?|customer AUM/i,
@@ -39,24 +35,14 @@ test('elite homepage styling is scoped and responsive after the established glob
   assert.match(homepage, /prefers-reduced-motion:\s*reduce/);
 });
 
-test('homepage architecture introduces financial world, product families, movement, product character, coherence and intelligence', () => {
-  for (const context of [
-    'Know where your capital stands',
-    'Discover investments with a clearer view',
-    'A clearer path from investing',
-    'Treasury & institutional',
-    'Understand the market',
-  ]) {
-    assert.match(page, new RegExp(context.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i'));
-  }
-  for (const family of ['Capital', 'Treasury', 'Institutional', 'Portfolio'])
-    assert.match(page, new RegExp(family, 'i'));
-  for (const href of ['/capital', '/treasury', '/institutional', '/investments', '/portfolio'])
+test('homepage architecture explains the canonical six-capability platform', () => {
+  for (const capability of ['Capital', 'Portfolio', 'Investments', 'Treasury', 'Intelligence', 'Infrastructure'])
+    assert.match(page, new RegExp(capability, 'i'));
+  for (const href of ['/capital', '/portfolio', '/investments', '/treasury', '/intelligence', '/infrastructure'])
     assert.match(page, new RegExp(href.replaceAll('/', '\\/')));
+  for (const principle of ['authority', 'evidence', 'authorization', 'reconciliation'])
+    assert.match(page, new RegExp(principle, 'i'));
   assert.match(page, /InvestCollections/);
-  assert.match(page, /Research & intelligence/);
-  assert.doesNotMatch(
-    page,
-    /currently available public capability|not configured|capability unavailable/i,
-  );
+  assert.match(page, /Treasury/);
+  assert.match(page, /Developer documentation/);
 });

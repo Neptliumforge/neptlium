@@ -42,6 +42,20 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Format agent and workflow documentation
+        run: pnpm exec prettier --write AGENTS.md apps/web/AGENTS.md .github/workflows/web-preview-browser-qa.yml
+      - name: Check agent and workflow documentation formatting
+        run: pnpm exec prettier --check AGENTS.md apps/web/AGENTS.md .github/workflows/web-preview-browser-qa.yml
+      - name: Upload formatted contributor instructions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: neptlium-formatted-agent-instructions
+          path: |
+            AGENTS.md
+            apps/web/AGENTS.md
+            .github/workflows/web-preview-browser-qa.yml
+          retention-days: 7
       - name: Build Web production application
         run: pnpm --filter @neptlium/web build
       - name: Build Customer App production application
