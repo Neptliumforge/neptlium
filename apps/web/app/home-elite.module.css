@@ -486,3 +486,187 @@
 .breadcrumb {
   align-items: center;
 }
+
+
+/* Capital Operating Platform homepage composition */
+.heroGrid {
+  grid-template-columns: minmax(0, 1fr);
+}
+.motionHeroGrid {
+  min-height: clamp(520px, 68vh, 760px);
+  align-items: center;
+}
+.heroContent {
+  max-width: 850px;
+  padding-block: var(--space-8);
+}
+.heroContent h1 {
+  max-width: 11ch;
+  font-size: clamp(3.5rem, 8vw, 7.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+.heroContent .lead {
+  max-width: 56ch;
+}
+.capabilityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--color-border-default);
+  border-left: 1px solid var(--color-border-default);
+}
+.capability {
+  display: flex;
+  min-width: 0;
+  min-height: 238px;
+  flex-direction: column;
+  padding: var(--space-6);
+  border-right: 1px solid var(--color-border-default);
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: background-color var(--motion-duration-fast) ease;
+}
+.capability:hover {
+  background: var(--color-surface-interactive);
+  text-decoration: none;
+}
+.capabilityTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--text-label);
+}
+.capabilityTop svg {
+  width: 17px;
+  height: 17px;
+}
+.capability h3 {
+  margin-top: auto;
+  padding-top: var(--space-8);
+  font-size: var(--text-h2);
+}
+.capability p {
+  max-width: 36ch;
+  margin: 0;
+  font-size: var(--text-body-sm);
+}
+.authorityStage {
+  min-width: 0;
+  padding: clamp(var(--space-5), 4vw, var(--space-8));
+  border: 1px solid var(--color-border-default);
+  background: var(--color-canvas);
+}
+.stageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border-default);
+}
+.stageHeader > div {
+  display: grid;
+  gap: var(--space-2);
+}
+.stageHeader strong {
+  font-size: var(--text-h3);
+}
+.stageKicker,
+.stageTag {
+  color: var(--color-text-secondary);
+  font-size: var(--text-label);
+}
+.stageTag {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+.authoritySteps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: var(--space-5) 0 0;
+  list-style: none;
+}
+.authoritySteps li {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: center;
+  min-height: 104px;
+  position: relative;
+}
+.authoritySteps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 66px;
+  left: 20px;
+  bottom: -1px;
+  width: 1px;
+  background: var(--color-border-strong);
+}
+.authorityNode {
+  z-index: 1;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: var(--color-canvas);
+  color: var(--color-brand-emphasis);
+}
+.authorityNode svg {
+  width: 19px;
+  height: 19px;
+}
+.authoritySteps li > span:last-child {
+  display: grid;
+  gap: var(--space-1);
+}
+.authoritySteps small {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+}
+.stageFootnote {
+  margin: var(--space-5) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-hairline);
+  font-size: var(--text-caption);
+}
+@media (max-width: 900px) {
+  .capabilityGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .motionHeroGrid {
+    min-height: 580px;
+  }
+  .heroContent {
+    padding-block: var(--space-7);
+  }
+  .heroContent h1 {
+    max-width: 10ch;
+    font-size: clamp(3rem, 14vw, 5rem);
+  }
+  .capabilityGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .capability {
+    min-height: 190px;
+    padding: var(--space-5);
+  }
+  .stageHeader {
+    flex-direction: column;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .capability {
+    transition: none;
+  }
+}
