@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
+import { PGlite } from '@electric-sql/pglite';
 import { SupabaseRateLimiter } from '../dist/security.js';
 
 const reset = new Date(Date.now() + 60_000).toISOString();
@@ -64,4 +65,30 @@ test('distributed limiter migration is RLS-protected and service-role-only', () 
   assert.match(migration, /pg_advisory_xact_lock/);
   assert.match(migration, /revoke all on function[\s\S]*from public, anon, authenticated/i);
   assert.match(migration, /grant execute on function[\s\S]*to service_role/i);
+});
+
+test('distributed limiter persists a window and denies browser-role RPC execution on disposable PostgreSQL', async () => {
+  const db = new PGlite();
+  try {
+    await db.exec('create role anon; create role authenticated; create role service_role;');
+    const migration = readFileSync(
+      resolve(import.meta.dirname, '../../../supabase/migrations/20260815115118_distributed_api_rate_limiting.sql'),
+      'utf8',
+    );
+    await db.exec(migration);
+    await db.exec('set role service_role');
+    const consume = () => db.query(
+      'select allowed, remaining from public.consume_api_rate_limit($1, $2, $3)',
+      ['a'.repeat(64), 2, 60_000],
+    );
+    assert.deepEqual((await consume()).rows, [{ allowed: true, remaining: 1 }]);
+    assert.deepEqual((await consume()).rows, [{ allowed: true, remaining: 0 }]);
+    assert.deepEqual((await consume()).rows, [{ allowed: false, remaining: 0 }]);
+    await db.exec('reset role');
+    assert.deepEqual((await db.query('select request_count from public.api_rate_limits')).rows, [{ request_count: 3 }]);
+    await db.exec('set role authenticated');
+    await assert.rejects(consume, /permission denied/);
+  } finally {
+    await db.close();
+  }
 });
