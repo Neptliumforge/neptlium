@@ -90,4 +90,5 @@ jobs:
             --schema=supabase_migrations | sed '/^\\restrict /d; /^\\unrestrict /d' \
             > "$RUNNER_TEMP/gate02f-restored-schema.sql"
           cmp "$RUNNER_TEMP/gate02f-history.json" "$RUNNER_TEMP/gate02f-restored-history.json"
-          cmp "$RUNNER_TEMP/gate02f-schema.sql" "$RUNNER_TEMP/gate02f-restored-schema.sql"
+          node "$GITHUB_WORKSPACE/supabase/scripts/check-restored-schema.mjs" \
+            "$RUNNER_TEMP/gate02f-schema.sql" "$RUNNER_TEMP/gate02f-restored-schema.sql"
