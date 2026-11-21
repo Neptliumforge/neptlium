@@ -13,6 +13,7 @@
     "test": "node --test test/*.mjs"
   },
   "dependencies": {
+    "@clerk/nextjs": "7.9.19",
     "@neptlium/types": "workspace:*",
     "@neptlium/ui": "workspace:*",
     "@neptlium/lib": "workspace:*",
