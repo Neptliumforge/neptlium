@@ -14,12 +14,20 @@ function inspectClerkCutover() {
   const signUp = read('app/auth/sign-up/page.tsx');
   const layout = read('app/layout.tsx');
   const proxy = read('proxy.ts');
+  // Exclude only the dedicated Preview branch from the production cutover signal.
+  const previewBranch = /  if \(isClerkPreviewPath\(request\.nextUrl\.pathname\)\) \{[\s\S]*?\n  \}\n/;
+  const isolatedPreview = proxy.match(previewBranch)?.[0];
+  if (isolatedPreview?.includes('clerkMiddleware')) {
+    assert.match(isolatedPreview, /!preview \|\| request\.nextUrl\.origin !== preview\.appOrigin/);
+    assert.match(isolatedPreview, /status: 404/);
+  }
+  const productionProxy = proxy.replace(/^import \{ clerkMiddleware \}[^\n]*\n/m, '').replace(previewBranch, '');
   return {
     clerkDependency: typeof pkg.dependencies?.['@clerk/nextjs'] === 'string',
     clerkProvider: /ClerkProvider/.test(layout),
     clerkSignIn: /@clerk\/nextjs/.test(signIn) && /<SignIn\b/.test(signIn),
     clerkSignUp: /@clerk\/nextjs/.test(signUp) && /<SignUp\b/.test(signUp),
-    clerkRouteGuard: /clerkMiddleware/.test(proxy),
+    clerkRouteGuard: /clerkMiddleware/.test(productionProxy),
     legacySignIn: /SupabaseAuthForm/.test(signIn),
     legacySignUp: /SupabaseAuthForm/.test(signUp),
   };
