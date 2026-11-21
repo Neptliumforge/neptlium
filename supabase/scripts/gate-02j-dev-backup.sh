@@ -119,14 +119,19 @@ private wait_db "$restore" gate02j_restore
 # pg_dumpall emits the grantor explicitly. Reproduce it on the isolated target.
 sed -E '/^GRANT .* GRANTED BY (.+);$/ {
   h
-  s/^.* GRANTED BY (.+);$/SET ROLE \1;/
+  s/^.* GRANTED BY (.+);$/SET SESSION AUTHORIZATION \1;/
   p
   g
   p
-  s/.*/RESET ROLE;/
+  s/.*/RESET SESSION AUTHORIZATION;/
 }' "$scratch/bundle/roles.sql" > "$scratch/restore-roles.sql"
+stage=restore-roles
+if [[ "$mode" = fixture ]]; then
+  grep -E '^(GRANT |SET SESSION AUTHORIZATION|RESET SESSION AUTHORIZATION)' "$scratch/restore-roles.sql" >> "$scratch/private.log" || true
+fi
 private docker exec -i "$restore" psql -Xq -v ON_ERROR_STOP=1 -U gate02j_restore -d postgres \
   < "$scratch/restore-roles.sql" >/dev/null
+stage=restore-application
 private docker cp "$scratch/bundle/application.dump" "$restore:/tmp/application.dump"
 private docker exec "$restore" pg_restore --list /tmp/application.dump > "$scratch/archive.list"
 # PostgreSQL initializes public on the isolated target.
