@@ -25,7 +25,8 @@ export function clerkPreviewConfig(env: Readonly<Record<string, string | undefin
   const appOrigin = httpsOrigin(env.NEPTLIUM_CLERK_PREVIEW_APP_ORIGIN);
   const apiOrigin = httpsOrigin(env.NEPTLIUM_CLERK_PREVIEW_API_ORIGIN);
   const template = env.NEPTLIUM_CLERK_PREVIEW_TOKEN_TEMPLATE?.trim();
-  if (!publishableKey?.startsWith('pk_test_') || !secretKey?.startsWith('sk_test_') ||
-      !appOrigin || !apiOrigin || !template || appOrigin === apiOrigin) return undefined;
-  return { publishableKey, secretKey, appOrigin, apiOrigin, template };
+  if (!publishableKey?.startsWith('pk_test_') || !secretKey?.startsWith('sk_test_') || !appOrigin) return undefined;
+  // Clerk sign-in can be verified before the API's tenant session path is configured.
+  const api = apiOrigin && template && appOrigin !== apiOrigin ? { origin: apiOrigin, template } : undefined;
+  return { publishableKey, secretKey, appOrigin, api };
 }

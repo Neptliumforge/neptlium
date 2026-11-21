@@ -12,16 +12,17 @@ export default async function PreviewClerkSessionPage({
   const config = clerkPreviewConfig();
   if (!config) notFound();
 
+  const api = config.api;
   const session = await auth().catch(() => null);
   if (session && !session.userId) redirect(clerkPreviewPaths.signIn);
   const { organization_id: organization } = await searchParams;
   const tenant = typeof organization === 'string' ? organization : undefined;
-  const verified = session?.userId && tenant
+  const verified = api && session?.userId && tenant
     ? await resolvePreviewClerkApiSession(tenant, {
         environment: 'preview',
         apiProvider: 'clerk-preview',
-        apiOrigin: config.apiOrigin,
-        getSessionToken: () => session.getToken({ template: config.template }),
+        apiOrigin: api.origin,
+        getSessionToken: () => session.getToken({ template: api.template }),
       })
     : null;
 
@@ -31,14 +32,18 @@ export default async function PreviewClerkSessionPage({
       {!session && <p role="status">The authentication service is unavailable. Try again shortly.</p>}
       {session?.userId && (
         <>
-          <form method="get" action={clerkPreviewPaths.session}>
-            <label htmlFor="organization_id">Organization ID</label>
-            <input id="organization_id" name="organization_id" required />
-            <button type="submit">Verify access</button>
-          </form>
-          {organization !== undefined && (
-            <p role="status">{verified ? 'Organization access verified.' : 'Organization access could not be verified.'}</p>
-          )}
+          {api ? (
+            <>
+              <form method="get" action={clerkPreviewPaths.session}>
+                <label htmlFor="organization_id">Organization ID</label>
+                <input id="organization_id" name="organization_id" required />
+                <button type="submit">Verify access</button>
+              </form>
+              {organization !== undefined && (
+                <p role="status">{verified ? 'Organization access verified.' : 'Organization access could not be verified.'}</p>
+              )}
+            </>
+          ) : <p role="status">Organization verification is unavailable in this Preview.</p>}
           <SignOutButton redirectUrl={clerkPreviewPaths.signIn}><button type="button">Sign out</button></SignOutButton>
         </>
       )}
