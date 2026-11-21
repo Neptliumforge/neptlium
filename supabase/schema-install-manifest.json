@@ -1,0 +1,205 @@
+{
+  "source": "ecf40bcd6a310f8efc2d34afb84d5e3cc50ac91b",
+  "migrations": [
+    {
+      "file": "20260710104755_remote_schema.sql",
+      "blob": "4f9069e9d8f08e5c356fd1e65822a55b7139cc08"
+    },
+    {
+      "file": "20260710110226_revoke_public_execute_fund_functions.sql",
+      "blob": "b9a3fab15bb08eec17e2cb49384a2894f23d3521"
+    },
+    {
+      "file": "20260710120000_institutional_onboarding_and_rbac.sql",
+      "blob": "7453c46dc03d346830485aa348a598fb0cc8c086"
+    },
+    {
+      "file": "20260712000000_compliance_acknowledgment.sql",
+      "blob": "a8d97282ac266c522649fa93a256c323df904ebe"
+    },
+    {
+      "file": "20260712010000_platform_foundations.sql",
+      "blob": "ba34fa3b9578cc52bb657c6cb496deb916b64f87"
+    },
+    {
+      "file": "20260712020000_documents.sql",
+      "blob": "9cd83c4dd72f9f54e01db86438cda5f3f48b99bd"
+    },
+    {
+      "file": "20260712030000_profile_identity_fields.sql",
+      "blob": "fe5dcfb5fa03f34b0aa2050390fce1366b1b7a56"
+    },
+    {
+      "file": "20260716030000_onboarding_drafts.sql",
+      "blob": "3e439180d30ad5d2c6530cb1c4bf776898d79297"
+    },
+    {
+      "file": "20260717120000_fix_handle_new_user_trigger.sql",
+      "blob": "23b83bf89749ab7696eac96ea1c4a6eb111d3451"
+    },
+    {
+      "file": "20260717130000_rls_and_index_gaps.sql",
+      "blob": "e72a107ff38c9d6e1b61cf1664c7bd45f3b1ce57"
+    },
+    {
+      "file": "20260717140000_email_otp_template.sql",
+      "blob": "256b17efe2b823dffb7ccfde735906427265ee35"
+    },
+    {
+      "file": "20260720190000_capital_operations_foundation.sql",
+      "blob": "089d9ccf4c28fc414f13c2e89f87828e7955b9af"
+    },
+    {
+      "file": "20260724045915_production_security_containment.sql",
+      "blob": "7ee49ddae1c9920cc5cbf6b25ea25f2f16cdb49a"
+    },
+    {
+      "file": "20260809040703_atomic_account_provisioning.sql",
+      "blob": "027d622e1d72b9194c0d60ca46588e5422885745"
+    },
+    {
+      "file": "20260809141841_api_account_onboarding.sql",
+      "blob": "973e638132ba0681f0a471f7d10eb026703ae8d6"
+    },
+    {
+      "file": "20260809163305_fix_account_onboarding_rpc.sql",
+      "blob": "26edb5729c2687f58ab0408b2bec2e7bad5002c7"
+    },
+    {
+      "file": "20260809163555_fix_account_onboarding_profile_id.sql",
+      "blob": "9b2ce4b1c6bd742daf74239c7691eb8b8461b146"
+    },
+    {
+      "file": "20260811161123_production_funding_treasury_transfer_foundation.sql",
+      "blob": "6fc062ae3b11e02d7e1d296ce9daf6970f981c67"
+    },
+    {
+      "file": "20260811161216_governed_financial_operations.sql",
+      "blob": "88cb737c89dfbfd115059e3da79931ebef90f75e"
+    },
+    {
+      "file": "20260811161300_transfer_reconciliation_hardening.sql",
+      "blob": "90dd00ec38a0b12a638a01726a4c0984c66426e1"
+    },
+    {
+      "file": "20260811161413_omnibus_treasury_funding_model.sql",
+      "blob": "6182d38d3c5d74a2a6d00abbc71949316b12521a"
+    },
+    {
+      "file": "20260811161533_allocation_engine_foundation.sql",
+      "blob": "d079f4e6fec912552592977f2d9cf304293002f4"
+    },
+    {
+      "file": "20260811161550_allocation_api_authority_grants.sql",
+      "blob": "6702b22f074facb9eb06c5f3e67de5cd6f58b18f"
+    },
+    {
+      "file": "20260812115731_single_general_platform_admin.sql",
+      "blob": "0116743198d5563a5782103ffbf9e8f038db07ac"
+    },
+    {
+      "file": "20260815115118_distributed_api_rate_limiting.sql",
+      "blob": "7794b1c8f8fda97580d80abb7b58bb9751af4a01"
+    },
+    {
+      "file": "20260817134000_add_transfer_approval_states.sql",
+      "blob": "597c088b48520ed747a55e4781bdc5301974dfa3"
+    },
+    {
+      "file": "20260817134100_add_transfer_approved_state.sql",
+      "blob": "6aa65116f3f464f74c9d111a41827b71c8f64930"
+    },
+    {
+      "file": "20260817134500_governed_transfer_approval_lifecycle.sql",
+      "blob": "78a600e5831e8824e8715bbc24a9582ca7c901f4"
+    },
+    {
+      "file": "20260825051902_identity_principal_provider_subject_foundation.sql",
+      "blob": "48231e458089b008a8a8b1c5bd9b579866dc28c6"
+    },
+    {
+      "file": "20260825051927_clerk_identity_linking_commands.sql",
+      "blob": "7bc0fae151d70486896b66b5d65660335f3e61fe"
+    },
+    {
+      "file": "20260825053722_clerk_dual_session_link_service.sql",
+      "blob": "b0bb4403a7d649c1b80a0acaef45d2385e51bd8c"
+    },
+    {
+      "file": "20260825053749_clerk_application_identity_cutover.sql",
+      "blob": "6238196d82691a99425321b90473d55f68bedcc7"
+    },
+    {
+      "file": "20260825053809_clerk_bootstrap_existing_account_guard.sql",
+      "blob": "86f84acaf4df16d6325643d00dbee161399b277a"
+    },
+    {
+      "file": "20260825082059_self_custody_treasury_principal_cutover.sql",
+      "blob": "03171f76332e011262ad21c7bae51af30b4f0149"
+    },
+    {
+      "file": "20260908051241_thesis_mode_foundation.sql",
+      "blob": "3478da7ff475917d815a8025e99159f469cf4a87"
+    },
+    {
+      "file": "20260908051251_thesis_evaluation_snapshots.sql",
+      "blob": "e76ae693f2b378509803f29e39db4bce46c5b1f8"
+    },
+    {
+      "file": "20260908053417_thesis_decision_history.sql",
+      "blob": "439e0346f94d1c5f47014a8978d8d2999bd38c6e"
+    },
+    {
+      "file": "20260908074500_thesis_revealed_observations.sql",
+      "blob": "13687a6e14e9c4340c1517e6e8e8e8837d8c3848"
+    },
+    {
+      "file": "20260908091732_provider_webhook_control_plane.sql",
+      "blob": "163659d5877f9e5b8a13bd55e43dffd57114f1a0"
+    },
+    {
+      "file": "20260910132119_harden_allocation_history_search_path.sql",
+      "blob": "4003203f27701c9669234b089fa8865beb2fe724"
+    },
+    {
+      "file": "20260912223000_clerk_only_identity_cutover.sql",
+      "blob": "5792047a076202c1cb2eb707d0104e125b2d4abc"
+    },
+    {
+      "file": "20260913024025_webhook_disposition_evidence.sql",
+      "blob": "6930ce8cf505984c33d2dc3c593128d17988cbfa"
+    },
+    {
+      "file": "20260913052329_gate05_retire_legacy_financial_authority.sql",
+      "blob": "06908bcf22545334740b5fa999008344fcdacb22"
+    },
+    {
+      "file": "20260913052717_gate05_legacy_table_readonly_grants.sql",
+      "blob": "effd3cba1f1a93a483596178e15854957ef5bf59"
+    },
+    {
+      "file": "20260913123000_supabase_auth_only_cutover.sql",
+      "blob": "fca1ee313a623bb2a4b92fc1ca89ef412d95fa78"
+    },
+    {
+      "file": "20260914154000_transaction_intelligence_observations.sql",
+      "blob": "06d93328567906e21a45186ce1d5ff0d2f987209"
+    },
+    {
+      "file": "20260914174500_platform_core_owner_control_plane.sql",
+      "blob": "2fc33e38e1e9c8a9aef311e4261808cba8122fe5"
+    },
+    {
+      "file": "20261021190000_contain_profile_browser_write_authority.sql",
+      "blob": "b671894ad815319818cad2507dfaa061175527b5"
+    },
+    {
+      "file": "20261021191000_onboarding_preserves_account_standing.sql",
+      "blob": "fd436971ecd6c7cb9b0217efa3dbe77231984453"
+    },
+    {
+      "file": "20261021200000_canonical_capital_ledger_initialization.sql",
+      "blob": "7aae753144a2c50be8677fd8b505184c419449b2"
+    }
+  ]
+}
