@@ -48,6 +48,7 @@ jobs:
           node supabase/scripts/schema-install-plan.mjs "$RUNNER_TEMP/gate02f-history.json" > "$RUNNER_TEMP/gate02f-plan.json"
           node -e 'const p = require(process.argv[1]); if (p.appliedCount !== 50 || p.pending.length) process.exit(1); console.log("Verified 50 versions and zero pending migrations");' \
             "$RUNNER_TEMP/gate02f-plan.json"
+          docker exec -i "$db" psql -U postgres -d postgres -X -v ON_ERROR_STOP=1 < supabase/test/gate-02f-replayed-contract.sql
           snapshot > "$RUNNER_TEMP/gate02f-schema.sql"
           supabase db reset --local --no-seed
           history > "$RUNNER_TEMP/gate02f-repeat-history.json"
@@ -73,8 +74,14 @@ jobs:
           fi
           db="$(docker ps --filter 'name=^/supabase_db_' --format '{{.Names}}')"
           test -n "$db"
-          docker exec -i "$db" pg_restore -U postgres -d postgres --clean --if-exists --exit-on-error \
-            < "$RUNNER_TEMP/gate02f.backup"
+          docker exec "$db" psql -U postgres -d postgres -X -v ON_ERROR_STOP=1 \
+            -c 'create schema if not exists supabase_migrations authorization postgres'
+          docker cp "$RUNNER_TEMP/gate02f.backup" "$db:/tmp/gate02f.backup"
+          docker exec "$db" pg_restore --list /tmp/gate02f.backup \
+            | sed -E '/^[0-9]+; [0-9]+ [0-9]+ SCHEMA - (public|supabase_migrations) /d' \
+            > "$RUNNER_TEMP/gate02f-restore.list"
+          docker exec -i "$db" pg_restore -U postgres -d postgres --exit-on-error \
+            --use-list=/dev/stdin /tmp/gate02f.backup < "$RUNNER_TEMP/gate02f-restore.list"
           docker exec "$db" psql -U postgres -d postgres -XAt -v ON_ERROR_STOP=1 \
             -c "select coalesce(json_agg(version order by version), '[]'::json) from supabase_migrations.schema_migrations" \
             > "$RUNNER_TEMP/gate02f-restored-history.json"
