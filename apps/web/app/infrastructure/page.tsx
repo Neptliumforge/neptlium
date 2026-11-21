@@ -22,8 +22,8 @@ const capabilities = [
     label: 'Wallet direction',
     status: 'Planned architecture',
     copy: 'A planned wallet experience for asset visibility, network context and secure transaction architecture. Network support, custody and execution are not implied to be live.',
-    href: '/payments',
-    action: 'Understand payment architecture',
+    href: '/infrastructure#wallet',
+    action: 'View planned wallet direction',
   },
   {
     label: 'API',
@@ -65,7 +65,7 @@ function InfrastructurePageContent() {
 
         <section className="family-grid" aria-label="Infrastructure capabilities">
           {capabilities.map(({ label, status, copy, href, action }) => (
-            <article className="family-card" key={label}>
+            <article className="family-card" id={label === "Wallet direction" ? "wallet" : undefined} key={label}>
               <span>{status}</span>
               <h2>{label}</h2>
               <p>{copy}</p>
