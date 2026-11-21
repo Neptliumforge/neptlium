@@ -1,47 +1,90 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, CheckCircle2, CircleDot, ShieldCheck } from 'lucide-react';
 import { InvestCollections } from '@/components/invest-collections';
 import { HomeBackground } from '@/components/home-background';
 import { INVEST_FAQS } from '@/lib/content/invest';
-import { DISCLOSURES, SITE } from '@/lib/content/site';
+import { DISCLOSURES } from '@/lib/content/site';
 import { createPageMetadata } from '@/lib/seo';
 import styles from './home-elite.module.css';
 
 export const metadata = createPageMetadata({
-  title: 'Invest with clarity. Build with confidence.',
+  title: 'Capital, intelligently managed.',
   description:
-    'Explore investing, understand portfolio context and discover the ideas shaping capital with Neptlium.',
+    'Neptlium is a capital operating platform connecting capital visibility, portfolio context, treasury operations and governed financial movement.',
   path: '/',
 });
 
-function ProductStage() {
+const capabilities = [
+  {
+    number: '01',
+    name: 'Capital',
+    description: 'A clearer view of personal capital, accounts and financial position.',
+    href: '/capital',
+    note: 'Individual',
+  },
+  {
+    number: '02',
+    name: 'Portfolio',
+    description: 'Understand positions, allocation, activity and the context behind them.',
+    href: '/portfolio',
+    note: 'Visibility',
+  },
+  {
+    number: '03',
+    name: 'Investments',
+    description: 'Explore investment ideas, structures, objectives and associated risks.',
+    href: '/investments',
+    note: 'Research',
+  },
+  {
+    number: '04',
+    name: 'Treasury',
+    description: 'Coordinate organizational liquidity, payment intent and approvals.',
+    href: '/treasury',
+    note: 'Organizations',
+  },
+  {
+    number: '05',
+    name: 'Intelligence',
+    description: 'Bring evidence and context to the decisions that shape capital.',
+    href: '/intelligence',
+    note: 'Decision support',
+  },
+  {
+    number: '06',
+    name: 'Infrastructure',
+    description: 'Explore the systems and developer foundations behind Neptlium.',
+    href: '/infrastructure',
+    note: 'Developers',
+  },
+] as const;
+
+function AuthorityStage() {
   return (
-    <div className={styles.portfolio} aria-label="Illustrative portfolio overview">
-      <div className={styles.portfolioBar}>
-        <strong>Neptlium / Portfolio</strong>
-        <span>Illustrative interface</span>
+    <div className={styles.authorityStage} aria-label="Illustrative financial authority workflow">
+      <div className={styles.stageHeader}>
+        <div>
+          <span className={styles.stageKicker}>The Neptlium principle</span>
+          <strong>Movement with authority</strong>
+        </div>
+        <span className={styles.stageTag}>Illustrative model</span>
       </div>
-      <div className={styles.portfolioIntro}>
-        <span className={styles.eyebrow}>Portfolio overview</span>
-        <h3>A perspective on the whole.</h3>
-        <p>Composition. Concentration. Context.</p>
-      </div>
-      <div className={styles.portfolioRows}>
-        {[
-          ['Positions', 'Understand what you hold.'],
-          ['Allocation', 'See how exposures fit together.'],
-          ['Activity', 'Keep decisions in context.'],
-          ['Records', 'Return to the details that matter.'],
-        ].map(([label, copy]) => (
-          <div key={label}>
-            <strong>{label}</strong>
-            <span>{copy}</span>
-          </div>
-        ))}
-      </div>
-      <p className={styles.note}>
-        Illustrative interface only. No customer balances, returns or performance data are shown.
+      <ol className={styles.authoritySteps}>
+        <li>
+          <span className={styles.authorityNode}><CircleDot aria-hidden="true" /></span>
+          <span><strong>Intent</strong><small>Define the requested movement</small></span>
+        </li>
+        <li>
+          <span className={styles.authorityNode}><ShieldCheck aria-hidden="true" /></span>
+          <span><strong>Policy & authorization</strong><small>Apply rules and delegated authority</small></span>
+        </li>
+        <li>
+          <span className={styles.authorityNode}><CheckCircle2 aria-hidden="true" /></span>
+          <span><strong>Evidence & reconciliation</strong><small>Establish what happened and what is known</small></span>
+        </li>
+      </ol>
+      <p className={styles.stageFootnote}>
+        Conceptual workflow only. It does not represent a live payment, settlement or customer account.
       </p>
     </div>
   );
@@ -53,78 +96,90 @@ export default function HomePage() {
       <section className={`${styles.hero} ${styles.motionHero}`} aria-labelledby="home-title">
         <HomeBackground />
         <div className={`${styles.shell} ${styles.heroGrid} ${styles.motionHeroGrid}`}>
-          <div>
-            <p className={styles.eyebrow}>A clearer perspective on capital</p>
-            <h1 id="home-title" data-npt-nts="hero">
-              Invest with clarity. Build with confidence.
-            </h1>
+          <div className={styles.heroContent}>
+            <p className={styles.eyebrow}>The Capital Operating Platform</p>
+            <h1 id="home-title" data-npt-nts="hero">Capital, intelligently managed.</h1>
             <p className={styles.lead}>
-              Discover the ideas behind an investment. Understand your portfolio in context. Build a
-              more informed relationship with your capital.
+              One connected perspective across capital, portfolios, treasury and financial
+              infrastructure. Designed to make complex financial operations clearer, more
+              deliberate and accountable.
             </p>
             <div className={styles.actions}>
-              <a className={styles.primary} href={SITE.personalSignUpUrl}>
-                Get started <ArrowRight aria-hidden="true" />
-              </a>
-              <Link className={styles.secondary} href="/investments">
-                Explore investing <ArrowRight aria-hidden="true" />
+              <Link className={styles.primary} href="/platform">
+                Explore the platform <ArrowRight aria-hidden="true" />
+              </Link>
+              <Link className={styles.secondary} href="/company">
+                About Neptlium <ArrowUpRight aria-hidden="true" />
               </Link>
             </div>
-            <p className={styles.signature}>Capital, intelligently managed.</p>
+            <p className={styles.signature}>Every movement has authority. Every position has evidence.</p>
           </div>
         </div>
       </section>
-      <section className={styles.section} aria-labelledby="portfolio-title">
-        <div className={`${styles.shell} ${styles.split}`}>
-          <div>
-            <p className={styles.eyebrow}>01 / Investment experience & portfolio</p>
-            <h2 id="portfolio-title">
-              Know where your capital stands. Understand how it’s positioned.
-            </h2>
-            <p className={styles.lead}>
-              A total is only the beginning. Explore the relationship between positions, allocation
-              and the decisions behind them.
-            </p>
-            <Link className={styles.textLink} href="/portfolio">
-              Explore your portfolio perspective <ArrowRight aria-hidden="true" />
-            </Link>
-          </div>
-          <ProductStage />
-        </div>
-      </section>
-      <section className={`${styles.section} ${styles.tonal}`} aria-labelledby="explore-title">
+
+      <section className={styles.section} aria-labelledby="capabilities-title">
         <div className={styles.shell}>
           <div className={styles.sectionHead}>
             <div>
-              <p className={styles.eyebrow}>02 / Explore investing</p>
-              <h2 id="explore-title">Discover investments with a clearer view of the details.</h2>
+              <p className={styles.eyebrow}>A connected architecture</p>
+              <h2 id="capabilities-title">Six capabilities. One operating perspective.</h2>
             </div>
-            <Link className={styles.textLink} href="/investments">
-              All collections <ArrowUpRight aria-hidden="true" />
+            <Link className={styles.textLink} href="/platform">
+              Explore platform architecture <ArrowUpRight aria-hidden="true" />
             </Link>
           </div>
           <p className={styles.sectionLead}>
-            Start with the themes shaping the world. Explore their businesses, dependencies and
-            risks. Collections are research-only, not investment products.
+            Neptlium brings distinct financial journeys into a coherent system. Each capability
+            has a clear role, with authority and evidence kept visible throughout.
           </p>
-          <InvestCollections compact />
+          <div className={styles.capabilityGrid}>
+            {capabilities.map((item) => (
+              <Link className={styles.capability} href={item.href} key={item.name}>
+                <span className={styles.capabilityTop}>
+                  <span>{item.number} / {item.note}</span>
+                  <ArrowUpRight aria-hidden="true" />
+                </span>
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
-      <section className={styles.section} aria-labelledby="how-title">
+
+      <section className={`${styles.section} ${styles.tonal}`} aria-labelledby="authority-title">
+        <div className={`${styles.shell} ${styles.split}`}>
+          <div>
+            <p className={styles.eyebrow}>Designed around financial truth</p>
+            <h2 id="authority-title">Clarity is more than a balance on a screen.</h2>
+            <p className={styles.lead}>
+              Financial confidence depends on understanding where information came from, who
+              authorized an action and what the available evidence actually establishes.
+            </p>
+            <p>
+              Neptlium’s product language distinguishes intent from execution, provider
+              observation from canonical records, and settlement from reconciliation.
+            </p>
+            <Link className={styles.textLink} href="/trust">
+              How we think about trust <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+          <AuthorityStage />
+        </div>
+      </section>
+
+      <section className={styles.section} aria-labelledby="workflow-title">
         <div className={styles.shell}>
-          <p className={styles.eyebrow}>03 / How Neptlium works</p>
-          <h2 id="how-title">A clearer path from investing to understanding your capital.</h2>
+          <p className={styles.eyebrow}>A consistent operating principle</p>
+          <h2 id="workflow-title">Every movement has authority. Every position has evidence.</h2>
           <ol className={styles.steps}>
             {[
-              ['Discover', 'Explore themes, business models and the questions worth asking.'],
-              [
-                'Understand',
-                'Consider objectives, risks, liquidity and the documents behind a decision.',
-              ],
-              ['Connect', 'See how individual exposures relate to your wider portfolio.'],
-            ].map(([title, copy], i) => (
+              ['Understand', 'See the position, obligation or request in its financial context.'],
+              ['Authorize', 'Apply policy, identity and the right level of approval before action.'],
+              ['Evidence', 'Keep records of what was requested, observed and reconciled.'],
+            ].map(([title, copy], index) => (
               <li key={title}>
-                <span className={styles.stepNumber}>0{i + 1}</span>
+                <span className={styles.stepNumber}>0{index + 1}</span>
                 <h3>{title}</h3>
                 <p>{copy}</p>
               </li>
@@ -132,140 +187,99 @@ export default function HomePage() {
           </ol>
         </div>
       </section>
-      <section className={`${styles.section} ${styles.tonal}`} aria-labelledby="why-title">
+
+      <section className={`${styles.section} ${styles.tonal}`} aria-labelledby="treasury-title">
         <div className={`${styles.shell} ${styles.split}`}>
           <div>
-            <p className={styles.eyebrow}>04 / Why Neptlium</p>
-            <h2 id="why-title">Built for informed decisions. Designed around your capital.</h2>
-            <Link className={styles.textLink} href="/capital">
-              Discover Neptlium Capital <ArrowRight aria-hidden="true" />
+            <p className={styles.eyebrow}>For organizations</p>
+            <h2 id="treasury-title">Operate capital with control.</h2>
+            <p className={styles.lead}>
+              Treasury is designed around organizational liquidity, payment coordination,
+              approvals, policy and operational oversight.
+            </p>
+            <p>
+              Capabilities are presented according to their verified product state. A described
+              workflow is not a claim that live execution or settlement is enabled.
+            </p>
+            <Link className={styles.textLink} href="/treasury">
+              Explore Neptlium Treasury <ArrowRight aria-hidden="true" />
             </Link>
           </div>
           <div className={styles.editorialRows}>
-            {[
-              [
-                'Context before complexity',
-                'Start with what an investment represents and why it matters.',
-              ],
-              [
-                'A connected perspective',
-                'Consider the parts alongside the composition of the whole.',
-              ],
-              [
-                'Clarity at each step',
-                'Keep research, investment decisions and account activity distinct.',
-              ],
-            ].map(([title, copy]) => (
-              <article key={title}>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
+            <article><h3>Liquidity context</h3><p>Bring sources, obligations and availability into a more coherent view.</p></article>
+            <article><h3>Payment coordination</h3><p>Make intent, authorization and movement stages understandable.</p></article>
+            <article><h3>Evidence and oversight</h3><p>Keep operational records and reconciliation distinct from provider observations.</p></article>
           </div>
         </div>
       </section>
+
+      <section className={styles.section} aria-labelledby="capital-title">
+        <div className={`${styles.shell} ${styles.split}`}>
+          <div>
+            <p className={styles.eyebrow}>For individuals</p>
+            <h2 id="capital-title">Your capital. A clearer view.</h2>
+            <p className={styles.lead}>
+              Understand your financial position through portfolio context, investment research,
+              allocation and the activity behind each decision.
+            </p>
+            <Link className={styles.textLink} href="/capital">
+              Explore Neptlium Capital <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+          <div className={styles.editorialRows}>
+            <article><h3>Portfolio perspective</h3><p>Understand positions and how exposures relate to the whole.</p></article>
+            <article><h3>Investment context</h3><p>Explore objectives, structures, risks and the details behind an idea.</p></article>
+            <article><h3>Activity and records</h3><p>Keep decisions and supporting information connected.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.tonal}`} aria-labelledby="developers-title">
+        <div className={styles.shell}>
+          <div className={styles.sectionHead}>
+            <div>
+              <p className={styles.eyebrow}>For builders</p>
+              <h2 id="developers-title">Infrastructure designed to be understood.</h2>
+            </div>
+            <Link className={styles.textLink} href="/infrastructure">
+              Explore infrastructure <ArrowUpRight aria-hidden="true" />
+            </Link>
+          </div>
+          <p className={styles.sectionLead}>
+            Explore Neptlium’s developer direction, integration architecture and documentation.
+            Technical surfaces describe supported interfaces and clearly identify capabilities
+            that remain in development.
+          </p>
+          <div className={styles.audienceRows}>
+            <Link href="/infrastructure"><div><h3>Neptlium Pay & infrastructure</h3><p>Understand the role of payment and platform infrastructure.</p></div><ArrowUpRight aria-hidden="true" /></Link>
+            <Link href="https://docs.neptlium.com"><div><h3>Developer documentation</h3><p>Explore technical guidance and integration contracts.</p></div><ArrowUpRight aria-hidden="true" /></Link>
+            <Link href="/company"><div><h3>Company & principles</h3><p>Learn about the purpose and principles behind Neptlium.</p></div><ArrowUpRight aria-hidden="true" /></Link>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.section} aria-labelledby="research-title">
         <div className={`${styles.shell} ${styles.split}`}>
-          <figure className={styles.featureImage}>
-            <Image
-              src="/invest/compute.webp"
-              alt="Rows of servers inside a data center"
-              fill
-              sizes="(max-width: 760px) 100vw, 50vw"
-            />
-            <figcaption>Research / Behind the connected economy</figcaption>
-          </figure>
           <div>
-            <p className={styles.eyebrow}>05 / Research & intelligence</p>
-            <h2 id="research-title">Understand the market. See the bigger picture.</h2>
+            <p className={styles.eyebrow}>Research and perspective</p>
+            <h2 id="research-title">Explore the ideas shaping capital.</h2>
             <p className={styles.lead}>
-              From semiconductors and cybersecurity to fintech, industrial automation and healthcare
-              technology: follow the relationships behind an idea.
+              Explore businesses, industries and themes through structured research. Collections
+              are informational and are not investment products or recommendations.
             </p>
-            <p>Read the thesis. Challenge the assumptions. Consider what could change.</p>
-            <Link className={styles.textLink} href="/investments/global-innovation">
-              Explore research themes <ArrowRight aria-hidden="true" />
+            <Link className={styles.textLink} href="/investments">
+              Explore investment research <ArrowRight aria-hidden="true" />
             </Link>
           </div>
+          <InvestCollections compact />
         </div>
       </section>
-      <section
-        className={`${styles.section} ${styles.tonal}`}
-        aria-labelledby="institutional-title"
-      >
-        <div className={styles.shell}>
-          <p className={styles.eyebrow}>06 / Treasury & institutional</p>
-          <h2 id="institutional-title">
-            Built for personal investing. Extending to complex capital.
-          </h2>
-          <div className={styles.audienceRows}>
-            <Link href="/treasury">
-              <div>
-                <h3>Treasury</h3>
-                <p>
-                  Explore the organizational approach to liquidity, approvals and capital
-                  operations.
-                </p>
-              </div>
-              <ArrowUpRight aria-hidden="true" />
-            </Link>
-            <Link href="/institutional">
-              <div>
-                <h3>Institutional</h3>
-                <p>
-                  A developing experience for organizations with more complex mandates and reporting
-                  needs.
-                </p>
-              </div>
-              <ArrowUpRight aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </section>
-      <section className={styles.section} aria-labelledby="trust-title">
-        <div className={`${styles.shell} ${styles.split}`}>
-          <div>
-            <p className={styles.eyebrow}>07 / Trust & transparency</p>
-            <h2 id="trust-title">Confidence begins with understanding.</h2>
-            <p className={styles.lead}>
-              Know what you’re reading, what’s proposed and what requires a closer look.
-            </p>
-          </div>
-          <div className={styles.editorialRows}>
-            <article>
-              <h3>Clear product distinctions</h3>
-              <p>
-                Research collections are educational. Proposed plans are concepts. Product access
-                requires confirmed terms and eligibility.
-              </p>
-              <Link className={styles.textLink} href="/investments#plans">
-                Review proposed plan families <ArrowRight aria-hidden="true" />
-              </Link>
-            </article>
-            <article>
-              <h3>Risk in plain sight</h3>
-              <p>
-                Investing involves uncertainty and possible loss of principal. No research theme or
-                allocation approach guarantees an outcome.
-              </p>
-              <Link className={styles.textLink} href="/risk-disclosure">
-                Read the risk disclosures <ArrowRight aria-hidden="true" />
-              </Link>
-            </article>
-            <article>
-              <h3>Understand the safeguards</h3>
-              <Link className={styles.textLink} href="/security">
-                Explore security <ArrowRight aria-hidden="true" />
-              </Link>
-            </article>
-          </div>
-        </div>
-      </section>
+
       <section className={`${styles.section} ${styles.tonal}`} aria-labelledby="questions-title">
         <div className={`${styles.shell} ${styles.split}`}>
           <div>
-            <p className={styles.eyebrow}>08 / Questions & next steps</p>
-            <h2 id="questions-title">A clearer way forward.</h2>
+            <p className={styles.eyebrow}>Questions & next steps</p>
+            <h2 id="questions-title">Start with a clearer perspective.</h2>
             <Link className={styles.textLink} href="/contact">
               Talk to Neptlium <ArrowRight aria-hidden="true" />
             </Link>
@@ -280,10 +294,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <div className={`${styles.shell} ${styles.disclosure}`}>
-        <p>
-          {DISCLOSURES.investment} {DISCLOSURES.general}
-        </p>
+        <p>{DISCLOSURES.investment} {DISCLOSURES.general}</p>
       </div>
     </div>
   );
