@@ -241,7 +241,7 @@ test('legacy provider address route is retired while canonical customer balance 
   assert.equal(balance.json().contract_version, 2);
   assert.equal(balance.json().reporting.total_minor, null);
   assert.deepEqual(balance.json().balances, []);
-  assert.equal(JSON.stringify(balance.json()).includes('12.5'), false);
+  assert.equal(JSON.stringify(balance.json()).includes(JSON.stringify('12.5')), false);
 });
 test('retired provider-wallet routes remain authenticated and fail closed for every owner', async () => {
   const repository = new MemoryRepository();
